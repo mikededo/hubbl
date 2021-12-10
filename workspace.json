@@ -1,6 +1,8 @@
 {
   "version": 2,
   "projects": {
-    "api": "apps/api"
+    "api": "apps/api",
+    "landing": "apps/landing",
+    "landing-e2e": "apps/landing-e2e"
   }
 }
