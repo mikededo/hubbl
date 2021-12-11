@@ -4,7 +4,9 @@
   "plugins": ["@nrwl/nx"],
   "rules": {
     "arrow-body-style": ["error", "as-needed"],
-    "brace-style": "error"
+    "brace-style": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"]
   },
   "extends": [
     "eslint:recommended",
