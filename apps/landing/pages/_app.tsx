@@ -8,6 +8,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => (
     <Head>
       <title>Welcome to landing!</title>
     </Head>
+
     <main className="app">
       <Component {...pageProps} />
     </main>

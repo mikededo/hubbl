@@ -3,7 +3,8 @@
   "ignorePatterns": ["**/*"],
   "plugins": ["@nrwl/nx"],
   "rules": {
-    "arrow-body-style": ["error", "as-needed"]
+    "arrow-body-style": ["error", "as-needed"],
+    "brace-style": "error"
   },
   "extends": [
     "eslint:recommended",
@@ -33,6 +34,18 @@
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nrwl/nx/typescript"],
       "rules": {}
+    },
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "jsx-quotes": ["error", "prefer-double"],
+        "react/self-closing-comp": [
+          "error",
+          { "component": true, "html": true }
+        ],
+        "react/jsx-closing-bracket-location": 0,
+        "react/no-array-index-key": 2
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
