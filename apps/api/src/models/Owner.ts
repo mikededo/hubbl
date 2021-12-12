@@ -7,6 +7,7 @@ import {
   OneToOne,
   UpdateDateColumn
 } from 'typeorm';
+import GymSettings from './GymSettings';
 
 import Person from './Person';
 import VirtualGym from './VirtualGym';
@@ -28,6 +29,10 @@ export default class Owner {
    */
   @OneToMany(() => VirtualGym, (vg) => vg.owner)
   virtualGyms!: VirtualGym[];
+
+  @OneToOne(() => GymSettings, { cascade: true, eager: true })
+  @JoinColumn()
+  settings!: GymSettings;
 
   @CreateDateColumn()
   createdAt!: Date;
