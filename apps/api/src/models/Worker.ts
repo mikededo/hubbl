@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Generated,
   Index,
   JoinColumn,
   JoinTable,
@@ -39,19 +40,20 @@ export default class Worker {
    * manager.
    */
   @Index('worker-code-idx', { unique: true })
-  @Column('uuid', { nullable: false, default: 'uuid_generate_v4()' })
+  @Column('uuid', { nullable: false })
+  @Generated('uuid')
   workerCode!: string;
 
-  @ManyToMany(() => Worker, {
+  @ManyToMany(() => VirtualGym, {
     cascade: true,
     eager: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   })
   @JoinTable({
-    name: 'gym_zone_personal',
-    joinColumn: { name: 'worker', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'gym_zone', referencedColumnName: 'id' }
+    name: 'virtual_gym_access',
+    joinColumn: { name: 'person' },
+    inverseJoinColumn: { name: 'virtual_gym' }
   })
   virtualGym: VirtualGym[];
 

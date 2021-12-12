@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -30,7 +31,11 @@ export default class VirtualGym {
   })
   owner!: number;
 
-
+  /**
+   * `VirtualGym` description
+   */
+  @Column('text')
+  description: string;
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -1,7 +1,14 @@
 import { ConnectionOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { Owner, Person, Trainer, VirtualGym, Worker } from '../models';
+import {
+  GymSettings,
+  Owner,
+  Person,
+  Trainer,
+  VirtualGym,
+  Worker
+} from '../models';
 
 const config: ConnectionOptions = {
   type: 'postgres',
@@ -10,7 +17,7 @@ const config: ConnectionOptions = {
   username: process.env.POSTGRES_USER || 'postgres',
   password: process.env.POSTGRES_PASSWORD || 'changeme',
   database: process.env.POSTGRES_DB || 'gym-man-db',
-  entities: [Person, Trainer, Worker, VirtualGym, Owner],
+  entities: [GymSettings, Owner, Person, Trainer, VirtualGym, Worker],
   synchronize: true,
   namingStrategy: new SnakeNamingStrategy()
 };

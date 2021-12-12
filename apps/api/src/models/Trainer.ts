@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Generated,
   Index,
   JoinColumn,
   OneToOne,
@@ -13,7 +14,7 @@ import Person from './Person';
 
 /**
  * `Trainer` is an entity that defines a worker with no access
- * to the application but it is linked to the 
+ * to the application but it is linked to the
  */
 @Entity()
 export default class Trainer {
@@ -33,10 +34,9 @@ export default class Trainer {
    * manager
    */
   @Index('trainer-code-idx', { unique: true })
-  @Column('uuid', { nullable: false, default: 'uuid_generate_v4()' })
+  @Column('uuid', { nullable: false })
+  @Generated('uuid')
   workerCode!: string;
-
-
 
   @CreateDateColumn()
   createdAt!: Date;
