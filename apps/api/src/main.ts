@@ -10,7 +10,9 @@ app.get('/api', (req, res) => {
 });
 
 createConnection(databaseConfig)
-  .then(() => {
+  .then(async (cnt) => {
+    await cnt.synchronize(true);
+
     const port = process.env.port || 3333;
 
     const server = app.listen(port, () => {

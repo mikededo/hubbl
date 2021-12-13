@@ -7,7 +7,10 @@ import {
   Person,
   Trainer,
   VirtualGym,
-  Worker
+  Worker,
+  GymZone,
+  CalendarDate,
+  GymEventTypes
 } from '../models';
 
 const config: ConnectionOptions = {
@@ -17,7 +20,17 @@ const config: ConnectionOptions = {
   username: process.env.POSTGRES_USER || 'postgres',
   password: process.env.POSTGRES_PASSWORD || 'changeme',
   database: process.env.POSTGRES_DB || 'gym-man-db',
-  entities: [GymSettings, Owner, Person, Trainer, VirtualGym, Worker],
+  entities: [
+    CalendarDate,
+    GymEventTypes,
+    GymSettings,
+    GymZone,
+    Owner,
+    Person,
+    Trainer,
+    VirtualGym,
+    Worker
+  ],
   synchronize: true,
   namingStrategy: new SnakeNamingStrategy()
 };

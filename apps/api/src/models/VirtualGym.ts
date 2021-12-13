@@ -4,10 +4,12 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
+import GymZone from './GymZone';
 import Person from './Person';
 
 /**
@@ -20,22 +22,36 @@ export default class VirtualGym {
   id!: number;
 
   /**
-   * Owner of the virtual gym. Only the owner has access to create
-   * and delete virtual gyms
+   * `VirtualGym` description
+   */
+  @Column('varchar', { nullable: false, length: 255 })
+  name!: string;
+
+  /**
+   * `VirtualGym` description
+   */
+  @Column('text')
+  description!: string;
+
+  /**
+   * Owner of the `VirtualGym`. Only the owner has access to create
+   * and delete `VirtualGym`
    */
   @ManyToOne(() => Person, (person) => person.id, {
     nullable: false,
-    cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   })
   owner!: number;
 
   /**
-   * `VirtualGym` description
+   * `GymZones` of the `VirtualGym`
    */
-  @Column('text')
-  description: string;
+  @OneToMany(() => GymZone, (gz) => gz.virtualGym, {
+    cascade: true,
+    eager: true
+  })
+  gymZones!: GymZone[];
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -13,8 +13,6 @@ import {
 } from 'typeorm';
 
 import Person from './Person';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Trainer from './Trainer';
 import VirtualGym from './VirtualGym';
 
 /**
@@ -66,42 +64,36 @@ export default class Worker {
 
   /**
    * The `Worker` is allowed or not to CREATE `GymZones`.
-   * {@link GymZone}
    */
   @Column('bool', { default: false })
   CGymZones!: boolean;
 
   /**
    * The `Worker` is allowed or not to UPDATE `GymZones`.
-   * {@link GymZone}
    */
   @Column('bool', { default: false })
   UGymZones!: boolean;
 
   /**
    * The `Worker` is allowed or not to DELETE `GymZones`.
-   * {@link GymZone}
    */
   @Column('bool', { default: false })
   DGymZones!: boolean;
 
   /**
    * The `Worker` is allowed or not to CREATE `Trainers`.
-   * {@link Trainer}
    */
   @Column('bool', { default: false })
   CTrainers!: boolean;
 
   /**
    * The `Worker` is allowed or not to UPDATE `Trainers`.
-   * {@link Trainer}
    */
   @Column('bool', { default: false })
   UTrainers!: boolean;
 
   /**
    * The `Worker` is allowed or not to DELETE `Trainers`.
-   * {@link Trainer}
    */
   @Column('bool', { default: false })
   DTrainers!: boolean;
