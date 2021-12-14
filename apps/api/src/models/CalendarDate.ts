@@ -1,5 +1,7 @@
 import { Max, Min } from 'class-validator';
-import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
+
+import Event from './Event';
 
 /**
  * Entity that defines a date of the calendar. Its unique primary key
@@ -32,4 +34,7 @@ export default class CalendarDate {
   @Min(1)
   @Max(31)
   day!: number;
+
+  @ManyToOne(() => Event, (e) => e.date)
+  events!: Event[];
 }
