@@ -2,7 +2,7 @@ import CalendarDate from './CalendarDate';
 import Event from './Event';
 import EventTemplate from './EventTemplate';
 import EventType from './EventType';
-import GymSettings from './GymSettings';
+import Gym from './Gym';
 import GymZone from './GymZone';
 import Owner from './Owner';
 import Person from './Person';
@@ -15,7 +15,7 @@ export {
   Event,
   EventTemplate,
   EventType,
-  GymSettings,
+  Gym,
   GymZone,
   Owner,
   Person,

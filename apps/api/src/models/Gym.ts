@@ -3,14 +3,19 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
 import { AppTheme, ThemeColor } from '@gymman/shared/types';
 
+import EventType from './EventType';
+import Person from './Person';
+import VirtualGym from './VirtualGym';
+
 @Entity()
-export default class GymSettings {
+export default class Gym {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -31,6 +36,32 @@ export default class GymSettings {
    */
   @Column('varchar', { length: 45 })
   phone!: string;
+
+  /**
+   * `EventType`'s that belong to the gym, and will be common
+   * to all workers
+   */
+  @OneToMany(() => EventType, (et) => et.gym, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  eventTypes!: EventType[];
+
+  /**
+   * Relation that allows us to know what users 
+   */
+  @OneToMany(() => Person, p => p.gym)
+  persons!: Person[];
+
+  @OneToMany(() => VirtualGym, vg => vg.gym, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  virtualGyms!: VirtualGym[];
 
   /**
    * Chosen theme of the app by the `Owner`

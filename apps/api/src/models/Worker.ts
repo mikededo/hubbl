@@ -6,14 +6,11 @@ import {
   Generated,
   Index,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   OneToOne,
   UpdateDateColumn
 } from 'typeorm';
 
 import Person from './Person';
-import VirtualGym from './VirtualGym';
 
 /**
  * `Worker` is the main user of the application. Their basic
@@ -41,19 +38,6 @@ export default class Worker {
   @Column('uuid', { nullable: false })
   @Generated('uuid')
   workerCode!: string;
-
-  @ManyToMany(() => VirtualGym, {
-    cascade: true,
-    eager: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  })
-  @JoinTable({
-    name: 'virtual_gym_access',
-    joinColumn: { name: 'person' },
-    inverseJoinColumn: { name: 'virtual_gym' }
-  })
-  virtualGym: VirtualGym[];
 
   /**
    * The `Worker` is allowed or not to UPDATE `VirtualGym`

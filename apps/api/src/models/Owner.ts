@@ -3,14 +3,12 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
   OneToOne,
   UpdateDateColumn
 } from 'typeorm';
 
-import GymSettings from './GymSettings';
+import Gym from './Gym';
 import Person from './Person';
-import VirtualGym from './VirtualGym';
 
 /**
  * `Owner` entity, as the main user of the application
@@ -25,14 +23,10 @@ export default class Owner {
   person!: Person;
 
   /**
-   * Owned `VirtualGym`'s
+   * `Gym` owner by the `Owner`
    */
-  @OneToMany(() => VirtualGym, (vg) => vg.owner, { cascade: true, eager: true })
-  virtualGyms!: VirtualGym[];
-
-  @OneToOne(() => GymSettings, { cascade: true, eager: true })
-  @JoinColumn()
-  settings!: GymSettings;
+  @OneToOne(() => Gym, { cascade: true, eager: true })
+  gym!: Gym;
 
   @CreateDateColumn()
   createdAt!: Date;

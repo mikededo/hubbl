@@ -9,8 +9,8 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
+import Gym from './Gym';
 import GymZone from './GymZone';
-import Person from './Person';
 
 /**
  * Entity that defines the gym. It contains all the different
@@ -33,16 +33,8 @@ export default class VirtualGym {
   @Column('text')
   description!: string;
 
-  /**
-   * Owner of the `VirtualGym`. Only the owner has access to create
-   * and delete `VirtualGym`
-   */
-  @ManyToOne(() => Person, (person) => person.id, {
-    nullable: false,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  })
-  owner!: number;
+  @ManyToOne(() => Gym, gym => gym.virtualGyms)
+  gym!: Gym;
 
   /**
    * `GymZones` of the `VirtualGym`

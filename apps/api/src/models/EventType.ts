@@ -3,11 +3,14 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
 import { AppPalette } from '@gymman/shared/types';
+
+import Gym from './Gym';
 
 @Entity()
 export default class EventType {
@@ -31,6 +34,12 @@ export default class EventType {
    */
   @Column('enum', { enum: AppPalette, default: AppPalette.BLUE })
   labelColor!: AppPalette;
+
+  /**
+   * `Gym` to which the `EventType` belongs
+   */
+  @ManyToOne(() => Gym, g => g.eventTypes)
+  gym!: Gym;  
 
   @CreateDateColumn()
   createdAt!: Date;

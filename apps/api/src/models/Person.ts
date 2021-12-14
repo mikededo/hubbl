@@ -4,9 +4,12 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+
+import Gym from './Gym';
 
 @Entity()
 export default class Person {
@@ -39,6 +42,13 @@ export default class Person {
   @Index('person-last-name-idx', { unique: false })
   @Column('varchar', { nullable: false, length: 255 })
   lastName!: string;
+
+  /**
+   * `Gym` to which the `Person` belongs. `Owner`'s will have this
+   * prop as null
+   */
+  @ManyToOne(() => Gym, (g) => g.persons, { cascade: true, eager: true })
+  gym!: Gym;
 
   // TODO: update to enum
   /**
