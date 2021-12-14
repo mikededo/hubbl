@@ -25,7 +25,7 @@ export default class Calendar {
   gymZone!: GymZone;
 
   /**
-   * `Event`'s of the `Calendar`-
+   * `Event`'s of the `Calendar`
    */
   @OneToMany(() => Event, (e) => e.calendar, {
     lazy: true,

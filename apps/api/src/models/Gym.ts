@@ -55,6 +55,9 @@ export default class Gym {
   @OneToMany(() => Person, p => p.gym)
   persons!: Person[];
 
+  /**
+   * `VirtualGym`'s of the `Gym`
+   */
   @OneToMany(() => VirtualGym, vg => vg.gym, {
     cascade: true,
     eager: true,

@@ -41,6 +41,9 @@ export default class Trainer {
   @Generated('uuid')
   workerCode!: string;
 
+  /**
+   * `Event`'s of the `Trainer`
+   */
   @ManyToOne(() => Event, (e) => e.trainer, { nullable: false })
   events!: Event[];
 
