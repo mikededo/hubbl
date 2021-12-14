@@ -8,7 +8,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { AppTheme, ThemeColor } from '@gymman/shared/types';
+import { ThemeColor } from '@gymman/shared/types';
 
 import EventType from './EventType';
 import Person from './Person';
@@ -65,12 +65,6 @@ export default class Gym {
     onUpdate: 'CASCADE',
   })
   virtualGyms!: VirtualGym[];
-
-  /**
-   * Chosen theme of the app by the `Owner`
-   */
-  @Column('enum', { enum: AppTheme, default: AppTheme.LIGHT })
-  theme!: AppTheme;
 
   /**
    * Primary color of the theme chosen by the `Owner`

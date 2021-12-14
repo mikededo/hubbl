@@ -9,6 +9,8 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
+import { AppTheme } from '@gymman/shared/types';
+
 import Gym from './Gym';
 
 @Entity()
@@ -49,6 +51,12 @@ export default class Person {
    */
   @ManyToOne(() => Gym, (g) => g.persons, { cascade: true, eager: true })
   gym!: Gym;
+
+  /**
+   * Chosen theme of the app by the `Owner`
+   */
+  @Column('enum', { enum: AppTheme, default: AppTheme.LIGHT })
+  theme!: AppTheme;
 
   // TODO: update to enum
   /**
