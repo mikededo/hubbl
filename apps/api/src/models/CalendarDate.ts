@@ -1,5 +1,5 @@
 import { Max, Min } from 'class-validator';
-import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import Event from './Event';
 
@@ -40,4 +40,7 @@ export default class CalendarDate {
    */
   @ManyToOne(() => Event, (e) => e.date)
   events!: Event[];
+
+  @CreateDateColumn()
+  createdAt!: Date;
 }
