@@ -10,7 +10,7 @@ import {
 import { AppPalette } from '@gymman/shared/types';
 
 @Entity()
-export default class GymEventType {
+export default class EventType {
   @PrimaryGeneratedColumn()
   id!: number;
 

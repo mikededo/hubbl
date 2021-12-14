@@ -2,15 +2,17 @@ import { ConnectionOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import {
+  CalendarDate,
+  Event,
+  EventTemplate,
+  EventType,
   GymSettings,
+  GymZone,
   Owner,
   Person,
   Trainer,
   VirtualGym,
-  Worker,
-  GymZone,
-  CalendarDate,
-  GymEventTypes
+  Worker
 } from '../models';
 
 const config: ConnectionOptions = {
@@ -22,7 +24,9 @@ const config: ConnectionOptions = {
   database: process.env.POSTGRES_DB || 'gym-man-db',
   entities: [
     CalendarDate,
-    GymEventTypes,
+    Event,
+    EventTemplate,
+    EventType,
     GymSettings,
     GymZone,
     Owner,

@@ -18,14 +18,14 @@ import VirtualGym from './VirtualGym';
 @Entity()
 export default class Owner {
   /**
-   * Personal information of the owner.
+   * Personal information of the owner
    */
   @OneToOne(() => Person, { primary: true, cascade: true, eager: true })
   @JoinColumn({ name: 'owner_person_fk' })
   person!: Person;
 
   /**
-   * Owned `VirtualGym`'s.
+   * Owned `VirtualGym`'s
    */
   @OneToMany(() => VirtualGym, (vg) => vg.owner, { cascade: true, eager: true })
   virtualGyms!: VirtualGym[];

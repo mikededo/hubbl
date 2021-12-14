@@ -6,15 +6,18 @@ import {
   Generated,
   Index,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   UpdateDateColumn
 } from 'typeorm';
 
 import Person from './Person';
+import Event from './Event';
 
 /**
  * `Trainer` is an entity that defines a worker with no access
- * to the application but it is linked to the
+ * to the application but it is linked to the classes and
+ * non-class `VirtualGym`'s
  */
 @Entity()
 export default class Trainer {
@@ -37,6 +40,9 @@ export default class Trainer {
   @Column('uuid', { nullable: false })
   @Generated('uuid')
   workerCode!: string;
+
+  @ManyToOne(() => Event, (e) => e.trainer, { nullable: false })
+  events!: Event[];
 
   @CreateDateColumn()
   createdAt!: Date;
