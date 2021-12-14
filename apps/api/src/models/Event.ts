@@ -8,7 +8,8 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { CalendarDate } from './';
+import Calendar from './Calendar';
+import CalendarDate from './CalendarDate';
 import EventTemplate from './EventTemplate';
 import Trainer from './Trainer';
 
@@ -24,6 +25,14 @@ export default class Event {
   trainer!: Trainer;
 
   /**
+   * `Calendar` to which the `Event` belongs
+   */
+  @ManyToOne(() => Calendar, (c) => c.events, {
+    nullable: false
+  })
+  calendar!: Calendar;
+
+  /**
    * `EventTemplate` from which has been created
    */
   @ManyToOne(() => EventTemplate, (et) => et.events, {
@@ -37,7 +46,8 @@ export default class Event {
    */
   @OneToMany(() => CalendarDate, (d) => d.events, {
     eager: true,
-    cascade: true
+    cascade: true,
+    nullable: false
   })
   date!: CalendarDate;
 

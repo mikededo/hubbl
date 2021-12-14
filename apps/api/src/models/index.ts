@@ -1,3 +1,4 @@
+import Calendar from './Calendar';
 import CalendarDate from './CalendarDate';
 import Event from './Event';
 import EventTemplate from './EventTemplate';
@@ -11,6 +12,7 @@ import VirtualGym from './VirtualGym';
 import Worker from './Worker';
 
 export {
+  Calendar,
   CalendarDate,
   Event,
   EventTemplate,

@@ -11,14 +11,14 @@ import Event from './Event';
 @Index(['year', 'month', 'day'], { unique: true })
 export default class CalendarDate {
   /**
-   * Year of the date
+   * Year of the `CalendarDate`
    */
   @Column('smallint', { nullable: false })
   @PrimaryColumn()
   year!: number;
 
   /**
-   * Month of the date
+   * Month of the `CalendarDate`
    */
   @Column('smallint', { nullable: false })
   @PrimaryColumn()
@@ -27,7 +27,7 @@ export default class CalendarDate {
   month!: number;
 
   /**
-   * Day of the date
+   * Day of the `CalendarDate`
    */
   @Column('smallint', { nullable: false })
   @PrimaryColumn()
@@ -35,6 +35,9 @@ export default class CalendarDate {
   @Max(31)
   day!: number;
 
+  /**
+   * `Event`'s of the `CalendarDate`
+   */
   @ManyToOne(() => Event, (e) => e.date)
   events!: Event[];
 }

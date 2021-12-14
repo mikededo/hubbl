@@ -2,6 +2,7 @@ import { ConnectionOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import {
+  Calendar,
   CalendarDate,
   Event,
   EventTemplate,
@@ -23,6 +24,7 @@ const config: ConnectionOptions = {
   password: process.env.POSTGRES_PASSWORD || 'changeme',
   database: process.env.POSTGRES_DB || 'gym-man-db',
   entities: [
+    Calendar,
     CalendarDate,
     Event,
     EventTemplate,
