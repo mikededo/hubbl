@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
+import Appointment from './Appointment';
 
 import Calendar from './Calendar';
 import CalendarDate from './CalendarDate';
@@ -40,6 +41,12 @@ export default class Event {
     eager: true
   })
   template!: EventTemplate;
+
+  /**
+   * `Appointment`'s set for the `Event`
+   */
+  @OneToMany(() => Appointment, (a) => a.event)
+  appointments!: Appointment[];
 
   /**
    * `CalendarDate` of the event

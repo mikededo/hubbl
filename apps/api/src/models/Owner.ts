@@ -18,7 +18,12 @@ export default class Owner {
   /**
    * Personal information of the owner
    */
-  @OneToOne(() => Person, { primary: true, cascade: true, eager: true })
+  @OneToOne(() => Person, {
+    primary: true,
+    cascade: true,
+    eager: true,
+    nullable: false
+  })
   @JoinColumn({ name: 'owner_person_fk' })
   person!: Person;
 

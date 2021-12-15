@@ -21,7 +21,12 @@ import Event from './Event';
  */
 @Entity()
 export default class Trainer {
-  @OneToOne(() => Person, { primary: true, cascade: true, eager: true })
+  @OneToOne(() => Person, {
+    primary: true,
+    cascade: true,
+    eager: true,
+    nullable: false
+  })
   @JoinColumn({ name: 'trainer_person_fk' })
   person!: Person;
 

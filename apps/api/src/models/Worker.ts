@@ -13,13 +13,18 @@ import {
 import Person from './Person';
 
 /**
- * `Worker` is the main user of the application. Their basic
- * information is kept in {@link Person}. This model merely contains
- * the different permissions of the `Worker`.
+ * Their basic information is kept in {@link Person}.
+ * This model merely contains the different permissions
+ * of the `Worker`.
  */
 @Entity()
 export default class Worker {
-  @OneToOne(() => Person, { primary: true, cascade: true, eager: true })
+  @OneToOne(() => Person, {
+    primary: true,
+    cascade: true,
+    eager: true,
+    nullable: false
+  })
   @JoinColumn({ name: 'worker_person_fk' })
   person!: Person;
 
