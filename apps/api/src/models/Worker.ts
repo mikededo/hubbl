@@ -52,40 +52,94 @@ export default class Worker {
   UVirtualGyms!: boolean;
 
   /**
-   * The `Worker` is allowed or not to CREATE `GymZones`.
+   * The `Worker` is allowed or not to CREATE `GymZone`'s.
    */
   @Column('bool', { default: false })
   CGymZones!: boolean;
 
   /**
-   * The `Worker` is allowed or not to UPDATE `GymZones`.
+   * The `Worker` is allowed or not to UPDATE `GymZone`'s.
    */
   @Column('bool', { default: false })
   UGymZones!: boolean;
 
   /**
-   * The `Worker` is allowed or not to DELETE `GymZones`.
+   * The `Worker` is allowed or not to DELETE `GymZone`'s.
    */
   @Column('bool', { default: false })
   DGymZones!: boolean;
 
   /**
-   * The `Worker` is allowed or not to CREATE `Trainers`.
+   * The `Worker` is allowed or not to CREATE `Trainer`'s.
    */
   @Column('bool', { default: false })
   CTrainers!: boolean;
 
   /**
-   * The `Worker` is allowed or not to UPDATE `Trainers`.
+   * The `Worker` is allowed or not to UPDATE `Trainer`'s.
    */
   @Column('bool', { default: false })
   UTrainers!: boolean;
 
   /**
-   * The `Worker` is allowed or not to DELETE `Trainers`.
+   * The `Worker` is allowed or not to DELETE `Trainer`'s.
    */
   @Column('bool', { default: false })
   DTrainers!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to CREATE `Client`'s.
+   */
+  @Column('bool', { default: false })
+  CClients!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to UPDATE `Client`'s.
+   */
+  @Column('bool', { default: false })
+  UClients!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to DELETE `Client`'s.
+   */
+  @Column('bool', { default: false })
+  DClients!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to CREATE `Event`'s.
+   */
+  @Column('bool', { default: false })
+  CEvents!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to UPDATE `Event`'s.
+   */
+  @Column('bool', { default: false })
+  UEvents!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to DELETE `Event`'s.
+   */
+  @Column('bool', { default: false })
+  DEvents!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to CREATE `EventType`'s.
+   */
+  @Column('bool', { default: false })
+  CEventTypes!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to UPDATE `EventType`'s.
+   */
+  @Column('bool', { default: false })
+  UEventTypes!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to DELETE `EventType`'s.
+   */
+  @Column('bool', { default: false })
+  DEventTypes!: boolean;
 
   @CreateDateColumn()
   createdAt!: Date;
