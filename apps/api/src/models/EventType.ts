@@ -32,14 +32,18 @@ export default class EventType {
   /**
    * Color of the event type label
    */
-  @Column('enum', { enum: AppPalette, default: AppPalette.BLUE })
+  @Column('enum', {
+    enum: AppPalette,
+    enumName: 'app_palette',
+    default: AppPalette.BLUE
+  })
   labelColor!: AppPalette;
 
   /**
    * `Gym` to which the `EventType` belongs
    */
-  @ManyToOne(() => Gym, g => g.eventTypes)
-  gym!: Gym;  
+  @ManyToOne(() => Gym, (g) => g.eventTypes)
+  gym!: Gym;
 
   @CreateDateColumn()
   createdAt!: Date;

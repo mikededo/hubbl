@@ -1,4 +1,13 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  UpdateDateColumn
+} from 'typeorm';
 
 import Appointment from './Appointment';
 import Person from './Person';
@@ -18,6 +27,15 @@ export default class Client {
   })
   @JoinColumn({ name: 'client_person_fk' })
   person!: Person;
+
+  /**
+   * Allows the gym to know if the client has been verified
+   * with the COVID passport. If the client does not have the
+   * passport activated, it will not be able to create
+   * appointments to the gym zones in which it is required to.
+   */
+  @Column('boolean', { nullable: false, default: false })
+  covidPassport!: boolean;
 
   /**
    * `Appointment`'s made by the `Client`

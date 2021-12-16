@@ -6,13 +6,13 @@ import {
   Generated,
   Index,
   JoinColumn,
-  ManyToOne,
+  OneToMany,
   OneToOne,
   UpdateDateColumn
 } from 'typeorm';
 
-import Person from './Person';
 import Event from './Event';
+import Person from './Person';
 
 /**
  * `Trainer` is an entity that defines a worker with no access
@@ -49,7 +49,11 @@ export default class Trainer {
   /**
    * `Event`'s of the `Trainer`
    */
-  @ManyToOne(() => Event, (e) => e.trainer, { nullable: false })
+  @OneToMany(() => Event, (e) => e.trainer, {
+    lazy: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
   events!: Event[];
 
   @CreateDateColumn()

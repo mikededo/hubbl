@@ -1,3 +1,4 @@
+import { Min } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -33,7 +34,29 @@ export default class VirtualGym {
   @Column('text')
   description!: string;
 
-  @ManyToOne(() => Gym, gym => gym.virtualGyms)
+  /**
+   * Maximum capacity of the `VirtualGym`
+   */
+  @Column('integer', { nullable: false })
+  @Min(0)
+  capacity!: number;
+
+  /**
+   * Time at which the `VirtualGym` opens
+   */
+  @Column('time', { nullable: false })
+  openTime!: string;
+
+  /**
+   * Time at which the `VirtualGym` closes
+   */
+  @Column('time', { nullable: false })
+  closeTime!: string;
+
+  /**
+   * `Gym` to which the `VirtualGym` belongs
+   */
+  @ManyToOne(() => Gym, (gym) => gym.virtualGyms, { nullable: false })
   gym!: Gym;
 
   /**

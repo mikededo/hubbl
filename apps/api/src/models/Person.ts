@@ -28,7 +28,7 @@ export default class Person {
   /**
    * `Person`'s password which should be encrypted
    */
-  @Column({ nullable: false })
+  @Column('varchar', { nullable: false, length: 255 })
   password!: string;
 
   /**

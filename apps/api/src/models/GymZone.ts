@@ -39,8 +39,21 @@ export default class GymZone {
   /**
    * Maximum capacity of clients in the `GymZone`
    */
-  @Column('integer')
-  capacity!: string;
+  @Column('integer', { nullable: false })
+  capacity!: number;
+
+  /**
+   * Whether the mask is required or not in the `GymZone`
+   */
+  @Column('boolean', { nullable: false, default: true })
+  maskRequired!: boolean;
+
+  /**
+   * Whether the `Client` must have had registered the covid
+   * passport or not to access the `GymZone`
+   */
+  @Column('boolean', { nullable: false, default: true })
+  covidPassport!: boolean;
 
   /**
    * Time at which the `GymZone` opens, and appointments can
