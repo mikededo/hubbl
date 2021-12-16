@@ -43,7 +43,13 @@ enum GymZoneIntervals {
   HOURFIFTEEN = 75,
   HOURTHIRTY = 90,
   HOURFORTYFIVE = 105,
-  HOURS = 2
+  HOURS = 120
 }
 
-export { AppTheme, AppPalette, ThemeColor, GymZoneIntervals };
+enum Gender {
+  MAN = 'MAN',
+  WOMAN = 'WOMAN',
+  OTHER = 'OTHER'
+}
+
+export { AppPalette, AppTheme, Gender, GymZoneIntervals, ThemeColor };

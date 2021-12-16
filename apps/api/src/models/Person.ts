@@ -9,7 +9,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { AppTheme } from '@gymman/shared/types';
+import { AppTheme, Gender } from '@gymman/shared/types';
 
 import Gym from './Gym';
 
@@ -55,14 +55,17 @@ export default class Person {
   /**
    * Chosen theme of the app by the `Owner`
    */
-  @Column('enum', { enum: AppTheme, default: AppTheme.LIGHT })
+  @Column('enum', {
+    enum: AppTheme,
+    enumName: 'app_theme',
+    default: AppTheme.LIGHT
+  })
   theme!: AppTheme;
 
-  // TODO: update to enum
   /**
    * `Person`'s gender
    */
-  @Column('char')
+  @Column('enum', { enum: Gender, enumName: 'gender', nullable: false })
   gender!: string;
 
   @CreateDateColumn()

@@ -69,7 +69,7 @@ export default class Gym {
   /**
    * Primary color of the theme chosen by the `Owner`
    */
-  @Column('enum', { enum: ThemeColor, default: ThemeColor.BLUE })
+  @Column('enum', { enum: ThemeColor, enumName: 'theme_color', default: ThemeColor.BLUE })
   color!: ThemeColor;
 
   @CreateDateColumn()

@@ -76,6 +76,7 @@ export default class GymZone {
   @Column('enum', {
     array: true,
     enum: GymZoneIntervals,
+    enumName: 'time_interval',
     default: [
       GymZoneIntervals.THIRTEEN,
       GymZoneIntervals.HOUR,
