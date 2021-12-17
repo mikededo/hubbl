@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@gymman/shared/models/entities": [
+        "libs/shared/models/entities/src/index.ts"
+      ],
       "@gymman/shared/types": ["libs/shared/types/src/index.ts"]
     }
   },

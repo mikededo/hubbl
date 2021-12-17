@@ -16,7 +16,7 @@ import {
   Trainer,
   VirtualGym,
   Worker
-} from '../models';
+} from '@gymman/shared/models/entities';
 
 const config: ConnectionOptions = {
   type: 'postgres',
