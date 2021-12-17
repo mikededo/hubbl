@@ -1,42 +1,13 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  Index,
-  ManyToOne,
-  UpdateDateColumn
-} from 'typeorm';
-
-import Client from './Client';
-import Event from './Event';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 /**
  * Defines the `Appointment` made by a `Client` for a spcecific
  * `Event`
  */
 @Entity()
-@Index(['event', 'client'], { unique: true })
 export default class Appointment {
-  /**
-   * `Event` that is linked to the `Appointment`
-   */
-  @ManyToOne(() => Event, (e) => e.appointments, {
-    primary: true,
-    nullable: false,
-    cascade: true
-  })
-  event!: Event;
-
-  /**
-   * `Client` that is linked to the `Appointment`
-   */
-  @ManyToOne(() => Client, (c) => c.appointments, {
-    primary: true,
-    nullable: false,
-    cascade: true
-  })
-  client!: Client;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
   /**
    * Time at which the `Appointment` starts
@@ -53,15 +24,6 @@ export default class Appointment {
   /**
    * If the client has cancelled the `Appointment`
    */
-  @Column('bool', {default: false})
+  @Column('bool', { default: false })
   cancelled!: boolean;
-
-  @CreateDateColumn()
-  createdAt!: Date;
-
-  @UpdateDateColumn()
-  updatedAt!: Date;
-
-  @DeleteDateColumn()
-  deletedAt!: Date;
 }

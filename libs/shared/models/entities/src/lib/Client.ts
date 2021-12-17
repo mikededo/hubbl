@@ -9,7 +9,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import Appointment from './Appointment';
+import { CalendarAppointment, EventAppointment } from './';
 import Person from './Person';
 
 /**
@@ -38,10 +38,16 @@ export default class Client {
   covidPassport!: boolean;
 
   /**
-   * `Appointment`'s made by the `Client`
+   * `EventAppointment`'s made by the `Client`
    */
-  @OneToMany(() => Appointment, (a) => a.client)
-  appointments!: Appointment[];
+  @OneToMany(() => EventAppointment, (e) => e.client)
+  eventAppointments!: EventAppointment[];
+
+  /**
+   * `CalendarAppointment`'s made by the `Client`
+   */
+  @OneToMany(() => CalendarAppointment, (e) => e.client)
+  calendarAppointments!: CalendarAppointment[];
 
   @CreateDateColumn()
   createdAt!: Date;

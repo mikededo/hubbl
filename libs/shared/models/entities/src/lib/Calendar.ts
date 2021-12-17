@@ -9,6 +9,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
+import CalendarAppointment from './CalendarAppointment';
 import Event from './Event';
 import GymZone from './GymZone';
 
@@ -37,6 +38,16 @@ export default class Calendar {
     onUpdate: 'CASCADE'
   })
   events!: Event[];
+
+  /**
+   * `Event`'s of the `Calendar`
+   */
+  @OneToMany(() => CalendarAppointment, (e) => e.calendar, {
+    lazy: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  appointments!: CalendarAppointment[];
 
   @CreateDateColumn()
   createdAt!: Date;

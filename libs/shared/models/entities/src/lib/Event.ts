@@ -8,9 +8,9 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import Appointment from './Appointment';
 import Calendar from './Calendar';
 import CalendarDate from './CalendarDate';
+import EventAppointment from './EventAppointment';
 import EventTemplate from './EventTemplate';
 import Trainer from './Trainer';
 
@@ -49,8 +49,8 @@ export default class Event {
   /**
    * `Appointment`'s set for the `Event`
    */
-  @OneToMany(() => Appointment, (a) => a.event)
-  appointments!: Appointment[];
+  @OneToMany(() => EventAppointment, (a) => a.event)
+  appointments!: EventAppointment[];
 
   /**
    * `CalendarDate` of the event

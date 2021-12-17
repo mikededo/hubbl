@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
@@ -50,26 +51,36 @@ export default class Gym {
   eventTypes!: EventType[];
 
   /**
-   * Relation that allows us to know what users 
+   * Relation that allows us to know what users
    */
-  @OneToMany(() => Person, p => p.gym)
+  @OneToOne(() => Person, (p) => p.gym)
+  owner!: Person;
+
+  /**
+   * Relation that allows us to know what users
+   */
+  @OneToMany(() => Person, (p) => p.gym)
   persons!: Person[];
 
   /**
    * `VirtualGym`'s of the `Gym`
    */
-  @OneToMany(() => VirtualGym, vg => vg.gym, {
+  @OneToMany(() => VirtualGym, (vg) => vg.gym, {
     cascade: true,
     eager: true,
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   virtualGyms!: VirtualGym[];
 
   /**
    * Primary color of the theme chosen by the `Owner`
    */
-  @Column('enum', { enum: ThemeColor, enumName: 'theme_color', default: ThemeColor.BLUE })
+  @Column('enum', {
+    enum: ThemeColor,
+    enumName: 'theme_color',
+    default: ThemeColor.BLUE
+  })
   color!: ThemeColor;
 
   @CreateDateColumn()
