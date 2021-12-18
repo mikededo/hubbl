@@ -1,4 +1,4 @@
-import { BaseController } from '../../controllers';
+import BaseController from './Base.controller';
 
 class MockDto {}
 
@@ -61,13 +61,28 @@ describe('BaseController', () => {
     });
   });
 
-  describe('#created', () => {
-    it('should return a response with the 201 code', () => {
+  describe('#created<T>', () => {
+    it('should return a response with the 201 code and no dto', () => {
       const mockRes = { sendStatus: jest.fn() } as any;
 
       controller.created(mockRes);
 
       expect(mockRes.sendStatus).toHaveBeenCalledWith(201);
+    });
+
+    it('should return a response with the 201 code and a dto', () => {
+      const mockRes = {
+        type: jest.fn().mockReturnThis(),
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis()
+      } as any;
+      const dto = new MockDto();
+
+      controller.created<MockDto>(mockRes, dto);
+
+      expect(mockRes.type).toHaveBeenCalledWith('application/json');
+      expect(mockRes.status).toHaveBeenCalledWith(201);
+      expect(mockRes.json).toHaveBeenCalledWith(dto);
     });
   });
 
@@ -127,7 +142,9 @@ describe('BaseController', () => {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis()
       } as any;
-      const err = { toString: jest.fn().mockReturnValue('Server error') } as any;
+      const err = {
+        toString: jest.fn().mockReturnValue('Server error')
+      } as any;
 
       controller.fail(mockRes, err);
 

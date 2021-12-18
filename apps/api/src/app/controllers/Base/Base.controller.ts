@@ -4,10 +4,7 @@ import { Request, Response } from 'express';
  * Base controller to be implemented by the concrete controllers
  */
 export default abstract class BaseController {
-  protected abstract run(
-    req: Request,
-    res: Response
-  ): Promise<void | any>;
+  protected abstract run(req: Request, res: Response): Promise<void | any>;
 
   public async execute(req: Request, res: Response): Promise<void> {
     try {
@@ -42,7 +39,7 @@ export default abstract class BaseController {
   public ok<T>(res: Response, dto?: T): Response {
     if (dto) {
       res.type('application/json');
-      return res.status(200).json(dto);
+      return BaseController.jsonResponse(res, 200, dto);
     } else {
       return res.sendStatus(200);
     }
@@ -54,8 +51,13 @@ export default abstract class BaseController {
    * @param res Response object of the request handler
    * @returns The response sent
    */
-  public created(res: Response): Response {
-    return res.sendStatus(201);
+  public created<T>(res: Response, dto?: T): Response {
+    if (dto) {
+      res.type('application/json');
+      return BaseController.jsonResponse(res, 200, dto);
+    } else {
+      return res.sendStatus(200);
+    }
   }
 
   /**
