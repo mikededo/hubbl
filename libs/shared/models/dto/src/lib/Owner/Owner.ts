@@ -2,7 +2,6 @@ import { genSalt, hash } from 'bcrypt';
 import {
   IsEmail,
   IsEnum,
-  IsInstance,
   IsNumber,
   IsOptional,
   IsString,
@@ -57,15 +56,6 @@ export default class OwnerDTO<T extends Gym | number> {
   })
   lastName!: string;
 
-  @IsNumber({}, {
-    message: numberError(OwnerDTO, 'gym'),
-    groups: ['number']
-  })
-  @IsInstance(Gym, {
-    // TODO: move to error-messages
-    message: 'Gym is not instance of Gym',
-    groups: ['gym']
-  })
   @IsOptional()
   gym!: T;
 
@@ -112,7 +102,7 @@ export default class OwnerDTO<T extends Gym | number> {
 
   /**
    * Parses the original class to the DTO
-   * 
+   *
    * @param owner The fetched owner
    * @returns The dto  to be send as a response
    */
@@ -130,7 +120,7 @@ export default class OwnerDTO<T extends Gym | number> {
 
     await validateOrReject(result, {
       validationError: { target: false },
-      groups: ['all', 'gym']
+      groups: ['all']
     }).catch((errors) => {
       throw validationParser(errors);
     });
