@@ -17,6 +17,7 @@ import {
   numberError,
   stringError
 } from '../util';
+import { validationParser } from '../util/validation-parser';
 
 export class RegisterOwnerDTO {
   @IsEmail(null, { message: emailError(RegisterOwnerDTO) })
@@ -70,7 +71,11 @@ export class RegisterOwnerDTO {
     result.gymId = json.gymId;
     result.gender = json.gender;
 
-    await validateOrReject(result, { validationError: { target: false } });
+    await validateOrReject(result, {
+      validationError: { target: false }
+    }).catch((errors) => {
+      throw validationParser(errors);
+    });
 
     return result;
   }
