@@ -1,3 +1,4 @@
+import { genSalt, hash } from 'bcrypt';
 import {
   IsEmail,
   IsEnum,
@@ -8,6 +9,7 @@ import {
   validateOrReject
 } from 'class-validator';
 
+import { Owner, Person } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
 import {
@@ -15,12 +17,12 @@ import {
   enumError,
   lengthError,
   numberError,
-  stringError
+  stringError,
+  validationParser
 } from '../util';
-import { validationParser } from '../util/validation-parser';
 
-export class RegisterOwnerDTO {
-  @IsEmail(null, { message: emailError(RegisterOwnerDTO) })
+export default class RegisterOwnerDTO {
+  @IsEmail({}, { message: emailError(RegisterOwnerDTO) })
   @IsString({
     message: stringError(RegisterOwnerDTO, 'email')
   })
@@ -78,5 +80,31 @@ export class RegisterOwnerDTO {
     });
 
     return result;
+  }
+
+  /**
+   *
+   * @returns The parsed owner from the DTO
+   */
+  public async toClass(): Promise<Owner> {
+    const owner = new Owner();
+    const person = new Person();
+
+    // Set person fields
+    person.firstName = this.firstName;
+    person.lastName = this.lastName;
+    person.email = this.email;
+
+    // Encrypt password
+    const salt = await genSalt(10);
+    person.password = await hash(this.password, salt);
+
+    person.gender = this.gender;
+    person.gym = this.gymId;
+
+    // Set person into owner
+    owner.person = person;
+
+    return owner;
   }
 }
