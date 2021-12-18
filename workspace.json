@@ -8,6 +8,7 @@
     "core-e2e": "apps/core-e2e",
     "landing": "apps/landing",
     "landing-e2e": "apps/landing-e2e",
+    "shared-models-dto": "libs/shared/models/dto",
     "shared-models-entities": "libs/shared/models/entities",
     "shared-types": "libs/shared/types"
   }
