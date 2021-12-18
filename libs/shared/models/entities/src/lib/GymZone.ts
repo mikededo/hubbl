@@ -84,7 +84,7 @@ export default class GymZone {
       GymZoneIntervals.HOURS
     ]
   })
-  timeIntervals: GymZoneIntervals[];
+  timeIntervals!: GymZoneIntervals[];
 
   /**
    * `VirtualGym` to which the `GymZone` belongs

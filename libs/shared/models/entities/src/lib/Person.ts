@@ -50,7 +50,7 @@ export default class Person {
    * prop as null
    */
   @ManyToOne(() => Gym, (g) => g.persons, { cascade: true, eager: true })
-  gym!: Gym;
+  gym!: Gym | number;
 
   /**
    * Chosen theme of the app by the `Owner`
