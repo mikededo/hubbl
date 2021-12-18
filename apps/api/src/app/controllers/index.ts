@@ -1,3 +1,3 @@
-import BaseController from './Base.controller';
+import BaseController from './Base';
 
 export { BaseController };
