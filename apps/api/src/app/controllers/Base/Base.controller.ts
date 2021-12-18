@@ -54,9 +54,9 @@ export default abstract class BaseController {
   public created<T>(res: Response, dto?: T): Response {
     if (dto) {
       res.type('application/json');
-      return BaseController.jsonResponse(res, 200, dto);
+      return BaseController.jsonResponse(res, 201, dto);
     } else {
-      return res.sendStatus(200);
+      return res.sendStatus(201);
     }
   }
 
