@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
-import { RegisterOwnerDTO } from '@gymman/shared/models/dto';
+import { OwnerDTO } from '@gymman/shared/models/dto';
 
 import OwnerService from '../../services/Person/Owner.service';
 import BaseController from '../Base';
@@ -61,10 +61,10 @@ describe('OwnerController', () => {
         controller['service'] = mockService;
         // Set up spies
         const fromJSONSpy = jest
-          .spyOn(RegisterOwnerDTO, 'fromJson')
+          .spyOn(OwnerDTO, 'fromJson')
           .mockResolvedValue(mockOwnerDTO);
         const fromClassSpy = jest
-          .spyOn(RegisterOwnerDTO, 'fromClass')
+          .spyOn(OwnerDTO, 'fromClass')
           .mockResolvedValue(mockOwner);
         const jwtSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token as any);
         const createdSpy = jest
@@ -102,7 +102,7 @@ describe('OwnerController', () => {
 
       it('should thow a 400 on validate fromJSON error', async () => {
         const fromJSONSpy = jest
-          .spyOn(RegisterOwnerDTO, 'fromJson')
+          .spyOn(OwnerDTO, 'fromJson')
           .mockRejectedValueOnce('error-thrown');
         const mockService = { save: jest.fn() } as any;
         const jsonResSpy = jest
@@ -120,7 +120,7 @@ describe('OwnerController', () => {
 
       it('should send a fail on service error', async () => {
         const fromJSONSpy = jest
-          .spyOn(RegisterOwnerDTO, 'fromJson')
+          .spyOn(OwnerDTO, 'fromJson')
           .mockResolvedValue(mockOwnerDTO);
         const mockService = {
           save: jest.fn().mockRejectedValue(mockOwner)
@@ -143,7 +143,7 @@ describe('OwnerController', () => {
         process.env.JWT_TOKEN = undefined;
 
         const fromJSONSpy = jest
-          .spyOn(RegisterOwnerDTO, 'fromJson')
+          .spyOn(OwnerDTO, 'fromJson')
           .mockResolvedValue(mockOwnerDTO);
         const mockService = {
           save: jest.fn().mockRejectedValue(mockOwner)
@@ -165,7 +165,7 @@ describe('OwnerController', () => {
       it('should send a fail on created error', async () => {
         const mockRes = { setHeader: jest.fn() } as any;
         const fromJSONSpy = jest
-          .spyOn(RegisterOwnerDTO, 'fromJson')
+          .spyOn(OwnerDTO, 'fromJson')
           .mockResolvedValue(mockOwnerDTO);
         const mockService = {
           save: jest.fn().mockResolvedValue(mockOwner)

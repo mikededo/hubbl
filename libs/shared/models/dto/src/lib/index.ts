@@ -1,3 +1,3 @@
-import { RegisterOwnerDTO } from './Owner';
+import { OwnerDTO } from './Owner';
 
-export { RegisterOwnerDTO };
+export { OwnerDTO };

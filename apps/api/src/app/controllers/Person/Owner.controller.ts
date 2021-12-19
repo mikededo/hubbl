@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
-import { RegisterOwnerDTO } from '@gymman/shared/models/dto';
+import { OwnerDTO } from '@gymman/shared/models/dto';
 
 import { OwnerService } from '../../services';
 import BaseController from '../Base';
@@ -17,7 +17,7 @@ export class OwnerRegisterController extends BaseController {
 
     try {
       // Get the owner and validate it
-      const owner = await RegisterOwnerDTO.fromJson(req.body, 'register');
+      const owner = await OwnerDTO.fromJson(req.body, 'register');
       // Save the owner
       try {
         const result = await this.service.save(await owner.toClass());
@@ -31,7 +31,7 @@ export class OwnerRegisterController extends BaseController {
         res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);
         return this.created(res, {
           token,
-          owner: await RegisterOwnerDTO.fromClass(result)
+          owner: await OwnerDTO.fromClass(result)
         });
       } catch (_) {
         return this.fail(

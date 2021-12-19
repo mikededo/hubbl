@@ -75,7 +75,7 @@ export default class OwnerDTO<T extends Gym | number> {
    * Parses the json passed to the DTO and it validates
    *
    * @param json Body of the request
-   * @returns The parsed `RegisterOwnerDTO`
+   * @returns The parsed `OwnerDTO`
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
