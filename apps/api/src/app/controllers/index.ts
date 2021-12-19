@@ -1,3 +1,3 @@
-import BaseController from './Base';
+import { OwnerRegisterController } from './Person';
 
-export { BaseController };
+export { OwnerRegisterController };
