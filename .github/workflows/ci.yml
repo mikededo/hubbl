@@ -20,6 +20,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
+      - name: Create env file
+        run: |
+          touch .env
+          echo JWT_TOKEN=${{ secrets.JWT_TOKEN }} >> .env
       - run: npm ci
       - run: npx nx affected --target=build --parallel --max-parallel=3
       - run: npx nx affected --target=test --parallel --max-parallel=2
