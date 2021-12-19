@@ -4,6 +4,7 @@ import * as cors from 'cors';
 import { json } from 'express';
 import { createConnection } from 'typeorm';
 
+import initApp from './app';
 import { databaseConfig } from './config';
 import app from './main';
 
@@ -15,6 +16,8 @@ createConnection(databaseConfig)
 
     app.use(cors());
     app.use(json());
+
+    initApp(app);
 
     const server = app.listen(port, () => {
       console.log(`Listening at http://localhost:${port}/api`);
