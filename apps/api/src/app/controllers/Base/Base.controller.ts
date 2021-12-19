@@ -10,8 +10,6 @@ export default abstract class BaseController {
     try {
       await this.run(req, res);
     } catch (err) {
-      console.log(`[BaseController]: Uncaught controller error`);
-      console.log(err);
       this.fail(res, 'An unexpected error occurred');
     }
   }
@@ -130,10 +128,6 @@ export default abstract class BaseController {
    * @returns A server (or internal) error reponse as a json
    */
   public fail(res: Response, error: Error | string): Response {
-    console.log(error);
-
-    return res.status(500).json({
-      message: error.toString()
-    });
+    return res.status(500).json({ message: error.toString() });
   }
 }
