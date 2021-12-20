@@ -147,6 +147,7 @@ describe('WorkerDTO', () => {
       person.lastName = 'User';
       person.gender = Gender.OTHER;
       person.theme = AppTheme.LIGHT;
+      person.gym = new Gym();
       worker.person = person;
       workerPropsAssign(worker);
 

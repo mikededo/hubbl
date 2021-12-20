@@ -1,4 +1,5 @@
 import {
+  arrayError,
   booleanError,
   emailError,
   enumError,
@@ -9,6 +10,7 @@ import {
 import { ParsedValidation, validationParser } from './validation-parser';
 
 export {
+  arrayError,
   booleanError,
   emailError,
   enumError,

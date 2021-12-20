@@ -91,7 +91,7 @@ export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
    * Parses the json passed to the DTO and it validates
    *
    * @param json Body of the request
-   * @returns The parsed `OwnerDTO`
+   * @returns The parsed `WorkerDTO`
    */
   public static async fromJson<T extends Gym | number>(
     json: any,

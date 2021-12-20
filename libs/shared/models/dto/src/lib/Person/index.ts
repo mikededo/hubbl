@@ -1,4 +1,4 @@
-import Person, { PersonDTOVariants } from './Person';
+import PersonDTO, { PersonDTOVariants } from './Person';
 
-export default Person;
+export default PersonDTO;
 export { PersonDTOVariants };

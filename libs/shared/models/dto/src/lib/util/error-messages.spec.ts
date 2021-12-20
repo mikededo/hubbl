@@ -1,4 +1,5 @@
 import {
+  arrayError,
   booleanError,
   emailError,
   enumError,
@@ -33,6 +34,15 @@ describe('error-messages', () => {
 
       expect(res).toBeDefined();
       expect(res).toBe('[prop] Should be a boolean');
+    });
+  });
+
+  describe('arrayError', () => {
+    it('should return an error message with the given type and prop', () => {
+      const res = arrayError('prop');
+
+      expect(res).toBeDefined();
+      expect(res).toBe('[prop] Should be an array');
     });
   });
 
