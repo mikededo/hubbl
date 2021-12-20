@@ -2,6 +2,8 @@ export const stringError = (prop: string) => `[${prop}] Should be a string`;
 
 export const numberError = (prop: string) => `[${prop}] Should be a number`;
 
+export const booleanError = (prop: string) => `[${prop}] Should be a boolean`;
+
 export const enumError = (enumName: string, prop: string) =>
   `[${prop}] Should be a ${enumName} enum value`;
 

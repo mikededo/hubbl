@@ -1,4 +1,6 @@
-import { OwnerDTO, DTOVariants } from './Owner';
+import { PersonDTOVariants } from './Person';
+import OwnerDTO from './Owner';
+import WorkerDTO from './Worker';
 
-export { OwnerDTO };
-export type { DTOVariants };
+export { OwnerDTO, WorkerDTO };
+export type { PersonDTOVariants };
