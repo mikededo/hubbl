@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 
-import { DTOVariants, OwnerDTO } from '@gymman/shared/models/dto';
+import { PersonDTOVariants, OwnerDTO } from '@gymman/shared/models/dto';
 import { Gym, Owner } from '@gymman/shared/models/entities';
 
 import BaseService from '../../services/Base';
@@ -9,7 +9,7 @@ import BaseController from '../Base';
 
 type BasePersonFromJsonCallable<T> = (
   json: any,
-  variant: DTOVariants
+  variant: PersonDTOVariants
 ) => Promise<T>;
 
 type OwnerFromJsonCallable = BasePersonFromJsonCallable<OwnerDTO<Gym | number>>;
