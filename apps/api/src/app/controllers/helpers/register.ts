@@ -32,7 +32,7 @@ const register = async <T extends BaseService<Owner>>(
 ): Promise<any> => {
   try {
     // Get the person and validate it
-    const person = await fromJson(req.body, 'register');
+    const person = await fromJson(req.body, PersonDTOVariants.REGISTER);
 
     try {
       // Save the person
