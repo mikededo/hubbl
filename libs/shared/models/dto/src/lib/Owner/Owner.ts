@@ -1,75 +1,17 @@
 import { genSalt, hash } from 'bcrypt';
-import {
-  IsEmail,
-  IsEnum,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-  validateOrReject
-} from 'class-validator';
+import { IsOptional, validateOrReject } from 'class-validator';
 
 import { Gym, Owner, Person } from '@gymman/shared/models/entities';
-import { AppTheme, Gender } from '@gymman/shared/types';
+import { Gender } from '@gymman/shared/types';
 
-import {
-  emailError,
-  enumError,
-  lengthError,
-  numberError,
-  stringError,
-  validationParser
-} from '../util';
+import PersonDTO from '../Person';
+import { validationParser } from '../util';
 
 export type DTOVariants = 'register' | 'login';
 
-export default class OwnerDTO<T extends Gym | number> {
-  @IsNumber({}, { message: numberError(OwnerDTO, 'id'), groups: ['all'] })
-  id!: number;
-
-  @IsEmail({}, { message: emailError(OwnerDTO), groups: ['all', 'register'] })
-  @IsString({
-    message: stringError(OwnerDTO, 'email'),
-    groups: ['all', 'register', 'login']
-  })
-  email!: string;
-
-  @IsString({
-    message: stringError(OwnerDTO, 'password'),
-    groups: ['all', 'register', 'login']
-  })
-  @Length(8, undefined, {
-    message: lengthError(OwnerDTO, 'password', 8),
-    groups: ['all', 'register']
-  })
-  password!: string;
-
-  @IsString({
-    message: stringError(OwnerDTO, 'firstName'),
-    groups: ['all', 'register']
-  })
-  firstName!: string;
-
-  @IsString({
-    message: stringError(OwnerDTO, 'lastName'),
-    groups: ['all', 'register']
-  })
-  lastName!: string;
-
+export default class OwnerDTO<T extends Gym | number> extends PersonDTO {
   @IsOptional()
   gym!: T;
-
-  @IsEnum(Gender, {
-    message: enumError(OwnerDTO, 'Gender', 'gender'),
-    groups: ['all', 'register']
-  })
-  gender!: Gender;
-
-  @IsEnum(AppTheme, {
-    message: enumError(OwnerDTO, 'AppTheme', 'theme'),
-    groups: ['all']
-  })
-  theme!: AppTheme;
 
   /**
    * Parses the json passed to the DTO and it validates

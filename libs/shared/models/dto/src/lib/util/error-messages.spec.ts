@@ -6,61 +6,59 @@ import {
   stringError
 } from './error-messages';
 
-class MockType {}
-
 describe('error-messages', () => {
   describe('stringError', () => {
     it('should return an error message with the given type and prop', () => {
-      const res = stringError(MockType, 'prop');
+      const res = stringError('prop');
 
       expect(res).toBeDefined();
 
-      expect(res).toBe('[MockType#prop] Should be a string');
+      expect(res).toBe('[prop] Should be a string');
     });
   });
 
   describe('numberError', () => {
     it('should return an error message with the given type and prop', () => {
-      const res = numberError(MockType, 'prop');
+      const res = numberError('prop');
 
       expect(res).toBeDefined();
-      expect(res).toBe('[MockType#prop] Should be a number');
+      expect(res).toBe('[prop] Should be a number');
     });
   });
 
   describe('enumError', () => {
     it('should return an error message with the given type and prop', () => {
-      const res = enumError(MockType, 'ExampleEnum', 'prop');
+      const res = enumError('ExampleEnum', 'prop');
 
       expect(res).toBeDefined();
-      expect(res).toBe('[MockType#prop] Should be a ExampleEnum enum value');
+      expect(res).toBe('[prop] Should be a ExampleEnum enum value');
     });
   });
 
   describe('lengthError', () => {
     it('should return an error message with the given type, prop & min length', () => {
-      const res = lengthError(MockType, 'password', 8);
+      const res = lengthError('password', 8);
 
       expect(res).toBeDefined();
-      expect(res).toBe('[MockType#password] Should have a min length of 8');
+      expect(res).toBe('[password] Should have a min length of 8');
     });
 
     it('should return an error message with the given type, prop, min & max length', () => {
-      const res = lengthError(MockType, 'password', 8, 24);
+      const res = lengthError('password', 8, 24);
 
       expect(res).toBeDefined();
       expect(res).toBe(
-        '[MockType#password] Should have a min length of 8 and max length of 24'
+        '[password] Should have a min length of 8 and max length of 24'
       );
     });
   });
 
   describe('emailError', () => {
     it('should return an error message with the given type', () => {
-      const res = emailError(MockType);
+      const res = emailError();
 
       expect(res).toBeDefined();
-      expect(res).toBe('[MockType] Email is not valid');
+      expect(res).toBe('Email is not valid');
     });
   });
 });
