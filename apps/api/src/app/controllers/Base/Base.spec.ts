@@ -18,6 +18,35 @@ describe('BaseController', () => {
     controller = new MockBaseController();
   });
 
+  describe('#run', () => {
+    it('should call run', async () => {
+      const controller = new MockBaseController();
+      controller['run'] = jest.fn().mockImplementation();
+
+      await controller.execute({} as any, {} as any);
+
+      expect(controller['run']).toHaveBeenCalledTimes(1);
+      expect(controller['run']).toHaveBeenCalledWith({}, {});
+    });
+
+    it('should call fail if run fails', async () => {
+      const controller = new MockBaseController();
+      controller['run'] = jest.fn().mockRejectedValue({});
+      controller['fail'] = jest.fn().mockImplementation();
+
+      await controller.execute({} as any, {} as any);
+
+      expect(controller['run']).toHaveBeenCalledTimes(1);
+      expect(controller['run']).toHaveBeenCalledWith({}, {});
+      // Fail
+      expect(controller['fail']).toHaveBeenCalledTimes(1);
+      expect(controller['fail']).toHaveBeenCalledWith(
+        {},
+        'An unexpected error occurred'
+      );
+    });
+  });
+
   describe('#jsonResponse', () => {
     it('should return a response with the code and body given', () => {
       const mockRes = {
