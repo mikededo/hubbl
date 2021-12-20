@@ -64,27 +64,27 @@ describe('OwnerDTO', () => {
     };
 
     it('[login, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON('login', 1);
+      await successFromJSON(PersonDTOVariants.LOGIN, 1);
     });
 
     it('[login, gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON('login', new Gym());
+      await successFromJSON(PersonDTOVariants.LOGIN, new Gym());
     });
 
     it('[register, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON('register', 1);
+      await successFromJSON(PersonDTOVariants.REGISTER, 1);
     });
 
     it('[register, gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON('register', new Gym());
+      await successFromJSON(PersonDTOVariants.REGISTER, new Gym());
     });
 
     it('[register] should fail on creating an incorrect DTO', async () => {
-      await failFromJSON('register');
+      await failFromJSON(PersonDTOVariants.REGISTER);
     });
 
     it('[login] should fail on creating an incorrect DTO', async () => {
-      await failFromJSON('login');
+      await failFromJSON(PersonDTOVariants.LOGIN);
     });
   });
 

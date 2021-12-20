@@ -18,7 +18,10 @@ import {
   stringError
 } from '../util';
 
-export type PersonDTOVariants = 'register' | 'login';
+export enum PersonDTOVariants {
+  REGISTER = 'register',
+  LOGIN = 'login'
+}
 
 export default abstract class PersonDTO<T extends Gym | number> {
   @IsNumber({}, { message: numberError('id'), groups: ['all'] })

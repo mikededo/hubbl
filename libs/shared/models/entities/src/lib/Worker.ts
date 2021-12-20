@@ -33,7 +33,7 @@ export default class Worker {
    */
   @OneToOne(() => Person)
   @JoinColumn({ name: 'manager_id_fk' })
-  managerId!: Person;
+  managerId!: number;
 
   /**
    * Unique `Worker` code which can only be changed by their

@@ -1,13 +1,29 @@
 import { genSalt, hash } from 'bcrypt';
-import { IsBoolean, IsString, validateOrReject } from 'class-validator';
+import {
+  IsBoolean,
+  IsNumber,
+  IsString,
+  validateOrReject
+} from 'class-validator';
 
 import { Gym, Person, Worker } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
 import PersonDTO, { PersonDTOVariants } from '../Person';
-import { booleanError, stringError, validationParser } from '../util';
+import {
+  booleanError,
+  numberError,
+  stringError,
+  validationParser
+} from '../util';
 
 export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
+  @IsNumber(
+    {},
+    { message: numberError('managerId'), groups: [PersonDTOVariants.REGISTER] }
+  )
+  managerId!: number;
+
   @IsString({ message: stringError('workerCode'), groups: ['all'] })
   workerCode!: string;
 
@@ -54,6 +70,7 @@ export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
     to: WorkerDTO<T>,
     from: any
   ): void {
+    to.managerId = from.managerId;
     to.workerCode = from.workerCode;
     to.updateVirtualGyms = from.updateVirtualGyms;
     to.createGymZones = from.createGymZones;

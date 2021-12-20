@@ -57,6 +57,7 @@ describe('WorkerDTO', () => {
         password: 'testpwd00',
         firstName: 'Test',
         lastName: 'User',
+        managerId: 1,
         gym,
         gender: Gender.OTHER,
         updateVirtualGyms: false,
@@ -108,27 +109,27 @@ describe('WorkerDTO', () => {
     };
 
     it('[register, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(1, 'register');
+      await successFromJSON(1, PersonDTOVariants.REGISTER);
     });
 
     it('[login, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(1, 'login');
+      await successFromJSON(1, PersonDTOVariants.LOGIN);
     });
 
     it('[register, Gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(new Gym(), 'register');
+      await successFromJSON(new Gym(), PersonDTOVariants.REGISTER);
     });
 
     it('[login, Gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(new Gym(), 'login');
+      await successFromJSON(new Gym(), PersonDTOVariants.LOGIN);
     });
 
     it('[register] should fail on an incorrect DTO', async () => {
-      await failFromJSON('register');
+      await failFromJSON(PersonDTOVariants.REGISTER);
     });
 
     it('[login] should fail on an incorrect DTO', async () => {
-      await failFromJSON('login');
+      await failFromJSON(PersonDTOVariants.LOGIN);
     });
   });
 
