@@ -1,18 +1,13 @@
 import { genSalt, hash } from 'bcrypt';
-import { IsOptional, validateOrReject } from 'class-validator';
+import { validateOrReject } from 'class-validator';
 
 import { Gym, Owner, Person } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
-import PersonDTO from '../Person';
+import PersonDTO, { PersonDTOVariants } from '../Person';
 import { validationParser } from '../util';
 
-export type DTOVariants = 'register' | 'login';
-
-export default class OwnerDTO<T extends Gym | number> extends PersonDTO {
-  @IsOptional()
-  gym!: T;
-
+export default class OwnerDTO<T extends Gym | number> extends PersonDTO<T> {
   /**
    * Parses the json passed to the DTO and it validates
    *
@@ -21,7 +16,7 @@ export default class OwnerDTO<T extends Gym | number> extends PersonDTO {
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
-    variant: DTOVariants
+    variant: PersonDTOVariants
   ): Promise<OwnerDTO<T>> {
     const result = new OwnerDTO<T>();
 

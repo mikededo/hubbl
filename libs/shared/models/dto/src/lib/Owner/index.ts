@@ -1,4 +1,3 @@
-import OwnerDTO, { DTOVariants } from './Owner';
+import OwnerDTO from './Owner';
 
-export { OwnerDTO };
-export type { DTOVariants };
+export default OwnerDTO;

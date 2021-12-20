@@ -1,5 +1,13 @@
-import { IsEmail, IsEnum, IsNumber, IsString, Length } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length
+} from 'class-validator';
 
+import { Gym } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
 import {
@@ -10,7 +18,9 @@ import {
   stringError
 } from '../util';
 
-export default abstract class PersonDTO {
+export type PersonDTOVariants = 'register' | 'login';
+
+export default abstract class PersonDTO<T extends Gym | number> {
   @IsNumber({}, { message: numberError('id'), groups: ['all'] })
   id!: number;
 
@@ -42,6 +52,9 @@ export default abstract class PersonDTO {
     groups: ['all', 'register']
   })
   lastName!: string;
+
+  @IsOptional()
+  gym!: T;
 
   @IsEnum(Gender, {
     message: enumError('Gender', 'gender'),

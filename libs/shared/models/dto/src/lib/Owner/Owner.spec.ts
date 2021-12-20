@@ -4,8 +4,9 @@ import * as ClassValidator from 'class-validator';
 import { Gym, Owner, Person } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
+import { PersonDTOVariants } from '../Person';
 import * as Util from '../util';
-import OwnerDTO, { DTOVariants } from './Owner';
+import OwnerDTO from './Owner';
 
 describe('OwnerDTO', () => {
   beforeEach(() => {
@@ -13,7 +14,10 @@ describe('OwnerDTO', () => {
   });
 
   describe('#fromJSON', () => {
-    const successFromJSON = async (variant: DTOVariants, gym: Gym | number) => {
+    const successFromJSON = async (
+      variant: PersonDTOVariants,
+      gym: Gym | number
+    ) => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
         email: 'test@user.com',
@@ -43,7 +47,7 @@ describe('OwnerDTO', () => {
       });
     };
 
-    const failFromJSON = async (variant: DTOVariants) => {
+    const failFromJSON = async (variant: PersonDTOVariants) => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const vpSpy = jest.spyOn(Util, 'validationParser');
 
