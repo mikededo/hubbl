@@ -1,3 +1,4 @@
+import BaseService from './Base';
 import { OwnerService } from './Person';
 
-export { OwnerService };
+export { BaseService, OwnerService };

@@ -1,3 +1,4 @@
-import OwnerDTO from './Owner';
+import OwnerDTO, { DTOVariants } from './Owner';
 
 export { OwnerDTO };
+export type { DTOVariants };

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { sign } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
 import { OwnerDTO } from '@gymman/shared/models/dto';
 
 import { OwnerService } from '../../services';
 import BaseController from '../Base';
+import { register } from '../helpers';
 
 export class OwnerRegisterController extends BaseController {
   protected service: OwnerService = undefined;
@@ -15,32 +15,13 @@ export class OwnerRegisterController extends BaseController {
       this.service = new OwnerService(getRepository);
     }
 
-    try {
-      // Get the owner and validate it
-      const owner = await OwnerDTO.fromJson(req.body, 'register');
-      // Save the owner
-      try {
-        const result = await this.service.save(await owner.toClass());
-
-        // Create the token
-        const token = sign(
-          { id: result.person.id, email: result.person.email },
-          process.env.JWT_TOKEN
-        );
-
-        res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);
-        return this.created(res, {
-          token,
-          owner: await OwnerDTO.fromClass(result)
-        });
-      } catch (_) {
-        return this.fail(
-          res,
-          'Internal server error. If the error persists, contact our team.'
-        );
-      }
-    } catch (e) {
-      return BaseController.jsonResponse(res, 400, e);
-    }
+    return register(
+      this.service,
+      this,
+      OwnerDTO.fromJson,
+      OwnerDTO.fromClass,
+      req,
+      res
+    );
   }
 }
