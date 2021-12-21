@@ -30,6 +30,7 @@ export default class TrainerDTO<T extends Gym | number> extends PersonDTO<T> {
    * Parses the json passed to the DTO and it validates
    *
    * @param json Body of the request
+   * @param variant The variant of the DTO
    * @returns The parsed `TrainerDTO`
    */
   public static async fromJson<T extends Gym | number>(
@@ -63,7 +64,8 @@ export default class TrainerDTO<T extends Gym | number> extends PersonDTO<T> {
    * Parses the original class to the DTO
    *
    * @param trainer The fetched trainer
-   * @returns The dto  to be send as a response
+   * @param gym The gym to assign to the DTO
+   * @returns The dto to be send as a response
    */
   public static async fromClass(
     trainer: Trainer,
@@ -98,7 +100,7 @@ export default class TrainerDTO<T extends Gym | number> extends PersonDTO<T> {
 
   /**
    *
-   * @returns The parsed worker from the DTO
+   * @returns The parsed trainer from the DTO
    */
   public async toClass(): Promise<Trainer> {
     const trainer = new Trainer();
@@ -116,7 +118,7 @@ export default class TrainerDTO<T extends Gym | number> extends PersonDTO<T> {
     person.gender = this.gender;
     person.gym = this.gym;
 
-    // Set person into worker
+    // Set person into trainer
     trainer.person = person;
 
     // Set trainer props

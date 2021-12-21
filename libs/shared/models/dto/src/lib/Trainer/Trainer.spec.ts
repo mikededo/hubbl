@@ -97,7 +97,7 @@ describe('TrainerDTO', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create an TrainerDTO<Gym> from a correct Owner', async () => {
+    it('should create an TrainerDTO<Gym> from a correct Trainer', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const password = await hash('testpwd00', await genSalt(10));
 
@@ -135,7 +135,7 @@ describe('TrainerDTO', () => {
       expect(vorSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should fail on creating an TrainerDTO<Gym> from an incorrect Owner', async () => {
+    it('should fail on creating an TrainerDTO<Gym> from an incorrect Trainer', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const vpSpy = jest.spyOn(Util, 'validationParser');
 
@@ -153,7 +153,7 @@ describe('TrainerDTO', () => {
   });
 
   describe('#toClass', () => {
-    it('should return an owner', async () => {
+    it('should return a trainer', async () => {
       // Set up class
       const dto = new TrainerDTO();
       dto.email = 'test@user.com';
