@@ -31,6 +31,7 @@ jobs:
         uses: codecov/codecov-action@v2.1.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: api,client,client-e2e,core,core-e2e,landing,landing-e2e,shared-models,shared-types
   pr:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
