@@ -46,8 +46,8 @@ export default class TrainerDTO<T extends Gym | number> extends PersonDTO<T> {
     result.gym = json.gym;
     result.gender = json.gender;
     // Trainer props
-    result.managerId = 1;
-    result.workerCode = 'some-uuid';
+    result.managerId = json.managerId;
+    result.workerCode = json.workerCode;
     result.events = json.events;
 
     await validateOrReject(result, {

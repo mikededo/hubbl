@@ -33,7 +33,7 @@ export default class Trainer {
   /**
    * References to the manager of this employee
    */
-  @OneToOne(() => Person)
+  @OneToOne(() => Person, { nullable: false })
   @JoinColumn({ name: 'manager_id_fk' })
   managerId!: number;
 
