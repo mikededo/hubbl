@@ -1,0 +1,30 @@
+flags:
+  # Apps
+  api:
+    paths:
+      - apps/api/src
+  client:
+    paths: 
+      - apps/client/src    
+  client-e2e:
+    paths: 
+      - apps/client-e2e/src
+  core:
+    paths: 
+      - apps/core/src
+  core-e2e:
+    paths: 
+      - apps/core-e2e/src
+  landing:
+    paths: 
+      - apps/landing/src
+  landing-e2e:
+    paths: 
+      - apps/landing-e2e/src
+  # Libs
+  shared-models:
+    paths:
+      - libs/shared/models
+  shared-types:
+    paths:
+      - libs/shared/types
