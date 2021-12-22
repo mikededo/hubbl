@@ -1,5 +1,6 @@
 name: CI
 on:
+  workflow_dispatch:
   push:
     branches:
       - "develop"
@@ -26,7 +27,7 @@ jobs:
           echo JWT_TOKEN=${{ secrets.JWT_TOKEN }} >> .env
       - run: npm ci
       - run: npx nx affected --target=build --parallel --max-parallel=3
-      - run: npx nx affected --target=test --parallel --max-parallel=2 --codeCoverage
+      - run: npx nx run-many --target=test --all --parallel --max-parallel=2 --codeCoverage --coverageReporters lcov
       - name: Upload coverage
         uses: codecov/codecov-action@v2.1.0
         with:
