@@ -1,3 +1,13 @@
-import { OwnerRegisterController } from './Person';
+import {
+  ClientRegisterController,
+  OwnerRegisterController,
+  TrainerRegisterController,
+  WorkerRegisterController
+} from './Person';
 
-export { OwnerRegisterController };
+export {
+  ClientRegisterController,
+  OwnerRegisterController,
+  TrainerRegisterController,
+  WorkerRegisterController
+};

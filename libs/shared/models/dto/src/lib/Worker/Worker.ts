@@ -108,7 +108,7 @@ export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
     result.gender = json.gender;
 
     // Worker props
-    this.mapWorkerProps(result, json);
+    WorkerDTO.mapWorkerProps(result, json);
 
     await validateOrReject(result, {
       validationError: { target: false },
@@ -143,7 +143,7 @@ export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
     result.gender = worker.person.gender as Gender;
 
     // Worker props
-    this.mapWorkerProps(result, worker);
+    WorkerDTO.mapWorkerProps(result, worker);
 
     await validateOrReject(result, {
       validationError: { target: false },

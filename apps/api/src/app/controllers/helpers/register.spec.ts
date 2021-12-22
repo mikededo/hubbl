@@ -1,3 +1,4 @@
+import { Gym } from '@gymman/shared/models/entities';
 import * as jwt from 'jsonwebtoken';
 
 import BaseController from '../Base';
@@ -44,50 +45,76 @@ describe('run', () => {
     jsonResSpy = jest.spyOn(BaseController, 'jsonResponse');
   });
 
-  it('should save the person and call created with the token and the person', async () => {
-    const mockRes = {
-      json: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis(),
-      setHeader: jest.fn()
-    } as any;
-    const mockService = {
-      save: jest.fn().mockResolvedValue(mockPerson)
-    } as any;
+  describe('Successfull registrations', () => {
+    let mockRes: any;
+    let mockService: any;
+    let jwtSpy: any;
 
-    // Set up spies
-    const jwtSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token as any);
-
-    await register(
-      mockService,
-      mockController,
-      mockFromJson,
-      mockFromClass,
-      mockReq,
-      mockRes
-    );
-
-    // Check spies
-    expect(mockService.save).toHaveBeenCalledTimes(1);
-    expect(mockController.created).toHaveBeenCalledTimes(1);
-    expect(mockController.created).toHaveBeenCalledWith(mockRes, {
-      token,
-      owner: expect.anything()
+    beforeAll(() => {
+      mockRes = {
+        json: jest.fn().mockReturnThis(),
+        status: jest.fn().mockReturnThis(),
+        setHeader: jest.fn()
+      } as any;
+      mockService = {
+        save: jest.fn().mockResolvedValue(mockPerson)
+      } as any;
+      jwtSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token as any);
     });
-    expect(mockFromJson).toHaveBeenCalledWith({}, 'register');
-    expect(mockFromClass).toHaveBeenCalledTimes(1);
-    expect(mockFromClass).toHaveBeenCalledWith(mockPerson);
-    expect(jwtSpy).toHaveBeenCalledTimes(1);
-    expect(jwtSpy).toHaveBeenCalledWith(
-      { id: 1, email: 'test@user.com' },
-      process.env.JWT_TOKEN || 'secret-token'
-    );
-    // Ensure cookie is set
-    expect(mockRes.setHeader).toBeCalledWith(
-      'Set-Cookie',
-      `__gym-man-refresh__=${token}; HttpOnly`
-    );
-    // Check result
-    expect(mockController.created).toHaveBeenCalledTimes(1);
+
+    const commonChecks = () => {
+      // Check spies
+      expect(mockService.save).toHaveBeenCalledTimes(1);
+      expect(mockController.created).toHaveBeenCalledTimes(1);
+      expect(mockController.created).toHaveBeenCalledWith(mockRes, {
+        token,
+        owner: expect.anything()
+      });
+      expect(mockFromJson).toHaveBeenCalledWith({}, 'register');
+      expect(mockFromClass).toHaveBeenCalledTimes(1);
+      expect(jwtSpy).toHaveBeenCalledTimes(1);
+      expect(jwtSpy).toHaveBeenCalledWith(
+        { id: 1, email: 'test@user.com' },
+        process.env.JWT_TOKEN || 'secret-token'
+      );
+      // Ensure cookie is set
+      expect(mockRes.setHeader).toBeCalledWith(
+        'Set-Cookie',
+        `__gym-man-refresh__=${token}; HttpOnly`
+      );
+      // Check result
+      expect(mockController.created).toHaveBeenCalledTimes(1);
+    };
+
+    it('should save the person and call created with the token and the person', async () => {
+      await register(
+        mockService,
+        mockController,
+        mockFromJson,
+        mockFromClass,
+        mockReq,
+        mockRes
+      );
+
+      commonChecks();
+      // Specific checks
+      expect(mockFromClass).toHaveBeenCalledWith(mockPerson, expect.anything());
+    });
+
+    it('should save the person and call created with the token, the person and a Gym', async () => {
+      await register(
+        mockService,
+        mockController,
+        mockFromJson,
+        mockFromClass,
+        mockReq,
+        mockRes
+      );
+
+      commonChecks();
+      // Specific checks
+      expect(mockFromClass).toHaveBeenCalledWith(mockPerson, expect.any(Gym));
+    });
   });
 
   it('should thow a 400 on validate fromJson error', async () => {

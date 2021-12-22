@@ -2,27 +2,27 @@ import { getRepository } from 'typeorm';
 
 import * as helpers from '../helpers';
 
-import { OwnerService } from '../../services/Person';
-import { OwnerRegisterController } from './Owner.controller';
-import { OwnerDTO } from '@gymman/shared/models/dto';
+import { ClientService } from '../../services/Person';
+import { ClientRegisterController } from './Client.controller';
+import { ClientDTO } from '@gymman/shared/models/dto';
 
-jest.mock('../../services/Person/Owner.service');
+jest.mock('../../services/Person/Client.service');
 jest.mock('../helpers');
 
-describe('OwnerController', () => {
-  describe('OwnerRegister', () => {
-    let controller: OwnerRegisterController;
+describe('ClientController', () => {
+  describe('ClientRegister', () => {
+    let controller: ClientRegisterController;
 
     beforeEach(() => {
-      controller = new OwnerRegisterController();
+      controller = new ClientRegisterController();
     });
 
     describe('run', () => {
       it('should create a service if does not have any', async () => {
         await controller.execute({} as any, {} as any);
 
-        expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
+        expect(ClientService).toHaveBeenCalledTimes(1);
+        expect(ClientService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call register', async () => {
@@ -36,8 +36,8 @@ describe('OwnerController', () => {
         expect(registerSpy).toHaveBeenCalledWith(
           {},
           controller,
-          OwnerDTO.fromJson,
-          OwnerDTO.fromClass,
+          ClientDTO.fromJson,
+          ClientDTO.fromClass,
           {},
           {}
         );

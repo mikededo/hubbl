@@ -1,4 +1,15 @@
 import BaseService from './Base';
-import { OwnerService } from './Person';
+import {
+  ClientService,
+  OwnerService,
+  TrainerService,
+  WorkerService
+} from './Person';
 
-export { BaseService, OwnerService };
+export {
+  BaseService,
+  ClientService,
+  OwnerService,
+  TrainerService,
+  WorkerService
+};

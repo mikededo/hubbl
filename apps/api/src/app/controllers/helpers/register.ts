@@ -1,8 +1,20 @@
 import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
 
-import { PersonDTOVariants, OwnerDTO } from '@gymman/shared/models/dto';
-import { Gym, Owner } from '@gymman/shared/models/entities';
+import {
+  ClientDTO,
+  OwnerDTO,
+  PersonDTOVariants,
+  TrainerDTO,
+  WorkerDTO
+} from '@gymman/shared/models/dto';
+import {
+  Client,
+  Gym,
+  Owner,
+  Trainer,
+  Worker
+} from '@gymman/shared/models/entities';
 
 import BaseService from '../../services/Base';
 import BaseController from '../Base';
@@ -12,21 +24,26 @@ type BasePersonFromJsonCallable<T> = (
   variant: PersonDTOVariants
 ) => Promise<T>;
 
-type OwnerFromJsonCallable = BasePersonFromJsonCallable<OwnerDTO<Gym | number>>;
+type BasePersonToClassCallable<J, T> =
+  | ((entity: J) => Promise<T>)
+  | ((entity: J, gym: Gym) => Promise<T>);
 
-type BasePersonToClassCallable<J, T> = (entity: J) => Promise<T>;
+type RegisterableEntities = Owner | Worker | Trainer | Client;
 
-type OwnerFromClassCallable = BasePersonToClassCallable<Owner, OwnerDTO<Gym>>;
+type RegisterableDTOs =
+  | OwnerDTO<Gym | number>
+  | WorkerDTO<Gym | number>
+  | TrainerDTO<Gym | number>
+  | ClientDTO<Gym | number>;
 
-type RegisterFromJsonCallables = OwnerFromJsonCallable;
-
-type RegisetrFromClassCallables = OwnerFromClassCallable;
-
-const register = async <T extends BaseService<Owner>>(
+const register = async <
+  T extends BaseService<RegisterableEntities>,
+  J extends RegisterableDTOs
+>(
   service: T,
   controller: BaseController,
-  fromJson: RegisterFromJsonCallables,
-  fromClass: RegisetrFromClassCallables,
+  fromJson: BasePersonFromJsonCallable<J>,
+  fromClass: BasePersonToClassCallable<RegisterableEntities, J>,
   req: Request,
   res: Response
 ): Promise<any> => {
@@ -47,7 +64,7 @@ const register = async <T extends BaseService<Owner>>(
       res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);
       return controller.created(res, {
         token,
-        owner: await fromClass(result)
+        owner: await fromClass(result, new Gym())
       });
     } catch (_) {
       return controller.fail(
