@@ -54,7 +54,7 @@ const register = async <
       // Create the token
       const token = sign(
         { id: result.person.id, email: result.person.email },
-        process.env.JWT_TOKEN
+        process.env.NX_JWT_TOKEN
       );
 
       res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);

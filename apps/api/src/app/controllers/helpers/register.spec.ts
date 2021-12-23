@@ -4,6 +4,8 @@ import * as jwt from 'jsonwebtoken';
 import BaseController from '../Base';
 import register from './register';
 
+process.env.NX_JWT_TOKEN = 'test-secret-token';
+
 describe('register', () => {
   const mockReq = { body: {} } as any;
   const mockPerson = {
@@ -36,7 +38,7 @@ describe('register', () => {
 
   const token = jwt.sign(
     { id: 1, email: 'test@user.com' },
-    process.env.JWT_TOKEN || 'secret-token'
+    process.env.NX_JWT_TOKEN || 'test-secret-token'
   );
 
   beforeEach(() => {
@@ -75,7 +77,7 @@ describe('register', () => {
       expect(jwtSpy).toHaveBeenCalledTimes(1);
       expect(jwtSpy).toHaveBeenCalledWith(
         { id: 1, email: 'test@user.com' },
-        process.env.JWT_TOKEN || 'secret-token'
+        process.env.NX_JWT_TOKEN
       );
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(
@@ -165,8 +167,7 @@ describe('register', () => {
   });
 
   it('should send a fail if JWT_TOKEN not set', async () => {
-    // Clear the JWT_SECRET value
-    process.env.JWT_TOKEN = undefined;
+    delete process.env.NX_JWT_TOKEN;
 
     const mockService = {
       save: jest.fn().mockResolvedValue(mockPerson)
