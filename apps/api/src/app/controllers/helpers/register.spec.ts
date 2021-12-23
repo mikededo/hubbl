@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import BaseController from '../Base';
 import register from './register';
 
+// Manually set the environment variable
 process.env.NX_JWT_TOKEN = 'test-secret-token';
 
 describe('register', () => {
@@ -86,6 +87,11 @@ describe('register', () => {
       );
       // Check result
       expect(mockController.created).toHaveBeenCalledTimes(1);
+      // Should return the DTO with the token
+      expect(mockController.created).toHaveBeenCalledWith(mockRes, {
+        token,
+        any: mockDTO
+      });
     };
 
     it('should save the person and call created with the token and the person', async () => {
@@ -166,7 +172,7 @@ describe('register', () => {
     );
   });
 
-  it('should send a fail if JWT_TOKEN not set', async () => {
+  it('should send a fail if NX_JWT_TOKEN not set', async () => {
     delete process.env.NX_JWT_TOKEN;
 
     const mockService = {
