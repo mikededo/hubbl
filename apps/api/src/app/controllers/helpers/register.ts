@@ -63,7 +63,6 @@ const register = async <
         [returnName]: await fromClass(result, new Gym())
       });
     } catch (_) {
-      console.log(_);
       return controller.fail(
         res,
         'Internal server error. If the error persists, contact our team.'

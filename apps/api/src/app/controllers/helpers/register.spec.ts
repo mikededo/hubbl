@@ -50,7 +50,7 @@ describe('register', () => {
     let mockService: any;
     let jwtSpy: any;
 
-    beforeAll(() => {
+    beforeEach(() => {
       mockRes = {
         json: jest.fn().mockReturnThis(),
         status: jest.fn().mockReturnThis(),
