@@ -19,7 +19,8 @@ export class TrainerRegisterController extends BaseController {
       TrainerDTO.fromJson,
       TrainerDTO.fromClass,
       req,
-      res
+      res,
+      'trainer'
     );
   }
 }

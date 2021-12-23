@@ -39,7 +39,8 @@ describe('WorkerController', () => {
           WorkerDTO.fromJson,
           WorkerDTO.fromClass,
           {},
-          {}
+          {},
+          'worker'
         );
       });
     });

@@ -21,7 +21,8 @@ export class OwnerRegisterController extends BaseController {
       OwnerDTO.fromJson,
       OwnerDTO.fromClass,
       req,
-      res
+      res,
+      'owner'
     );
   }
 }

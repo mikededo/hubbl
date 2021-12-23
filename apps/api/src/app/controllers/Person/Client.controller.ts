@@ -1,6 +1,8 @@
-import { ClientDTO } from '@gymman/shared/models/dto';
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+
+import { ClientDTO } from '@gymman/shared/models/dto';
+
 import { ClientService } from '../../services';
 import BaseController from '../Base';
 import { register } from '../helpers';
@@ -19,7 +21,8 @@ export class ClientRegisterController extends BaseController {
       ClientDTO.fromJson,
       ClientDTO.fromClass,
       req,
-      res
+      res,
+      'client'
     );
   }
 }

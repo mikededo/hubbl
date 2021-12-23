@@ -18,15 +18,10 @@ import {
 
 import BaseService from '../../services/Base';
 import BaseController from '../Base';
-
-type BasePersonFromJsonCallable<T> = (
-  json: any,
-  variant: PersonDTOVariants
-) => Promise<T>;
-
-type BasePersonToClassCallable<J, T> =
-  | ((entity: J) => Promise<T>)
-  | ((entity: J, gym: Gym) => Promise<T>);
+import {
+  BasePersonFromJsonCallable,
+  BasePersonFromClassCallable
+} from './types';
 
 type RegisterableEntities = Owner | Worker | Trainer | Client;
 
@@ -43,9 +38,10 @@ const register = async <
   service: T,
   controller: BaseController,
   fromJson: BasePersonFromJsonCallable<J>,
-  fromClass: BasePersonToClassCallable<RegisterableEntities, J>,
+  fromClass: BasePersonFromClassCallable<RegisterableEntities, J>,
   req: Request,
-  res: Response
+  res: Response,
+  returnName: string
 ): Promise<any> => {
   try {
     // Get the person and validate it
@@ -64,9 +60,10 @@ const register = async <
       res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);
       return controller.created(res, {
         token,
-        owner: await fromClass(result, new Gym())
+        [returnName]: await fromClass(result, new Gym())
       });
     } catch (_) {
+      console.log(_);
       return controller.fail(
         res,
         'Internal server error. If the error persists, contact our team.'

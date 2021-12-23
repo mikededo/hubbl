@@ -39,7 +39,8 @@ describe('TrainerController', () => {
           TrainerDTO.fromJson,
           TrainerDTO.fromClass,
           {},
-          {}
+          {}, 
+          'trainer'
         );
       });
     });

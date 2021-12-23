@@ -4,7 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import BaseController from '../Base';
 import register from './register';
 
-describe('run', () => {
+describe('register', () => {
   const mockReq = { body: {} } as any;
   const mockPerson = {
     person: {
@@ -68,7 +68,7 @@ describe('run', () => {
       expect(mockController.created).toHaveBeenCalledTimes(1);
       expect(mockController.created).toHaveBeenCalledWith(mockRes, {
         token,
-        owner: expect.anything()
+        any: expect.anything()
       });
       expect(mockFromJson).toHaveBeenCalledWith({}, 'register');
       expect(mockFromClass).toHaveBeenCalledTimes(1);
@@ -93,7 +93,8 @@ describe('run', () => {
         mockFromJson,
         mockFromClass,
         mockReq,
-        mockRes
+        mockRes,
+        'any'
       );
 
       commonChecks();
@@ -108,7 +109,8 @@ describe('run', () => {
         mockFromJson,
         mockFromClass,
         mockReq,
-        mockRes
+        mockRes,
+        'any'
       );
 
       commonChecks();
@@ -130,7 +132,8 @@ describe('run', () => {
       mockFailFromJson,
       mockFromClass,
       mockReq,
-      {} as any
+      {} as any,
+      'any'
     );
 
     expect(mockFailFromJson).toHaveBeenCalledTimes(1);
@@ -149,7 +152,8 @@ describe('run', () => {
       mockFromJson,
       mockFromClass,
       mockReq,
-      {} as any
+      {} as any,
+      'any'
     );
 
     expect(mockFromJson).toHaveBeenCalledTimes(1);
@@ -174,7 +178,8 @@ describe('run', () => {
       mockFromJson,
       mockFromClass,
       mockReq,
-      {} as any
+      {} as any,
+      'any'
     );
 
     expect(mockFromJson).toHaveBeenCalledTimes(1);
@@ -204,7 +209,8 @@ describe('run', () => {
       mockFromJson,
       mockFromClass,
       mockReq,
-      mockRes
+      mockRes,
+      'any'
     );
 
     expect(mockFromJson).toHaveBeenCalledTimes(1);

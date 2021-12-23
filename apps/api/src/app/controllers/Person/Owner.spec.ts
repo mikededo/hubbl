@@ -39,7 +39,8 @@ describe('OwnerController', () => {
           OwnerDTO.fromJson,
           OwnerDTO.fromClass,
           {},
-          {}
+          {},
+          'owner'
         );
       });
     });

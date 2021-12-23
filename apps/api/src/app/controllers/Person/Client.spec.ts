@@ -39,7 +39,8 @@ describe('ClientController', () => {
           ClientDTO.fromJson,
           ClientDTO.fromClass,
           {},
-          {}
+          {},
+          'client'
         );
       });
     });

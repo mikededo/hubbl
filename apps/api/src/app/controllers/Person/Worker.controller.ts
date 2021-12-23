@@ -19,7 +19,8 @@ export class WorkerRegisterController extends BaseController {
       WorkerDTO.fromJson,
       WorkerDTO.fromClass,
       req,
-      res
+      res,
+      'worker'
     );
   }
 }
