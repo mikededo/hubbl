@@ -7,7 +7,7 @@ import { ClientService } from '../../services';
 import BaseController from '../Base';
 import { clientLogin, register } from '../helpers';
 
-export class ClientRegisterController extends BaseController {
+class IClientRegisterController extends BaseController {
   protected service: ClientService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -27,7 +27,11 @@ export class ClientRegisterController extends BaseController {
   }
 }
 
-export class ClientLoginController extends BaseController {
+const registerInstance = new IClientRegisterController();
+
+export const ClientRegisterController = registerInstance;
+
+class IClientLoginController extends BaseController {
   protected service: ClientService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -45,3 +49,7 @@ export class ClientLoginController extends BaseController {
     );
   }
 }
+
+const loginInstance = new IClientLoginController();
+
+export const ClientLoginController = loginInstance;

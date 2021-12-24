@@ -1,11 +1,13 @@
-import { WorkerDTO } from '@gymman/shared/models/dto';
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+
+import { WorkerDTO } from '@gymman/shared/models/dto';
+
 import { WorkerService } from '../../services';
 import BaseController from '../Base';
 import { register, workerLogin } from '../helpers';
 
-export class WorkerRegisterController extends BaseController {
+export class IWorkerRegisterController extends BaseController {
   protected service: WorkerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -25,7 +27,11 @@ export class WorkerRegisterController extends BaseController {
   }
 }
 
-export class WorkerLoginController extends BaseController {
+const registerInstance = new IWorkerRegisterController();
+
+export const WorkerRegisterController = registerInstance;
+
+export class IWorkerLoginController extends BaseController {
   protected service: WorkerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -43,3 +49,7 @@ export class WorkerLoginController extends BaseController {
     );
   }
 }
+
+const loginInstance = new IWorkerLoginController();
+
+export const WorkerLoginController = loginInstance;

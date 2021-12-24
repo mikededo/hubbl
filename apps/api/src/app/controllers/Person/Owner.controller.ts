@@ -7,7 +7,7 @@ import { OwnerService } from '../../services';
 import BaseController from '../Base';
 import { ownerLogin, register } from '../helpers';
 
-export class OwnerRegisterController extends BaseController {
+class IOwnerRegisterController extends BaseController {
   protected service: OwnerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -27,7 +27,11 @@ export class OwnerRegisterController extends BaseController {
   }
 }
 
-export class OwnerLoginController extends BaseController {
+const registerInstance = new IOwnerRegisterController();
+
+export const OwnerRegisterController = registerInstance;
+
+class IOwnerLoginController extends BaseController {
   protected service: OwnerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -45,3 +49,7 @@ export class OwnerLoginController extends BaseController {
     );
   }
 }
+
+const loginInstance = new IOwnerLoginController();
+
+export const OwnerLoginController = loginInstance;

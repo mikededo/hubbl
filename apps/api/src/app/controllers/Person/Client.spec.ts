@@ -1,10 +1,13 @@
 import { getRepository } from 'typeorm';
 
-import * as helpers from '../helpers';
+import { ClientDTO } from '@gymman/shared/models/dto';
 
 import { ClientService } from '../../services/Person';
-import { ClientLoginController, ClientRegisterController } from './Client.controller';
-import { ClientDTO } from '@gymman/shared/models/dto';
+import * as helpers from '../helpers';
+import {
+  ClientLoginController,
+  ClientRegisterController
+} from './Client.controller';
 
 jest.mock('../../services/Person/Client.service');
 jest.mock('../helpers');
@@ -12,18 +15,12 @@ jest.mock('../helpers');
 describe('ClientController', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  })
+  });
 
   describe('ClientRegisterController', () => {
-    let controller: ClientRegisterController;
-
-    beforeEach(() => {
-      controller = new ClientRegisterController();
-    });
-
     describe('run', () => {
       it('should create a service if does not have any', async () => {
-        await controller.execute({} as any, {} as any);
+        await ClientRegisterController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
         expect(ClientService).toHaveBeenCalledWith(getRepository);
@@ -34,12 +31,12 @@ describe('ClientController', () => {
           .spyOn(helpers, 'register')
           .mockImplementation();
 
-        controller['service'] = {} as any;
-        await controller.execute({} as any, {} as any);
+        ClientRegisterController['service'] = {} as any;
+        await ClientRegisterController.execute({} as any, {} as any);
 
         expect(registerSpy).toHaveBeenCalledWith(
           {},
-          controller,
+          ClientRegisterController,
           ClientDTO.fromJson,
           ClientDTO.fromClass,
           {},
@@ -51,15 +48,9 @@ describe('ClientController', () => {
   });
 
   describe('ClientLoginController', () => {
-    let controller: ClientLoginController;
-
-    beforeEach(() => {
-      controller = new ClientLoginController();
-    });
-
     describe('run', () => {
       it('should create a service if does not have any', async () => {
-        await controller.execute({} as any, {} as any);
+        await ClientLoginController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
         expect(ClientService).toHaveBeenCalledWith(getRepository);
@@ -70,12 +61,12 @@ describe('ClientController', () => {
           .spyOn(helpers, 'clientLogin')
           .mockImplementation();
 
-        controller['service'] = {} as any;
-        await controller.execute({} as any, {} as any);
+        ClientLoginController['service'] = {} as any;
+        await ClientLoginController.execute({} as any, {} as any);
 
         expect(clientLoginSpy).toHaveBeenCalledWith(
           {},
-          controller,
+          ClientLoginController,
           ClientDTO.fromJson,
           ClientDTO.fromClass,
           {},

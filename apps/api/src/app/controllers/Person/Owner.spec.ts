@@ -18,15 +18,9 @@ describe('OwnerControllerController', () => {
   });
 
   describe('OwnerRegister', () => {
-    let controller: OwnerRegisterController;
-
-    beforeEach(() => {
-      controller = new OwnerRegisterController();
-    });
-
     describe('run', () => {
       it('should create a service if does not have any', async () => {
-        await controller.execute({} as any, {} as any);
+        await OwnerRegisterController.execute({} as any, {} as any);
 
         expect(OwnerService).toHaveBeenCalledTimes(1);
         expect(OwnerService).toHaveBeenCalledWith(getRepository);
@@ -37,12 +31,12 @@ describe('OwnerControllerController', () => {
           .spyOn(helpers, 'register')
           .mockImplementation();
 
-        controller['service'] = {} as any;
-        await controller.execute({} as any, {} as any);
+        OwnerRegisterController['service'] = {} as any;
+        await OwnerRegisterController.execute({} as any, {} as any);
 
         expect(registerSpy).toHaveBeenCalledWith(
           {},
-          controller,
+          OwnerRegisterController,
           OwnerDTO.fromJson,
           OwnerDTO.fromClass,
           {},
@@ -54,15 +48,9 @@ describe('OwnerControllerController', () => {
   });
 
   describe('OwnerLoginController', () => {
-    let controller: OwnerLoginController;
-
-    beforeEach(() => {
-      controller = new OwnerLoginController();
-    });
-
     describe('run', () => {
       it('should create a service if does not have any', async () => {
-        await controller.execute({} as any, {} as any);
+        await OwnerLoginController.execute({} as any, {} as any);
 
         expect(OwnerService).toHaveBeenCalledTimes(1);
         expect(OwnerService).toHaveBeenCalledWith(getRepository);
@@ -73,12 +61,12 @@ describe('OwnerControllerController', () => {
           .spyOn(helpers, 'ownerLogin')
           .mockImplementation();
 
-        controller['service'] = {} as any;
-        await controller.execute({} as any, {} as any);
+        OwnerLoginController['service'] = {} as any;
+        await OwnerLoginController.execute({} as any, {} as any);
 
         expect(ownerLoginSpy).toHaveBeenCalledWith(
           {},
-          controller,
+          OwnerLoginController,
           OwnerDTO.fromJson,
           OwnerDTO.fromClass,
           {},

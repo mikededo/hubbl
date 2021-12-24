@@ -1,11 +1,13 @@
-import { TrainerDTO } from '@gymman/shared/models/dto';
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+
+import { TrainerDTO } from '@gymman/shared/models/dto';
+
 import { TrainerService } from '../../services';
 import BaseController from '../Base';
 import { register } from '../helpers';
 
-export class TrainerRegisterController extends BaseController {
+class ITrainerRegisterController extends BaseController {
   protected service: TrainerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -24,3 +26,7 @@ export class TrainerRegisterController extends BaseController {
     );
   }
 }
+
+const registerInstance = new ITrainerRegisterController();
+
+export const TrainerRegisterController = registerInstance;
