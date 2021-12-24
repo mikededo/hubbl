@@ -39,4 +39,24 @@ describe('BaseService', () => {
       } as any);
     });
   });
+
+  describe('#createQueryBuilder', () => {
+    it('should return the created query builder', () => {
+      const mockRepository = {
+        createQueryBuilder: jest.fn().mockReturnValue({})
+      };
+      const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
+
+      const service = new BaseService(Mock, mockRepoAccessor);
+      service.createQueryBuilder({
+        alias: 'mock-alias',
+        queryRunner: {} as any
+      });
+
+      expect(mockRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'mock-alias',
+        {}
+      );
+    });
+  });
 });

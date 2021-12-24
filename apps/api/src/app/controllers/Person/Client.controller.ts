@@ -5,7 +5,7 @@ import { ClientDTO } from '@gymman/shared/models/dto';
 
 import { ClientService } from '../../services';
 import BaseController from '../Base';
-import { register } from '../helpers';
+import { clientLogin, register } from '../helpers';
 
 export class ClientRegisterController extends BaseController {
   protected service: ClientService = undefined;
@@ -23,6 +23,25 @@ export class ClientRegisterController extends BaseController {
       req,
       res,
       'client'
+    );
+  }
+}
+
+export class ClientLoginController extends BaseController {
+  protected service: ClientService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<any> {
+    if (!this.service) {
+      this.service = new ClientService(getRepository);
+    }
+
+    return clientLogin(
+      this.service,
+      this,
+      ClientDTO.fromJson,
+      ClientDTO.fromClass,
+      req,
+      res
     );
   }
 }

@@ -35,7 +35,7 @@ describe('register', () => {
     unauthorized: jest.fn()
   } as any;
 
-  let jsonResSpy = null;
+  let jsonResSpy: any;
 
   const token = jwt.sign(
     { id: 1, email: 'test@user.com' },
@@ -127,7 +127,7 @@ describe('register', () => {
     });
   });
 
-  it('should thow a 400 on validate fromJson error', async () => {
+  it('should throw a 400 code on fromJson validation error', async () => {
     const mockService = { save: jest.fn() } as any;
     const mockFailFromJson = jest.fn().mockImplementation(() => {
       throw 'error-thrown';
@@ -172,7 +172,7 @@ describe('register', () => {
     );
   });
 
-  it('should send a fail if NX_JWT_TOKEN not set', async () => {
+  it('should send a fail if NX_JWT_TOKEN is not set', async () => {
     delete process.env.NX_JWT_TOKEN;
 
     const mockService = {

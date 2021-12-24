@@ -19,7 +19,7 @@ import Person from './Person';
  */
 @Entity()
 export default class Client {
-  @OneToOne(() => Person, {
+  @OneToOne(() => Person, (p) => p.id, {
     primary: true,
     cascade: true,
     eager: true,
