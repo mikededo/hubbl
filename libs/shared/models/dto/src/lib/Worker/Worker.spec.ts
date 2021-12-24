@@ -15,6 +15,7 @@ describe('WorkerDTO', () => {
 
   const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
     worker.workerCode = 'some-uuid';
+    worker.managerId = 1;
     worker.updateVirtualGyms = false;
     worker.createGymZones = false;
     worker.updateGymZones = false;
@@ -31,6 +32,7 @@ describe('WorkerDTO', () => {
   };
 
   const workerPropCompare = (want: any, got: any) => {
+    expect(got.managerId).toBe(want.managerId);
     expect(got.updateVirtualGyms).toBe(want.updateVirtualGyms);
     expect(got.createGymZones).toBe(want.createGymZones);
     expect(got.updateGymZones).toBe(want.updateGymZones);

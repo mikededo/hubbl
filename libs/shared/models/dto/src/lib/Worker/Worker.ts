@@ -179,6 +179,7 @@ export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
     worker.person = person;
 
     // Set worker props
+    worker.managerId = this.managerId;
     worker.updateVirtualGyms = this.updateVirtualGyms;
     worker.createGymZones = this.createGymZones;
     worker.updateGymZones = this.updateGymZones;
