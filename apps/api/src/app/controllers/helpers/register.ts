@@ -4,7 +4,7 @@ import { sign } from 'jsonwebtoken';
 import {
   ClientDTO,
   OwnerDTO,
-  PersonDTOVariants,
+  PersonDTOGroups,
   TrainerDTO,
   WorkerDTO
 } from '@gymman/shared/models/dto';
@@ -45,7 +45,7 @@ const register = async <
 ): Promise<any> => {
   try {
     // Get the person and validate it
-    const person = await fromJson(req.body, PersonDTOVariants.REGISTER);
+    const person = await fromJson(req.body, PersonDTOGroups.REGISTER);
 
     try {
       // Save the person

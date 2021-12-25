@@ -9,7 +9,7 @@ import {
 import { Gym, Person, Worker } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
-import PersonDTO, { PersonDTOVariants } from '../Person';
+import PersonDTO, { PersonDTOGroups } from '../Person';
 import {
   booleanError,
   numberError,
@@ -20,7 +20,7 @@ import {
 export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
   @IsNumber(
     {},
-    { message: numberError('managerId'), groups: [PersonDTOVariants.REGISTER] }
+    { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
   )
   managerId!: number;
 
@@ -96,7 +96,7 @@ export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
-    variant: PersonDTOVariants
+    variant: PersonDTOGroups
   ): Promise<WorkerDTO<T>> {
     const result = new WorkerDTO<T>();
 

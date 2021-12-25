@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
-import { PersonDTOVariants } from '@gymman/shared/models/dto';
+import { PersonDTOGroups } from '@gymman/shared/models/dto';
 
 import BaseController from '../Base';
 import * as logins from './login';
@@ -73,7 +73,7 @@ describe('login', () => {
 
     const queryAssertions = () => {
       expect(mockFromJson).toHaveBeenCalledTimes(1);
-      expect(mockFromJson).toHaveBeenCalledWith({}, PersonDTOVariants.LOGIN);
+      expect(mockFromJson).toHaveBeenCalledWith({}, PersonDTOGroups.LOGIN);
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
         alias: entityAlias

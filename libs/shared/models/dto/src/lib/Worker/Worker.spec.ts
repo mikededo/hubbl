@@ -4,7 +4,7 @@ import * as ClassValidator from 'class-validator';
 import { Gym, Person, Worker } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
-import { PersonDTOVariants } from '../Person';
+import { PersonDTOGroups } from '../Person';
 import * as Util from '../util';
 import WorkerDTO from './Worker';
 
@@ -51,7 +51,7 @@ describe('WorkerDTO', () => {
   describe('#fromJson', () => {
     const successFromJSON = async (
       gym: Gym | number,
-      variant: PersonDTOVariants
+      variant: PersonDTOGroups
     ) => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
@@ -94,7 +94,7 @@ describe('WorkerDTO', () => {
       });
     };
 
-    const failFromJSON = async (variant: PersonDTOVariants) => {
+    const failFromJSON = async (variant: PersonDTOGroups) => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const vpSpy = jest.spyOn(Util, 'validationParser');
 
@@ -111,27 +111,27 @@ describe('WorkerDTO', () => {
     };
 
     it('[register, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(1, PersonDTOVariants.REGISTER);
+      await successFromJSON(1, PersonDTOGroups.REGISTER);
     });
 
     it('[login, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(1, PersonDTOVariants.LOGIN);
+      await successFromJSON(1, PersonDTOGroups.LOGIN);
     });
 
     it('[register, Gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(new Gym(), PersonDTOVariants.REGISTER);
+      await successFromJSON(new Gym(), PersonDTOGroups.REGISTER);
     });
 
     it('[login, Gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(new Gym(), PersonDTOVariants.LOGIN);
+      await successFromJSON(new Gym(), PersonDTOGroups.LOGIN);
     });
 
     it('[register] should fail on an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOVariants.REGISTER);
+      await failFromJSON(PersonDTOGroups.REGISTER);
     });
 
     it('[login] should fail on an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOVariants.LOGIN);
+      await failFromJSON(PersonDTOGroups.LOGIN);
     });
   });
 

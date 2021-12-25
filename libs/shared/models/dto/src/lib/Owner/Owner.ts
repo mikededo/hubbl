@@ -4,7 +4,7 @@ import { validateOrReject } from 'class-validator';
 import { Gym, Owner, Person } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
-import PersonDTO, { PersonDTOVariants } from '../Person';
+import PersonDTO, { PersonDTOGroups } from '../Person';
 import { validationParser } from '../util';
 
 export default class OwnerDTO<T extends Gym | number> extends PersonDTO<T> {
@@ -16,7 +16,7 @@ export default class OwnerDTO<T extends Gym | number> extends PersonDTO<T> {
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
-    variant: PersonDTOVariants
+    variant: PersonDTOGroups
   ): Promise<OwnerDTO<T>> {
     const result = new OwnerDTO<T>();
 

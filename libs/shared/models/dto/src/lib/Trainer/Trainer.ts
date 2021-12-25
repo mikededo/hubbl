@@ -4,7 +4,7 @@ import { IsArray, IsNumber, IsString, validateOrReject } from 'class-validator';
 import { Event, Gym, Person, Trainer } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
-import PersonDTO, { PersonDTOVariants } from '../Person';
+import PersonDTO, { PersonDTOGroups } from '../Person';
 import {
   arrayError,
   numberError,
@@ -15,7 +15,7 @@ import {
 export default class TrainerDTO<T extends Gym | number> extends PersonDTO<T> {
   @IsNumber(
     {},
-    { message: numberError('managerId'), groups: [PersonDTOVariants.REGISTER] }
+    { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
   )
   managerId!: number;
 
@@ -35,7 +35,7 @@ export default class TrainerDTO<T extends Gym | number> extends PersonDTO<T> {
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
-    variant: PersonDTOVariants
+    variant: PersonDTOGroups
   ): Promise<TrainerDTO<T>> {
     const result = new TrainerDTO<T>();
 

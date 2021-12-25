@@ -3,14 +3,14 @@ import { IsBoolean, validateOrReject } from 'class-validator';
 import { Client, Gym, Person } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
-import PersonDTO, { PersonDTOVariants } from '../Person';
+import PersonDTO, { PersonDTOGroups } from '../Person';
 import { booleanError, validationParser } from '../util';
 import { genSalt, hash } from 'bcrypt';
 
 export default class ClientDTO<T extends Gym | number> extends PersonDTO<T> {
   @IsBoolean({
     message: booleanError('covidPassport'),
-    groups: [PersonDTOVariants.REGISTER]
+    groups: [PersonDTOGroups.REGISTER]
   })
   covidPassport!: boolean;
 
@@ -23,7 +23,7 @@ export default class ClientDTO<T extends Gym | number> extends PersonDTO<T> {
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
-    variant: PersonDTOVariants
+    variant: PersonDTOGroups
   ): Promise<ClientDTO<T>> {
     const result = new ClientDTO<T>();
 

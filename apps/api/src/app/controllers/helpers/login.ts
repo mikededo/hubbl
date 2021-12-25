@@ -5,7 +5,7 @@ import { sign } from 'jsonwebtoken';
 import {
   ClientDTO,
   OwnerDTO,
-  PersonDTOVariants,
+  PersonDTOGroups,
   WorkerDTO
 } from '@gymman/shared/models/dto';
 import {
@@ -43,7 +43,7 @@ export const login = async (
 ): Promise<any> => {
   try {
     // Get the entity
-    const entityDTO = await fromJson(req.body, PersonDTOVariants.LOGIN);
+    const entityDTO = await fromJson(req.body, PersonDTOGroups.LOGIN);
 
     try {
       // Find the entity

@@ -18,7 +18,7 @@ import {
   stringError
 } from '../util';
 
-export enum PersonDTOVariants {
+export enum PersonDTOGroups {
   REGISTER = 'register',
   LOGIN = 'login'
 }
@@ -27,32 +27,35 @@ export default abstract class PersonDTO<T extends Gym | number> {
   @IsNumber({}, { message: numberError('id'), groups: ['all'] })
   id!: number;
 
-  @IsEmail({}, { message: emailError(), groups: ['all', 'register'] })
+  @IsEmail(
+    {},
+    { message: emailError(), groups: ['all', PersonDTOGroups.REGISTER] }
+  )
   @IsString({
     message: stringError('email'),
-    groups: ['all', 'register', 'login']
+    groups: ['all', PersonDTOGroups.REGISTER, 'login']
   })
   email!: string;
 
   @IsString({
     message: stringError('password'),
-    groups: ['all', 'register', 'login']
+    groups: ['all', PersonDTOGroups.REGISTER, 'login']
   })
   @Length(8, undefined, {
     message: lengthError('password', 8),
-    groups: ['all', 'register']
+    groups: ['all', PersonDTOGroups.REGISTER]
   })
   password!: string;
 
   @IsString({
     message: stringError('firstName'),
-    groups: ['all', 'register']
+    groups: ['all', PersonDTOGroups.REGISTER]
   })
   firstName!: string;
 
   @IsString({
     message: stringError('lastName'),
-    groups: ['all', 'register']
+    groups: ['all', PersonDTOGroups.REGISTER]
   })
   lastName!: string;
 
@@ -61,7 +64,7 @@ export default abstract class PersonDTO<T extends Gym | number> {
 
   @IsEnum(Gender, {
     message: enumError('Gender', 'gender'),
-    groups: ['all', 'register']
+    groups: ['all', PersonDTOGroups.REGISTER]
   })
   gender!: Gender;
 

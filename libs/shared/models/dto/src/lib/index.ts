@@ -1,7 +1,14 @@
 import ClientDTO from './Client';
 import OwnerDTO from './Owner';
-import PersonDTO, { PersonDTOVariants } from './Person';
+import PersonDTO, { PersonDTOGroups } from './Person';
 import TrainerDTO from './Trainer';
 import WorkerDTO from './Worker';
 
-export { ClientDTO, PersonDTO, OwnerDTO, PersonDTOVariants, TrainerDTO, WorkerDTO };
+export {
+  ClientDTO,
+  OwnerDTO,
+  PersonDTO,
+  PersonDTOGroups,
+  TrainerDTO,
+  WorkerDTO
+};
