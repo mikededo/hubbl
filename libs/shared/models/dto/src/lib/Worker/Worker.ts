@@ -14,7 +14,7 @@ import {
   booleanError,
   numberError,
   stringError,
-  validationParser
+  validationParser,DTOGroups
 } from '../util';
 
 export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
@@ -24,7 +24,7 @@ export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
   )
   managerId!: number;
 
-  @IsString({ message: stringError('workerCode'), groups: ['all'] })
+  @IsString({ message: stringError('workerCode'), groups: [DTOGroups.ALL] })
   workerCode!: string;
 
   @IsBoolean({ message: booleanError('updateVirtualGyms') })

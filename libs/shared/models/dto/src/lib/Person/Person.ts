@@ -11,6 +11,7 @@ import { Gym } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
 import {
+  DTOGroups,
   emailError,
   enumError,
   lengthError,
@@ -24,38 +25,38 @@ export enum PersonDTOGroups {
 }
 
 export default abstract class PersonDTO<T extends Gym | number> {
-  @IsNumber({}, { message: numberError('id'), groups: ['all'] })
+  @IsNumber({}, { message: numberError('id'), groups: [DTOGroups.ALL] })
   id!: number;
 
   @IsEmail(
     {},
-    { message: emailError(), groups: ['all', PersonDTOGroups.REGISTER] }
+    { message: emailError(), groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER] }
   )
   @IsString({
     message: stringError('email'),
-    groups: ['all', PersonDTOGroups.REGISTER, 'login']
+    groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER, PersonDTOGroups.LOGIN]
   })
   email!: string;
 
   @IsString({
     message: stringError('password'),
-    groups: ['all', PersonDTOGroups.REGISTER, 'login']
+    groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER, PersonDTOGroups.LOGIN]
   })
   @Length(8, undefined, {
     message: lengthError('password', 8),
-    groups: ['all', PersonDTOGroups.REGISTER]
+    groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER]
   })
   password!: string;
 
   @IsString({
     message: stringError('firstName'),
-    groups: ['all', PersonDTOGroups.REGISTER]
+    groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER]
   })
   firstName!: string;
 
   @IsString({
     message: stringError('lastName'),
-    groups: ['all', PersonDTOGroups.REGISTER]
+    groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER]
   })
   lastName!: string;
 
@@ -64,13 +65,13 @@ export default abstract class PersonDTO<T extends Gym | number> {
 
   @IsEnum(Gender, {
     message: enumError('Gender', 'gender'),
-    groups: ['all', PersonDTOGroups.REGISTER]
+    groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER]
   })
   gender!: Gender;
 
   @IsEnum(AppTheme, {
     message: enumError('AppTheme', 'theme'),
-    groups: ['all']
+    groups: [DTOGroups.ALL]
   })
   theme!: AppTheme;
 }

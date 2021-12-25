@@ -7,11 +7,13 @@ import {
   numberError,
   stringError
 } from './error-messages';
+import { DTOGroups } from './types';
 import { ParsedValidation, validationParser } from './validation-parser';
 
 export {
   arrayError,
   booleanError,
+  DTOGroups,
   emailError,
   enumError,
   lengthError,
