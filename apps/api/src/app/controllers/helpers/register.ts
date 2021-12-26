@@ -19,8 +19,8 @@ import {
 import BaseService from '../../services/Base';
 import BaseController from '../Base';
 import {
-  BasePersonFromJsonCallable,
-  BasePersonFromClassCallable
+  BasePersonFromClassCallable,
+  BasePersonFromJsonCallable
 } from './types';
 
 type RegisterableEntities = Owner | Worker | Trainer | Client;
@@ -54,7 +54,8 @@ const register = async <
       // Create the token
       const token = sign(
         { id: result.person.id, email: result.person.email },
-        process.env.NX_JWT_TOKEN
+        process.env.NX_JWT_TOKEN,
+        { expiresIn: '10m' }
       );
 
       res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);

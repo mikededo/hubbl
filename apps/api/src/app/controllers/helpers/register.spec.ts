@@ -78,7 +78,8 @@ describe('register', () => {
       expect(jwtSpy).toHaveBeenCalledTimes(1);
       expect(jwtSpy).toHaveBeenCalledWith(
         { id: 1, email: 'test@user.com' },
-        process.env.NX_JWT_TOKEN
+        process.env.NX_JWT_TOKEN,
+        { expiresIn: '10m' }
       );
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(
