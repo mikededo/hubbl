@@ -6,8 +6,12 @@ import { AppTheme, Gender } from '@gymman/shared/types';
 
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import { booleanError, DTOGroups, validationParser } from '../util';
+import DTO from '../Base';
 
-export default class ClientDTO<T extends Gym | number> extends PersonDTO<T> {
+export default class ClientDTO<T extends Gym | number>
+  extends PersonDTO<T>
+  implements DTO<Client>
+{
   @IsBoolean({
     message: booleanError('covidPassport'),
     groups: [PersonDTOGroups.REGISTER]

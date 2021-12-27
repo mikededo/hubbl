@@ -7,8 +7,12 @@ import { Gender } from '@gymman/shared/types';
 import { DTOGroups } from '../util';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import { validationParser } from '../util';
+import DTO from '../Base';
 
-export default class OwnerDTO<T extends Gym | number> extends PersonDTO<T> {
+export default class OwnerDTO<T extends Gym | number>
+  extends PersonDTO<T>
+  implements DTO<Owner>
+{
   /**
    * Parses the json passed to the DTO and it validates
    *

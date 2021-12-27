@@ -9,16 +9,20 @@ import {
 import { Gym, Person, Worker } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
+import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import {
   booleanError,
+  DTOGroups,
   numberError,
   stringError,
-  validationParser,
-  DTOGroups
+  validationParser
 } from '../util';
 
-export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
+export default class WorkerDTO<T extends Gym | number>
+  extends PersonDTO<T>
+  implements DTO<Worker>
+{
   @IsNumber(
     {},
     { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }

@@ -11,8 +11,12 @@ import {
   stringError,
   validationParser
 } from '../util';
+import DTO from '../Base';
 
-export default class TrainerDTO<T extends Gym | number> extends PersonDTO<T> {
+export default class TrainerDTO<T extends Gym | number>
+  extends PersonDTO<T>
+  implements DTO<Trainer>
+{
   @IsNumber(
     {},
     { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
