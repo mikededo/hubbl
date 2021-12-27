@@ -20,10 +20,12 @@ describe('OwnerDTO', () => {
     ) => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
+        id: 1,
         email: 'test@user.com',
         password: 'testpwd00',
         firstName: 'Test',
         lastName: 'User',
+        theme: AppTheme.LIGHT,
         gym,
         gender: Gender.OTHER
       };
@@ -33,12 +35,14 @@ describe('OwnerDTO', () => {
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(OwnerDTO);
       // Check fields
-      expect(result.email).toBe('test@user.com');
-      expect(result.password).toBe('testpwd00');
-      expect(result.firstName).toBe('Test');
-      expect(result.lastName).toBe('User');
+      expect(result.id).toBe(json.id);
+      expect(result.email).toBe(json.email);
+      expect(result.password).toBe(json.password);
+      expect(result.firstName).toBe(json.firstName);
+      expect(result.lastName).toBe(json.lastName);
+      expect(result.theme).toBe(json.theme);
       expect(result.gym).toBe(gym);
-      expect(result.gender).toBe(Gender.OTHER);
+      expect(result.gender).toBe(json.theme);
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vorSpy).toHaveBeenCalledWith(expect.anything(), {
@@ -141,20 +145,24 @@ describe('OwnerDTO', () => {
     it('should return an owner', async () => {
       // Set up class
       const dto = new OwnerDTO();
+      dto.id = 1;
       dto.email = 'test@user.com';
       dto.password = 'testpwd00';
       dto.firstName = 'Test';
       dto.lastName = 'User';
       dto.gym = 1;
       dto.gender = Gender.OTHER;
+      dto.theme = AppTheme.LIGHT;
 
       const result = await dto.toClass();
 
-      expect(result.person.email).toBe('test@user.com');
-      expect(result.person.firstName).toBe('Test');
-      expect(result.person.lastName).toBe('User');
-      expect(result.person.gym).toBe(1);
-      expect(result.person.gender).toBe(Gender.OTHER);
+      expect(result.person.id).toBe(dto.id);
+      expect(result.person.email).toBe(dto.email);
+      expect(result.person.firstName).toBe(dto.firstName);
+      expect(result.person.lastName).toBe(dto.lastName);
+      expect(result.person.theme).toBe(dto.theme);
+      expect(result.person.gym).toBe(dto.gym);
+      expect(result.person.gender).toBe(dto.gender);
       // Password should be hashed
       expect(await compare('testpwd00', result.person.password)).toBeTruthy();
     });

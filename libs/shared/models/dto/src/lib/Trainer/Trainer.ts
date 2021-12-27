@@ -4,6 +4,7 @@ import { IsArray, IsNumber, IsString, validateOrReject } from 'class-validator';
 import { Event, Gym, Person, Trainer } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
+import { DTOGroups } from '../util';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import {
   arrayError,
@@ -39,14 +40,16 @@ export default class TrainerDTO<T extends Gym | number>
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
-    variant: PersonDTOGroups
+    variant: DTOGroups | PersonDTOGroups
   ): Promise<TrainerDTO<T>> {
     const result = new TrainerDTO<T>();
 
+    result.id = json.id;
     result.email = json.email;
     result.password = json.password;
     result.firstName = json.firstName;
     result.lastName = json.lastName;
+    result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
     // Trainer props
@@ -111,6 +114,7 @@ export default class TrainerDTO<T extends Gym | number>
     const person = new Person();
 
     // Set person fields
+    person.id = this.id;
     person.firstName = this.firstName;
     person.lastName = this.lastName;
     person.email = this.email;

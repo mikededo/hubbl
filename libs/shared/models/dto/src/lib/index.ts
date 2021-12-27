@@ -1,3 +1,4 @@
+import DTO from './Base';
 import ClientDTO from './Client';
 import OwnerDTO from './Owner';
 import PersonDTO, { PersonDTOGroups } from './Person';
@@ -7,6 +8,7 @@ import WorkerDTO from './Worker';
 
 export {
   ClientDTO,
+  DTO,
   DTOGroups,
   OwnerDTO,
   PersonDTO,

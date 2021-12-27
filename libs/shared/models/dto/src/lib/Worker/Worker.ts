@@ -53,6 +53,15 @@ export default class WorkerDTO<T extends Gym | number>
   @IsBoolean({ message: booleanError('deleteTrainers') })
   deleteTrainers!: boolean;
 
+  @IsBoolean({ message: booleanError('createClients') })
+  createClients!: boolean;
+
+  @IsBoolean({ message: booleanError('updateClients') })
+  updateClients!: boolean;
+
+  @IsBoolean({ message: booleanError('deleteClients') })
+  deleteClients!: boolean;
+
   @IsBoolean({ message: booleanError('createEvents') })
   createEvents!: boolean;
 
@@ -84,6 +93,9 @@ export default class WorkerDTO<T extends Gym | number>
     to.createTrainers = from.createTrainers;
     to.updateTrainers = from.updateTrainers;
     to.deleteTrainers = from.deleteTrainers;
+    to.createClients = from.createClients;
+    to.updateClients = from.updateClients;
+    to.deleteClients = from.deleteClients;
     to.createEvents = from.createEvents;
     to.updateEvents = from.updateEvents;
     to.deleteEvents = from.deleteEvents;
@@ -105,10 +117,12 @@ export default class WorkerDTO<T extends Gym | number>
   ): Promise<WorkerDTO<T>> {
     const result = new WorkerDTO<T>();
 
+    result.id = json.id;
     result.email = json.email;
     result.password = json.password;
     result.firstName = json.firstName;
     result.lastName = json.lastName;
+    result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
 
@@ -169,6 +183,7 @@ export default class WorkerDTO<T extends Gym | number>
     const person = new Person();
 
     // Set person fields
+    person.id = this.id;
     person.firstName = this.firstName;
     person.lastName = this.lastName;
     person.email = this.email;
@@ -178,6 +193,7 @@ export default class WorkerDTO<T extends Gym | number>
     person.password = await hash(this.password, salt);
 
     person.gender = this.gender;
+    person.theme = this.theme;
     person.gym = this.gym;
 
     // Set person into worker
@@ -186,6 +202,7 @@ export default class WorkerDTO<T extends Gym | number>
     // Set worker props
     worker.managerId = this.managerId;
     worker.updateVirtualGyms = this.updateVirtualGyms;
+    worker.updateClients = this.updateClients;
     worker.createGymZones = this.createGymZones;
     worker.updateGymZones = this.updateGymZones;
     worker.deleteGymZones = this.deleteGymZones;

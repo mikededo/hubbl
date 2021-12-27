@@ -20,10 +20,12 @@ describe('TrainerDTO', () => {
     ) => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
+        id: 1,
         email: 'test@user.com',
         password: 'testpwd00',
         firstName: 'Test',
         lastName: 'User',
+        theme: AppTheme.LIGHT,
         gym,
         gender: Gender.OTHER,
         managerId: 1,
@@ -36,10 +38,12 @@ describe('TrainerDTO', () => {
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(TrainerDTO);
       // Check fields
+      expect(result.id).toBe(json.id);
       expect(result.email).toBe(json.email);
       expect(result.password).toBe(json.password);
       expect(result.firstName).toBe(json.firstName);
       expect(result.lastName).toBe(json.lastName);
+      expect(result.theme).toBe(json.theme);
       expect(result.gender).toBe(json.gender);
       expect(result.gym).toBe(gym);
       // Trainer fields
@@ -156,23 +160,27 @@ describe('TrainerDTO', () => {
     it('should return a trainer', async () => {
       // Set up class
       const dto = new TrainerDTO();
+      dto.id = 1;
       dto.email = 'test@user.com';
       dto.password = 'testpwd00';
       dto.firstName = 'Test';
       dto.lastName = 'User';
       dto.gym = 1;
       dto.gender = Gender.OTHER;
+      dto.theme = AppTheme.LIGHT;
       dto.managerId = 1;
       dto.workerCode = 'some-uuid';
       dto.events = [];
 
       const result = await dto.toClass();
 
+      expect(result.person.id).toBe(dto.id);
       expect(result.person.email).toBe(dto.email);
       expect(result.person.firstName).toBe(dto.firstName);
       expect(result.person.lastName).toBe(dto.lastName);
       expect(result.person.gym).toBe(dto.gym);
       expect(result.person.gender).toBe(dto.gender);
+      expect(result.person.theme).toBe(dto.theme);
       expect(result.managerId).toBe(dto.managerId);
       expect(result.workerCode).toBe(dto.workerCode);
       expect(result.events).toBe(dto.events);

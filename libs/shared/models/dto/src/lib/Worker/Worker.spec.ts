@@ -23,6 +23,9 @@ describe('WorkerDTO', () => {
     worker.createTrainers = false;
     worker.updateTrainers = false;
     worker.deleteTrainers = false;
+    worker.createClients = false;
+    worker.updateClients = false;
+    worker.deleteClients = false;
     worker.createEvents = false;
     worker.updateEvents = false;
     worker.deleteEvents = false;
@@ -40,6 +43,9 @@ describe('WorkerDTO', () => {
     expect(got.createTrainers).toBe(want.createTrainers);
     expect(got.updateTrainers).toBe(want.updateTrainers);
     expect(got.deleteTrainers).toBe(want.deleteTrainers);
+    expect(got.createClients).toBe(want.createClients);
+    expect(got.updateClients).toBe(want.updateClients);
+    expect(got.deleteClients).toBe(want.deleteClients);
     expect(got.createEvents).toBe(want.createEvents);
     expect(got.updateEvents).toBe(want.updateEvents);
     expect(got.deleteEvents).toBe(want.deleteEvents);
@@ -69,6 +75,9 @@ describe('WorkerDTO', () => {
         createTrainers: false,
         updateTrainers: false,
         deleteTrainers: false,
+        createClients: false,
+        updateClients: false,
+        deleteClients: false,
         createEvents: false,
         updateEvents: false,
         deleteEvents: false,
@@ -190,21 +199,25 @@ describe('WorkerDTO', () => {
     it('should return an worker', async () => {
       // Set up class
       const dto = new WorkerDTO();
+      dto.id = 1;
       dto.email = 'test@user.com';
       dto.password = 'testpwd00';
       dto.firstName = 'Test';
       dto.lastName = 'User';
       dto.gym = 1;
       dto.gender = Gender.OTHER;
+      dto.theme = AppTheme.LIGHT;
 
       workerPropsAssign(dto);
 
       const result = await dto.toClass();
 
+      expect(result.person.id).toBe(dto.id);
       expect(result.person.email).toBe(dto.email);
       expect(result.person.firstName).toBe(dto.firstName);
       expect(result.person.lastName).toBe(dto.lastName);
       expect(result.person.gender).toBe(dto.gender);
+      expect(result.person.theme).toBe(dto.theme);
       workerPropCompare(dto, result);
       // Password should be hashed
       expect(await compare('testpwd00', result.person.password)).toBeTruthy();

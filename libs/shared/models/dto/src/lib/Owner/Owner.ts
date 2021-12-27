@@ -25,10 +25,12 @@ export default class OwnerDTO<T extends Gym | number>
   ): Promise<OwnerDTO<T>> {
     const result = new OwnerDTO<T>();
 
+    result.id = json.id;
     result.email = json.email;
     result.password = json.password;
     result.firstName = json.firstName;
     result.lastName = json.lastName;
+    result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
 
@@ -79,6 +81,7 @@ export default class OwnerDTO<T extends Gym | number>
     const person = new Person();
 
     // Set person fields
+    person.id = this.id;
     person.firstName = this.firstName;
     person.lastName = this.lastName;
     person.email = this.email;
@@ -87,6 +90,7 @@ export default class OwnerDTO<T extends Gym | number>
     const salt = await genSalt(10);
     person.password = await hash(this.password, salt);
 
+    person.theme = this.theme;
     person.gender = this.gender;
     person.gym = this.gym;
 
