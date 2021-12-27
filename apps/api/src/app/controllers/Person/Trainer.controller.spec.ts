@@ -2,11 +2,7 @@ import { getRepository } from 'typeorm';
 
 import { TrainerDTO } from '@gymman/shared/models/dto';
 
-import {
-  OwnerService,
-  TrainerService,
-  WorkerService
-} from '../../services';
+import { OwnerService, TrainerService, WorkerService } from '../../services';
 import * as helpers from '../helpers';
 import {
   TrainerRegisterController,
@@ -38,15 +34,15 @@ describe('TrainerController', () => {
         TrainerRegisterController['service'] = {} as any;
         await TrainerRegisterController.execute({} as any, {} as any);
 
-        expect(registerSpy).toHaveBeenCalledWith(
-          {},
-          TrainerRegisterController,
-          TrainerDTO.fromJson,
-          TrainerDTO.fromClass,
-          {},
-          {},
-          'trainer'
-        );
+        expect(registerSpy).toHaveBeenCalledWith({
+          service: {},
+          controller: TrainerRegisterController,
+          fromJson: TrainerDTO.fromJson,
+          fromClass: TrainerDTO.fromClass,
+          req: {},
+          res: {},
+          returnName: 'trainer'
+        });
       });
     });
   });

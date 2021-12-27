@@ -15,15 +15,15 @@ class IClientRegisterController extends BaseController {
       this.service = new ClientService(getRepository);
     }
 
-    return register(
-      this.service,
-      this,
-      ClientDTO.fromJson,
-      ClientDTO.fromClass,
+    return register({
+      service: this.service,
+      controller: this,
+      fromJson: ClientDTO.fromJson,
+      fromClass: ClientDTO.fromClass,
       req,
       res,
-      'client'
-    );
+      returnName: 'client'
+    });
   }
 }
 

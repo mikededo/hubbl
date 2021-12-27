@@ -16,15 +16,15 @@ class IOwnerRegisterController extends BaseController {
       this.service = new OwnerService(getRepository);
     }
 
-    return register(
-      this.service,
-      this,
-      OwnerDTO.fromJson,
-      OwnerDTO.fromClass,
+    return register({
+      service: this.service,
+      controller: this,
+      fromJson: OwnerDTO.fromJson,
+      fromClass: OwnerDTO.fromClass,
       req,
       res,
-      'owner'
-    );
+      returnName: 'owner'
+    });
   }
 }
 

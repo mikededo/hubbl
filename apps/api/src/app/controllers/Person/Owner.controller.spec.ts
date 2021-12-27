@@ -35,15 +35,15 @@ describe('OwnerControllerController', () => {
         OwnerRegisterController['service'] = {} as any;
         await OwnerRegisterController.execute({} as any, {} as any);
 
-        expect(registerSpy).toHaveBeenCalledWith(
-          {},
-          OwnerRegisterController,
-          OwnerDTO.fromJson,
-          OwnerDTO.fromClass,
-          {},
-          {},
-          'owner'
-        );
+        expect(registerSpy).toHaveBeenCalledWith({
+          service: {},
+          controller: OwnerRegisterController,
+          fromJson: OwnerDTO.fromJson,
+          fromClass: OwnerDTO.fromClass,
+          req: {},
+          res: {},
+          returnName: 'owner'
+        });
       });
     });
   });

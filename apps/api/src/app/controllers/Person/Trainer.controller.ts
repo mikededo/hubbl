@@ -15,15 +15,15 @@ class ITrainerRegisterController extends BaseController {
       this.service = new TrainerService(getRepository);
     }
 
-    return register(
-      this.service,
-      this,
-      TrainerDTO.fromJson,
-      TrainerDTO.fromClass,
+    return register({
+      service: this.service,
+      controller: this,
+      fromJson: TrainerDTO.fromJson,
+      fromClass: TrainerDTO.fromClass,
       req,
       res,
-      'trainer'
-    );
+      returnName: 'trainer'
+    });
   }
 }
 

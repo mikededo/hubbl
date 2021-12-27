@@ -1,5 +1,6 @@
-import { Gym } from '@gymman/shared/models/entities';
 import * as jwt from 'jsonwebtoken';
+
+import { Gym } from '@gymman/shared/models/entities';
 
 import BaseController from '../Base';
 import register from './register';
@@ -96,15 +97,15 @@ describe('register', () => {
     };
 
     it('should save the person and call created with the token and the person', async () => {
-      await register(
-        mockService,
-        mockController,
-        mockFromJson,
-        mockFromClass,
-        mockReq,
-        mockRes,
-        'any'
-      );
+      await register({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: mockRes,
+        returnName: 'any'
+      });
 
       commonChecks();
       // Specific checks
@@ -112,15 +113,15 @@ describe('register', () => {
     });
 
     it('should save the person and call created with the token, the person and a Gym', async () => {
-      await register(
-        mockService,
-        mockController,
-        mockFromJson,
-        mockFromClass,
-        mockReq,
-        mockRes,
-        'any'
-      );
+      await register({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: mockRes,
+        returnName: 'any'
+      });
 
       commonChecks();
       // Specific checks
@@ -135,15 +136,15 @@ describe('register', () => {
     });
     jsonResSpy.mockImplementation();
 
-    await register(
-      mockService,
-      mockController,
-      mockFailFromJson,
-      mockFromClass,
-      mockReq,
-      {} as any,
-      'any'
-    );
+    await register({
+      service: mockService,
+      controller: mockController,
+      fromJson: mockFailFromJson,
+      fromClass: mockFromClass,
+      req: mockReq,
+      res: {} as any,
+      returnName: 'any'
+    });
 
     expect(mockFailFromJson).toHaveBeenCalledTimes(1);
     expect(jsonResSpy).toHaveBeenCalledTimes(1);
@@ -155,15 +156,15 @@ describe('register', () => {
       save: jest.fn().mockRejectedValue(mockPerson)
     } as any;
 
-    await register(
-      mockService,
-      mockController,
-      mockFromJson,
-      mockFromClass,
-      mockReq,
-      {} as any,
-      'any'
-    );
+    await register({
+      service: mockService,
+      controller: mockController,
+      fromJson: mockFromJson,
+      fromClass: mockFromClass,
+      req: mockReq,
+      res: {} as any,
+      returnName: 'any'
+    });
 
     expect(mockFromJson).toHaveBeenCalledTimes(1);
     expect(mockController.fail).toHaveBeenCalledTimes(1);
@@ -180,15 +181,15 @@ describe('register', () => {
       save: jest.fn().mockResolvedValue(mockPerson)
     } as any;
 
-    await register(
-      mockService,
-      mockController,
-      mockFromJson,
-      mockFromClass,
-      mockReq,
-      {} as any,
-      'any'
-    );
+    await register({
+      service: mockService,
+      controller: mockController,
+      fromJson: mockFromJson,
+      fromClass: mockFromClass,
+      req: mockReq,
+      res: {} as any,
+      returnName: 'any'
+    });
 
     expect(mockFromJson).toHaveBeenCalledTimes(1);
     expect(mockService.save).toHaveBeenCalledTimes(1);
@@ -211,15 +212,15 @@ describe('register', () => {
       throw new Error();
     });
 
-    await register(
-      mockService,
-      mockController,
-      mockFromJson,
-      mockFromClass,
-      mockReq,
-      mockRes,
-      'any'
-    );
+    await register({
+      service: mockService,
+      controller: mockController,
+      fromJson: mockFromJson,
+      fromClass: mockFromClass,
+      req: mockReq,
+      res: mockRes,
+      returnName: 'any'
+    });
 
     expect(mockFromJson).toHaveBeenCalledTimes(1);
     expect(mockService.save).toHaveBeenCalledTimes(1);

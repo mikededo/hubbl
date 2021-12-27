@@ -15,15 +15,15 @@ class IWorkerRegisterController extends BaseController {
       this.service = new WorkerService(getRepository);
     }
 
-    return register(
-      this.service,
-      this,
-      WorkerDTO.fromJson,
-      WorkerDTO.fromClass,
+    return register({
+      service: this.service,
+      controller: this,
+      fromJson: WorkerDTO.fromJson,
+      fromClass: WorkerDTO.fromClass,
       req,
       res,
-      'worker'
-    );
+      returnName: 'worker'
+    });
   }
 }
 

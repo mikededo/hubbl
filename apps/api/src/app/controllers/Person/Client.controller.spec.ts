@@ -35,15 +35,15 @@ describe('ClientController', () => {
         ClientRegisterController['service'] = {} as any;
         await ClientRegisterController.execute({} as any, {} as any);
 
-        expect(registerSpy).toHaveBeenCalledWith(
-          {},
-          ClientRegisterController,
-          ClientDTO.fromJson,
-          ClientDTO.fromClass,
-          {},
-          {},
-          'client'
-        );
+        expect(registerSpy).toHaveBeenCalledWith({
+          service: {},
+          controller: ClientRegisterController,
+          fromJson: ClientDTO.fromJson,
+          fromClass: ClientDTO.fromClass,
+          req: {},
+          res: {},
+          returnName: 'client'
+        });
       });
     });
   });

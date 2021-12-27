@@ -31,18 +31,31 @@ type RegisterableDTOs =
   | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>;
 
+type RegisterProps<
+  T extends BaseService<RegisterableEntities>,
+  J extends RegisterableDTOs
+> = {
+  service: T;
+  controller: BaseController;
+  fromJson: BasePersonFromJsonCallable<J>;
+  fromClass: BasePersonFromClassCallable<RegisterableEntities, J>;
+  req: Request;
+  res: Response;
+  returnName: string;
+};
+
 const register = async <
   T extends BaseService<RegisterableEntities>,
   J extends RegisterableDTOs
->(
-  service: T,
-  controller: BaseController,
-  fromJson: BasePersonFromJsonCallable<J>,
-  fromClass: BasePersonFromClassCallable<RegisterableEntities, J>,
-  req: Request,
-  res: Response,
-  returnName: string
-): Promise<any> => {
+>({
+  service,
+  controller,
+  fromJson,
+  fromClass,
+  req,
+  res,
+  returnName
+}: RegisterProps<T, J>): Promise<any> => {
   try {
     // Get the person and validate it
     const person = await fromJson(req.body, PersonDTOGroups.REGISTER);
