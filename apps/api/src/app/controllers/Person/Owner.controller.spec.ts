@@ -19,7 +19,7 @@ describe('OwnerControllerController', () => {
   });
 
   describe('OwnerRegister', () => {
-    describe('run', () => {
+    describe('execute', () => {
       it('should create a service if does not have any', async () => {
         await OwnerRegisterController.execute({} as any, {} as any);
 
@@ -49,7 +49,7 @@ describe('OwnerControllerController', () => {
   });
 
   describe('OwnerLoginController', () => {
-    describe('run', () => {
+    describe('execute', () => {
       it('should create a service if does not have any', async () => {
         await OwnerLoginController.execute({} as any, {} as any);
 
@@ -65,14 +65,14 @@ describe('OwnerControllerController', () => {
         OwnerLoginController['service'] = {} as any;
         await OwnerLoginController.execute({} as any, {} as any);
 
-        expect(ownerLoginSpy).toHaveBeenCalledWith(
-          {},
-          OwnerLoginController,
-          OwnerDTO.fromJson,
-          OwnerDTO.fromClass,
-          {},
-          {}
-        );
+        expect(ownerLoginSpy).toHaveBeenCalledWith({
+          service: {},
+          controller: OwnerLoginController,
+          fromJson: OwnerDTO.fromJson,
+          fromClass: OwnerDTO.fromClass,
+          req: {},
+          res: {}
+        });
       });
     });
   });

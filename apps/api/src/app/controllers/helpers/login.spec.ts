@@ -110,15 +110,15 @@ describe('login', () => {
 
       mockService.getOne.mockReturnValue(mockEntity);
 
-      await logins.login(
-        mockService,
-        mockController,
-        mockFromJson,
-        mockFromClass,
-        mockReq,
-        mockRes,
-        entityAlias as any
-      );
+      await logins.login({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: mockRes,
+        alias: entityAlias as any
+      });
 
       queryAssertions();
       // Compare the passwords
@@ -151,15 +151,15 @@ describe('login', () => {
     it('should fail if entity not found', async () => {
       mockService.getOne.mockResolvedValue(undefined);
 
-      await logins.login(
-        mockService,
-        mockController,
-        mockFromJson,
-        mockFromClass,
-        mockReq,
-        mockRes,
-        entityAlias as any
-      );
+      await logins.login({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: mockRes,
+        alias: entityAlias as any
+      });
 
       queryAssertions();
       // Should call fail with email not found, as search should be done by email
@@ -176,15 +176,15 @@ describe('login', () => {
         .spyOn(bcrypt, 'compare')
         .mockImplementation(() => Promise.resolve(false));
 
-      await logins.login(
-        mockService,
-        mockController,
-        mockFromJson,
-        mockFromClass,
-        mockReq,
-        mockRes,
-        entityAlias as any
-      );
+      await logins.login({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: mockRes,
+        alias: entityAlias as any
+      });
 
       queryAssertions();
       expect(compareSpy).toHaveBeenCalledTimes(1);
@@ -207,15 +207,15 @@ describe('login', () => {
 
       jsonResSpy.mockImplementation();
 
-      await logins.login(
-        mockService,
-        mockController,
-        mockFailFromJson,
-        mockFromClass,
-        mockReq,
-        {} as any,
-        entityAlias as any
-      );
+      await logins.login({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFailFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: {} as any,
+        alias: entityAlias as any
+      });
 
       expect(mockFailFromJson).toHaveBeenCalledTimes(1);
       expect(jsonResSpy).toHaveBeenCalledTimes(1);
@@ -225,15 +225,15 @@ describe('login', () => {
     it('should send a fail on service error', async () => {
       mockService.getOne.mockRejectedValue();
 
-      await logins.login(
-        mockService,
-        mockController,
-        mockFromClass,
-        mockFromJson,
-        mockReq,
-        {} as any,
-        entityAlias as any
-      );
+      await logins.login({
+        service: mockService,
+        controller: mockController,
+        fromClass: mockFromClass,
+        fromJson: mockFromJson,
+        req: mockReq,
+        res: {} as any,
+        alias: entityAlias as any
+      });
 
       expect(mockService.getOne).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledTimes(1);
@@ -251,15 +251,15 @@ describe('login', () => {
         .mockImplementation(() => Promise.resolve(true));
       mockService.getOne.mockReturnValue(mockEntity);
 
-      await logins.login(
-        mockService,
-        mockController,
-        mockFromJson,
-        mockFromClass,
-        mockReq,
-        {} as any,
-        entityAlias as any
-      );
+      await logins.login({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: {} as any,
+        alias: entityAlias as any
+      });
 
       queryAssertions();
       expect(compareSpy).toHaveBeenCalledTimes(1);
@@ -280,15 +280,15 @@ describe('login', () => {
         throw new Error();
       });
 
-      await logins.login(
-        mockService,
-        mockController,
-        mockFromJson,
-        mockFromClass,
-        mockReq,
-        mockRes,
-        entityAlias as any
-      );
+      await logins.login({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: mockRes,
+        alias: entityAlias as any
+      });
 
       queryAssertions();
       expect(compareSpy).toHaveBeenCalledTimes(1);
@@ -311,17 +311,25 @@ describe('login', () => {
     it('should call login with owner', async () => {
       const loginSpy = jest.spyOn(logins, 'login').mockImplementation();
 
-      await logins.ownerLogin(
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any
-      );
+      await logins.ownerLogin({
+        service: {} as any,
+        controller: {} as any,
+        fromJson: {} as any,
+        fromClass: {} as any,
+        req: {} as any,
+        res: {} as any
+      });
 
       expect(loginSpy).toHaveBeenCalledTimes(1);
-      expect(loginSpy).toHaveBeenCalledWith({}, {}, {}, {}, {}, {}, 'owner');
+      expect(loginSpy).toHaveBeenCalledWith({
+        service: {},
+        controller: {},
+        fromJson: {},
+        fromClass: {},
+        req: {},
+        res: {},
+        alias: 'owner'
+      });
     });
   });
 
@@ -329,17 +337,25 @@ describe('login', () => {
     it('should call login with worker', async () => {
       const loginSpy = jest.spyOn(logins, 'login');
 
-      await logins.workerLogin(
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any
-      );
+      await logins.workerLogin({
+        service: {} as any,
+        controller: {} as any,
+        fromJson: {} as any,
+        fromClass: {} as any,
+        req: {} as any,
+        res: {} as any
+      });
 
       expect(loginSpy).toHaveBeenCalledTimes(1);
-      expect(loginSpy).toHaveBeenCalledWith({}, {}, {}, {}, {}, {}, 'worker');
+      expect(loginSpy).toHaveBeenCalledWith({
+        service: {},
+        controller: {},
+        fromJson: {},
+        fromClass: {},
+        req: {},
+        res: {},
+        alias: 'worker'
+      });
     });
   });
 
@@ -347,17 +363,25 @@ describe('login', () => {
     it('should call login with client', async () => {
       const loginSpy = jest.spyOn(logins, 'login').mockImplementation();
 
-      await logins.clientLogin(
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any,
-        {} as any
-      );
+      await logins.clientLogin({
+        service: {} as any,
+        controller: {} as any,
+        fromJson: {} as any,
+        fromClass: {} as any,
+        req: {} as any,
+        res: {} as any
+      });
 
       expect(loginSpy).toHaveBeenCalledTimes(1);
-      expect(loginSpy).toHaveBeenCalledWith({}, {}, {}, {}, {}, {}, 'client');
+      expect(loginSpy).toHaveBeenCalledWith({
+        service: {},
+        controller: {},
+        fromJson: {},
+        fromClass: {},
+        req: {},
+        res: {},
+        alias: 'client'
+      });
     });
   });
 });

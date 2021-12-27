@@ -40,14 +40,14 @@ class IOwnerLoginController extends BaseController {
       this.service = new OwnerService(getRepository);
     }
 
-    return ownerLogin(
-      this.service,
-      this,
-      OwnerDTO.fromJson,
-      OwnerDTO.fromClass,
+    return ownerLogin({
+      service: this.service,
+      controller: this,
+      fromJson: OwnerDTO.fromJson,
+      fromClass: OwnerDTO.fromClass,
       req,
       res
-    );
+    });
   }
 }
 

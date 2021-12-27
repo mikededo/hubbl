@@ -39,14 +39,14 @@ class IClientLoginController extends BaseController {
       this.service = new ClientService(getRepository);
     }
 
-    return clientLogin(
-      this.service,
-      this,
-      ClientDTO.fromJson,
-      ClientDTO.fromClass,
+    return clientLogin({
+      service: this.service,
+      controller: this,
+      fromJson: ClientDTO.fromJson,
+      fromClass: ClientDTO.fromClass,
       req,
       res
-    );
+    });
   }
 }
 

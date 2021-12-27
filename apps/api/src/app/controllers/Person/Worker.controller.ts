@@ -39,14 +39,14 @@ class IWorkerLoginController extends BaseController {
       this.service = new WorkerService(getRepository);
     }
 
-    return workerLogin(
-      this.service,
-      this,
-      WorkerDTO.fromJson,
-      WorkerDTO.fromClass,
+    return workerLogin({
+      service: this.service,
+      controller: this,
+      fromJson: WorkerDTO.fromJson,
+      fromClass: WorkerDTO.fromClass,
       req,
       res
-    );
+    });
   }
 }
 

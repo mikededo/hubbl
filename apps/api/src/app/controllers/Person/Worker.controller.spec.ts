@@ -65,14 +65,14 @@ describe('WorkerController', () => {
         WorkerLoginController['service'] = {} as any;
         await WorkerLoginController.execute({} as any, {} as any);
 
-        expect(workerLoginSpy).toHaveBeenCalledWith(
-          {},
-          WorkerLoginController,
-          WorkerDTO.fromJson,
-          WorkerDTO.fromClass,
-          {},
-          {}
-        );
+        expect(workerLoginSpy).toHaveBeenCalledWith({
+          service: {},
+          controller: WorkerLoginController,
+          fromJson: WorkerDTO.fromJson,
+          fromClass: WorkerDTO.fromClass,
+          req: {},
+          res: {}
+        });
       });
     });
   });

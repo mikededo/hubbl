@@ -32,15 +32,25 @@ type LoggableDTOs =
   | WorkerDTO<Gym | number>
   | ClientDTO<Gym | number>;
 
-export const login = async (
-  service: BaseService<LoggableEntities>,
-  controller: BaseController,
-  fromJson: BasePersonFromJsonCallable<LoggableDTOs>,
-  fromClass: BasePersonFromClassCallable<LoggableEntities, LoggableDTOs>,
-  req: Request,
-  res: Response,
-  alias: LoggableAliases
-): Promise<any> => {
+type BaseLoginProps = {
+  service: BaseService<LoggableEntities>;
+  controller: BaseController;
+  fromJson: BasePersonFromJsonCallable<LoggableDTOs>;
+  fromClass: BasePersonFromClassCallable<LoggableEntities, LoggableDTOs>;
+  req: Request;
+  res: Response;
+  alias: LoggableAliases;
+};
+
+export const login = async ({
+  service,
+  controller,
+  fromJson,
+  fromClass,
+  req,
+  res,
+  alias
+}: BaseLoginProps): Promise<any> => {
   try {
     // Get the entity
     const entityDTO = await fromJson(req.body, PersonDTOGroups.LOGIN);
@@ -86,6 +96,15 @@ export const login = async (
   }
 };
 
+type OwnerLoginProps = {
+  service: BaseService<Owner>;
+  controller: BaseController;
+  fromJson: BasePersonFromJsonCallable<OwnerDTO<Gym | number>>;
+  fromClass: BasePersonFromClassCallable<Owner, OwnerDTO<Gym | number>>;
+  req: Request;
+  res: Response;
+};
+
 /**
  * If the given email and password are corrects, will return the
  * logged owner and the token
@@ -97,15 +116,24 @@ export const login = async (
  * @param req Request of the http request
  * @param res Response of the http request
  */
-export const ownerLogin = async (
-  service: BaseService<Owner>,
-  controller: BaseController,
-  fromJson: BasePersonFromJsonCallable<OwnerDTO<Gym | number>>,
-  fromClass: BasePersonFromClassCallable<Owner, OwnerDTO<Gym | number>>,
-  req: Request,
-  res: Response
-): Promise<any> =>
-  login(service, controller, fromJson, fromClass, req, res, 'owner');
+export const ownerLogin = async ({
+  service,
+  controller,
+  fromJson,
+  fromClass,
+  req,
+  res
+}: OwnerLoginProps): Promise<any> =>
+  login({ service, controller, fromJson, fromClass, req, res, alias: 'owner' });
+
+type WorkerLoginProps = {
+  service: BaseService<Worker>;
+  controller: BaseController;
+  fromJson: BasePersonFromJsonCallable<WorkerDTO<Gym | number>>;
+  fromClass: BasePersonFromClassCallable<Worker, WorkerDTO<Gym | number>>;
+  req: Request;
+  res: Response;
+};
 
 /**
  * If the given email and password are corrects, will return the
@@ -118,15 +146,32 @@ export const ownerLogin = async (
  * @param req Request of the http request
  * @param res Response of the http request
  */
-export const workerLogin = async (
-  service: BaseService<Worker>,
-  controller: BaseController,
-  fromJson: BasePersonFromJsonCallable<WorkerDTO<Gym | number>>,
-  fromClass: BasePersonFromClassCallable<Worker, WorkerDTO<Gym | number>>,
-  req: Request,
-  res: Response
-): Promise<any> =>
-  login(service, controller, fromJson, fromClass, req, res, 'worker');
+export const workerLogin = async ({
+  service,
+  controller,
+  fromJson,
+  fromClass,
+  req,
+  res
+}: WorkerLoginProps): Promise<any> =>
+  login({
+    service,
+    controller,
+    fromJson,
+    fromClass,
+    req,
+    res,
+    alias: 'worker'
+  });
+
+type ClientLoginProps = {
+  service: BaseService<Client>;
+  controller: BaseController;
+  fromJson: BasePersonFromJsonCallable<ClientDTO<Gym | number>>;
+  fromClass: BasePersonFromClassCallable<Client, ClientDTO<Gym | number>>;
+  req: Request;
+  res: Response;
+};
 
 /**
  * If the given email and password are corrects, will return the
@@ -139,12 +184,20 @@ export const workerLogin = async (
  * @param req Request of the http request
  * @param res Response of the http request
  */
-export const clientLogin = async (
-  service: BaseService<Client>,
-  controller: BaseController,
-  fromJson: BasePersonFromJsonCallable<ClientDTO<Gym | number>>,
-  fromClass: BasePersonFromClassCallable<Client, ClientDTO<Gym | number>>,
-  req: Request,
-  res: Response
-): Promise<any> =>
-  login(service, controller, fromJson, fromClass, req, res, 'client');
+export const clientLogin = async ({
+  service,
+  controller,
+  fromJson,
+  fromClass,
+  req,
+  res
+}: ClientLoginProps): Promise<any> =>
+  login({
+    service,
+    controller,
+    fromJson,
+    fromClass,
+    req,
+    res,
+    alias: 'client'
+  });
