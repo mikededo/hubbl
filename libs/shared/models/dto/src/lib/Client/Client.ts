@@ -1,11 +1,11 @@
+import { genSalt, hash } from 'bcrypt';
 import { IsBoolean, validateOrReject } from 'class-validator';
 
 import { Client, Gym, Person } from '@gymman/shared/models/entities';
-import { Gender } from '@gymman/shared/types';
+import { AppTheme, Gender } from '@gymman/shared/types';
 
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import { booleanError, validationParser } from '../util';
-import { genSalt, hash } from 'bcrypt';
+import { booleanError, DTOGroups, validationParser } from '../util';
 
 export default class ClientDTO<T extends Gym | number> extends PersonDTO<T> {
   @IsBoolean({
@@ -23,16 +23,18 @@ export default class ClientDTO<T extends Gym | number> extends PersonDTO<T> {
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
-    variant: PersonDTOGroups
+    variant: DTOGroups | PersonDTOGroups
   ): Promise<ClientDTO<T>> {
     const result = new ClientDTO<T>();
 
+    result.id = json.id;
     result.email = json.email;
     result.password = json.password;
     result.firstName = json.firstName;
     result.lastName = json.lastName;
     result.gym = json.gym;
     result.gender = json.gender;
+    result.theme = json.theme as AppTheme;
     // Client props
     result.covidPassport = json.covidPassport;
 
@@ -73,7 +75,7 @@ export default class ClientDTO<T extends Gym | number> extends PersonDTO<T> {
 
     await validateOrReject(result, {
       validationError: { target: false },
-      groups: ['all']
+      groups: [DTOGroups.ALL]
     }).catch((errors) => {
       throw validationParser(errors);
     });
@@ -90,6 +92,7 @@ export default class ClientDTO<T extends Gym | number> extends PersonDTO<T> {
     const person = new Person();
 
     // Set person fields
+    person.id = this.id;
     person.firstName = this.firstName;
     person.lastName = this.lastName;
     person.email = this.email;
@@ -100,6 +103,7 @@ export default class ClientDTO<T extends Gym | number> extends PersonDTO<T> {
 
     person.gender = this.gender;
     person.gym = this.gym;
+    person.theme = this.theme;
 
     // Set person into client
     client.person = person;

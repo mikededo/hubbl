@@ -25,12 +25,18 @@ export enum PersonDTOGroups {
 }
 
 export default abstract class PersonDTO<T extends Gym | number> {
-  @IsNumber({}, { message: numberError('id'), groups: [DTOGroups.ALL] })
+  @IsNumber(
+    {},
+    { message: numberError('id'), groups: [DTOGroups.ALL, DTOGroups.UPDATE] }
+  )
   id!: number;
 
   @IsEmail(
     {},
-    { message: emailError(), groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER] }
+    {
+      message: emailError(),
+      groups: [DTOGroups.ALL, PersonDTOGroups.REGISTER]
+    }
   )
   @IsString({
     message: stringError('email'),
@@ -71,7 +77,7 @@ export default abstract class PersonDTO<T extends Gym | number> {
 
   @IsEnum(AppTheme, {
     message: enumError('AppTheme', 'theme'),
-    groups: [DTOGroups.ALL]
+    groups: [DTOGroups.ALL, DTOGroups.UPDATE]
   })
   theme!: AppTheme;
 }

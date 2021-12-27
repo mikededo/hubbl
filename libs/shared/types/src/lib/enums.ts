@@ -2,8 +2,8 @@
  * Defines the theme of the app that is being used
  */
 enum AppTheme {
-  DARK = 'dark',
-  LIGHT = 'light'
+  DARK = 'DARK',
+  LIGHT = 'LIGHT'
 }
 
 enum AppPalette {

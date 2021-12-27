@@ -1,7 +1,7 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
-import { Gym, Person, Client } from '@gymman/shared/models/entities';
+import { Client, Gym, Person } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
 import { PersonDTOGroups } from '../Person';
@@ -20,12 +20,14 @@ describe('ClientDTO', () => {
     ) => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
+        id: 1,
         email: 'test@user.com',
         password: 'testpwd00',
         firstName: 'Test',
         lastName: 'User',
         gym,
         gender: Gender.OTHER,
+        theme: AppTheme.LIGHT,
         covidPassport: true
       };
 
@@ -34,11 +36,13 @@ describe('ClientDTO', () => {
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(ClientDTO);
       // Check fields
+      expect(result.id).toBe(json.id);
       expect(result.email).toBe(json.email);
       expect(result.password).toBe(json.password);
       expect(result.firstName).toBe(json.firstName);
       expect(result.lastName).toBe(json.lastName);
       expect(result.gender).toBe(json.gender);
+      expect(result.theme).toBe(json.theme);
       expect(result.gym).toBe(gym);
       // Client fields
       expect(result.covidPassport).toBe(json.covidPassport);
@@ -147,21 +151,25 @@ describe('ClientDTO', () => {
     it('should return an client', async () => {
       // Set up class
       const dto = new ClientDTO();
+      dto.id = 1;
       dto.email = 'test@user.com';
       dto.password = 'testpwd00';
       dto.firstName = 'Test';
       dto.lastName = 'User';
       dto.gym = 1;
       dto.gender = Gender.OTHER;
+      dto.theme = AppTheme.LIGHT;
       dto.covidPassport = true;
 
       const result = await dto.toClass();
 
+      expect(result.person.id).toBe(dto.id);
       expect(result.person.email).toBe(dto.email);
       expect(result.person.firstName).toBe(dto.firstName);
       expect(result.person.lastName).toBe(dto.lastName);
       expect(result.person.gym).toBe(dto.gym);
       expect(result.person.gender).toBe(dto.gender);
+      expect(result.person.theme).toBe(dto.theme);
       expect(result.covidPassport).toBe(dto.covidPassport);
 
       // Password should be hashed

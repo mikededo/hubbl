@@ -14,7 +14,8 @@ import {
   booleanError,
   numberError,
   stringError,
-  validationParser,DTOGroups
+  validationParser,
+  DTOGroups
 } from '../util';
 
 export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
@@ -96,7 +97,7 @@ export default class WorkerDTO<T extends Gym | number> extends PersonDTO<T> {
    */
   public static async fromJson<T extends Gym | number>(
     json: any,
-    variant: PersonDTOGroups
+    variant: DTOGroups | PersonDTOGroups
   ): Promise<WorkerDTO<T>> {
     const result = new WorkerDTO<T>();
 

@@ -1,3 +1,4 @@
 export enum DTOGroups {
-  ALL = 'all'
+  ALL = 'all',
+  UPDATE = 'update'
 }
