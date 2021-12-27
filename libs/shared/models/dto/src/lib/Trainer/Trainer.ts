@@ -123,6 +123,7 @@ export default class TrainerDTO<T extends Gym | number>
     const salt = await genSalt(10);
     person.password = await hash(this.password, salt);
 
+    person.theme = this.theme;
     person.gender = this.gender;
     person.gym = this.gym;
 

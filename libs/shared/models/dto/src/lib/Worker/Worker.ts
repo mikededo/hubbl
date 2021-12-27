@@ -202,13 +202,15 @@ export default class WorkerDTO<T extends Gym | number>
     // Set worker props
     worker.managerId = this.managerId;
     worker.updateVirtualGyms = this.updateVirtualGyms;
-    worker.updateClients = this.updateClients;
     worker.createGymZones = this.createGymZones;
     worker.updateGymZones = this.updateGymZones;
     worker.deleteGymZones = this.deleteGymZones;
     worker.createTrainers = this.createTrainers;
     worker.updateTrainers = this.updateTrainers;
     worker.deleteTrainers = this.deleteTrainers;
+    worker.createClients = this.createClients;
+    worker.updateClients = this.updateClients;
+    worker.deleteClients = this.deleteClients;
     worker.createEvents = this.createEvents;
     worker.updateEvents = this.updateEvents;
     worker.deleteEvents = this.deleteEvents;

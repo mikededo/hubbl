@@ -42,7 +42,7 @@ describe('OwnerDTO', () => {
       expect(result.lastName).toBe(json.lastName);
       expect(result.theme).toBe(json.theme);
       expect(result.gym).toBe(gym);
-      expect(result.gender).toBe(json.theme);
+      expect(result.gender).toBe(json.gender);
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vorSpy).toHaveBeenCalledWith(expect.anything(), {
