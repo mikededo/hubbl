@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
 import * as cors from 'cors';
+import * as cookieParser from 'cookie-parser';
 import { json } from 'express';
 import { createConnection } from 'typeorm';
 
@@ -16,6 +17,7 @@ createConnection(databaseConfig)
 
     app.use(cors());
     app.use(json());
+    app.use(cookieParser());
 
     initApp(app);
 

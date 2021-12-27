@@ -1,4 +1,12 @@
-import { QueryRunner, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  FindCondition,
+  FindManyOptions,
+  FindOneOptions,
+  QueryRunner,
+  Repository,
+  SelectQueryBuilder,
+  UpdateResult
+} from 'typeorm';
 
 import { RepositoryAccessor } from '../util';
 
@@ -16,6 +24,18 @@ export default class BaseService<T> {
 
   public save(value: T): Promise<T> {
     return this.repository.save(value);
+  }
+
+  public findOne(id: number, options?: FindOneOptions<T>): Promise<T> {
+    return this.repository.findOne(id, options);
+  }
+
+  public update(id: number, value: T): Promise<UpdateResult> {
+    return this.repository.update(id, value);
+  }
+
+  public count(args: FindManyOptions<T> | FindCondition<T>): Promise<number> {
+    return this.repository.count(args);
   }
 
   public createQueryBuilder({

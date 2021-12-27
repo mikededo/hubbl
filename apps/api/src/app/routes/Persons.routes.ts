@@ -3,18 +3,21 @@ import { Router } from 'express';
 import {
   ClientLoginController,
   ClientRegisterController,
+  ClientUpdateController,
   OwnerLoginController,
   OwnerRegisterController,
+  OwnerUpdateController,
   TrainerRegisterController,
+  TrainerUpdateController,
   WorkerLoginController,
-  WorkerRegisterController
+  WorkerRegisterController,
+  WorkerUpdateController
 } from '../controllers';
-
-const RegisterRouter: Router = Router();
-
-const LoginRouter: Router = Router();
+import middlewares from '../middlewares';
 
 /* REGISTER */
+
+const RegisterRouter: Router = Router();
 
 /**
  * @description Registers an owner to the database
@@ -46,6 +49,8 @@ RegisterRouter.post('/client', (req, res) =>
 
 /* LOG IN */
 
+const LoginRouter: Router = Router();
+
 /**
  * @description Logs in an owner to the database
  */
@@ -67,9 +72,53 @@ LoginRouter.post('/client', (req, res) =>
   ClientLoginController.execute(req, res)
 );
 
+/* UPDATE */
+
+const UpdateRouter: Router = Router();
+
+/**
+ * @description Updates an owner. Only an owner can update
+ * themself.
+ */
+UpdateRouter.put('/owner', middlewares.auth, (req, res) => {
+  OwnerUpdateController.execute(req, res);
+});
+
+/**
+ * @description Updates a worker. A queryParam (by) is required
+ * in order to know if a worker or an owner
+ * Owners can update any worker, yet workers can only update
+ * themselves
+ */
+UpdateRouter.put('/worker', middlewares.auth, (req, res) => {
+  WorkerUpdateController.execute(req, res);
+});
+
+/**
+ * @description Updates a trainers. A queryParam (by) is required
+ * in order to know if a trainers or an owner
+ * Owners can update any trainers, yet owners can only update trainers
+ * if they have the permission.
+ */
+UpdateRouter.put('/trainer', middlewares.auth, (req, res) => {
+  TrainerUpdateController.execute(req, res);
+});
+
+/**
+ * @description Updates a client. A queryParam (by) is required
+ * in order to know if a worker, owner or the client themself is
+ * updating the entity.
+ * Owners and workers can update any client, yet clients can only
+ * update themselves.
+ */
+UpdateRouter.put('/client', middlewares.auth, (req, res) =>
+  ClientUpdateController.execute(req, res)
+);
+
 const PersonRouter: Router = Router();
 
 PersonRouter.use('/register', RegisterRouter);
 PersonRouter.use('/login', LoginRouter);
+PersonRouter.use('', UpdateRouter);
 
 export default PersonRouter;

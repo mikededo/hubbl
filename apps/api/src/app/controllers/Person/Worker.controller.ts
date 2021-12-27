@@ -3,11 +3,11 @@ import { getRepository } from 'typeorm';
 
 import { WorkerDTO } from '@gymman/shared/models/dto';
 
-import { WorkerService } from '../../services';
+import { OwnerService, WorkerService } from '../../services';
 import BaseController from '../Base';
-import { register, workerLogin } from '../helpers';
+import { register, workerLogin, workerUpdate } from '../helpers';
 
-export class IWorkerRegisterController extends BaseController {
+class IWorkerRegisterController extends BaseController {
   protected service: WorkerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -31,7 +31,7 @@ const registerInstance = new IWorkerRegisterController();
 
 export const WorkerRegisterController = registerInstance;
 
-export class IWorkerLoginController extends BaseController {
+class IWorkerLoginController extends BaseController {
   protected service: WorkerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<any> {
@@ -53,3 +53,31 @@ export class IWorkerLoginController extends BaseController {
 const loginInstance = new IWorkerLoginController();
 
 export const WorkerLoginController = loginInstance;
+
+class IWorkerUpdateController extends BaseController {
+  protected service: WorkerService = undefined;
+  protected ownerService: OwnerService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<any> {
+    if (!this.service) {
+      this.service = new WorkerService(getRepository);
+    }
+
+    if (!this.ownerService) {
+      this.ownerService = new OwnerService(getRepository);
+    }
+
+    return workerUpdate({
+      service: this.service,
+      ownerService: this.ownerService,
+      controller: this,
+      req,
+      res,
+      by: req.query.by as any
+    });
+  }
+}
+
+const updateInstance = new IWorkerUpdateController();
+
+export const WorkerUpdateController = updateInstance;

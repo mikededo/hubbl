@@ -6,6 +6,7 @@ import { OwnerDTO } from '@gymman/shared/models/dto';
 import { OwnerService } from '../../services';
 import BaseController from '../Base';
 import { ownerLogin, register } from '../helpers';
+import { ownerUpdate } from '../helpers';
 
 class IOwnerRegisterController extends BaseController {
   protected service: OwnerService = undefined;
@@ -53,3 +54,24 @@ class IOwnerLoginController extends BaseController {
 const loginInstance = new IOwnerLoginController();
 
 export const OwnerLoginController = loginInstance;
+
+class IOwnerUpdateController extends BaseController {
+  protected service: OwnerService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<any> {
+    if (!this.service) {
+      this.service = new OwnerService(getRepository);
+    }
+
+    return ownerUpdate({
+      service: this.service,
+      controller: this,
+      req,
+      res
+    });
+  }
+}
+
+const updateInstance = new IOwnerUpdateController();
+
+export const OwnerUpdateController = updateInstance;

@@ -3,9 +3,9 @@ import { getRepository } from 'typeorm';
 
 import { ClientDTO } from '@gymman/shared/models/dto';
 
-import { ClientService } from '../../services';
+import { ClientService, OwnerService, WorkerService } from '../../services';
 import BaseController from '../Base';
-import { clientLogin, register } from '../helpers';
+import { clientLogin, clientUpdate, register } from '../helpers';
 
 class IClientRegisterController extends BaseController {
   protected service: ClientService = undefined;
@@ -53,3 +53,37 @@ class IClientLoginController extends BaseController {
 const loginInstance = new IClientLoginController();
 
 export const ClientLoginController = loginInstance;
+
+class IClientUpdateController extends BaseController {
+  protected service: ClientService = undefined;
+  protected ownerService: OwnerService = undefined;
+  protected workerService: WorkerService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<any> {
+    if (!this.service) {
+      this.service = new ClientService(getRepository);
+    }
+
+    if (!this.ownerService) {
+      this.ownerService = new OwnerService(getRepository);
+    }
+
+    if (!this.workerService) {
+      this.workerService = new WorkerService(getRepository);
+    }
+
+    return clientUpdate({
+      service: this.service,
+      ownerService: this.ownerService,
+      workerService: this.workerService,
+      controller: this,
+      req,
+      res,
+      by: req.query.by as any
+    });
+  }
+}
+
+const updateInstance = new IClientUpdateController();
+
+export const ClientUpdateController = updateInstance;

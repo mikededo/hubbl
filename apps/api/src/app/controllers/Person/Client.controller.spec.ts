@@ -2,14 +2,15 @@ import { getRepository } from 'typeorm';
 
 import { ClientDTO } from '@gymman/shared/models/dto';
 
-import { ClientService } from '../../services/Person';
+import { ClientService, OwnerService, WorkerService } from '../../services';
 import * as helpers from '../helpers';
 import {
   ClientLoginController,
-  ClientRegisterController
+  ClientRegisterController,
+  ClientUpdateController
 } from './Client.controller';
 
-jest.mock('../../services/Person/Client.service');
+jest.mock('../../services');
 jest.mock('../helpers');
 
 describe('ClientController', () => {
@@ -18,7 +19,7 @@ describe('ClientController', () => {
   });
 
   describe('ClientRegisterController', () => {
-    describe('run', () => {
+    describe('execute', () => {
       it('should create a service if does not have any', async () => {
         await ClientRegisterController.execute({} as any, {} as any);
 
@@ -48,7 +49,7 @@ describe('ClientController', () => {
   });
 
   describe('ClientLoginController', () => {
-    describe('run', () => {
+    describe('execute', () => {
       it('should create a service if does not have any', async () => {
         await ClientLoginController.execute({} as any, {} as any);
 
@@ -72,6 +73,49 @@ describe('ClientController', () => {
           {},
           {}
         );
+      });
+    });
+  });
+
+  describe('ClientUpdateController', () => {
+    describe('execute', () => {
+      it('should create the needed services if does not have any', async () => {
+        const mockReq = { query: { by: 'any' } };
+
+        ClientUpdateController['service'] = undefined;
+        ClientUpdateController['ownerService'] = undefined;
+        ClientUpdateController['workerService'] = undefined;
+
+        await ClientUpdateController.execute(mockReq as any, {} as any);
+
+        expect(ClientService).toHaveBeenCalledTimes(1);
+        expect(ClientService).toHaveBeenCalledWith(getRepository);
+        expect(OwnerService).toHaveBeenCalledTimes(1);
+        expect(OwnerService).toHaveBeenCalledWith(getRepository);
+        expect(WorkerService).toHaveBeenCalledTimes(1);
+        expect(WorkerService).toHaveBeenCalledWith(getRepository);
+      });
+
+      it('should call clientUpdate', async () => {
+        const mockReq = { query: { by: 'any' } } as any;
+        const clientUpdateSpy = jest
+          .spyOn(helpers, 'clientUpdate')
+          .mockImplementation();
+
+        ClientUpdateController['service'] = {} as any;
+        ClientUpdateController['ownerService'] = {} as any;
+        ClientUpdateController['workerService'] = {} as any;
+        await ClientUpdateController.execute(mockReq as any, {} as any);
+
+        expect(clientUpdateSpy).toHaveBeenCalledWith({
+          service: {},
+          ownerService: {},
+          workerService: {},
+          controller: ClientUpdateController,
+          req: mockReq,
+          res: {},
+          by: 'any'
+        });
       });
     });
   });

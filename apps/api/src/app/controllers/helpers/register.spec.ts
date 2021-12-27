@@ -18,7 +18,7 @@ describe('register', () => {
   } as any;
   const mockDTO = {
     ...mockPerson.person,
-    toClass: jest.fn().mockResolvedValue
+    toClass: jest.fn()
   } as any;
 
   const mockFromJson = jest.fn().mockResolvedValue(mockDTO);
@@ -128,7 +128,7 @@ describe('register', () => {
     });
   });
 
-  it('should throw a 400 code on fromJson validation error', async () => {
+  it('should send a 400 code on fromJson validation error', async () => {
     const mockService = { save: jest.fn() } as any;
     const mockFailFromJson = jest.fn().mockImplementation(() => {
       throw 'error-thrown';
