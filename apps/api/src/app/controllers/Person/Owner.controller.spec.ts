@@ -1,16 +1,18 @@
 import { getRepository } from 'typeorm';
 
-import * as helpers from '../helpers';
+import { OwnerDTO } from '@gymman/shared/models/dto';
 
 import { OwnerService } from '../../services/Person';
+import * as personHelpers from './helpers';
+import * as helpers from '../helpers';
 import {
   OwnerLoginController,
   OwnerRegisterController,
   OwnerUpdateController
 } from './Owner.controller';
-import { OwnerDTO } from '@gymman/shared/models/dto';
 
 jest.mock('../../services/Person/Owner.service');
+jest.mock('./helpers');
 jest.mock('../helpers');
 
 describe('OwnerControllerController', () => {
@@ -29,7 +31,7 @@ describe('OwnerControllerController', () => {
 
       it('should call register', async () => {
         const registerSpy = jest
-          .spyOn(helpers, 'register')
+          .spyOn(personHelpers, 'register')
           .mockImplementation();
 
         OwnerRegisterController['service'] = {} as any;
@@ -59,7 +61,7 @@ describe('OwnerControllerController', () => {
 
       it('should call ownerLogin', async () => {
         const ownerLoginSpy = jest
-          .spyOn(helpers, 'ownerLogin')
+          .spyOn(personHelpers, 'ownerLogin')
           .mockImplementation();
 
         OwnerLoginController['service'] = {} as any;

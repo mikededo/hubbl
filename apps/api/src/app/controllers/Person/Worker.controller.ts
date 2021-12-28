@@ -5,7 +5,8 @@ import { WorkerDTO } from '@gymman/shared/models/dto';
 
 import { OwnerService, WorkerService } from '../../services';
 import BaseController from '../Base';
-import { register, workerLogin, workerUpdate } from '../helpers';
+import { workerUpdate } from '../helpers';
+import { register, workerLogin } from './helpers';
 
 class IWorkerRegisterController extends BaseController {
   protected service: WorkerService = undefined;

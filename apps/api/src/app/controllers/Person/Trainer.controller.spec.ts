@@ -4,12 +4,14 @@ import { TrainerDTO } from '@gymman/shared/models/dto';
 
 import { OwnerService, TrainerService, WorkerService } from '../../services';
 import * as helpers from '../helpers';
+import * as personHelpers from './helpers';
 import {
   TrainerRegisterController,
   TrainerUpdateController
 } from './Trainer.controller';
 
 jest.mock('../../services');
+jest.mock('./helpers');
 jest.mock('../helpers');
 
 describe('TrainerController', () => {
@@ -28,7 +30,7 @@ describe('TrainerController', () => {
 
       it('should call trainerRegister', async () => {
         const trainerRegisterSpy = jest
-          .spyOn(helpers, 'trainerRegister')
+          .spyOn(personHelpers, 'trainerRegister')
           .mockImplementation();
 
         TrainerRegisterController['service'] = {} as any;

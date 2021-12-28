@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 
 import { PersonDTOGroups } from '@gymman/shared/models/dto';
 
-import BaseController from '../Base';
+import BaseController from '../../Base';
 import * as logins from './login';
 
 jest.mock('bcrypt');

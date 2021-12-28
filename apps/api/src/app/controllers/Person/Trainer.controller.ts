@@ -5,7 +5,8 @@ import { TrainerDTO } from '@gymman/shared/models/dto';
 
 import { OwnerService, TrainerService, WorkerService } from '../../services';
 import BaseController from '../Base';
-import { trainerRegister, trainerUpdate } from '../helpers';
+import { trainerUpdate } from '../helpers';
+import { trainerRegister } from './helpers';
 
 class ITrainerRegisterController extends BaseController {
   protected service: TrainerService = undefined;

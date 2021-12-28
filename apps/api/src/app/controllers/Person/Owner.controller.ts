@@ -5,8 +5,8 @@ import { OwnerDTO } from '@gymman/shared/models/dto';
 
 import { OwnerService } from '../../services';
 import BaseController from '../Base';
-import { ownerLogin, register } from '../helpers';
 import { ownerUpdate } from '../helpers';
+import { ownerLogin, register } from './helpers';
 
 class IOwnerRegisterController extends BaseController {
   protected service: OwnerService = undefined;

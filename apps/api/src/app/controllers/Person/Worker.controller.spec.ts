@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 import { WorkerDTO } from '@gymman/shared/models/dto';
 
 import { WorkerService, OwnerService } from '../../services';
+import * as personHelpers from './helpers';
 import * as helpers from '../helpers';
 import {
   WorkerLoginController,
@@ -11,6 +12,7 @@ import {
 } from './Worker.controller';
 
 jest.mock('../../services');
+jest.mock('./helpers');
 jest.mock('../helpers');
 
 describe('WorkerController', () => {
@@ -29,7 +31,7 @@ describe('WorkerController', () => {
 
       it('should call register', async () => {
         const registerSpy = jest
-          .spyOn(helpers, 'register')
+          .spyOn(personHelpers, 'register')
           .mockImplementation();
 
         WorkerRegisterController['service'] = {} as any;
@@ -59,7 +61,7 @@ describe('WorkerController', () => {
 
       it('should call workerLogin', async () => {
         const workerLoginSpy = jest
-          .spyOn(helpers, 'workerLogin')
+          .spyOn(personHelpers, 'workerLogin')
           .mockImplementation();
 
         WorkerLoginController['service'] = {} as any;

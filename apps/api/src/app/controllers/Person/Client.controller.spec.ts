@@ -9,8 +9,10 @@ import {
   ClientRegisterController,
   ClientUpdateController
 } from './Client.controller';
+import * as personHelpers from './helpers';
 
 jest.mock('../../services');
+jest.mock('./helpers');
 jest.mock('../helpers');
 
 describe('ClientController', () => {
@@ -29,7 +31,7 @@ describe('ClientController', () => {
 
       it('should call register', async () => {
         const registerSpy = jest
-          .spyOn(helpers, 'register')
+          .spyOn(personHelpers, 'register')
           .mockImplementation();
 
         ClientRegisterController['service'] = {} as any;
@@ -59,7 +61,7 @@ describe('ClientController', () => {
 
       it('should call clientLogin', async () => {
         const clientLoginSpy = jest
-          .spyOn(helpers, 'clientLogin')
+          .spyOn(personHelpers, 'clientLogin')
           .mockImplementation();
 
         ClientLoginController['service'] = {} as any;

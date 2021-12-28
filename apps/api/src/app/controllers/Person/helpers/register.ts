@@ -16,9 +16,12 @@ import {
   Worker
 } from '@gymman/shared/models/entities';
 
-import BaseService from '../../services/Base';
-import BaseController from '../Base';
-import { BaseFromClassCallable, BasePersonFromJsonCallable } from './types';
+import { BaseService } from '../../../services';
+import BaseController from '../../Base';
+import {
+  BaseFromClassCallable,
+  BasePersonFromJsonCallable
+} from '../../helpers';
 
 type RegisterableEntities = Owner | Worker | Client;
 

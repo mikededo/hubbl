@@ -5,7 +5,8 @@ import { ClientDTO } from '@gymman/shared/models/dto';
 
 import { ClientService, OwnerService, WorkerService } from '../../services';
 import BaseController from '../Base';
-import { clientLogin, clientUpdate, register } from '../helpers';
+import { clientUpdate } from '../helpers';
+import { clientLogin, register } from './helpers';
 
 class IClientRegisterController extends BaseController {
   protected service: ClientService = undefined;

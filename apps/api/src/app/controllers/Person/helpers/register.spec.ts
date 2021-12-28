@@ -2,7 +2,7 @@ import * as jwt from 'jsonwebtoken';
 
 import { PersonDTOGroups } from '@gymman/shared/models/dto';
 
-import BaseController from '../Base';
+import BaseController from '../../Base';
 import { register, trainerRegister } from './register';
 
 // Manually set the environment variable
