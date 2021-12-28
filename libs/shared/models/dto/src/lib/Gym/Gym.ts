@@ -52,7 +52,7 @@ export default class GymDTO implements DTO<Gym> {
   virtualGyms!: VirtualGym[];
 
   /**
-   * Parses the json passed to the DTO and it validates
+   * Parses the json passed to the DTO and validates it
    *
    * @param json Body of the request
    * @returns The parsed `GymDTO`

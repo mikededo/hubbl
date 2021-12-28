@@ -3,62 +3,61 @@ import * as ClassValidator from 'class-validator';
 
 import { Gym, Worker } from '@gymman/shared/models/entities';
 
-import { PersonDTOGroups } from '../Person';
+import GymDTO from '../Gym';
 import * as Util from '../util';
 import WorkerDTO from './Worker';
-import GymDTO from '../Gym';
+
+const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
+  worker.workerCode = 'some-uuid';
+  worker.managerId = 1;
+  worker.updateVirtualGyms = false;
+  worker.createGymZones = false;
+  worker.updateGymZones = false;
+  worker.deleteGymZones = false;
+  worker.createTrainers = false;
+  worker.updateTrainers = false;
+  worker.deleteTrainers = false;
+  worker.createClients = false;
+  worker.updateClients = false;
+  worker.deleteClients = false;
+  worker.createEvents = false;
+  worker.updateEvents = false;
+  worker.deleteEvents = false;
+  worker.createEventTypes = false;
+  worker.updateEventTypes = false;
+  worker.deleteEventTypes = false;
+};
+
+const workerPropCompare = (
+  want: Worker | WorkerDTO<Gym | number>,
+  got: Worker | WorkerDTO<Gym | number>
+) => {
+  expect(got.managerId).toBe(want.managerId);
+  expect(got.updateVirtualGyms).toBe(want.updateVirtualGyms);
+  expect(got.createGymZones).toBe(want.createGymZones);
+  expect(got.updateGymZones).toBe(want.updateGymZones);
+  expect(got.deleteGymZones).toBe(want.deleteGymZones);
+  expect(got.createTrainers).toBe(want.createTrainers);
+  expect(got.updateTrainers).toBe(want.updateTrainers);
+  expect(got.deleteTrainers).toBe(want.deleteTrainers);
+  expect(got.createClients).toBe(want.createClients);
+  expect(got.updateClients).toBe(want.updateClients);
+  expect(got.deleteClients).toBe(want.deleteClients);
+  expect(got.createEvents).toBe(want.createEvents);
+  expect(got.updateEvents).toBe(want.updateEvents);
+  expect(got.deleteEvents).toBe(want.deleteEvents);
+  expect(got.createEventTypes).toBe(want.createEventTypes);
+  expect(got.updateEventTypes).toBe(want.updateEventTypes);
+  expect(got.deleteEventTypes).toBe(want.deleteEventTypes);
+};
 
 describe('WorkerDTO', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
-    worker.workerCode = 'some-uuid';
-    worker.managerId = 1;
-    worker.updateVirtualGyms = false;
-    worker.createGymZones = false;
-    worker.updateGymZones = false;
-    worker.deleteGymZones = false;
-    worker.createTrainers = false;
-    worker.updateTrainers = false;
-    worker.deleteTrainers = false;
-    worker.createClients = false;
-    worker.updateClients = false;
-    worker.deleteClients = false;
-    worker.createEvents = false;
-    worker.updateEvents = false;
-    worker.deleteEvents = false;
-    worker.createEventTypes = false;
-    worker.updateEventTypes = false;
-    worker.deleteEventTypes = false;
-  };
-
-  const workerPropCompare = (want: any, got: any) => {
-    expect(got.managerId).toBe(want.managerId);
-    expect(got.updateVirtualGyms).toBe(want.updateVirtualGyms);
-    expect(got.createGymZones).toBe(want.createGymZones);
-    expect(got.updateGymZones).toBe(want.updateGymZones);
-    expect(got.deleteGymZones).toBe(want.deleteGymZones);
-    expect(got.createTrainers).toBe(want.createTrainers);
-    expect(got.updateTrainers).toBe(want.updateTrainers);
-    expect(got.deleteTrainers).toBe(want.deleteTrainers);
-    expect(got.createClients).toBe(want.createClients);
-    expect(got.updateClients).toBe(want.updateClients);
-    expect(got.deleteClients).toBe(want.deleteClients);
-    expect(got.createEvents).toBe(want.createEvents);
-    expect(got.updateEvents).toBe(want.updateEvents);
-    expect(got.deleteEvents).toBe(want.deleteEvents);
-    expect(got.createEventTypes).toBe(want.createEventTypes);
-    expect(got.updateEventTypes).toBe(want.updateEventTypes);
-    expect(got.deleteEventTypes).toBe(want.deleteEventTypes);
-  };
-
   describe('#fromJson', () => {
-    const successFromJSON = async (
-      gym: Gym | number,
-      variant: PersonDTOGroups
-    ) => {
+    it('should create a DTO if json is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = Util.createPersonJson({
         managerId: 1,
@@ -81,7 +80,7 @@ describe('WorkerDTO', () => {
         deleteEventTypes: false
       });
 
-      const result = await WorkerDTO.fromJson(json, variant);
+      const result = await WorkerDTO.fromJson(json, 'any' as any);
 
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(WorkerDTO);
@@ -89,51 +88,41 @@ describe('WorkerDTO', () => {
       // Check fields
       workerPropCompare(result, json);
       // Additional checks
-      expect(result.gym).toBe(gym);
+      expect(result.gym).toBe(json.gym);
 
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vorSpy).toHaveBeenCalledWith(expect.anything(), {
         validationError: { target: false },
-        groups: [variant]
+        groups: ['any' as any]
       });
-    };
+    });
 
-    const failFromJSON = async (variant: PersonDTOGroups) => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const vpSpy = jest.spyOn(Util, 'validationParser');
+    it('should not create a DTO if json is not valid', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest
+        .spyOn(Util, 'validationParser')
+        .mockReturnValue({} as any);
 
       expect.assertions(3);
 
       try {
-        await WorkerDTO.fromJson({}, variant);
+        await WorkerDTO.fromJson({}, 'any' as any);
       } catch (e) {
         expect(e).toBeDefined();
       }
 
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vpSpy).toHaveBeenCalledTimes(1);
-    };
-
-    it('[register] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(1, PersonDTOGroups.REGISTER);
-    });
-
-    it('[login] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(1, PersonDTOGroups.LOGIN);
-    });
-
-    it('[register] should fail on an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOGroups.REGISTER);
-    });
-
-    it('[login] should fail on an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOGroups.LOGIN);
     });
   });
 
   describe('#fromClass', () => {
     it('should create an WorkerDTO from a correct Worker', async () => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const worker = new Worker();
@@ -163,8 +152,10 @@ describe('WorkerDTO', () => {
     });
 
     it('should fail on creating an WorkerDTO from an incorrect Worker', async () => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const vpSpy = jest.spyOn(Util, 'validationParser');
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

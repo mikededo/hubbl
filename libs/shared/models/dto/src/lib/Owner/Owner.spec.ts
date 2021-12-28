@@ -15,7 +15,7 @@ describe('OwnerDTO', () => {
   });
 
   describe('#fromJSON', () => {
-    it('should create a DTO if fromJson is valid', async () => {
+    it('should create a DTO if json is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = Util.createPersonJson();
 

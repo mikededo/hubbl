@@ -1,18 +1,26 @@
 import * as ClassValidator from 'class-validator';
 
+import { Gym } from '@gymman/shared/models/entities';
 import { ThemeColor } from '@gymman/shared/types';
 
 import * as Util from '../util';
 import GymDTO from './Gym';
-import { Gym } from '@gymman/shared/models/entities';
+
+const propCompare = (want: Gym | GymDTO, got: Gym | GymDTO) => {
+  expect(got.id).toBe(want.id);
+  expect(got.name).toBe(want.name);
+  expect(got.email).toBe(want.email);
+  expect(got.phone).toBe(want.phone);
+  expect(got.color).toBe(want.color);
+};
 
 describe('Gym', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  })
+  });
 
   describe('#fromJson', () => {
-    it('should create a DTO if fromJson is valid', async () => {
+    it('should create a DTO if json is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
         id: 1,
@@ -27,11 +35,7 @@ describe('Gym', () => {
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(GymDTO);
       // Check fields
-      expect(result.id).toBe(json.id);
-      expect(result.name).toBe(json.name);
-      expect(result.email).toBe(json.email);
-      expect(result.phone).toBe(json.phone);
-      expect(result.color).toBe(json.color);
+      propCompare(json as any, result);
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vorSpy).toHaveBeenCalledWith(expect.anything(), {
@@ -77,12 +81,8 @@ describe('Gym', () => {
 
       const result = await GymDTO.fromClass(gym);
 
-      expect(result.id).toBe(gym.id);
-      expect(result.name).toBe(gym.name);
-      expect(result.email).toBe(gym.email);
-      expect(result.phone).toBe(gym.phone);
-      expect(result.color).toBe(gym.color);
-      expect(result.virtualGyms).toBe(gym.virtualGyms);
+      propCompare(gym, result);
+      expect(result.virtualGyms).toStrictEqual(gym.virtualGyms);
       // Ensure validation has been called
       expect(vorSpy).toHaveBeenCalledTimes(1);
     });
@@ -118,12 +118,7 @@ describe('Gym', () => {
 
       const result = dto.toClass();
 
-      expect(result.id).toBe(dto.id);
-      expect(result.name).toBe(dto.name);
-      expect(result.email).toBe(dto.email);
-      expect(result.phone).toBe(dto.phone);
-      expect(result.color).toBe(dto.color);
-      expect(result.virtualGyms).toBe(dto.virtualGyms);
+      propCompare(dto, result);
     });
 
     it('should return a Gym with empty virtualGyms if the prop is undeinfed', () => {
@@ -136,11 +131,7 @@ describe('Gym', () => {
 
       const result = dto.toClass();
 
-      expect(result.id).toBe(dto.id);
-      expect(result.name).toBe(dto.name);
-      expect(result.email).toBe(dto.email);
-      expect(result.phone).toBe(dto.phone);
-      expect(result.color).toBe(dto.color);
+      propCompare(dto, result);
       expect(result.virtualGyms).toStrictEqual([]);
     });
   });
