@@ -1,3 +1,4 @@
+import { createPerson, createPersonDTO, createPersonJson } from './creators';
 import {
   arrayError,
   booleanError,
@@ -13,6 +14,9 @@ import { ParsedValidation, validationParser } from './validation-parser';
 export {
   arrayError,
   booleanError,
+  createPerson,
+  createPersonDTO,
+  createPersonJson,
   DTOGroups,
   emailError,
   enumError,

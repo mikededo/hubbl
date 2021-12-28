@@ -10,6 +10,7 @@ import { Gym, Person, Worker } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
 import DTO from '../Base';
+import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import {
   booleanError,
@@ -168,12 +169,18 @@ export default class WorkerDTO<T extends Gym | number>
     result.theme = worker.person.theme;
     result.gender = worker.person.gender as Gender;
 
+    // If the gym is not a number, parse it as a dto
+    if (worker.person.gym instanceof Gym) {
+      const gymDto = await GymDTO.fromClass(worker.person.gym as Gym);
+      result.gym = gymDto.toClass() as T;
+    }
+
     // Worker props
     WorkerDTO.mapWorkerProps(result, worker);
 
     await validateOrReject(result, {
       validationError: { target: false },
-      groups: ['all']
+      groups: [DTOGroups.ALL]
     }).catch((errors) => {
       throw validationParser(errors);
     });

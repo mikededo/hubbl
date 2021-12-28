@@ -42,8 +42,6 @@ export default class Gym {
    * to all workers
    */
   @OneToMany(() => EventType, (et) => et.gym, {
-    cascade: true,
-    eager: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   })

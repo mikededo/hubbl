@@ -73,7 +73,6 @@ describe('Gym', () => {
       gym.email = 'test@gym.com';
       gym.phone = '000 000 000';
       gym.color = ThemeColor.BLUE;
-      gym.eventTypes = [];
       gym.virtualGyms = [];
 
       const result = await GymDTO.fromClass(gym);
@@ -83,7 +82,6 @@ describe('Gym', () => {
       expect(result.email).toBe(gym.email);
       expect(result.phone).toBe(gym.phone);
       expect(result.color).toBe(gym.color);
-      expect(result.eventTypes).toBe(gym.eventTypes);
       expect(result.virtualGyms).toBe(gym.virtualGyms);
       // Ensure validation has been called
       expect(vorSpy).toHaveBeenCalledTimes(1);
@@ -116,7 +114,6 @@ describe('Gym', () => {
       dto.email = 'test@gym.com';
       dto.phone = '000 000 000';
       dto.color = ThemeColor.BLUE;
-      dto.eventTypes = [];
       dto.virtualGyms = [];
 
       const result = dto.toClass();
@@ -126,7 +123,6 @@ describe('Gym', () => {
       expect(result.email).toBe(dto.email);
       expect(result.phone).toBe(dto.phone);
       expect(result.color).toBe(dto.color);
-      expect(result.eventTypes).toBe(dto.eventTypes);
       expect(result.virtualGyms).toBe(dto.virtualGyms);
     });
   });

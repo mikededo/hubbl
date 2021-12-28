@@ -1,11 +1,11 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
-import { Client, Gym, Person } from '@gymman/shared/models/entities';
-import { AppTheme, Gender } from '@gymman/shared/types';
+import { Client, Gym } from '@gymman/shared/models/entities';
 
 import * as Util from '../util';
 import ClientDTO from './Client';
+import GymDTO from '../Gym';
 
 describe('ClientDTO', () => {
   beforeEach(() => {
@@ -15,17 +15,7 @@ describe('ClientDTO', () => {
   describe('#fromJSON', () => {
     it('should create the DTO if fromJson is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const json = {
-        id: 1,
-        email: 'test@user.com',
-        password: 'testpwd00',
-        firstName: 'Test',
-        lastName: 'User',
-        gym: 1,
-        gender: Gender.OTHER,
-        theme: AppTheme.LIGHT,
-        covidPassport: true
-      };
+      const json = Util.createPersonJson({ covidPassport: true });
 
       const result = await ClientDTO.fromJson(json, 'any' as any);
 
@@ -79,18 +69,15 @@ describe('ClientDTO', () => {
       const password = await hash('testpwd00', await genSalt(10));
 
       const client = new Client();
-      const person = new Person();
-      person.id = 1;
-      person.email = 'test@user.com';
-      person.password = password;
-      person.firstName = 'Test';
-      person.lastName = 'User';
-      person.gender = Gender.OTHER;
-      person.theme = AppTheme.LIGHT;
-      person.gym = new Gym();
-      client.person = person;
+      const person = Util.createPerson(password);
 
+      client.person = person;
       client.covidPassport = true;
+
+      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+        ...(person.gym as Gym),
+        toClass: jest.fn().mockReturnValue(person.gym)
+      });
 
       const result = await ClientDTO.fromClass(client);
 
@@ -114,6 +101,10 @@ describe('ClientDTO', () => {
         .mockRejectedValue({});
       const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
 
+      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+        toClass: jest.fn().mockReturnValue({})
+      } as any);
+
       expect.assertions(3);
 
       try {
@@ -125,20 +116,27 @@ describe('ClientDTO', () => {
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vpSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('should fail on creating a ClientDTO from an incorrect Gym', async () => {
+      jest.spyOn(GymDTO, 'fromClass').mockImplementation(() => {
+        throw new Error();
+      });
+
+      expect.assertions(1);
+
+      try {
+        await ClientDTO.fromClass({ person: {} } as any);
+      } catch (e) {
+        expect(e).toBeDefined();
+      }
+    });
   });
 
   describe('#toClass', () => {
     it('should return an client', async () => {
       // Set up class
-      const dto = new ClientDTO();
-      dto.id = 1;
-      dto.email = 'test@user.com';
-      dto.password = 'testpwd00';
-      dto.firstName = 'Test';
-      dto.lastName = 'User';
-      dto.gym = 1;
-      dto.gender = Gender.OTHER;
-      dto.theme = AppTheme.LIGHT;
+      const dto = Util.createPersonDTO<ClientDTO<Gym | number>>(ClientDTO);
+
       dto.covidPassport = true;
 
       const result = await dto.toClass();

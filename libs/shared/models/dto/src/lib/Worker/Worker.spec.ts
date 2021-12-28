@@ -1,12 +1,12 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
-import { Gym, Person, Worker } from '@gymman/shared/models/entities';
-import { AppTheme, Gender } from '@gymman/shared/types';
+import { Gym, Worker } from '@gymman/shared/models/entities';
 
 import { PersonDTOGroups } from '../Person';
 import * as Util from '../util';
 import WorkerDTO from './Worker';
+import GymDTO from '../Gym';
 
 describe('WorkerDTO', () => {
   beforeEach(() => {
@@ -60,14 +60,9 @@ describe('WorkerDTO', () => {
       variant: PersonDTOGroups
     ) => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const json = {
-        email: 'test@user.com',
-        password: 'testpwd00',
-        firstName: 'Test',
-        lastName: 'User',
+      const json = Util.createPersonJson({
         managerId: 1,
-        gym,
-        gender: Gender.OTHER,
+        gym: 1,
         updateVirtualGyms: false,
         createGymZones: false,
         updateGymZones: false,
@@ -84,9 +79,9 @@ describe('WorkerDTO', () => {
         createEventTypes: false,
         updateEventTypes: false,
         deleteEventTypes: false
-      };
+      });
 
-      const result = await WorkerDTO.fromJson<number>(json, variant);
+      const result = await WorkerDTO.fromJson(json, variant);
 
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(WorkerDTO);
@@ -142,17 +137,14 @@ describe('WorkerDTO', () => {
       const password = await hash('testpwd00', await genSalt(10));
 
       const worker = new Worker();
-      const person = new Person();
-      person.id = 1;
-      person.email = 'test@user.com';
-      person.password = password;
-      person.firstName = 'Test';
-      person.lastName = 'User';
-      person.gender = Gender.OTHER;
-      person.theme = AppTheme.LIGHT;
-      person.gym = new Gym();
-      worker.person = person;
+
+      worker.person = Util.createPerson(password);
       workerPropsAssign(worker);
+
+      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+        ...(worker.person.gym as Gym),
+        toClass: jest.fn().mockReturnValue(worker.person.gym)
+      });
 
       const result = await WorkerDTO.fromClass(worker);
 
@@ -190,15 +182,7 @@ describe('WorkerDTO', () => {
   describe('#toClass', () => {
     it('should return an worker', async () => {
       // Set up class
-      const dto = new WorkerDTO();
-      dto.id = 1;
-      dto.email = 'test@user.com';
-      dto.password = 'testpwd00';
-      dto.firstName = 'Test';
-      dto.lastName = 'User';
-      dto.gym = 1;
-      dto.gender = Gender.OTHER;
-      dto.theme = AppTheme.LIGHT;
+      const dto = Util.createPersonDTO<WorkerDTO<Gym | number>>(WorkerDTO);
 
       workerPropsAssign(dto);
 

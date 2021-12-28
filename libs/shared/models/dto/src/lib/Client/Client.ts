@@ -4,9 +4,10 @@ import { IsBoolean, validateOrReject } from 'class-validator';
 import { Client, Gym, Person } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
+import DTO from '../Base';
+import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import { booleanError, DTOGroups, validationParser } from '../util';
-import DTO from '../Base';
 
 export default class ClientDTO<T extends Gym | number>
   extends PersonDTO<T>
@@ -75,6 +76,12 @@ export default class ClientDTO<T extends Gym | number>
 
     // Client props
     result.covidPassport = client.covidPassport;
+
+    // If the gym is not a number, parse it as a dto
+    if (client.person.gym instanceof Gym) {
+      const gymDto = await GymDTO.fromClass(client.person.gym as Gym);
+      result.gym = gymDto.toClass() as T;
+    }
 
     await validateOrReject(result, {
       validationError: { target: false },

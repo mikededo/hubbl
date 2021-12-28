@@ -1,12 +1,13 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
-import { Gym, Owner, Person } from '@gymman/shared/models/entities';
+import { Gym, Owner } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
 import GymDTO from '../Gym';
 import * as Util from '../util';
 import OwnerDTO from './Owner';
+import { PersonDTOGroups } from '../Person';
 
 describe('OwnerDTO', () => {
   beforeEach(() => {
@@ -16,16 +17,7 @@ describe('OwnerDTO', () => {
   describe('#fromJSON', () => {
     it('should create a DTO if fromJson is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const json = {
-        id: 1,
-        email: 'test@user.com',
-        password: 'testpwd00',
-        firstName: 'Test',
-        lastName: 'User',
-        theme: AppTheme.LIGHT,
-        gym: { id: 1, name: 'Test Gym', email: 'test@gym.com' },
-        gender: Gender.OTHER
-      };
+      const json = Util.createPersonJson();
 
       const result = await OwnerDTO.fromJson(json, 'any' as any);
 
@@ -67,6 +59,42 @@ describe('OwnerDTO', () => {
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vpSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('should call GymDTO.fromJson on register', async () => {
+      const gymFromJsonSpy = jest
+        .spyOn(GymDTO, 'fromJson')
+        .mockResolvedValue({} as any);
+      const json = Util.createPersonJson();
+
+      jest.spyOn(ClassValidator, 'validateOrReject').mockResolvedValue({
+        catch: jest.fn().mockImplementation()
+      } as any);
+
+      await OwnerDTO.fromJson(json, PersonDTOGroups.REGISTER);
+
+      expect(gymFromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(gymFromJsonSpy).toHaveBeenCalledWith(
+        json.gym,
+        PersonDTOGroups.REGISTER
+      );
+    });
+
+    it('should call GymDTO.fromJson on register with empty object if json.gym is undefined', async () => {
+      const gymFromJsonSpy = jest
+        .spyOn(GymDTO, 'fromJson')
+        .mockResolvedValue({} as any);
+      const json = Util.createPersonJson();
+      json.gym = undefined;
+
+      jest.spyOn(ClassValidator, 'validateOrReject').mockResolvedValue({
+        catch: jest.fn().mockImplementation()
+      } as any);
+
+      await OwnerDTO.fromJson(json, PersonDTOGroups.REGISTER);
+
+      expect(gymFromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(gymFromJsonSpy).toHaveBeenCalledWith({}, PersonDTOGroups.REGISTER);
+    });
   });
 
   describe('#fromClass', () => {
@@ -77,27 +105,11 @@ describe('OwnerDTO', () => {
       const password = await hash('testpwd00', await genSalt(10));
 
       const owner = new Owner();
-      const person = new Person();
-      const gym = new Gym();
+      owner.person = Util.createPerson(password);
 
-      person.id = 1;
-      person.email = 'test@user.com';
-      person.password = password;
-      person.firstName = 'Test';
-      person.lastName = 'User';
-      person.gender = Gender.OTHER;
-      person.theme = AppTheme.LIGHT;
-
-      gym.id = 1;
-      gym.name = 'Test';
-      gym.email = 'test@gym.com';
-
-      owner.person = person;
-      owner.person.gym = gym;
-
-      jest.spyOn(GymDTO, 'fromJson').mockResolvedValue({
-        ...gym,
-        toClass: jest.fn().mockReturnValue(gym)
+      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+        ...(owner.person.gym as Gym),
+        toClass: jest.fn().mockReturnValue(owner.person.gym)
       });
 
       const result = await OwnerDTO.fromClass(owner);
@@ -111,7 +123,7 @@ describe('OwnerDTO', () => {
       expect(result.gender).toBe(Gender.OTHER);
       expect(result.gym).toBeInstanceOf(Gym);
       // Ensure validation has been called
-      expect(vorSpy).toHaveBeenCalled();
+      expect(vorSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should fail on creating an OwnerDTO from an incorrect Owner', async () => {
@@ -154,15 +166,7 @@ describe('OwnerDTO', () => {
   describe('#toClass', () => {
     it('should return an owner', async () => {
       // Set up class
-      const dto = new OwnerDTO();
-      dto.id = 1;
-      dto.email = 'test@user.com';
-      dto.password = 'testpwd00';
-      dto.firstName = 'Test';
-      dto.lastName = 'User';
-      dto.gym = 1;
-      dto.gender = Gender.OTHER;
-      dto.theme = AppTheme.LIGHT;
+      const dto = Util.createPersonDTO<OwnerDTO<Gym | number>>(OwnerDTO);
 
       const result = await dto.toClass();
 

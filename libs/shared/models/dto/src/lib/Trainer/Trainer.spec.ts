@@ -1,8 +1,7 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
-import { Gym, Person, Trainer } from '@gymman/shared/models/entities';
-import { AppTheme, Gender } from '@gymman/shared/types';
+import { Gym, Trainer } from '@gymman/shared/models/entities';
 
 import * as Util from '../util';
 import TrainerDTO from './Trainer';
@@ -15,19 +14,7 @@ describe('TrainerDTO', () => {
   describe('#fromJSON', () => {
     it('should create the DTO if fromJson is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const json = {
-        id: 1,
-        email: 'test@user.com',
-        password: 'testpwd00',
-        firstName: 'Test',
-        lastName: 'User',
-        theme: AppTheme.LIGHT,
-        gym: 1,
-        gender: Gender.OTHER,
-        managerId: 1,
-        workerCode: 'some-uuid',
-        events: []
-      };
+      const json = Util.createPersonJson();
 
       const result = await TrainerDTO.fromJson(json, 'any' as any);
 
@@ -82,17 +69,8 @@ describe('TrainerDTO', () => {
       const password = await hash('testpwd00', await genSalt(10));
 
       const trainer = new Trainer();
-      const person = new Person();
-      person.id = 1;
-      person.email = 'test@user.com';
-      person.password = password;
-      person.firstName = 'Test';
-      person.lastName = 'User';
-      person.gender = Gender.OTHER;
-      person.theme = AppTheme.LIGHT;
-      person.gym = new Gym();
-      trainer.person = person;
 
+      trainer.person = Util.createPerson(password);
       trainer.managerId = 1;
       trainer.workerCode = 'some-uuid';
       trainer.events = [];
@@ -137,15 +115,8 @@ describe('TrainerDTO', () => {
   describe('#toClass', () => {
     it('should return a trainer', async () => {
       // Set up class
-      const dto = new TrainerDTO();
-      dto.id = 1;
-      dto.email = 'test@user.com';
-      dto.password = 'testpwd00';
-      dto.firstName = 'Test';
-      dto.lastName = 'User';
-      dto.gym = 1;
-      dto.gender = Gender.OTHER;
-      dto.theme = AppTheme.LIGHT;
+      const dto = Util.createPersonDTO<TrainerDTO<Gym | number>>(TrainerDTO);
+
       dto.managerId = 1;
       dto.workerCode = 'some-uuid';
       dto.events = [];

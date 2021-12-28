@@ -6,7 +6,7 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { EventType, Gym, VirtualGym } from '@gymman/shared/models/entities';
+import { Gym, VirtualGym } from '@gymman/shared/models/entities';
 import { ThemeColor } from '@gymman/shared/types';
 
 import DTO from '../Base';
@@ -49,8 +49,6 @@ export default class GymDTO implements DTO<Gym> {
   color!: ThemeColor;
 
   /* Non required validation fields */
-  eventTypes!: EventType[];
-
   virtualGyms!: VirtualGym[];
 
   /**
@@ -95,7 +93,6 @@ export default class GymDTO implements DTO<Gym> {
     result.email = gym.email;
     result.phone = gym.phone;
     result.color = gym.color;
-    result.eventTypes = gym.eventTypes;
     result.virtualGyms = gym.virtualGyms;
 
     await validateOrReject(result, {
@@ -116,7 +113,6 @@ export default class GymDTO implements DTO<Gym> {
     result.email = this.email;
     result.phone = this.phone;
     result.color = this.color;
-    result.eventTypes = this.eventTypes || [];
     result.virtualGyms = this.virtualGyms || [];
 
     return result;
