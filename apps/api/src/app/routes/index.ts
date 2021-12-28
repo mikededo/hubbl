@@ -1,4 +1,5 @@
 import { Application } from 'express';
+
 import PersonRouter from './Persons.routes';
 
 const Routes = {

@@ -4,6 +4,9 @@ export type ParsedValidation = {
   [type: string]: string[];
 };
 
+/**
+ * Validates the errors revieved from the class-validator package
+ */
 export const validationParser = (
   errors: ValidationError[]
 ): ParsedValidation => {

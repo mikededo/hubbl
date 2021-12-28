@@ -49,6 +49,10 @@ export const createPerson = (password = 'changeme00'): Person => {
   return person;
 };
 
+/**
+ * Creates an entity that inherits the person dto with the `PersonDTO`
+ * values filled
+ */
 export const createPersonDTO = <T extends PersonDTO<Gym | number>>(
   DTO: new () => T
 ): T => {

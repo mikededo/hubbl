@@ -105,6 +105,10 @@ export default class GymDTO implements DTO<Gym> {
     return result;
   }
 
+  /**
+   *
+   * @returns The parsed gym from the DTO
+   */
   public toClass(): Gym {
     const result = new Gym();
 
