@@ -125,5 +125,23 @@ describe('Gym', () => {
       expect(result.color).toBe(dto.color);
       expect(result.virtualGyms).toBe(dto.virtualGyms);
     });
+
+    it('should return a Gym with empty virtualGyms if the prop is undeinfed', () => {
+      const dto = new GymDTO();
+      dto.id = 1;
+      dto.name = 'Test';
+      dto.email = 'test@gym.com';
+      dto.phone = '000 000 000';
+      dto.color = ThemeColor.BLUE;
+
+      const result = dto.toClass();
+
+      expect(result.id).toBe(dto.id);
+      expect(result.name).toBe(dto.name);
+      expect(result.email).toBe(dto.email);
+      expect(result.phone).toBe(dto.phone);
+      expect(result.color).toBe(dto.color);
+      expect(result.virtualGyms).toStrictEqual([]);
+    });
   });
 });
