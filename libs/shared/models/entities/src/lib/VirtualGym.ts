@@ -35,6 +35,12 @@ export default class VirtualGym {
   description!: string;
 
   /**
+   * `VirtualGym` location
+   */
+  @Column('varchar', { nullable: false, length: 255 })
+  location!: string;
+
+  /**
    * Maximum capacity of the `VirtualGym`
    */
   @Column('integer', { nullable: false })
@@ -57,7 +63,7 @@ export default class VirtualGym {
    * `Gym` to which the `VirtualGym` belongs
    */
   @ManyToOne(() => Gym, (gym) => gym.virtualGyms, { nullable: false })
-  gym!: Gym;
+  gym!: number;
 
   /**
    * `GymZones` of the `VirtualGym`
