@@ -10,7 +10,7 @@ import { register, workerLogin, workerUpdate } from '../helpers';
 class IWorkerRegisterController extends BaseController {
   protected service: WorkerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new WorkerService(getRepository);
     }
@@ -34,7 +34,7 @@ export const WorkerRegisterController = registerInstance;
 class IWorkerLoginController extends BaseController {
   protected service: WorkerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new WorkerService(getRepository);
     }
@@ -58,7 +58,7 @@ class IWorkerUpdateController extends BaseController {
   protected service: WorkerService = undefined;
   protected ownerService: OwnerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new WorkerService(getRepository);
     }

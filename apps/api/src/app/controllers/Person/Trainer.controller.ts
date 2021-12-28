@@ -10,7 +10,7 @@ import { trainerRegister, trainerUpdate } from '../helpers';
 class ITrainerRegisterController extends BaseController {
   protected service: TrainerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new TrainerService(getRepository);
     }
@@ -35,7 +35,7 @@ class ITrainerUpdateController extends BaseController {
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new TrainerService(getRepository);
     }

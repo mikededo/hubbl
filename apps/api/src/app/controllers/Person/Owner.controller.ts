@@ -11,7 +11,7 @@ import { ownerUpdate } from '../helpers';
 class IOwnerRegisterController extends BaseController {
   protected service: OwnerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new OwnerService(getRepository);
     }
@@ -35,7 +35,7 @@ export const OwnerRegisterController = registerInstance;
 class IOwnerLoginController extends BaseController {
   protected service: OwnerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new OwnerService(getRepository);
     }
@@ -58,7 +58,7 @@ export const OwnerLoginController = loginInstance;
 class IOwnerUpdateController extends BaseController {
   protected service: OwnerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new OwnerService(getRepository);
     }

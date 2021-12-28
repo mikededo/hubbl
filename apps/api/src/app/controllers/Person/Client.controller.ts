@@ -10,7 +10,7 @@ import { clientLogin, clientUpdate, register } from '../helpers';
 class IClientRegisterController extends BaseController {
   protected service: ClientService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new ClientService(getRepository);
     }
@@ -34,7 +34,7 @@ export const ClientRegisterController = registerInstance;
 class IClientLoginController extends BaseController {
   protected service: ClientService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new ClientService(getRepository);
     }
@@ -59,7 +59,7 @@ class IClientUpdateController extends BaseController {
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
 
-  protected async run(req: Request, res: Response): Promise<any> {
+  protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new ClientService(getRepository);
     }
