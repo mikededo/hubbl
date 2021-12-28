@@ -4,20 +4,27 @@ import { IsArray, IsNumber, IsString, validateOrReject } from 'class-validator';
 import { Event, Gym, Person, Trainer } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
-import { DTOGroups } from '../util';
+import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import {
   arrayError,
+  DTOGroups,
   numberError,
   stringError,
   validationParser
 } from '../util';
-import DTO from '../Base';
 
 export default class TrainerDTO<T extends Gym | number>
   extends PersonDTO<T>
   implements DTO<Trainer>
 {
+  // Override the gym prop in order to validate it on register
+  @IsNumber(
+    {},
+    { message: numberError('gym'), groups: [PersonDTOGroups.REGISTER] }
+  )
+  gym!: T;
+
   @IsNumber(
     {},
     { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
@@ -74,10 +81,7 @@ export default class TrainerDTO<T extends Gym | number>
    * @param gym The gym to assign to the DTO
    * @returns The dto to be send as a response
    */
-  public static async fromClass(
-    trainer: Trainer,
-    gym: Gym
-  ): Promise<TrainerDTO<Gym>> {
+  public static async fromClass(trainer: Trainer): Promise<TrainerDTO<Gym>> {
     const result = new TrainerDTO<Gym>();
 
     // Person props
@@ -86,7 +90,7 @@ export default class TrainerDTO<T extends Gym | number>
     result.password = trainer.person.password;
     result.firstName = trainer.person.firstName;
     result.lastName = trainer.person.lastName;
-    result.gym = gym;
+    result.gym = trainer.person.gym as Gym;
     result.theme = trainer.person.theme;
     result.gender = trainer.person.gender as Gender;
 

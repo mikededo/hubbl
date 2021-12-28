@@ -4,7 +4,7 @@ import * as ClassValidator from 'class-validator';
 import { Gym, Owner, Person } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
-import { PersonDTOGroups } from '../Person';
+import GymDTO from '../Gym';
 import * as Util from '../util';
 import OwnerDTO from './Owner';
 
@@ -14,10 +14,7 @@ describe('OwnerDTO', () => {
   });
 
   describe('#fromJSON', () => {
-    const successFromJSON = async (
-      variant: PersonDTOGroups,
-      gym: Gym | number
-    ) => {
+    it('should create a DTO if fromJson is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
         id: 1,
@@ -26,11 +23,11 @@ describe('OwnerDTO', () => {
         firstName: 'Test',
         lastName: 'User',
         theme: AppTheme.LIGHT,
-        gym,
+        gym: { id: 1, name: 'Test Gym', email: 'test@gym.com' },
         gender: Gender.OTHER
       };
 
-      const result = await OwnerDTO.fromJson<number>(json, variant);
+      const result = await OwnerDTO.fromJson(json, 'any' as any);
 
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(OwnerDTO);
@@ -41,64 +38,48 @@ describe('OwnerDTO', () => {
       expect(result.firstName).toBe(json.firstName);
       expect(result.lastName).toBe(json.lastName);
       expect(result.theme).toBe(json.theme);
-      expect(result.gym).toBe(gym);
+      expect(result.gym).toBe(json.gym);
       expect(result.gender).toBe(json.gender);
       // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
+      expect(vorSpy).toHaveBeenCalled();
       expect(vorSpy).toHaveBeenCalledWith(expect.anything(), {
         validationError: { target: false },
-        groups: [variant]
+        groups: ['any']
       });
-    };
+    });
 
-    const failFromJSON = async (variant: PersonDTOGroups) => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const vpSpy = jest.spyOn(Util, 'validationParser');
+    it('should not create the DTO if fromJson is not valid', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest
+        .spyOn(Util, 'validationParser')
+        .mockReturnValue({} as any);
 
       expect.assertions(3);
 
       try {
-        await OwnerDTO.fromJson({}, variant);
+        await OwnerDTO.fromJson({}, 'any' as any);
       } catch (e) {
         expect(e).toBeDefined();
       }
 
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vpSpy).toHaveBeenCalledTimes(1);
-    };
-
-    it('[login, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.LOGIN, 1);
-    });
-
-    it('[login, gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.LOGIN, new Gym());
-    });
-
-    it('[register, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.REGISTER, 1);
-    });
-
-    it('[register, gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.REGISTER, new Gym());
-    });
-
-    it('[register] should fail on creating an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOGroups.REGISTER);
-    });
-
-    it('[login] should fail on creating an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOGroups.LOGIN);
     });
   });
 
   describe('#fromClass', () => {
-    it('should create an OwnerDTO<Gym> from a correct Owner', async () => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
+    it('should create an OwnerDTO from a correct Owner', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const owner = new Owner();
       const person = new Person();
+      const gym = new Gym();
+
       person.id = 1;
       person.email = 'test@user.com';
       person.password = password;
@@ -107,8 +88,17 @@ describe('OwnerDTO', () => {
       person.gender = Gender.OTHER;
       person.theme = AppTheme.LIGHT;
 
+      gym.id = 1;
+      gym.name = 'Test';
+      gym.email = 'test@gym.com';
+
       owner.person = person;
-      owner.gym = new Gym();
+      owner.person.gym = gym;
+
+      jest.spyOn(GymDTO, 'fromJson').mockResolvedValue({
+        ...gym,
+        toClass: jest.fn().mockReturnValue(gym)
+      });
 
       const result = await OwnerDTO.fromClass(owner);
 
@@ -121,12 +111,18 @@ describe('OwnerDTO', () => {
       expect(result.gender).toBe(Gender.OTHER);
       expect(result.gym).toBeInstanceOf(Gym);
       // Ensure validation has been called
-      expect(vorSpy).toHaveBeenCalledTimes(1);
+      expect(vorSpy).toHaveBeenCalled();
     });
 
-    it('should fail on creating an OwnerDTO<Gym> from an incorrect Owner', async () => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const vpSpy = jest.spyOn(Util, 'validationParser');
+    it('should fail on creating an OwnerDTO from an incorrect Owner', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+
+      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+        toClass: jest.fn().mockReturnValue({})
+      } as any);
 
       expect.assertions(3);
 
@@ -136,8 +132,22 @@ describe('OwnerDTO', () => {
         expect(e).toBeDefined();
       }
 
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
+      expect(vorSpy).toHaveBeenCalled();
+      expect(vpSpy).toHaveBeenCalled();
+    });
+
+    it('should fail on creating an OwnerDTO from an incorrect Gym', async () => {
+      jest.spyOn(GymDTO, 'fromClass').mockImplementation(() => {
+        throw new Error();
+      });
+
+      expect.assertions(1);
+
+      try {
+        await OwnerDTO.fromClass({ person: {} } as any);
+      } catch (e) {
+        expect(e).toBeDefined();
+      }
     });
   });
 

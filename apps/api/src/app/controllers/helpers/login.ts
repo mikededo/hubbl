@@ -18,10 +18,7 @@ import {
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';
-import {
-  BasePersonFromClassCallable,
-  BasePersonFromJsonCallable
-} from './types';
+import { BaseFromClassCallable, BasePersonFromJsonCallable } from './types';
 
 type LoggableEntities = Owner | Worker | Trainer | Client;
 
@@ -36,7 +33,7 @@ type BaseLoginProps = {
   service: BaseService<LoggableEntities>;
   controller: BaseController;
   fromJson: BasePersonFromJsonCallable<LoggableDTOs>;
-  fromClass: BasePersonFromClassCallable<LoggableEntities, LoggableDTOs>;
+  fromClass: BaseFromClassCallable<LoggableEntities, LoggableDTOs>;
   req: Request;
   res: Response;
   alias: LoggableAliases;
@@ -83,7 +80,7 @@ export const login = async ({
       // Join with the entity data
       return controller.ok(res, {
         token,
-        entity: await fromClass(entityFound, entityFound.person.gym as Gym)
+        entity: await fromClass(entityFound)
       });
     } catch (_) {
       return controller.fail(
@@ -100,7 +97,7 @@ type OwnerLoginProps = {
   service: BaseService<Owner>;
   controller: BaseController;
   fromJson: BasePersonFromJsonCallable<OwnerDTO<Gym | number>>;
-  fromClass: BasePersonFromClassCallable<Owner, OwnerDTO<Gym | number>>;
+  fromClass: BaseFromClassCallable<Owner, OwnerDTO<Gym | number>>;
   req: Request;
   res: Response;
 };
@@ -130,7 +127,7 @@ type WorkerLoginProps = {
   service: BaseService<Worker>;
   controller: BaseController;
   fromJson: BasePersonFromJsonCallable<WorkerDTO<Gym | number>>;
-  fromClass: BasePersonFromClassCallable<Worker, WorkerDTO<Gym | number>>;
+  fromClass: BaseFromClassCallable<Worker, WorkerDTO<Gym | number>>;
   req: Request;
   res: Response;
 };
@@ -168,7 +165,7 @@ type ClientLoginProps = {
   service: BaseService<Client>;
   controller: BaseController;
   fromJson: BasePersonFromJsonCallable<ClientDTO<Gym | number>>;
-  fromClass: BasePersonFromClassCallable<Client, ClientDTO<Gym | number>>;
+  fromClass: BaseFromClassCallable<Client, ClientDTO<Gym | number>>;
   req: Request;
   res: Response;
 };

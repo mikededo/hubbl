@@ -4,7 +4,6 @@ import * as ClassValidator from 'class-validator';
 import { Gym, Person, Trainer } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
-import { PersonDTOGroups } from '../Person';
 import * as Util from '../util';
 import TrainerDTO from './Trainer';
 
@@ -14,10 +13,7 @@ describe('TrainerDTO', () => {
   });
 
   describe('#fromJSON', () => {
-    const successFromJSON = async (
-      variant: PersonDTOGroups,
-      gym: Gym | number
-    ) => {
+    it('should create the DTO if fromJson is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
         id: 1,
@@ -26,14 +22,14 @@ describe('TrainerDTO', () => {
         firstName: 'Test',
         lastName: 'User',
         theme: AppTheme.LIGHT,
-        gym,
+        gym: 1,
         gender: Gender.OTHER,
         managerId: 1,
         workerCode: 'some-uuid',
         events: []
       };
 
-      const result = await TrainerDTO.fromJson<number>(json, variant);
+      const result = await TrainerDTO.fromJson(json, 'any' as any);
 
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(TrainerDTO);
@@ -45,7 +41,7 @@ describe('TrainerDTO', () => {
       expect(result.lastName).toBe(json.lastName);
       expect(result.theme).toBe(json.theme);
       expect(result.gender).toBe(json.gender);
-      expect(result.gym).toBe(gym);
+      expect(result.gym).toBe(json.gym);
       // Trainer fields
       expect(result.managerId).toBe(json.managerId);
       expect(result.workerCode).toBe(json.workerCode);
@@ -55,54 +51,34 @@ describe('TrainerDTO', () => {
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vorSpy).toHaveBeenCalledWith(expect.anything(), {
         validationError: { target: false },
-        groups: [variant]
+        groups: ['any']
       });
-    };
+    });
 
-    const failFromJSON = async (variant: PersonDTOGroups) => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const vpSpy = jest.spyOn(Util, 'validationParser');
+    it('should not create the DTO if fromJson is not valid', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 
       try {
-        await TrainerDTO.fromJson({}, variant);
+        await TrainerDTO.fromJson({}, 'any' as any);
       } catch (e) {
         expect(e).toBeDefined();
       }
 
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vpSpy).toHaveBeenCalledTimes(1);
-    };
-
-    it('[login, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.LOGIN, 1);
-    });
-
-    it('[login, gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.LOGIN, new Gym());
-    });
-
-    it('[register, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.REGISTER, 1);
-    });
-
-    it('[register, gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.REGISTER, new Gym());
-    });
-
-    it('[register] should fail on creating an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOGroups.REGISTER);
-    });
-
-    it('[login] should fail on creating an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOGroups.LOGIN);
     });
   });
 
   describe('#fromClass', () => {
-    it('should create an TrainerDTO<Gym> from a correct Trainer', async () => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
+    it('should create an TrainerDTO from a correct Trainer', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const trainer = new Trainer();
@@ -121,7 +97,7 @@ describe('TrainerDTO', () => {
       trainer.workerCode = 'some-uuid';
       trainer.events = [];
 
-      const result = await TrainerDTO.fromClass(trainer, new Gym());
+      const result = await TrainerDTO.fromClass(trainer);
 
       expect(result.id).toBe(trainer.person.id);
       expect(result.email).toBe(trainer.person.email);
@@ -139,14 +115,16 @@ describe('TrainerDTO', () => {
       expect(vorSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should fail on creating an TrainerDTO<Gym> from an incorrect Trainer', async () => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const vpSpy = jest.spyOn(Util, 'validationParser');
+    it('should fail on creating an TrainerDTO from an incorrect Trainer', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 
       try {
-        await TrainerDTO.fromClass({ person: {} } as any, {} as any);
+        await TrainerDTO.fromClass({ person: {} } as any);
       } catch (e) {
         expect(e).toBeDefined();
       }

@@ -23,6 +23,13 @@ export default class WorkerDTO<T extends Gym | number>
   extends PersonDTO<T>
   implements DTO<Worker>
 {
+  // Override the gym prop in order to validate it on register
+  @IsNumber(
+    {},
+    { message: numberError('gym'), groups: [PersonDTOGroups.REGISTER] }
+  )
+  gym!: T;
+
   @IsNumber(
     {},
     { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
@@ -146,18 +153,18 @@ export default class WorkerDTO<T extends Gym | number>
    * @param gym The gym to assign to the DTO
    * @returns The dto  to be send as a response
    */
-  public static async fromClass(
-    worker: Worker,
-    gym: Gym
-  ): Promise<WorkerDTO<Gym>> {
-    const result = new WorkerDTO<Gym>();
+  public static async fromClass<T extends Gym | number>(
+    worker: Worker
+  ): Promise<WorkerDTO<T>> {
+    const result = new WorkerDTO<T>();
+
     // Person props
     result.id = worker.person.id;
     result.email = worker.person.email;
     result.password = worker.person.password;
     result.firstName = worker.person.firstName;
     result.lastName = worker.person.lastName;
-    result.gym = gym;
+    result.gym = worker.person.gym as T;
     result.theme = worker.person.theme;
     result.gender = worker.person.gender as Gender;
 

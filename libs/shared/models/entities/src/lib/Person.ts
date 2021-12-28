@@ -46,8 +46,7 @@ export default class Person {
   lastName!: string;
 
   /**
-   * `Gym` to which the `Person` belongs. `Owner`'s will have this
-   * prop as null
+   * `Gym` to which the `Person` belongs
    */
   @ManyToOne(() => Gym, (g) => g.persons, { cascade: true, eager: true })
   gym!: Gym | number;

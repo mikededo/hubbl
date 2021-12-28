@@ -59,18 +59,17 @@ export default class ClientDTO<T extends Gym | number>
    * @param gym The gym to assign to the DTO
    * @returns The dto  to be send as a response
    */
-  public static async fromClass(
-    client: Client,
-    gym: Gym
-  ): Promise<ClientDTO<Gym>> {
-    const result = new ClientDTO<Gym>();
+  public static async fromClass<T extends Gym | number>(
+    client: Client
+  ): Promise<ClientDTO<T>> {
+    const result = new ClientDTO<T>();
 
     result.id = client.person.id;
     result.email = client.person.email;
     result.password = client.person.password;
     result.firstName = client.person.firstName;
     result.lastName = client.person.lastName;
-    result.gym = gym;
+    result.gym = client.person.gym as T;
     result.theme = client.person.theme;
     result.gender = client.person.gender as Gender;
 

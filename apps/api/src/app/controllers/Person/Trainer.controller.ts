@@ -5,7 +5,7 @@ import { TrainerDTO } from '@gymman/shared/models/dto';
 
 import { OwnerService, TrainerService, WorkerService } from '../../services';
 import BaseController from '../Base';
-import { register, trainerUpdate } from '../helpers';
+import { trainerRegister, trainerUpdate } from '../helpers';
 
 class ITrainerRegisterController extends BaseController {
   protected service: TrainerService = undefined;
@@ -15,14 +15,13 @@ class ITrainerRegisterController extends BaseController {
       this.service = new TrainerService(getRepository);
     }
 
-    return register({
+    return trainerRegister({
       service: this.service,
       controller: this,
       fromJson: TrainerDTO.fromJson,
       fromClass: TrainerDTO.fromClass,
       req,
-      res,
-      returnName: 'trainer'
+      res
     });
   }
 }

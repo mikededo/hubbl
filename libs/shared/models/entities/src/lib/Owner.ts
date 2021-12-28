@@ -28,9 +28,10 @@ export default class Owner {
   person!: Person;
 
   /**
-   * `Gym` owner by the `Owner`
+   * `Gym` owned by the `Owner`
    */
   @OneToOne(() => Gym, { cascade: true, eager: true })
+  @JoinColumn()
   gym!: Gym;
 
   @CreateDateColumn()

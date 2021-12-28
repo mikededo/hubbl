@@ -26,22 +26,21 @@ describe('TrainerController', () => {
         expect(TrainerService).toHaveBeenCalledWith(getRepository);
       });
 
-      it('should call register', async () => {
-        const registerSpy = jest
-          .spyOn(helpers, 'register')
+      it('should call trainerRegister', async () => {
+        const trainerRegisterSpy = jest
+          .spyOn(helpers, 'trainerRegister')
           .mockImplementation();
 
         TrainerRegisterController['service'] = {} as any;
         await TrainerRegisterController.execute({} as any, {} as any);
 
-        expect(registerSpy).toHaveBeenCalledWith({
+        expect(trainerRegisterSpy).toHaveBeenCalledWith({
           service: {},
           controller: TrainerRegisterController,
           fromJson: TrainerDTO.fromJson,
           fromClass: TrainerDTO.fromClass,
           req: {},
-          res: {},
-          returnName: 'trainer'
+          res: {}
         });
       });
     });

@@ -4,7 +4,6 @@ import * as ClassValidator from 'class-validator';
 import { Client, Gym, Person } from '@gymman/shared/models/entities';
 import { AppTheme, Gender } from '@gymman/shared/types';
 
-import { PersonDTOGroups } from '../Person';
 import * as Util from '../util';
 import ClientDTO from './Client';
 
@@ -14,10 +13,7 @@ describe('ClientDTO', () => {
   });
 
   describe('#fromJSON', () => {
-    const successFromJSON = async (
-      variant: PersonDTOGroups,
-      gym: Gym | number
-    ) => {
+    it('should create the DTO if fromJson is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
         id: 1,
@@ -25,13 +21,13 @@ describe('ClientDTO', () => {
         password: 'testpwd00',
         firstName: 'Test',
         lastName: 'User',
-        gym,
+        gym: 1,
         gender: Gender.OTHER,
         theme: AppTheme.LIGHT,
         covidPassport: true
       };
 
-      const result = await ClientDTO.fromJson<number>(json, variant);
+      const result = await ClientDTO.fromJson(json, 'any' as any);
 
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(ClientDTO);
@@ -43,61 +39,43 @@ describe('ClientDTO', () => {
       expect(result.lastName).toBe(json.lastName);
       expect(result.gender).toBe(json.gender);
       expect(result.theme).toBe(json.theme);
-      expect(result.gym).toBe(gym);
+      expect(result.gym).toBe(json.gym);
       // Client fields
       expect(result.covidPassport).toBe(json.covidPassport);
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vorSpy).toHaveBeenCalledWith(expect.anything(), {
         validationError: { target: false },
-        groups: [variant]
+        groups: ['any']
       });
-    };
+    });
 
-    const failFromJSON = async (variant: PersonDTOGroups) => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const vpSpy = jest.spyOn(Util, 'validationParser');
+    it('should not create the DTO is fromJson is not valid', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest
+        .spyOn(Util, 'validationParser')
+        .mockReturnValue({} as any);
 
       expect.assertions(3);
 
       try {
-        await ClientDTO.fromJson({}, variant);
+        await ClientDTO.fromJson({}, 'any' as any);
       } catch (e) {
         expect(e).toBeDefined();
       }
 
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vpSpy).toHaveBeenCalledTimes(1);
-    };
-
-    it('[login, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.LOGIN, 1);
-    });
-
-    it('[login, gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.LOGIN, new Gym());
-    });
-
-    it('[register, number] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.REGISTER, 1);
-    });
-
-    it('[register, gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(PersonDTOGroups.REGISTER, new Gym());
-    });
-
-    it('[register] should fail on creating an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOGroups.REGISTER);
-    });
-
-    it('[login] should fail on creating an incorrect DTO', async () => {
-      await failFromJSON(PersonDTOGroups.LOGIN);
     });
   });
 
   describe('#fromClass', () => {
-    it('should create an ClientDTO<Gym> from a correct Client', async () => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
+    it('should create a ClientDTO from a correct Client', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const client = new Client();
@@ -114,7 +92,7 @@ describe('ClientDTO', () => {
 
       client.covidPassport = true;
 
-      const result = await ClientDTO.fromClass(client, new Gym());
+      const result = await ClientDTO.fromClass(client);
 
       expect(result.id).toBe(client.person.id);
       expect(result.email).toBe(client.person.email);
@@ -130,14 +108,16 @@ describe('ClientDTO', () => {
       expect(vorSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should fail on creating an ClientDTO<Gym> from an incorrect Client', async () => {
-      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
-      const vpSpy = jest.spyOn(Util, 'validationParser');
+    it('should fail on creating an ClientDTO from an incorrect Client', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 
       try {
-        await ClientDTO.fromClass({ person: {} } as any, {} as any);
+        await ClientDTO.fromClass({ person: {} } as any);
       } catch (e) {
         expect(e).toBeDefined();
       }

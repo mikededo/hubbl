@@ -119,20 +119,12 @@ describe('WorkerDTO', () => {
       expect(vpSpy).toHaveBeenCalledTimes(1);
     };
 
-    it('[register, number] should not fail on creating a correct DTO', async () => {
+    it('[register] should not fail on creating a correct DTO', async () => {
       await successFromJSON(1, PersonDTOGroups.REGISTER);
     });
 
-    it('[login, number] should not fail on creating a correct DTO', async () => {
+    it('[login] should not fail on creating a correct DTO', async () => {
       await successFromJSON(1, PersonDTOGroups.LOGIN);
-    });
-
-    it('[register, Gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(new Gym(), PersonDTOGroups.REGISTER);
-    });
-
-    it('[login, Gym] should not fail on creating a correct DTO', async () => {
-      await successFromJSON(new Gym(), PersonDTOGroups.LOGIN);
     });
 
     it('[register] should fail on an incorrect DTO', async () => {
@@ -145,7 +137,7 @@ describe('WorkerDTO', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create an WorkerDTO<Gym> from a correct Worker', async () => {
+    it('should create an WorkerDTO from a correct Worker', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const password = await hash('testpwd00', await genSalt(10));
 
@@ -162,7 +154,7 @@ describe('WorkerDTO', () => {
       worker.person = person;
       workerPropsAssign(worker);
 
-      const result = await WorkerDTO.fromClass(worker, new Gym());
+      const result = await WorkerDTO.fromClass(worker);
 
       workerPropCompare(result, worker);
       expect(result.email).toBe(worker.person.email);
@@ -178,14 +170,14 @@ describe('WorkerDTO', () => {
       expect(vorSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should fail on creating an WorkerDTO<Gym> from an incorrect Worker', async () => {
+    it('should fail on creating an WorkerDTO from an incorrect Worker', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const vpSpy = jest.spyOn(Util, 'validationParser');
 
       expect.assertions(3);
 
       try {
-        await WorkerDTO.fromClass({ person: {} } as any, {} as any);
+        await WorkerDTO.fromClass({ person: {} } as any);
       } catch (e) {
         expect(e).toBeDefined();
       }

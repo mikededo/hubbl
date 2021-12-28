@@ -18,33 +18,29 @@ import {
 
 import BaseService from '../../services/Base';
 import BaseController from '../Base';
-import {
-  BasePersonFromClassCallable,
-  BasePersonFromJsonCallable
-} from './types';
+import { BaseFromClassCallable, BasePersonFromJsonCallable } from './types';
 
-type RegisterableEntities = Owner | Worker | Trainer | Client;
+type RegisterableEntities = Owner | Worker | Client;
 
 type RegisterableDTOs =
   | OwnerDTO<Gym | number>
   | WorkerDTO<Gym | number>
-  | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>;
 
-type RegisterProps<
+type BaseRegisterProps<
   T extends BaseService<RegisterableEntities>,
   J extends RegisterableDTOs
 > = {
   service: T;
   controller: BaseController;
   fromJson: BasePersonFromJsonCallable<J>;
-  fromClass: BasePersonFromClassCallable<RegisterableEntities, J>;
+  fromClass: BaseFromClassCallable<RegisterableEntities, J>;
   req: Request;
   res: Response;
   returnName: string;
 };
 
-const register = async <
+export const register = async <
   T extends BaseService<RegisterableEntities>,
   J extends RegisterableDTOs
 >({
@@ -55,7 +51,7 @@ const register = async <
   req,
   res,
   returnName
-}: RegisterProps<T, J>): Promise<any> => {
+}: BaseRegisterProps<T, J>): Promise<any> => {
   try {
     // Get the person and validate it
     const person = await fromJson(req.body, PersonDTOGroups.REGISTER);
@@ -74,7 +70,7 @@ const register = async <
       res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);
       return controller.created(res, {
         token,
-        [returnName]: await fromClass(result, new Gym())
+        [returnName]: await fromClass(result)
       });
     } catch (_) {
       return controller.fail(
@@ -87,4 +83,41 @@ const register = async <
   }
 };
 
-export default register;
+type TrainerRegisterProps = {
+  service: BaseService<Trainer>;
+  controller: BaseController;
+  fromJson: BasePersonFromJsonCallable<TrainerDTO<Gym | number>>;
+  fromClass: BaseFromClassCallable<Trainer, TrainerDTO<Gym | number>>;
+  req: Request;
+  res: Response;
+};
+
+export const trainerRegister = async ({
+  service,
+  controller,
+  fromJson,
+  fromClass,
+  req,
+  res
+}: TrainerRegisterProps): Promise<Response> => {
+  try {
+    // Get the person and validate it
+    const person = await fromJson(req.body, PersonDTOGroups.REGISTER);
+
+    try {
+      // Save the person
+      const result = await service.save(await person.toClass());
+
+      return controller.created(res, {
+        trainer: await fromClass(result)
+      });
+    } catch (_) {
+      return controller.fail(
+        res,
+        'Internal server error. If the error persists, contact our team.'
+      );
+    }
+  } catch (e) {
+    return BaseController.jsonResponse(res, 400, e);
+  }
+};

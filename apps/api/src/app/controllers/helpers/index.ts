@@ -1,5 +1,5 @@
 import { clientLogin, ownerLogin, workerLogin } from './login';
-import register from './register';
+import { register, trainerRegister } from './register';
 import {
   clientUpdate,
   ownerUpdate,
@@ -13,6 +13,7 @@ export {
   ownerLogin,
   ownerUpdate,
   register,
+  trainerRegister,
   trainerUpdate,
   workerLogin,
   workerUpdate

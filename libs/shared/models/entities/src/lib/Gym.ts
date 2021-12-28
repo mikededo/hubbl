@@ -4,7 +4,6 @@ import {
   DeleteDateColumn,
   Entity,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
@@ -35,7 +34,7 @@ export default class Gym {
   /**
    * Optionall contact phone of the gym
    */
-  @Column('varchar', { length: 45 })
+  @Column('varchar', { length: 45, default: null })
   phone!: string;
 
   /**
@@ -49,12 +48,6 @@ export default class Gym {
     onUpdate: 'CASCADE'
   })
   eventTypes!: EventType[];
-
-  /**
-   * Relation that allows us to know what users
-   */
-  @OneToOne(() => Person, (p) => p.gym)
-  owner!: Person;
 
   /**
    * Relation that allows us to know what users

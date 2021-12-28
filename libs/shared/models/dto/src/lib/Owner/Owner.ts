@@ -1,18 +1,22 @@
 import { genSalt, hash } from 'bcrypt';
-import { validateOrReject } from 'class-validator';
+import { IsNotEmpty, validateOrReject } from 'class-validator';
 
 import { Gym, Owner, Person } from '@gymman/shared/models/entities';
 import { Gender } from '@gymman/shared/types';
 
-import { DTOGroups } from '../util';
-import PersonDTO, { PersonDTOGroups } from '../Person';
-import { validationParser } from '../util';
 import DTO from '../Base';
+import GymDTO from '../Gym';
+import PersonDTO, { PersonDTOGroups } from '../Person';
+import { DTOGroups, validationParser } from '../util';
 
 export default class OwnerDTO<T extends Gym | number>
   extends PersonDTO<T>
   implements DTO<Owner>
 {
+  // Override the gym groups
+  @IsNotEmpty({ groups: [PersonDTOGroups.REGISTER] })
+  gym!: T;
+
   /**
    * Parses the json passed to the DTO and it validates
    *
@@ -33,6 +37,11 @@ export default class OwnerDTO<T extends Gym | number>
     result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
+
+    if (variant === PersonDTOGroups.REGISTER) {
+      // Validate the gym
+      await GymDTO.fromJson(json.gym || {}, variant);
+    }
 
     await validateOrReject(result, {
       validationError: { target: false },
@@ -58,13 +67,16 @@ export default class OwnerDTO<T extends Gym | number>
     result.password = owner.person.password;
     result.firstName = owner.person.firstName;
     result.lastName = owner.person.lastName;
-    result.gym = owner.gym;
     result.theme = owner.person.theme;
     result.gender = owner.person.gender as Gender;
 
+    // Parse the gym to a dto and after to a class
+    const gymDto = await GymDTO.fromClass(owner.person.gym as Gym);
+    result.gym = gymDto.toClass();
+
     await validateOrReject(result, {
       validationError: { target: false },
-      groups: ['all']
+      groups: [DTOGroups.ALL]
     }).catch((errors) => {
       throw validationParser(errors);
     });

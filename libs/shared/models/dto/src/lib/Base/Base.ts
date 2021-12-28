@@ -1,3 +1,3 @@
 export interface DTO<T> {
-  toClass(): Promise<T>;
+  toClass(): Promise<T> | T;
 }
