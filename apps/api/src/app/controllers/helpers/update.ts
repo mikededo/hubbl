@@ -56,6 +56,7 @@ export const findAndUpdateEntity = async ({
     // Return ok
     return controller.ok(res);
   } catch (_) {
+    console.log(_);
     return controller.fail(
       res,
       'Internal server error. If the error persists, contact our team.'
@@ -302,6 +303,7 @@ export const trainerUpdate = async ({
       by,
       entityName: 'Trainer',
       updatableBy: '["owner", "worker"]',
+      workerUpdatePermission: 'updateTrainers',
       countArgs: { person: { id: dto.id } }
     });
   } catch (e) {

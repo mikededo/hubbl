@@ -724,6 +724,7 @@ describe('update', () => {
             by: 'owner',
             countArgs: { person: { id: mockDTO.id } },
             entityName: 'Trainer',
+            workerUpdatePermission: 'updateTrainers',
             updatableBy: '["owner", "worker"]'
           });
         });
@@ -759,6 +760,7 @@ describe('update', () => {
             by: 'worker',
             countArgs: { person: { id: mockDTO.id } },
             entityName: 'Trainer',
+            workerUpdatePermission: 'updateTrainers',
             updatableBy: '["owner", "worker"]'
           });
         });
