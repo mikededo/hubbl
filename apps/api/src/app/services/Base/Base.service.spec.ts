@@ -66,13 +66,7 @@ describe('BaseService', () => {
   describe('#update', () => {
     it('should update an item', async () => {
       const mockRepository = {
-        update: jest.fn().mockImplementation(() =>
-          Promise.resolve({
-            id: 1,
-            email: 'found@user.com',
-            password: 'hashed-pwd'
-          })
-        )
+        update: jest.fn().mockImplementation(() => Promise.resolve({}))
       };
       const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
 
@@ -80,6 +74,20 @@ describe('BaseService', () => {
       await service.update(1, {} as any);
 
       expect(mockRepository.update).toHaveBeenCalledWith(1, {});
+    });
+  });
+
+  describe('#softDelete', () => {
+    it('should softDelete an item', async () => {
+      const mockRepository = {
+        softDelete: jest.fn().mockImplementation(() => Promise.resolve({}))
+      };
+      const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
+
+      const service = new BaseService(Mock, mockRepoAccessor);
+      await service.softDelete(1);
+
+      expect(mockRepository.softDelete).toHaveBeenCalledWith(1);
     });
   });
 

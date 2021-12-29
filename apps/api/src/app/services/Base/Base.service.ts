@@ -34,6 +34,10 @@ export default class BaseService<T> {
     return this.repository.update(id, value);
   }
 
+  public softDelete(criteria: number | string): Promise<UpdateResult> {
+    return this.repository.softDelete(criteria);
+  }
+
   public count(args: FindManyOptions<T> | FindCondition<T>): Promise<number> {
     return this.repository.count(args);
   }
