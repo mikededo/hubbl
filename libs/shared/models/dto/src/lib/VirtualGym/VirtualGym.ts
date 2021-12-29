@@ -13,7 +13,7 @@ import { DTOGroups, numberError, stringError, validationParser } from '../util';
 export default class VirtualGymDTO implements DTO<VirtualGym> {
   @IsNumber(
     {},
-    { message: numberError('nid'), groups: [DTOGroups.ALL, DTOGroups.UPDATE] }
+    { message: numberError('id'), groups: [DTOGroups.ALL, DTOGroups.UPDATE] }
   )
   id!: number;
 
@@ -58,7 +58,7 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
     {},
     {
       message: numberError('gym'),
-      groups: [DTOGroups.ALL, DTOGroups.CREATE]
+      groups: [DTOGroups.CREATE]
     }
   )
   gym!: number;
@@ -91,7 +91,7 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
     json: any,
     variant: DTOGroups
   ): Promise<VirtualGymDTO> {
-    const result = this.propMapper(json);
+    const result = VirtualGymDTO.propMapper(json);
 
     await validateOrReject(result, {
       validationError: { target: false },
@@ -112,8 +112,8 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
   public static async fromClass(
     virtualGym: VirtualGym
   ): Promise<VirtualGymDTO> {
-    const result = this.propMapper(virtualGym);
-    result.gymZones = virtualGym.gymZones;
+    const result = VirtualGymDTO.propMapper(virtualGym);
+    result.gymZones = virtualGym.gymZones || [];
 
     await validateOrReject(result, {
       validationError: { target: false },
