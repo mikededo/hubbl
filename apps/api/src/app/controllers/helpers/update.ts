@@ -7,6 +7,7 @@ import {
   DTOGroups,
   OwnerDTO,
   TrainerDTO,
+  VirtualGymDTO,
   WorkerDTO
 } from '@gymman/shared/models/dto';
 import {
@@ -14,6 +15,7 @@ import {
   Gym,
   Owner,
   Trainer,
+  VirtualGym,
   Worker
 } from '@gymman/shared/models/entities';
 
@@ -23,9 +25,19 @@ import { ParsedToken } from './types';
 
 /* COMMON UPDATERS */
 
-type UpdatableServices = BaseService<Owner | Worker | Trainer | Client>;
+type UpdatableServices =
+  | BaseService<Owner>
+  | BaseService<Worker>
+  | BaseService<Trainer>
+  | BaseService<Client>
+  | BaseService<VirtualGym>;
 
-type UpdatableEntities = 'Owner' | 'Worker' | 'Trainer' | 'Client';
+type UpdatableEntities =
+  | 'Owner'
+  | 'Worker'
+  | 'Trainer'
+  | 'Client'
+  | 'VirtualGym';
 
 type FindAndUpdateProps = {
   controller: BaseController;
@@ -63,11 +75,19 @@ export const findAndUpdateEntity = async ({
   }
 };
 
-type CommonUpdateByServices = BaseService<Trainer | Client>;
+type CommonUpdateByServices =
+  | BaseService<Owner>
+  | BaseService<Worker>
+  | BaseService<Trainer>
+  | BaseService<Client>
+  | BaseService<VirtualGym>;
 
-type CommonUpdateByDTOs = TrainerDTO<Gym | number> | ClientDTO<Gym | number>;
+type CommonUpdateByDTOs =
+  | TrainerDTO<Gym | number>
+  | ClientDTO<Gym | number>
+  | VirtualGymDTO;
 
-type CommonUpdateByEntities = 'Trainer' | 'Client';
+type CommonUpdateByEntities = 'Trainer' | 'Client' | 'VirtualGym';
 
 type CommonUpdateByValues =
   | '["client", "owner", "worker"]'

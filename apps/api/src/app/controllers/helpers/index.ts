@@ -1,9 +1,4 @@
-import {
-  clientUpdate,
-  ownerUpdate,
-  trainerUpdate,
-  workerUpdate
-} from './update';
-
+export * from './create';
+export * from './delete';
 export * from './types';
-export { clientUpdate, ownerUpdate, trainerUpdate, workerUpdate };
+export * from './update';
