@@ -94,7 +94,7 @@ export default class GymZone {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   })
-  virtualGym!: VirtualGym;
+  virtualGym!: number;
 
   @CreateDateColumn()
   createdAt!: Date;
