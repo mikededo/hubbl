@@ -1,11 +1,13 @@
 import { Application } from 'express';
 
 import PersonRouter from './Persons.routes';
+import GymZoneRouter from './GymZone.routes';
 import VirtualGymRouter from './VirtualGym.routes';
 
 const Routes = {
   persons: PersonRouter,
-  'virtual-gyms': VirtualGymRouter
+  'virtual-gyms': VirtualGymRouter,
+  'gym-zones': GymZoneRouter
 };
 
 export default (app: Application) => {

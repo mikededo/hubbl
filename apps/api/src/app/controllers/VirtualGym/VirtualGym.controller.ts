@@ -80,7 +80,6 @@ export const VirtualGymFetchController = fetchInstance;
 class IVirtualGymCreateController extends BaseController {
   protected service: VirtualGymService = undefined;
   protected ownerService: OwnerService = undefined;
-  protected workerService: WorkerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
