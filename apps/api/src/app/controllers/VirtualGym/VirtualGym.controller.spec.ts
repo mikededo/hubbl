@@ -361,7 +361,7 @@ describe('VirtualGym Controller', () => {
   });
 
   describe('VirtualGymDeleteController', () => {
-    it('should delete the services if does not have any', async () => {
+    it('should create the services if does not have any', async () => {
       jest.spyOn(VirtualGymDeleteController, 'fail').mockImplementation();
 
       VirtualGymDeleteController['service'] = undefined;
@@ -375,7 +375,7 @@ describe('VirtualGym Controller', () => {
     });
 
     it('should call deletedByOwner', async () => {
-      const cboSpy = jest
+      const dboSpy = jest
         .spyOn(deleteHelpers, 'deletedByOwner')
         .mockImplementation();
       const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
@@ -389,8 +389,8 @@ describe('VirtualGym Controller', () => {
       );
 
       decodeSpyAsserts(jwtSpy);
-      expect(cboSpy).toHaveBeenCalledTimes(1);
-      expect(cboSpy).toHaveBeenCalledWith({
+      expect(dboSpy).toHaveBeenCalledTimes(1);
+      expect(dboSpy).toHaveBeenCalledWith({
         service: {},
         ownerService: {},
         controller: VirtualGymDeleteController,

@@ -1,14 +1,19 @@
 import { Response } from 'express';
 
-import { Owner, VirtualGym, Worker } from '@gymman/shared/models/entities';
+import {
+  GymZone,
+  Owner,
+  VirtualGym,
+  Worker
+} from '@gymman/shared/models/entities';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';
 import { ParsedToken } from './types';
 
-type CommonDeleteByServices = BaseService<VirtualGym>;
+type CommonDeleteByServices = BaseService<VirtualGym> | BaseService<GymZone>;
 
-type CommonDeleteByEntities = 'VirtualGym';
+type CommonDeleteByEntities = 'VirtualGym' | 'GymZone';
 
 type WorkerDeletePermissions =
   | 'deleteClients'

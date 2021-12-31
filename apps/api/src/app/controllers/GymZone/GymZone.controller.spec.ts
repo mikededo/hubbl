@@ -5,10 +5,12 @@ import { DTOGroups, GymZoneDTO } from '@gymman/shared/models/dto';
 
 import { GymZoneService, OwnerService, WorkerService } from '../../services';
 import * as create from '../helpers/create';
+import * as deleteHelpers from '../helpers/delete';
 import * as update from '../helpers/update';
 import {
   GymZoneCreateController,
-  GymZoneUpdateController
+  GymZoneUpdateController,
+  GymZoneDeleteController
 } from './GymZone.controller';
 
 jest.mock('../../services');
@@ -32,6 +34,7 @@ describe('GymZone controller', () => {
     toClass: jest.fn()
   };
   const mockReq = {
+    params: { id: 1 },
     query: { by: 'owner' },
     body: {},
     headers: { authorization: 'Any token' }
@@ -204,6 +207,52 @@ describe('GymZone controller', () => {
       expect(uboowSpy).not.toHaveBeenCalled();
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith({}, 'fromJson-error');
+    });
+  });
+
+  describe('GymZoneDeleteController', () => {
+    it('should create the services if does not have any', async () => {
+      jest.spyOn(GymZoneDeleteController, 'fail').mockImplementation();
+
+      GymZoneDeleteController['service'] = undefined;
+      GymZoneDeleteController['ownerService'] = undefined;
+      GymZoneDeleteController['workerService'] = undefined;
+      await GymZoneDeleteController.execute({} as any, {} as any);
+
+      expect(GymZoneService).toHaveBeenCalled();
+      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
+      expect(OwnerService).toHaveBeenCalled();
+      expect(OwnerService).toHaveBeenCalledWith(getRepository);
+      expect(WorkerService).toHaveBeenCalled();
+      expect(WorkerService).toHaveBeenCalledWith(getRepository);
+    });
+
+    it('should call deletedByOwnerOrWorker', async () => {
+      const dboowSpy = jest
+        .spyOn(deleteHelpers, 'deletedByOwnerOrWorker')
+        .mockImplementation();
+      const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
+
+      GymZoneDeleteController['service'] = {} as any;
+      GymZoneDeleteController['ownerService'] = {} as any;
+      GymZoneDeleteController['workerService'] = {} as any;
+
+      await GymZoneDeleteController.execute(mockReq, {} as any);
+
+      decodeSpyAsserts(jwtSpy);
+      expect(dboowSpy).toHaveBeenCalledTimes(1);
+      expect(dboowSpy).toHaveBeenCalledWith({
+        service: {},
+        ownerService: {},
+        workerService: {},
+        controller: GymZoneDeleteController,
+        res: {},
+        token: { id: 1 },
+        by: mockReq.query.by,
+        entityId: mockReq.params.id,
+        entityName: 'GymZone',
+        workerDeletePermission: 'deleteGymZones'
+      });
     });
   });
 });

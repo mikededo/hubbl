@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { GymZoneCreateController, GymZoneUpdateController } from '../controllers';
+import {
+  GymZoneCreateController,
+  GymZoneDeleteController,
+  GymZoneUpdateController
+} from '../controllers';
 import middlewares from '../middlewares';
 
 const GymZoneRouter: Router = Router();
@@ -16,6 +20,13 @@ GymZoneRouter.post('', middlewares.auth, (req, res) => {
  */
 GymZoneRouter.put('', middlewares.auth, (req, res) => {
   GymZoneUpdateController.execute(req, res);
+});
+
+/**
+ * @description Deletes a gym zone in the database
+ */
+GymZoneRouter.delete('/:id', middlewares.auth, (req, res) => {
+  GymZoneDeleteController.execute(req, res);
 });
 
 export default GymZoneRouter;

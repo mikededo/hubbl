@@ -8,6 +8,7 @@ import { GymZoneService, OwnerService, WorkerService } from '../../services';
 import BaseController from '../Base';
 import {
   createdByOwnerOrWorker,
+  deletedByOwnerOrWorker,
   ParsedToken,
   updatedByOwnerOrWorker
 } from '../helpers';
@@ -108,3 +109,45 @@ class IGymZoneUpdateController extends BaseController {
 const updateInstance = new IGymZoneUpdateController();
 
 export const GymZoneUpdateController = updateInstance;
+
+class IGymZoneDeleteController extends BaseController {
+  protected service: GymZoneService = undefined;
+  protected ownerService: OwnerService = undefined;
+  protected workerService: WorkerService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.service) {
+      this.service = new GymZoneService(getRepository);
+    }
+
+    if (!this.ownerService) {
+      this.ownerService = new OwnerService(getRepository);
+    }
+
+    if (!this.workerService) {
+      this.workerService = new WorkerService(getRepository);
+    }
+
+    // Get the token. Token should be validate a priori, since it is an
+    // authorized call
+    const tokenValues = req.headers.authorization.split(' ');
+    const token = decode(tokenValues[1]) as ParsedToken;
+
+    return deletedByOwnerOrWorker({
+      service: this.service,
+      ownerService: this.ownerService,
+      workerService: this.workerService,
+      controller: this,
+      res,
+      token,
+      by: req.query.by as any,
+      entityId: req.params.id as any,
+      entityName: 'GymZone',
+      workerDeletePermission: 'deleteGymZones'
+    });
+  }
+}
+
+const deleteInstance = new IGymZoneDeleteController();
+
+export const GymZoneDeleteController = deleteInstance;

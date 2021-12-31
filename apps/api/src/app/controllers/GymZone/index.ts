@@ -1,6 +1,11 @@
 import {
   GymZoneCreateController,
+  GymZoneDeleteController,
   GymZoneUpdateController
 } from './GymZone.controller';
 
-export { GymZoneCreateController, GymZoneUpdateController };
+export {
+  GymZoneCreateController,
+  GymZoneDeleteController,
+  GymZoneUpdateController
+};
