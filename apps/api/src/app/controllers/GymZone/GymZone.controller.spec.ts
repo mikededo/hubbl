@@ -251,6 +251,7 @@ describe('GymZone controller', () => {
         by: mockReq.query.by,
         entityId: mockReq.params.id,
         entityName: 'GymZone',
+        countArgs: { id: 1 },
         workerDeletePermission: 'deleteGymZones'
       });
     });

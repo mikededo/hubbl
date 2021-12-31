@@ -191,7 +191,8 @@ class IVirtualGymDeleteController extends BaseController {
       res,
       token,
       entityId: req.params.id,
-      entityName: 'VirtualGym'
+      entityName: 'VirtualGym',
+      countArgs: { id: req.params.id }
     });
   }
 }

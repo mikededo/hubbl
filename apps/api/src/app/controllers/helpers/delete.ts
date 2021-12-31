@@ -32,6 +32,7 @@ type DeletedByOwnerOrWorkerProps = {
   by: 'worker' | 'owner';
   entityId: string | number;
   entityName: CommonDeleteByEntities;
+  countArgs: any;
   workerDeletePermission?: WorkerDeletePermissions;
 };
 
@@ -45,6 +46,7 @@ export const deletedByOwnerOrWorker = async ({
   by,
   entityId,
   entityName,
+  countArgs,
   workerDeletePermission
 }: DeletedByOwnerOrWorkerProps): Promise<Response> => {
   // Validate who is updating
@@ -85,6 +87,10 @@ export const deletedByOwnerOrWorker = async ({
     );
   }
 
+  if (!(await service.count(countArgs))) {
+    return controller.notFound(res, `${entityName} to delete not found.`);
+  }
+
   try {
     // If valid, update the entity
     await service.softDelete(entityId);
@@ -108,6 +114,7 @@ type DeletedByOwner = Pick<
   | 'token'
   | 'entityId'
   | 'entityName'
+  | 'countArgs'
 >;
 
 /**
@@ -121,7 +128,8 @@ export const deletedByOwner = ({
   res,
   token,
   entityId,
-  entityName
+  entityName,
+  countArgs
 }: DeletedByOwner) =>
   deletedByOwnerOrWorker({
     service,
@@ -132,5 +140,6 @@ export const deletedByOwner = ({
     token,
     by: 'owner',
     entityId,
-    entityName
+    entityName,
+    countArgs
   });
