@@ -5,7 +5,11 @@ import { DTOGroups, GymZoneDTO } from '@gymman/shared/models/dto';
 
 import { GymZoneService, OwnerService, WorkerService } from '../../services';
 import * as create from '../helpers/create';
-import { GymZoneCreateController } from './GymZone.controller';
+import * as update from '../helpers/update';
+import {
+  GymZoneCreateController,
+  GymZoneUpdateController
+} from './GymZone.controller';
 
 jest.mock('../../services');
 
@@ -118,6 +122,86 @@ describe('GymZone controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.CREATE);
       expect(cboowSpy).not.toHaveBeenCalled();
+      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
+      expect(clientErrorSpy).toHaveBeenCalledWith({}, 'fromJson-error');
+    });
+  });
+
+  describe('GymZoneUpdateController', () => {
+    it('should create the services if does not have any', async () => {
+      jest.spyOn(GymZoneUpdateController, 'fail').mockImplementation();
+
+      GymZoneUpdateController['service'] = undefined;
+      GymZoneUpdateController['ownerService'] = undefined;
+      GymZoneUpdateController['workerService'] = undefined;
+      await GymZoneUpdateController.execute({} as any, {} as any);
+
+      expect(GymZoneService).toHaveBeenCalled();
+      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
+      expect(OwnerService).toHaveBeenCalled();
+      expect(OwnerService).toHaveBeenCalledWith(getRepository);
+      expect(WorkerService).toHaveBeenCalled();
+      expect(WorkerService).toHaveBeenCalledWith(getRepository);
+    });
+
+    it('should call updatedByOwnerOrWorker', async () => {
+      const uboowSpy = jest
+        .spyOn(update, 'updatedByOwnerOrWorker')
+        .mockImplementation();
+      const fromJsonSpy = jest
+        .spyOn(GymZoneDTO, 'fromJson')
+        .mockResolvedValue(mockDto as any);
+      const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
+
+      GymZoneUpdateController['service'] = {} as any;
+      GymZoneUpdateController['ownerService'] = {} as any;
+      GymZoneUpdateController['workerService'] = {} as any;
+
+      await GymZoneUpdateController.execute(mockReq, {} as any);
+
+      decodeSpyAsserts(jwtSpy);
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
+      expect(uboowSpy).toHaveBeenCalledTimes(1);
+      expect(uboowSpy).toHaveBeenCalledWith({
+        service: {},
+        ownerService: {},
+        workerService: {},
+        controller: GymZoneUpdateController,
+        res: {},
+        token: { id: 1 },
+        by: mockReq.query.by,
+        dto: mockDto,
+        entityName: 'GymZone',
+        updatableBy: '["owner", "worker"]',
+        countArgs: { id: 1 },
+        workerUpdatePermission: 'updateGymZones'
+      });
+    });
+
+    it('should call clientError on fromJson error', async () => {
+      const uboowSpy = jest
+        .spyOn(update, 'updatedByOwnerOrWorker')
+        .mockImplementation();
+      const fromJsonSpy = jest
+        .spyOn(GymZoneDTO, 'fromJson')
+        .mockRejectedValue('fromJson-error');
+      const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
+
+      const clientErrorSpy = jest
+        .spyOn(GymZoneUpdateController, 'clientError')
+        .mockImplementation();
+
+      GymZoneUpdateController['service'] = {} as any;
+      GymZoneUpdateController['ownerService'] = {} as any;
+      GymZoneUpdateController['workerService'] = {} as any;
+
+      await GymZoneUpdateController.execute(mockReq, {} as any);
+
+      decodeSpyAsserts(jwtSpy);
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
+      expect(uboowSpy).not.toHaveBeenCalled();
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith({}, 'fromJson-error');
     });
