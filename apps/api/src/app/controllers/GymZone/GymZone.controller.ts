@@ -141,8 +141,9 @@ class IGymZoneDeleteController extends BaseController {
       res,
       token,
       by: req.query.by as any,
-      entityId: req.params.id as any,
+      entityId: req.params.id,
       entityName: 'GymZone',
+      countArgs: { id: req.params.id },
       workerDeletePermission: 'deleteGymZones'
     });
   }

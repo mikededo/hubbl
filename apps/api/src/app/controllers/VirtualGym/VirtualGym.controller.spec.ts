@@ -397,7 +397,8 @@ describe('VirtualGym Controller', () => {
         res: {},
         token: { id: 1 },
         entityId: 1,
-        entityName: 'VirtualGym'
+        entityName: 'VirtualGym',
+        countArgs: { id: 1 }
       });
     });
   });
