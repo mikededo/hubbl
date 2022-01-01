@@ -1,4 +1,4 @@
-import { Trainer } from '@gymman/shared/models/entities';
+import { Trainer } from '@hubbl/shared/models/entities';
 
 import BaseService from '../Base';
 import { RepositoryAccessor } from '../util';

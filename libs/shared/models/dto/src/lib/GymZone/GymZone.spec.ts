@@ -1,6 +1,6 @@
 import * as ClassValidator from 'class-validator';
 
-import { GymZone } from '@gymman/shared/models/entities';
+import { GymZone } from '@hubbl/shared/models/entities';
 
 import * as Util from '../util';
 import GymZoneDTO from './GymZone';

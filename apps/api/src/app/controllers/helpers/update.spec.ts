@@ -6,8 +6,8 @@ import {
   OwnerDTO,
   TrainerDTO,
   WorkerDTO
-} from '@gymman/shared/models/dto';
-import { Owner, Worker } from '@gymman/shared/models/entities';
+} from '@hubbl/shared/models/dto';
+import { Owner, Worker } from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';

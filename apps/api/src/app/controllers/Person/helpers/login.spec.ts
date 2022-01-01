@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
-import { PersonDTOGroups } from '@gymman/shared/models/dto';
+import { PersonDTOGroups } from '@hubbl/shared/models/dto';
 
 import BaseController from '../../Base';
 import * as logins from './login';
@@ -138,7 +138,7 @@ describe('login', () => {
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(
         'Set-Cookie',
-        `__gym-man-refresh__=${token}; HttpOnly`
+        `__hubbl-refresh__=${token}; HttpOnly`
       );
       // Check result
       expect(mockController.ok).toHaveBeenCalledTimes(1);
@@ -296,7 +296,7 @@ describe('login', () => {
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(
         'Set-Cookie',
-        `__gym-man-refresh__=${token}; HttpOnly`
+        `__hubbl-refresh__=${token}; HttpOnly`
       );
       // Then fail
       expect(mockController.ok).toHaveBeenCalledTimes(1);

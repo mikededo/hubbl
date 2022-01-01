@@ -1,4 +1,4 @@
-import { Gym, Person } from '@gymman/shared/models/entities';
+import { Gym, Person } from '@hubbl/shared/models/entities';
 
 import PersonDTO from '../Person';
 import * as creators from './creators';

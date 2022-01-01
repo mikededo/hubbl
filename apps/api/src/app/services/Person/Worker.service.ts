@@ -1,4 +1,4 @@
-import { Worker } from '@gymman/shared/models/entities';
+import { Worker } from '@hubbl/shared/models/entities';
 
 import BaseService from '../Base';
 import { RepositoryAccessor } from '../util';

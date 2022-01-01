@@ -10,7 +10,7 @@ import {
   TrainerDTO,
   VirtualGymDTO,
   WorkerDTO
-} from '@gymman/shared/models/dto';
+} from '@hubbl/shared/models/dto';
 import {
   Client,
   Gym,
@@ -19,7 +19,7 @@ import {
   Trainer,
   VirtualGym,
   Worker
-} from '@gymman/shared/models/entities';
+} from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';

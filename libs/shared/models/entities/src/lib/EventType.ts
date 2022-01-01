@@ -8,7 +8,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { AppPalette } from '@gymman/shared/types';
+import { AppPalette } from '@hubbl/shared/types';
 
 import Gym from './Gym';
 

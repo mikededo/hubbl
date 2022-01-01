@@ -1,4 +1,4 @@
-import { Owner, Worker } from '@gymman/shared/models/entities';
+import { Owner, Worker } from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../services';
 import * as deleteHelpers from './delete';

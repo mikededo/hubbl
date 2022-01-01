@@ -1,4 +1,4 @@
-import { Client } from '@gymman/shared/models/entities';
+import { Client } from '@hubbl/shared/models/entities';
 
 import BaseService from '../Base';
 import { RepositoryAccessor } from '../util';

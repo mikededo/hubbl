@@ -1,7 +1,7 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
-import { Client, Gym } from '@gymman/shared/models/entities';
+import { Client, Gym } from '@hubbl/shared/models/entities';
 
 import * as Util from '../util';
 import ClientDTO from './Client';

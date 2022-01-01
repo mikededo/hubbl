@@ -10,7 +10,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { GymZoneIntervals } from '@gymman/shared/types';
+import { GymZoneIntervals } from '@hubbl/shared/types';
 
 import Calendar from './Calendar';
 import VirtualGym from './VirtualGym';

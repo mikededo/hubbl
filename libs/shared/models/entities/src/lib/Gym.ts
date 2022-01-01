@@ -8,7 +8,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { ThemeColor } from '@gymman/shared/types';
+import { ThemeColor } from '@hubbl/shared/types';
 
 import EventType from './EventType';
 import Person from './Person';

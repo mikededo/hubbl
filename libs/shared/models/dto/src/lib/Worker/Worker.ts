@@ -6,8 +6,8 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { Gym, Person, Worker } from '@gymman/shared/models/entities';
-import { Gender } from '@gymman/shared/types';
+import { Gym, Person, Worker } from '@hubbl/shared/models/entities';
+import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';

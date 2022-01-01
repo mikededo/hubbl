@@ -5,7 +5,7 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { GymZone, VirtualGym } from '@gymman/shared/models/entities';
+import { GymZone, VirtualGym } from '@hubbl/shared/models/entities';
 
 import DTO from '../Base';
 import { DTOGroups, numberError, stringError, validationParser } from '../util';

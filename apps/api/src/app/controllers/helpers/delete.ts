@@ -5,7 +5,7 @@ import {
   Owner,
   VirtualGym,
   Worker
-} from '@gymman/shared/models/entities';
+} from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';

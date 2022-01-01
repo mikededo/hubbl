@@ -6,8 +6,8 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { Gym, VirtualGym } from '@gymman/shared/models/entities';
-import { ThemeColor } from '@gymman/shared/types';
+import { Gym, VirtualGym } from '@hubbl/shared/models/entities';
+import { ThemeColor } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import { PersonDTOGroups } from '../Person';

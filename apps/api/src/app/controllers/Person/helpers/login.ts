@@ -7,14 +7,14 @@ import {
   OwnerDTO,
   PersonDTOGroups,
   WorkerDTO
-} from '@gymman/shared/models/dto';
+} from '@hubbl/shared/models/dto';
 import {
   Client,
   Gym,
   Owner,
   Trainer,
   Worker
-} from '@gymman/shared/models/entities';
+} from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../../services';
 import BaseController from '../../Base';
@@ -78,7 +78,7 @@ export const login = async ({
         process.env.NX_JWT_TOKEN
       );
 
-      res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);
+      res.setHeader('Set-Cookie', `__hubbl-refresh__=${token}; HttpOnly`);
 
       // Join with the entity data
       return controller.ok(res, {

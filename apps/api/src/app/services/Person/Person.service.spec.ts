@@ -1,4 +1,4 @@
-import { Person } from '@gymman/shared/models/entities';
+import { Person } from '@hubbl/shared/models/entities';
 
 import BaseService from '../Base';
 import PersonService from './Person.service';

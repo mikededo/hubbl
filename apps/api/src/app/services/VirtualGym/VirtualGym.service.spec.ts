@@ -1,4 +1,4 @@
-import { VirtualGym } from '@gymman/shared/models/entities';
+import { VirtualGym } from '@hubbl/shared/models/entities';
 
 import BaseService from '../Base';
 import VirtualGymService from './VirtualGym.service';

@@ -1,4 +1,4 @@
-import { Owner, Worker } from '@gymman/shared/models/entities';
+import { Owner, Worker } from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../services';
 import * as create from './create';
@@ -79,7 +79,10 @@ describe('create', () => {
         expect(fromClassSpy).toHaveBeenCalledWith(mockEntity);
         expect(fromClassSpy).toHaveBeenCalledTimes(1);
         expect(mockController.created).toHaveBeenCalledTimes(1);
-        expect(mockController.created).toHaveBeenCalledWith(mockRes, mockEntityDto);
+        expect(mockController.created).toHaveBeenCalledWith(
+          mockRes,
+          mockEntityDto
+        );
       };
 
       it('should create by owner', async () => {

@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, VirtualGymDTO } from '@gymman/shared/models/dto';
+import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
 
 import {
   OwnerService,
@@ -204,7 +204,7 @@ describe('VirtualGym Controller', () => {
       expect(mockService.getMany).toHaveBeenCalledTimes(1);
       // Ensure fromClass is called
       expect(fromClassSpy).toHaveBeenCalledTimes(1);
-      expect(fromClassSpy).toHaveBeenCalledWith(mockVirtualGym)
+      expect(fromClassSpy).toHaveBeenCalledWith(mockVirtualGym);
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });

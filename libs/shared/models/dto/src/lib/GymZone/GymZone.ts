@@ -7,8 +7,8 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { Calendar, GymZone, VirtualGym } from '@gymman/shared/models/entities';
-import { GymZoneIntervals } from '@gymman/shared/types';
+import { Calendar, GymZone, VirtualGym } from '@hubbl/shared/models/entities';
+import { GymZoneIntervals } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import {
@@ -121,9 +121,7 @@ export default class GymZoneDTO implements DTO<GymZone> {
         : from.virtualGym;
 
     result.calendar =
-      from.calendar instanceof Calendar
-        ? from.calendar.id
-        : from.calendar;
+      from.calendar instanceof Calendar ? from.calendar.id : from.calendar;
 
     return result;
   }
