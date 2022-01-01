@@ -121,8 +121,14 @@ describe('GymZone controller', () => {
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'gymZone'
       });
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
+      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        1,
+        'gymZone.calendar',
+        'calendar'
+      );
+      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        2,
         'gymZone.virtualGym',
         'virtualGym',
         'virtualGym.id = :id',
@@ -186,7 +192,7 @@ describe('GymZone controller', () => {
       expect(jwtSpy).toHaveBeenCalledTimes(1);
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
       expect(mockGymZoneService.leftJoin).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.where).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.getOne).toHaveBeenCalledTimes(1);
@@ -213,7 +219,7 @@ describe('GymZone controller', () => {
       expect(jwtSpy).toHaveBeenCalledTimes(1);
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
       expect(mockGymZoneService.leftJoin).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.where).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.getOne).toHaveBeenCalledTimes(1);

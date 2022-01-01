@@ -7,7 +7,7 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { GymZone, VirtualGym } from '@gymman/shared/models/entities';
+import { Calendar, GymZone, VirtualGym } from '@gymman/shared/models/entities';
 import { GymZoneIntervals } from '@gymman/shared/types';
 
 import DTO from '../Base';
@@ -92,6 +92,15 @@ export default class GymZoneDTO implements DTO<GymZone> {
   )
   virtualGym!: number;
 
+  @IsNumber(
+    {},
+    {
+      message: numberError('calendar'),
+      groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+    }
+  )
+  calendar!: number;
+
   private static propMapper(from: GymZone | any): GymZoneDTO {
     const result = new GymZoneDTO();
 
@@ -110,6 +119,11 @@ export default class GymZoneDTO implements DTO<GymZone> {
       from.virtualGym instanceof VirtualGym
         ? from.virtualGym.id
         : from.virtualGym;
+
+    result.calendar =
+      from.calendar instanceof Calendar
+        ? from.calendar.id
+        : from.calendar;
 
     return result;
   }
@@ -169,6 +183,8 @@ export default class GymZoneDTO implements DTO<GymZone> {
     result.closeTime = this.closeTime;
     result.timeIntervals = this.timeIntervals;
     result.virtualGym = this.virtualGym;
+
+    result.calendar = this.calendar ?? new Calendar();
 
     return result;
   }
