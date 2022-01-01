@@ -181,12 +181,15 @@ describe('VirtualGym Controller', () => {
       failSpyAsserts(failSpy);
     });
 
-    it('should call fail on service error', async () => {
+    it('should call fail on fromClass error', async () => {
       const failSpy = jest
         .spyOn(VirtualGymFetchController, 'fail')
         .mockImplementation();
+      const fromClassSpy = jest
+        .spyOn(VirtualGymDTO, 'fromClass')
+        .mockRejectedValue({});
       mockService.findOne.mockResolvedValue(mockPerson);
-      mockService.getMany.mockRejectedValue({});
+      mockService.getMany.mockResolvedValue([mockVirtualGym]);
 
       VirtualGymFetchController['service'] = mockService as any;
       VirtualGymFetchController['personService'] = mockService as any;
@@ -199,6 +202,9 @@ describe('VirtualGym Controller', () => {
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
       expect(mockService.getMany).toHaveBeenCalledTimes(1);
+      // Ensure fromClass is called
+      expect(fromClassSpy).toHaveBeenCalledTimes(1);
+      expect(fromClassSpy).toHaveBeenCalledWith(mockVirtualGym)
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });
