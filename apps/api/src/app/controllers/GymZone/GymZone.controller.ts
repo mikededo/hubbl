@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { decode } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, GymZoneDTO } from '@gymman/shared/models/dto';
-import { Gym } from '@gymman/shared/models/entities';
+import { DTOGroups, GymZoneDTO } from '@hubbl/shared/models/dto';
+import { Gym } from '@hubbl/shared/models/entities';
 
 import {
   GymZoneService,
@@ -59,7 +59,7 @@ class IGymZoneFetchController extends BaseController {
           })
           .where('gymZone.id = :gymZoneId', { gymZoneId: req.params.id })
           .getOne();
-          
+
         return this.ok(res, await GymZoneDTO.fromClass(result));
       } catch (e) {
         return this.fail(

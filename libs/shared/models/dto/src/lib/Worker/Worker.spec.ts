@@ -1,7 +1,7 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
-import { Gym, Worker } from '@gymman/shared/models/entities';
+import { Gym, Worker } from '@hubbl/shared/models/entities';
 
 import GymDTO from '../Gym';
 import * as Util from '../util';

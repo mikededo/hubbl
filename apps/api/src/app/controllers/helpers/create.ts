@@ -1,12 +1,12 @@
 import { Response as deleteHelpers } from 'express';
 
-import { GymZoneDTO, VirtualGymDTO } from '@gymman/shared/models/dto';
+import { GymZoneDTO, VirtualGymDTO } from '@hubbl/shared/models/dto';
 import {
   GymZone,
   Owner,
   VirtualGym,
   Worker
-} from '@gymman/shared/models/entities';
+} from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
-import { WorkerDTO } from '@gymman/shared/models/dto';
+import { WorkerDTO } from '@hubbl/shared/models/dto';
 
 import { OwnerService, WorkerService } from '../../services';
 import BaseController from '../Base';

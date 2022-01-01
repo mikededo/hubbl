@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 
-import { PersonDTOGroups } from '@gymman/shared/models/dto';
+import { PersonDTOGroups } from '@hubbl/shared/models/dto';
 
 import BaseController from '../../Base';
 import { register, trainerRegister } from './register';
@@ -132,7 +132,7 @@ describe('register', () => {
         // Ensure cookie is set
         expect(mockRes.setHeader).toBeCalledWith(
           'Set-Cookie',
-          `__gym-man-refresh__=${token}; HttpOnly`
+          `__hubbl-refresh__=${token}; HttpOnly`
         );
         // Check result
         expect(mockController.created).toHaveBeenCalledTimes(1);
@@ -268,7 +268,7 @@ describe('register', () => {
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(
         'Set-Cookie',
-        `__gym-man-refresh__=${token}; HttpOnly`
+        `__hubbl-refresh__=${token}; HttpOnly`
       );
     });
   });

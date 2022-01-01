@@ -1,6 +1,6 @@
 import TrainerService from './Trainer.service';
 import BaseService from '../Base';
-import { Trainer } from '@gymman/shared/models/entities';
+import { Trainer } from '@hubbl/shared/models/entities';
 
 jest.mock('../Base');
 

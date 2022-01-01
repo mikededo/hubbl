@@ -1,4 +1,4 @@
-import { VirtualGym } from '@gymman/shared/models/entities';
+import { VirtualGym } from '@hubbl/shared/models/entities';
 import * as ClassValidator from 'class-validator';
 
 import * as Util from '../util';
@@ -22,7 +22,7 @@ const propCompare = (
 describe('VirtualGym', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  })
+  });
 
   describe('#fromJson', () => {
     it('should create a DTO if json is valid', async () => {

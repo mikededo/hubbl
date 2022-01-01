@@ -17,7 +17,7 @@ import {
   Trainer,
   VirtualGym,
   Worker
-} from '@gymman/shared/models/entities';
+} from '@hubbl/shared/models/entities';
 
 const config: ConnectionOptions = {
   type: 'postgres',
@@ -26,7 +26,7 @@ const config: ConnectionOptions = {
   port: Number(process.env.POSTGRES_PORT) || 5432,
   username: process.env.POSTGRES_USER || 'postgres',
   password: process.env.POSTGRES_PASSWORD || 'changeme',
-  database: process.env.POSTGRES_DB || 'gym-man-db',
+  database: process.env.POSTGRES_DB || 'hubbl-db',
   entities: [
     CalendarAppointment,
     EventAppointment,

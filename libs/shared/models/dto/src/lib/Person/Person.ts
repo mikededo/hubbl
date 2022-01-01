@@ -7,8 +7,8 @@ import {
   Length
 } from 'class-validator';
 
-import { Gym } from '@gymman/shared/models/entities';
-import { AppTheme, Gender } from '@gymman/shared/types';
+import { Gym } from '@hubbl/shared/models/entities';
+import { AppTheme, Gender } from '@hubbl/shared/types';
 
 import {
   DTOGroups,

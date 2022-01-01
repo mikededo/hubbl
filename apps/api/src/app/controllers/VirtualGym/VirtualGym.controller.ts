@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { decode } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, VirtualGymDTO } from '@gymman/shared/models/dto';
-import { Gym } from '@gymman/shared/models/entities';
+import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { Gym } from '@hubbl/shared/models/entities';
 
 import {
   OwnerService,

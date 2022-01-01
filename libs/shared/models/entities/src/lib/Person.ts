@@ -9,7 +9,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { AppTheme, Gender } from '@gymman/shared/types';
+import { AppTheme, Gender } from '@hubbl/shared/types';
 
 import Gym from './Gym';
 

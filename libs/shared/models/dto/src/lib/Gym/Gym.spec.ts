@@ -1,7 +1,7 @@
 import * as ClassValidator from 'class-validator';
 
-import { Gym } from '@gymman/shared/models/entities';
-import { ThemeColor } from '@gymman/shared/types';
+import { Gym } from '@hubbl/shared/models/entities';
+import { ThemeColor } from '@hubbl/shared/types';
 
 import * as Util from '../util';
 import GymDTO from './Gym';

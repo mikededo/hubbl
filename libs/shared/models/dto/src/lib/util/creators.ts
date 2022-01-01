@@ -1,5 +1,5 @@
-import { Gym, Person } from '@gymman/shared/models/entities';
-import { AppTheme, Gender, ThemeColor } from '@gymman/shared/types';
+import { Gym, Person } from '@hubbl/shared/models/entities';
+import { AppTheme, Gender, ThemeColor } from '@hubbl/shared/types';
 
 import PersonDTO from '../Person';
 

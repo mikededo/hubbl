@@ -1,8 +1,8 @@
 import { genSalt, hash } from 'bcrypt';
 import { IsNotEmpty, validateOrReject } from 'class-validator';
 
-import { Gym, Owner, Person } from '@gymman/shared/models/entities';
-import { Gender } from '@gymman/shared/types';
+import { Gym, Owner, Person } from '@hubbl/shared/models/entities';
+import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';

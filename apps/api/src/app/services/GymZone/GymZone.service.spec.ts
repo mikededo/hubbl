@@ -1,4 +1,4 @@
-import { GymZone } from '@gymman/shared/models/entities';
+import { GymZone } from '@hubbl/shared/models/entities';
 
 import BaseService from '../Base';
 import GymZoneService from './GymZone.service';

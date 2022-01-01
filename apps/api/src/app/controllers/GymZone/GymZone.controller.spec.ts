@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, GymZoneDTO } from '@gymman/shared/models/dto';
+import { DTOGroups, GymZoneDTO } from '@hubbl/shared/models/dto';
 
 import {
   GymZoneService,

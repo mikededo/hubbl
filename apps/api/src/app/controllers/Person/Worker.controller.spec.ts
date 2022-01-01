@@ -1,6 +1,6 @@
 import { getRepository } from 'typeorm';
 
-import { WorkerDTO } from '@gymman/shared/models/dto';
+import { WorkerDTO } from '@hubbl/shared/models/dto';
 
 import { WorkerService, OwnerService } from '../../services';
 import * as personHelpers from './helpers';

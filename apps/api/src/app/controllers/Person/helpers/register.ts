@@ -7,14 +7,14 @@ import {
   PersonDTOGroups,
   TrainerDTO,
   WorkerDTO
-} from '@gymman/shared/models/dto';
+} from '@hubbl/shared/models/dto';
 import {
   Client,
   Gym,
   Owner,
   Trainer,
   Worker
-} from '@gymman/shared/models/entities';
+} from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../../services';
 import BaseController from '../../Base';
@@ -70,7 +70,7 @@ export const register = async <
         { expiresIn: '10m' }
       );
 
-      res.setHeader('Set-Cookie', `__gym-man-refresh__=${token}; HttpOnly`);
+      res.setHeader('Set-Cookie', `__hubbl-refresh__=${token}; HttpOnly`);
       return controller.created(res, {
         token,
         [returnName]: await fromClass(result)
