@@ -3,8 +3,14 @@ import { decode } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, GymZoneDTO } from '@gymman/shared/models/dto';
+import { Gym } from '@gymman/shared/models/entities';
 
-import { GymZoneService, OwnerService, WorkerService } from '../../services';
+import {
+  GymZoneService,
+  OwnerService,
+  PersonService,
+  WorkerService
+} from '../../services';
 import BaseController from '../Base';
 import {
   createdByOwnerOrWorker,
@@ -12,6 +18,66 @@ import {
   ParsedToken,
   updatedByOwnerOrWorker
 } from '../helpers';
+
+class IGymZoneFetchController extends BaseController {
+  protected service: GymZoneService = undefined;
+  protected personService: PersonService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.service) {
+      this.service = new GymZoneService(getRepository);
+    }
+
+    if (!this.personService) {
+      this.personService = new PersonService(getRepository);
+    }
+
+    // Get the token. Token should be validate a priori, since it is an
+    // authorized call
+    const tokenValues = req.headers.authorization.split(' ');
+    const token = decode(tokenValues[1]) as ParsedToken;
+
+    try {
+      const person = await this.personService.findOne(token.id);
+
+      if (!person) {
+        return this.clientError(res, 'Person does not exist');
+      }
+
+      try {
+        const result = await this.service
+          .createQueryBuilder({ alias: 'gymZone' })
+          .leftJoinAndSelect(
+            'gymZone.virtualGym',
+            'virtualGym',
+            'virtualGym.id = :id',
+            { id: req.params.vgId }
+          )
+          .leftJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
+            id: (person.gym as Gym).id
+          })
+          .where('gymZone.id = :gymZoneId', { gymZoneId: req.params.id })
+          .getOne();
+
+        return this.ok(res, await GymZoneDTO.fromClass(result));
+      } catch (e) {
+        return this.fail(
+          res,
+          'Internal server error. If the problem persists, contact our team.'
+        );
+      }
+    } catch (_) {
+      return this.fail(
+        res,
+        'Internal server error. If the problem persists, contact our team.'
+      );
+    }
+  }
+}
+
+const fetchInstance = new IGymZoneFetchController();
+
+export const GymZoneFetchController = fetchInstance;
 
 class IGymZoneCreateController extends BaseController {
   protected service: GymZoneService = undefined;

@@ -7,7 +7,7 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { GymZone } from '@gymman/shared/models/entities';
+import { GymZone, VirtualGym } from '@gymman/shared/models/entities';
 import { GymZoneIntervals } from '@gymman/shared/types';
 
 import DTO from '../Base';
@@ -105,7 +105,11 @@ export default class GymZoneDTO implements DTO<GymZone> {
     result.openTime = from.openTime;
     result.closeTime = from.closeTime;
     result.timeIntervals = from.timeIntervals;
-    result.virtualGym = from.virtualGym;
+
+    result.virtualGym =
+      from.virtualGym instanceof VirtualGym
+        ? from.virtualGym.id
+        : from.virtualGym;
 
     return result;
   }
