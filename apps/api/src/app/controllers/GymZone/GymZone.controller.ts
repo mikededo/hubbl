@@ -2,30 +2,30 @@ import { Request, Response } from 'express';
 import { decode } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, VirtualGymDTO } from '@gymman/shared/models/dto';
+import { DTOGroups, GymZoneDTO } from '@gymman/shared/models/dto';
 import { Gym } from '@gymman/shared/models/entities';
 
 import {
+  GymZoneService,
   OwnerService,
   PersonService,
-  VirtualGymService,
   WorkerService
 } from '../../services';
 import BaseController from '../Base';
 import {
-  createdByOwner,
-  deletedByOwner,
+  createdByOwnerOrWorker,
+  deletedByOwnerOrWorker,
   ParsedToken,
   updatedByOwnerOrWorker
 } from '../helpers';
 
-class IVirtualGymFetchController extends BaseController {
-  protected service: VirtualGymService = undefined;
+class IGymZoneFetchController extends BaseController {
+  protected service: GymZoneService = undefined;
   protected personService: PersonService = undefined;
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new GymZoneService(getRepository);
     }
 
     if (!this.personService) {
@@ -38,27 +38,30 @@ class IVirtualGymFetchController extends BaseController {
     const token = decode(tokenValues[1]) as ParsedToken;
 
     try {
-      // Get the person, if any
       const person = await this.personService.findOne(token.id);
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
       }
 
-      // Find the virtual gyms of the gym to which the token is validated
       try {
         const result = await this.service
-          .createQueryBuilder({ alias: 'virtualGym' })
-          .where('virtualGym.gym = :gym', { gym: (person.gym as Gym).id })
-          .getMany();
-
-        return this.ok(
-          res,
-          await Promise.all(
-            result.map(async (vg) => await VirtualGymDTO.fromClass(vg))
+          .createQueryBuilder({ alias: 'gymZone' })
+          .leftJoinAndSelect('gymZone.calendar', 'calendar')
+          .leftJoinAndSelect(
+            'gymZone.virtualGym',
+            'virtualGym',
+            'virtualGym.id = :id',
+            { id: req.params.vgId }
           )
-        );
-      } catch (_) {
+          .leftJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
+            id: (person.gym as Gym).id
+          })
+          .where('gymZone.id = :gymZoneId', { gymZoneId: req.params.id })
+          .getOne();
+          
+        return this.ok(res, await GymZoneDTO.fromClass(result));
+      } catch (e) {
         return this.fail(
           res,
           'Internal server error. If the problem persists, contact our team.'
@@ -73,57 +76,18 @@ class IVirtualGymFetchController extends BaseController {
   }
 }
 
-const fetchInstance = new IVirtualGymFetchController();
+const fetchInstance = new IGymZoneFetchController();
 
-export const VirtualGymFetchController = fetchInstance;
+export const GymZoneFetchController = fetchInstance;
 
-class IVirtualGymCreateController extends BaseController {
-  protected service: VirtualGymService = undefined;
-  protected ownerService: OwnerService = undefined;
-
-  protected async run(req: Request, res: Response): Promise<Response> {
-    if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
-    }
-
-    if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
-    }
-
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-    const token = decode(tokenValues[1]) as ParsedToken;
-
-    try {
-      return createdByOwner({
-        service: this.service,
-        ownerService: this.ownerService,
-        controller: this,
-        res,
-        fromClass: VirtualGymDTO.fromClass,
-        token,
-        dto: await VirtualGymDTO.fromJson(req.body, DTOGroups.CREATE),
-        entityName: 'VirtualGym'
-      });
-    } catch (e) {
-      return this.clientError(res, e);
-    }
-  }
-}
-
-const createInstance = new IVirtualGymCreateController();
-
-export const VirtualGymCreateController = createInstance;
-
-class IVirtualGymUpdateController extends BaseController {
-  protected service: VirtualGymService = undefined;
+class IGymZoneCreateController extends BaseController {
+  protected service: GymZoneService = undefined;
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new GymZoneService(getRepository);
     }
 
     if (!this.ownerService) {
@@ -140,7 +104,54 @@ class IVirtualGymUpdateController extends BaseController {
     const token = decode(tokenValues[1]) as ParsedToken;
 
     try {
-      const dto = await VirtualGymDTO.fromJson(req.body, DTOGroups.UPDATE);
+      return createdByOwnerOrWorker({
+        service: this.service,
+        ownerService: this.ownerService,
+        workerService: this.workerService,
+        controller: this,
+        res,
+        fromClass: GymZoneDTO.fromClass,
+        token,
+        by: req.query.by as any,
+        dto: await GymZoneDTO.fromJson(req.body, DTOGroups.CREATE),
+        entityName: 'GymZone',
+        workerCreatePermission: 'createGymZones'
+      });
+    } catch (e) {
+      return this.clientError(res, e);
+    }
+  }
+}
+
+const createInstance = new IGymZoneCreateController();
+
+export const GymZoneCreateController = createInstance;
+
+class IGymZoneUpdateController extends BaseController {
+  protected service: GymZoneService = undefined;
+  protected ownerService: OwnerService = undefined;
+  protected workerService: WorkerService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.service) {
+      this.service = new GymZoneService(getRepository);
+    }
+
+    if (!this.ownerService) {
+      this.ownerService = new OwnerService(getRepository);
+    }
+
+    if (!this.workerService) {
+      this.workerService = new WorkerService(getRepository);
+    }
+
+    // Get the token. Token should be validate a priori, since it is an
+    // authorized call
+    const tokenValues = req.headers.authorization.split(' ');
+    const token = decode(tokenValues[1]) as ParsedToken;
+
+    try {
+      const dto = await GymZoneDTO.fromJson(req.body, DTOGroups.UPDATE);
 
       return updatedByOwnerOrWorker({
         service: this.service,
@@ -149,12 +160,12 @@ class IVirtualGymUpdateController extends BaseController {
         controller: this,
         res,
         token,
-        dto,
         by: req.query.by as any,
-        entityName: 'VirtualGym',
+        dto,
+        entityName: 'GymZone',
         updatableBy: '["owner", "worker"]',
-        workerUpdatePermission: 'updateVirtualGyms',
-        countArgs: { id: dto.id }
+        countArgs: { id: dto.id },
+        workerUpdatePermission: 'updateGymZones'
       });
     } catch (e) {
       return this.clientError(res, e);
@@ -162,21 +173,26 @@ class IVirtualGymUpdateController extends BaseController {
   }
 }
 
-const updateInstance = new IVirtualGymUpdateController();
+const updateInstance = new IGymZoneUpdateController();
 
-export const VirtualGymUpdateController = updateInstance;
+export const GymZoneUpdateController = updateInstance;
 
-class IVirtualGymDeleteController extends BaseController {
-  protected service: VirtualGymService = undefined;
+class IGymZoneDeleteController extends BaseController {
+  protected service: GymZoneService = undefined;
   protected ownerService: OwnerService = undefined;
+  protected workerService: WorkerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new GymZoneService(getRepository);
     }
 
     if (!this.ownerService) {
       this.ownerService = new OwnerService(getRepository);
+    }
+
+    if (!this.workerService) {
+      this.workerService = new WorkerService(getRepository);
     }
 
     // Get the token. Token should be validate a priori, since it is an
@@ -184,19 +200,22 @@ class IVirtualGymDeleteController extends BaseController {
     const tokenValues = req.headers.authorization.split(' ');
     const token = decode(tokenValues[1]) as ParsedToken;
 
-    return deletedByOwner({
+    return deletedByOwnerOrWorker({
       service: this.service,
       ownerService: this.ownerService,
+      workerService: this.workerService,
       controller: this,
       res,
       token,
+      by: req.query.by as any,
       entityId: req.params.id,
-      entityName: 'VirtualGym',
-      countArgs: { id: req.params.id }
+      entityName: 'GymZone',
+      countArgs: { id: req.params.id },
+      workerDeletePermission: 'deleteGymZones'
     });
   }
 }
 
-const deleteInstance = new IVirtualGymDeleteController();
+const deleteInstance = new IGymZoneDeleteController();
 
-export const VirtualGymDeleteController = deleteInstance;
+export const GymZoneDeleteController = deleteInstance;

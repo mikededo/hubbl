@@ -6,6 +6,7 @@ import {
   VirtualGymFetchController,
   VirtualGymUpdateController
 } from '../controllers';
+import GymZoneRouter from './GymZone.routes';
 import middlewares from '../middlewares';
 
 const VirtualGymRouter: Router = Router();
@@ -25,5 +26,8 @@ VirtualGymRouter.put('', middlewares.auth, (req, res) => {
 VirtualGymRouter.delete('/:id', middlewares.auth, (req, res) => {
   VirtualGymDeleteController.execute(req, res);
 });
+
+// Attach gym zones routes
+VirtualGymRouter.use('/:vgId/gym-zones', GymZoneRouter);
 
 export default VirtualGymRouter;

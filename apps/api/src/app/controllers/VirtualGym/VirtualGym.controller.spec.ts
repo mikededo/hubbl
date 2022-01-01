@@ -181,12 +181,15 @@ describe('VirtualGym Controller', () => {
       failSpyAsserts(failSpy);
     });
 
-    it('should call fail on service error', async () => {
+    it('should call fail on fromClass error', async () => {
       const failSpy = jest
         .spyOn(VirtualGymFetchController, 'fail')
         .mockImplementation();
+      const fromClassSpy = jest
+        .spyOn(VirtualGymDTO, 'fromClass')
+        .mockRejectedValue({});
       mockService.findOne.mockResolvedValue(mockPerson);
-      mockService.getMany.mockRejectedValue({});
+      mockService.getMany.mockResolvedValue([mockVirtualGym]);
 
       VirtualGymFetchController['service'] = mockService as any;
       VirtualGymFetchController['personService'] = mockService as any;
@@ -199,6 +202,9 @@ describe('VirtualGym Controller', () => {
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
       expect(mockService.getMany).toHaveBeenCalledTimes(1);
+      // Ensure fromClass is called
+      expect(fromClassSpy).toHaveBeenCalledTimes(1);
+      expect(fromClassSpy).toHaveBeenCalledWith(mockVirtualGym)
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });
@@ -361,7 +367,7 @@ describe('VirtualGym Controller', () => {
   });
 
   describe('VirtualGymDeleteController', () => {
-    it('should delete the services if does not have any', async () => {
+    it('should create the services if does not have any', async () => {
       jest.spyOn(VirtualGymDeleteController, 'fail').mockImplementation();
 
       VirtualGymDeleteController['service'] = undefined;
@@ -375,7 +381,7 @@ describe('VirtualGym Controller', () => {
     });
 
     it('should call deletedByOwner', async () => {
-      const cboSpy = jest
+      const dboSpy = jest
         .spyOn(deleteHelpers, 'deletedByOwner')
         .mockImplementation();
       const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
@@ -389,15 +395,16 @@ describe('VirtualGym Controller', () => {
       );
 
       decodeSpyAsserts(jwtSpy);
-      expect(cboSpy).toHaveBeenCalledTimes(1);
-      expect(cboSpy).toHaveBeenCalledWith({
+      expect(dboSpy).toHaveBeenCalledTimes(1);
+      expect(dboSpy).toHaveBeenCalledWith({
         service: {},
         ownerService: {},
         controller: VirtualGymDeleteController,
         res: {},
         token: { id: 1 },
         entityId: 1,
-        entityName: 'VirtualGym'
+        entityName: 'VirtualGym',
+        countArgs: { id: 1 }
       });
     });
   });

@@ -3,13 +3,16 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
 import { GymZoneIntervals } from '@gymman/shared/types';
 
+import Calendar from './Calendar';
 import VirtualGym from './VirtualGym';
 
 @Entity()
@@ -70,6 +73,18 @@ export default class GymZone {
   closeTime!: string;
 
   /**
+   * `Calendar` of the `GymZone`
+   */
+  @OneToOne(() => Calendar, {
+    cascade: true,
+    nullable: false,
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn()
+  calendar!: number | Calendar;
+
+  /**
    * Defines the intervals in which the clients can make reservations
    * for a non-class `GymZone`
    */
@@ -94,7 +109,7 @@ export default class GymZone {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   })
-  virtualGym!: VirtualGym;
+  virtualGym!: number;
 
   @CreateDateColumn()
   createdAt!: Date;

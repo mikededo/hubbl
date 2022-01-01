@@ -1,17 +1,22 @@
 import { Response as deleteHelpers } from 'express';
 
-import { VirtualGymDTO } from '@gymman/shared/models/dto';
-import { Owner, VirtualGym, Worker } from '@gymman/shared/models/entities';
+import { GymZoneDTO, VirtualGymDTO } from '@gymman/shared/models/dto';
+import {
+  GymZone,
+  Owner,
+  VirtualGym,
+  Worker
+} from '@gymman/shared/models/entities';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';
 import { BaseFromClassCallable, ParsedToken } from './types';
 
-type CommonCreateByServices = BaseService<VirtualGym>;
+type CommonCreateByServices = BaseService<VirtualGym | GymZone>;
 
-type CommonCreateByDTOs = VirtualGymDTO;
+type CommonCreateByDTOs = VirtualGymDTO | GymZoneDTO;
 
-type CommonCreateByEntities = 'VirtualGym';
+type CommonCreateByEntities = 'VirtualGym' | 'GymZone';
 
 type WorkerCreatePermissions =
   | 'createClients'
@@ -20,7 +25,9 @@ type WorkerCreatePermissions =
   | 'createGymZones'
   | 'createTrainers';
 
-type FromClassCallables = BaseFromClassCallable<VirtualGym, VirtualGymDTO>;
+type FromClassCallables =
+  | BaseFromClassCallable<VirtualGym, VirtualGymDTO>
+  | BaseFromClassCallable<GymZone, GymZoneDTO>;
 
 type CreatedByOwnerOrWorkerProps = {
   service: CommonCreateByServices;
@@ -92,7 +99,7 @@ export const createdByOwnerOrWorker = async ({
     const result = await service.save(dto.toClass());
 
     // Return ok
-    return controller.created(res, await fromClass(result));
+    return controller.created(res, await fromClass(result as any));
   } catch (_) {
     return controller.fail(
       res,

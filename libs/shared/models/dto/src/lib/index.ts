@@ -1,5 +1,6 @@
 import DTO from './Base';
 import ClientDTO from './Client';
+import GymZoneDTO from './GymZone';
 import OwnerDTO from './Owner';
 import PersonDTO, { PersonDTOGroups } from './Person';
 import TrainerDTO from './Trainer';
@@ -11,6 +12,7 @@ export {
   ClientDTO,
   DTO,
   DTOGroups,
+  GymZoneDTO,
   OwnerDTO,
   PersonDTO,
   PersonDTOGroups,

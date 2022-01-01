@@ -1,4 +1,5 @@
 import BaseService from './Base';
+import GymZoneService from './GymZone';
 import {
   ClientService,
   OwnerService,
@@ -11,6 +12,7 @@ import VirtualGymService from './VirtualGym';
 export {
   BaseService,
   ClientService,
+  GymZoneService,
   OwnerService,
   PersonService,
   TrainerService,

@@ -2,16 +2,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
 import CalendarAppointment from './CalendarAppointment';
 import Event from './Event';
-import GymZone from './GymZone';
 
 /**
  * `Calendar` of `Event`'s for a `GymZone`
@@ -21,12 +18,7 @@ export default class Calendar {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  /**
-   * `GymZone` to which this `Calendar` belongs
-   */
-  @OneToOne(() => GymZone)
-  @JoinColumn()
-  gymZone!: GymZone;
+
 
   /**
    * `Event`'s of the `Calendar`

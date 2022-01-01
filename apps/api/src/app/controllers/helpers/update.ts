@@ -5,6 +5,7 @@ import {
   ClientDTO,
   DTO,
   DTOGroups,
+  GymZoneDTO,
   OwnerDTO,
   TrainerDTO,
   VirtualGymDTO,
@@ -13,6 +14,7 @@ import {
 import {
   Client,
   Gym,
+  GymZone,
   Owner,
   Trainer,
   VirtualGym,
@@ -30,14 +32,16 @@ type UpdatableServices =
   | BaseService<Worker>
   | BaseService<Trainer>
   | BaseService<Client>
-  | BaseService<VirtualGym>;
+  | BaseService<VirtualGym>
+  | BaseService<GymZone>;
 
 type UpdatableEntities =
   | 'Owner'
   | 'Worker'
   | 'Trainer'
   | 'Client'
-  | 'VirtualGym';
+  | 'VirtualGym'
+  | 'GymZone';
 
 type FindAndUpdateProps = {
   controller: BaseController;
@@ -80,14 +84,16 @@ type CommonUpdateByServices =
   | BaseService<Worker>
   | BaseService<Trainer>
   | BaseService<Client>
-  | BaseService<VirtualGym>;
+  | BaseService<VirtualGym>
+  | BaseService<GymZone>;
 
 type CommonUpdateByDTOs =
   | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>
-  | VirtualGymDTO;
+  | VirtualGymDTO
+  | GymZoneDTO;
 
-type CommonUpdateByEntities = 'Trainer' | 'Client' | 'VirtualGym';
+type CommonUpdateByEntities = 'Trainer' | 'Client' | 'VirtualGym' | 'GymZone';
 
 type CommonUpdateByValues =
   | '["client", "owner", "worker"]'
