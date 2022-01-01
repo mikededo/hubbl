@@ -154,6 +154,24 @@ describe('GymZone controller', () => {
       expect(okSpy).toHaveBeenCalledWith({}, mockDto);
     });
 
+    it('should call fail on person service error', async () => {
+      const failSpy = jest
+        .spyOn(GymZoneFetchController, 'fail')
+        .mockImplementation();
+      mockPersonService.findOne.mockRejectedValue({});
+
+      GymZoneFetchController['service'] = {} as any;
+      GymZoneFetchController['personService'] = mockPersonService as any;
+
+      await GymZoneFetchController.execute(mockReq, {} as any);
+
+      // Ensure token is parsed
+      expect(jwtSpy).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      // Ensure fail is called
+      failSpyAsserts(failSpy);
+    });
+
     it('should call clientError if person does not exist', async () => {
       const clientErrorSpy = jest
         .spyOn(GymZoneFetchController, 'clientError')

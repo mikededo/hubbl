@@ -1,9 +1,11 @@
 import * as ClassValidator from 'class-validator';
 
-import { GymZone } from '@hubbl/shared/models/entities';
+import { GymZone, Calendar, VirtualGym } from '@hubbl/shared/models/entities';
 
 import * as Util from '../util';
 import GymZoneDTO from './GymZone';
+
+jest.mock('@hubbl/shared/models/entities');
 
 const propCompare = (want: GymZone | GymZoneDTO, got: GymZone | GymZoneDTO) => {
   expect(got.id).toBe(want.id);
@@ -16,7 +18,6 @@ const propCompare = (want: GymZone | GymZoneDTO, got: GymZone | GymZoneDTO) => {
   expect(got.openTime).toBe(want.openTime);
   expect(got.closeTime).toBe(want.closeTime);
   expect(got.timeIntervals).toStrictEqual(want.timeIntervals);
-  expect(got.virtualGym).toBe(want.virtualGym);
 };
 
 describe('GymZone', () => {
@@ -38,6 +39,7 @@ describe('GymZone', () => {
         openTime: '09:00:00',
         closeTime: '21:00:00',
         timeIntervals: [],
+        calendar: 1,
         virtualGym: 1
       };
 
@@ -46,6 +48,8 @@ describe('GymZone', () => {
       expect(result).toBeDefined();
       propCompare(json as any, result);
 
+      expect(result.calendar).toBe(json.calendar);
+      expect(result.virtualGym).toBe(json.virtualGym);
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vorSpy).toHaveBeenCalledWith(expect.any(GymZoneDTO), {
@@ -82,6 +86,12 @@ describe('GymZone', () => {
         .mockResolvedValue();
 
       const gymZone = new GymZone();
+      const calendar = new Calendar();
+      const virtualGym = new VirtualGym();
+
+      calendar.id = 1;
+      virtualGym.id = 1;
+
       gymZone.id = 1;
       gymZone.name = 'Test';
       gymZone.description = '';
@@ -92,13 +102,16 @@ describe('GymZone', () => {
       gymZone.openTime = '09:00:00';
       gymZone.closeTime = '21:00:00';
       gymZone.timeIntervals = [];
-      gymZone.virtualGym = 1;
+      gymZone.calendar = calendar;
+      gymZone.virtualGym = virtualGym as any;
 
       const result = await GymZoneDTO.fromClass(gymZone);
 
       expect(result).toBeDefined();
       propCompare(gymZone, result);
 
+      expect(result.calendar).toBe(calendar.id);
+      expect(result.virtualGym).toBe(virtualGym.id);
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(1);
     });
@@ -136,11 +149,23 @@ describe('GymZone', () => {
       dto.openTime = '09:00:00';
       dto.closeTime = '21:00:00';
       dto.timeIntervals = [];
+      dto.calendar = 1;
       dto.virtualGym = 1;
 
       const result = dto.toClass();
 
       propCompare(dto, result);
+      expect(result.virtualGym).toBe(dto.virtualGym);
+      expect(result.calendar).toBe(dto.calendar);
+    });
+
+    it('should create a new calendar if non is given', () => {
+      const dto = new GymZoneDTO();
+
+      const result = dto.toClass();
+
+      expect(Calendar).toHaveBeenCalledTimes(1);
+      expect(result.calendar).toBeInstanceOf(Calendar);
     });
   });
 });
