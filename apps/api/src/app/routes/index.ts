@@ -1,4 +1,5 @@
 import { Application } from 'express';
+import * as log from 'npmlog';
 
 import PersonRouter from './Persons.routes';
 import VirtualGymRouter from './VirtualGym.routes';
@@ -10,6 +11,8 @@ const Routes = {
 
 export default (app: Application) => {
   Object.entries(Routes).forEach(([path, router]) => {
+    log.info('App', `Using router [/api/${path}]`)
+
     app.use(`/api/${path}`, router);
   });
 };
