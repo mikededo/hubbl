@@ -22,6 +22,9 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     return res.status(401).send({ message: 'Unauthorized. Token expired.' });
   }
 
+  // Set request locals
+  res.locals = { token };
+
   next();
 };
 
