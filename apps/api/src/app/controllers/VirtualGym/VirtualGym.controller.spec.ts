@@ -1,4 +1,3 @@
-import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
@@ -21,14 +20,6 @@ import {
 
 jest.mock('../../services');
 
-const failSpyAsserts = (failSpy: any) => {
-  expect(failSpy).toHaveBeenCalledTimes(1);
-  expect(failSpy).toHaveBeenCalledWith(
-    {} as any,
-    'Internal server error. If the problem persists, contact our team.'
-  );
-};
-
 describe('VirtualGym Controller', () => {
   const mockPerson = {
     id: 1,
@@ -50,6 +41,7 @@ describe('VirtualGym Controller', () => {
     toClass: jest.fn()
   };
   const mockReq = { body: {}, headers: { authorization: 'Any token' } } as any;
+  const mockRes = { locals: { token: { id: 1 } } } as any;
 
   const mockService = {
     findOne: jest.fn(),
@@ -61,16 +53,16 @@ describe('VirtualGym Controller', () => {
   const fromClassSpy = jest
     .spyOn(VirtualGymDTO, 'fromClass')
     .mockResolvedValue(mockDto as any);
-  const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  const decodeSpyAsserts = (jwtSpy: any) => {
-    expect(jwtSpy).toHaveBeenCalledTimes(1);
-    expect(jwtSpy).toHaveBeenCalledWith(
-      mockReq.headers.authorization.split(' ')[1]
+  const failSpyAsserts = (failSpy: any) => {
+    expect(failSpy).toHaveBeenCalledTimes(1);
+    expect(failSpy).toHaveBeenCalledWith(
+      mockRes,
+      'Internal server error. If the problem persists, contact our team.'
     );
   };
 
@@ -100,11 +92,10 @@ describe('VirtualGym Controller', () => {
         .spyOn(VirtualGymFetchController, 'ok')
         .mockReturnValue({} as any);
 
-      await VirtualGymFetchController.execute(mockReq, {} as any);
+      await VirtualGymFetchController.execute(mockReq, mockRes);
 
-      decodeSpyAsserts(jwtSpy);
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockService.findOne).toHaveBeenCalledWith(1);
+      expect(mockService.findOne).toHaveBeenCalledWith(mockRes.locals.token.id);
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'virtualGym'
@@ -116,7 +107,7 @@ describe('VirtualGym Controller', () => {
       expect(mockService.getMany).toHaveBeenCalledTimes(1);
       expect(fromClassSpy).toHaveBeenCalledTimes(2);
       expect(okSpy).toHaveBeenCalledTimes(1);
-      expect(okSpy).toHaveBeenCalledWith({}, [mockDto, mockDto]);
+      expect(okSpy).toHaveBeenCalledWith(mockRes, [mockDto, mockDto]);
     });
 
     it('should call fail on person service error', async () => {
@@ -128,10 +119,8 @@ describe('VirtualGym Controller', () => {
       VirtualGymFetchController['service'] = {} as any;
       VirtualGymFetchController['personService'] = mockService as any;
 
-      await VirtualGymFetchController.execute(mockReq, {} as any);
+      await VirtualGymFetchController.execute(mockReq, mockRes);
 
-      // Ensure token is parsed
-      expect(jwtSpy).toHaveBeenCalledTimes(1);
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       failSpyAsserts(failSpy);
@@ -146,15 +135,13 @@ describe('VirtualGym Controller', () => {
       VirtualGymFetchController['service'] = {} as any;
       VirtualGymFetchController['personService'] = mockService as any;
 
-      await VirtualGymFetchController.execute(mockReq, {} as any);
+      await VirtualGymFetchController.execute(mockReq, mockRes);
 
-      // Ensure token is parsed
-      expect(jwtSpy).toHaveBeenCalledTimes(1);
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith(
-        {} as any,
+        mockRes,
         'Person does not exist'
       );
     });
@@ -169,10 +156,8 @@ describe('VirtualGym Controller', () => {
       VirtualGymFetchController['service'] = mockService as any;
       VirtualGymFetchController['personService'] = mockService as any;
 
-      await VirtualGymFetchController.execute(mockReq, {} as any);
+      await VirtualGymFetchController.execute(mockReq, mockRes);
 
-      // Ensure token is parsed
-      expect(jwtSpy).toHaveBeenCalledTimes(1);
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
@@ -194,10 +179,8 @@ describe('VirtualGym Controller', () => {
       VirtualGymFetchController['service'] = mockService as any;
       VirtualGymFetchController['personService'] = mockService as any;
 
-      await VirtualGymFetchController.execute(mockReq, {} as any);
+      await VirtualGymFetchController.execute(mockReq, mockRes);
 
-      // Ensure token is parsed
-      expect(jwtSpy).toHaveBeenCalledTimes(1);
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
@@ -229,14 +212,12 @@ describe('VirtualGym Controller', () => {
       const fromJsonSpy = jest
         .spyOn(VirtualGymDTO, 'fromJson')
         .mockResolvedValue(mockDto as any);
-      const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
 
       VirtualGymCreateController['service'] = {} as any;
       VirtualGymCreateController['ownerService'] = {} as any;
 
-      await VirtualGymCreateController.execute(mockReq, {} as any);
+      await VirtualGymCreateController.execute(mockReq, mockRes);
 
-      decodeSpyAsserts(jwtSpy);
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.CREATE);
       expect(cboSpy).toHaveBeenCalledTimes(1);
@@ -244,7 +225,7 @@ describe('VirtualGym Controller', () => {
         service: {},
         ownerService: {},
         controller: VirtualGymCreateController,
-        res: {},
+        res: mockRes,
         fromClass: VirtualGymDTO.fromClass,
         token: { id: 1 },
         dto: mockDto,
@@ -257,7 +238,6 @@ describe('VirtualGym Controller', () => {
       const fromJsonSpy = jest
         .spyOn(VirtualGymDTO, 'fromJson')
         .mockRejectedValue('fromJson-error');
-      const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
 
       const clientErrorSpy = jest
         .spyOn(VirtualGymCreateController, 'clientError')
@@ -266,14 +246,13 @@ describe('VirtualGym Controller', () => {
       VirtualGymCreateController['service'] = {} as any;
       VirtualGymCreateController['ownerService'] = {} as any;
 
-      await VirtualGymCreateController.execute(mockReq, {} as any);
+      await VirtualGymCreateController.execute(mockReq, mockRes);
 
-      decodeSpyAsserts(jwtSpy);
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.CREATE);
       expect(cboSpy).not.toHaveBeenCalled();
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
-      expect(clientErrorSpy).toHaveBeenCalledWith({}, 'fromJson-error');
+      expect(clientErrorSpy).toHaveBeenCalledWith(mockRes, 'fromJson-error');
     });
   });
 
@@ -287,7 +266,7 @@ describe('VirtualGym Controller', () => {
       VirtualGymUpdateController['workerService'] = undefined;
       await VirtualGymUpdateController.execute(
         { ...mockReq, query: { by: 'any' } },
-        {} as any
+        mockRes
       );
 
       expect(VirtualGymService).toHaveBeenCalled();
@@ -305,7 +284,6 @@ describe('VirtualGym Controller', () => {
       const fromJsonSpy = jest
         .spyOn(VirtualGymDTO, 'fromJson')
         .mockResolvedValue(mockDto as any);
-      const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
 
       VirtualGymUpdateController['service'] = {} as any;
       VirtualGymUpdateController['ownerService'] = {} as any;
@@ -313,10 +291,9 @@ describe('VirtualGym Controller', () => {
 
       await VirtualGymUpdateController.execute(
         { ...mockReq, query: { by: 'any' } },
-        {} as any
+        mockRes
       );
 
-      decodeSpyAsserts(jwtSpy);
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
       expect(uboowSpy).toHaveBeenCalledTimes(1);
@@ -325,8 +302,8 @@ describe('VirtualGym Controller', () => {
         ownerService: {},
         workerService: {},
         controller: VirtualGymUpdateController,
-        res: {},
-        token: { id: 1 },
+        res: mockRes,
+        token: mockRes.locals.token,
         dto: mockDto,
         by: 'any',
         entityName: 'VirtualGym',
@@ -343,7 +320,6 @@ describe('VirtualGym Controller', () => {
       const fromJsonSpy = jest
         .spyOn(VirtualGymDTO, 'fromJson')
         .mockRejectedValue('fromJson-error');
-      const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
 
       const clientErrorSpy = jest
         .spyOn(VirtualGymUpdateController, 'clientError')
@@ -354,15 +330,14 @@ describe('VirtualGym Controller', () => {
 
       await VirtualGymUpdateController.execute(
         { ...mockReq, query: { by: 'any' } },
-        {} as any
+        mockRes
       );
 
-      decodeSpyAsserts(jwtSpy);
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
       expect(uboowSpy).not.toHaveBeenCalled();
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
-      expect(clientErrorSpy).toHaveBeenCalledWith({}, 'fromJson-error');
+      expect(clientErrorSpy).toHaveBeenCalledWith(mockRes, 'fromJson-error');
     });
   });
 
@@ -384,23 +359,21 @@ describe('VirtualGym Controller', () => {
       const dboSpy = jest
         .spyOn(deleteHelpers, 'deletedByOwner')
         .mockImplementation();
-      const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
 
       VirtualGymDeleteController['service'] = {} as any;
       VirtualGymDeleteController['ownerService'] = {} as any;
 
       await VirtualGymDeleteController.execute(
         { ...mockReq, params: { id: 1 } },
-        {} as any
+        mockRes
       );
 
-      decodeSpyAsserts(jwtSpy);
       expect(dboSpy).toHaveBeenCalledTimes(1);
       expect(dboSpy).toHaveBeenCalledWith({
         service: {},
         ownerService: {},
         controller: VirtualGymDeleteController,
-        res: {},
+        res: mockRes,
         token: { id: 1 },
         entityId: 1,
         entityName: 'VirtualGym',

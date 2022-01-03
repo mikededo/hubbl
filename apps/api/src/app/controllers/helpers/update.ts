@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { decode } from 'jsonwebtoken';
 
 import {
   ClientDTO,
@@ -204,10 +203,7 @@ export const ownerUpdate = async ({
     // Get the entity and validate it
     const dto = await OwnerDTO.fromJson(req.body, DTOGroups.UPDATE);
 
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-    const token = decode(tokenValues[1]) as any;
+    const { token } = res.locals;
 
     // Validate who is updating
     if (dto.id !== token.id) {
@@ -248,11 +244,7 @@ export const workerUpdate = async ({
     // Get the entity and validate it
     const dto = await WorkerDTO.fromJson(req.body, DTOGroups.UPDATE);
 
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-
-    const token = decode(tokenValues[1]) as any;
+    const { token } = res.locals;
 
     // Validate who is updating
     if (by === 'worker') {
@@ -311,10 +303,7 @@ export const trainerUpdate = async ({
     // Get the entity and validate it
     const dto = await TrainerDTO.fromJson(req.body, DTOGroups.UPDATE);
 
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-    const token = decode(tokenValues[1]) as ParsedToken;
+    const { token } = res.locals;
 
     // Validate who is updating
     return updatedByOwnerOrWorker({
@@ -359,10 +348,7 @@ export const clientUpdate = async ({
     // Get the entity and validate it
     const dto = await ClientDTO.fromJson(req.body, DTOGroups.UPDATE);
 
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-    const token = decode(tokenValues[1]) as ParsedToken;
+    const { token } = res.locals;
 
     // Validate who is updating
     if (by === 'client') {

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { decode } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, GymZoneDTO } from '@hubbl/shared/models/dto';
@@ -15,7 +14,6 @@ import BaseController from '../Base';
 import {
   createdByOwnerOrWorker,
   deletedByOwnerOrWorker,
-  ParsedToken,
   updatedByOwnerOrWorker
 } from '../helpers';
 
@@ -32,10 +30,7 @@ class IGymZoneFetchController extends BaseController {
       this.personService = new PersonService(getRepository);
     }
 
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-    const token = decode(tokenValues[1]) as ParsedToken;
+    const { token } = res.locals;
 
     try {
       const person = await this.personService.findOne(token.id);
@@ -98,10 +93,7 @@ class IGymZoneCreateController extends BaseController {
       this.workerService = new WorkerService(getRepository);
     }
 
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-    const token = decode(tokenValues[1]) as ParsedToken;
+    const { token } = res.locals;
 
     try {
       return createdByOwnerOrWorker({
@@ -145,10 +137,7 @@ class IGymZoneUpdateController extends BaseController {
       this.workerService = new WorkerService(getRepository);
     }
 
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-    const token = decode(tokenValues[1]) as ParsedToken;
+    const { token } = res.locals;
 
     try {
       const dto = await GymZoneDTO.fromJson(req.body, DTOGroups.UPDATE);
@@ -195,10 +184,7 @@ class IGymZoneDeleteController extends BaseController {
       this.workerService = new WorkerService(getRepository);
     }
 
-    // Get the token. Token should be validate a priori, since it is an
-    // authorized call
-    const tokenValues = req.headers.authorization.split(' ');
-    const token = decode(tokenValues[1]) as ParsedToken;
+    const { token } = res.locals;
 
     return deletedByOwnerOrWorker({
       service: this.service,
