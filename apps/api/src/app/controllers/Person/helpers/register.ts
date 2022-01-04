@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
+import * as log from 'npmlog';
 
 import {
   ClientDTO,
@@ -76,6 +77,12 @@ export const register = async <
         [returnName]: await fromClass(result)
       });
     } catch (_) {
+      log.error(
+        `Controller[${controller.constructor.name}]`,
+        '"register" handler',
+        _.toString()
+      );
+
       return controller.fail(
         res,
         'Internal server error. If the error persists, contact our team.'
@@ -115,6 +122,12 @@ export const trainerRegister = async ({
         trainer: await fromClass(result)
       });
     } catch (_) {
+      log.error(
+        `Controller[${controller.constructor.name}]`,
+        '"register" handler',
+        _.toString()
+      );
+
       return controller.fail(
         res,
         'Internal server error. If the error persists, contact our team.'

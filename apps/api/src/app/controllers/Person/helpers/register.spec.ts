@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import * as log from 'npmlog';
 
 import { PersonDTOGroups } from '@hubbl/shared/models/dto';
 
@@ -37,6 +38,7 @@ describe('register', () => {
   } as any;
 
   let jsonResSpy: any;
+  let logSpy: any;
 
   const token = jwt.sign(
     { id: 1, email: 'test@user.com' },
@@ -60,6 +62,12 @@ describe('register', () => {
 
     expect(mockFromJson).toHaveBeenCalledTimes(1);
     expect(mockFromJson).toHaveReturned();
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.any(String)
+    );
     expect(mockController.fail).toHaveBeenCalledTimes(1);
     expect(mockController.fail).toHaveBeenCalledWith(
       {} as any,
@@ -93,6 +101,7 @@ describe('register', () => {
     jest.clearAllMocks();
 
     jsonResSpy = jest.spyOn(BaseController, 'jsonResponse');
+    logSpy = jest.spyOn(log, 'error').mockImplementation();
   });
 
   describe('register', () => {

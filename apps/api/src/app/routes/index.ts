@@ -11,7 +11,7 @@ const Routes = {
 
 export default (app: Application) => {
   Object.entries(Routes).forEach(([path, router]) => {
-    log.info('App', `Using router [/api/${path}]`)
+    log.info('App[Router]', `Attached router [${path}]`);
 
     app.use(`/api/${path}`, router);
   });
