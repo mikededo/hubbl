@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { decode } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
+import * as log from 'npmlog';
 
 import { DTOGroups, GymZoneDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
@@ -61,13 +62,25 @@ class IGymZoneFetchController extends BaseController {
           .getOne();
 
         return this.ok(res, await GymZoneDTO.fromClass(result));
-      } catch (e) {
+      } catch (_) {
+        log.error(
+          `Controller[${this.constructor.name}]`,
+          '"fetch" handler',
+          _.toString()
+        );
+
         return this.fail(
           res,
           'Internal server error. If the problem persists, contact our team.'
         );
       }
     } catch (_) {
+      log.error(
+        `Controller[${this.constructor.name}]`,
+        '"fetch" handler',
+        _.toString()
+      );
+
       return this.fail(
         res,
         'Internal server error. If the problem persists, contact our team.'
