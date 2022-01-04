@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
@@ -20,14 +21,6 @@ import {
 } from './VirtualGym.controller';
 
 jest.mock('../../services');
-
-const failSpyAsserts = (failSpy: any) => {
-  expect(failSpy).toHaveBeenCalledTimes(1);
-  expect(failSpy).toHaveBeenCalledWith(
-    {} as any,
-    'Internal server error. If the problem persists, contact our team.'
-  );
-};
 
 describe('VirtualGym Controller', () => {
   const mockPerson = {
@@ -62,10 +55,25 @@ describe('VirtualGym Controller', () => {
     .spyOn(VirtualGymDTO, 'fromClass')
     .mockResolvedValue(mockDto as any);
   const jwtSpy = jest.spyOn(jwt, 'decode').mockReturnValue({ id: 1 });
+  const logSpy = jest.spyOn(log, 'error').mockImplementation();
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  const failSpyAsserts = (failSpy: any) => {
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.any(String)
+    );
+    expect(failSpy).toHaveBeenCalledTimes(1);
+    expect(failSpy).toHaveBeenCalledWith(
+      {} as any,
+      'Internal server error. If the problem persists, contact our team.'
+    );
+  };
 
   const decodeSpyAsserts = (jwtSpy: any) => {
     expect(jwtSpy).toHaveBeenCalledTimes(1);
