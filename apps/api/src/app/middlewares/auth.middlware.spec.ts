@@ -12,10 +12,12 @@ describe('Authorization middleware', () => {
   const mockRes = {
     status: jest.fn().mockReturnThis(),
     send: jest.fn().mockReturnThis()
-  };
+  } as any;
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    delete mockRes.locals;
   });
 
   it('should call next if token validation is correct', () => {
@@ -25,6 +27,7 @@ describe('Authorization middleware', () => {
 
     auth(mockReq as any, mockRes as any, mockNext);
 
+    expect(mockRes).toBeDefined();
     expect(decodeSpy).toHaveBeenCalledTimes(1);
     expect(decodeSpy).toHaveBeenCalledWith(token);
     expect(mockNext).toHaveBeenCalledTimes(1);
