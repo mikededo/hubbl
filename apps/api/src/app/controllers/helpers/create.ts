@@ -63,7 +63,7 @@ export const createdByOwnerOrWorker = async ({
       log.error(
         `Controller[${controller.constructor.name}]`,
         '"fetch" handler',
-        'No "workerCreatePersmission" passed'
+        'No "workerCreatePermission" passed'
       );
 
       return controller.fail(
