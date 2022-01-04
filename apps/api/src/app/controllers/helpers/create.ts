@@ -1,4 +1,5 @@
-import { Response as deleteHelpers } from 'express';
+import { Response } from 'express';
+import * as log from 'npmlog';
 
 import { GymZoneDTO, VirtualGymDTO } from '@hubbl/shared/models/dto';
 import {
@@ -34,7 +35,7 @@ type CreatedByOwnerOrWorkerProps = {
   ownerService: BaseService<Owner>;
   workerService: BaseService<Worker>;
   controller: BaseController;
-  res: deleteHelpers;
+  res: Response;
   fromClass: FromClassCallables;
   token: ParsedToken;
   by: 'worker' | 'owner';
@@ -55,10 +56,16 @@ export const createdByOwnerOrWorker = async ({
   dto,
   entityName,
   workerCreatePermission
-}: CreatedByOwnerOrWorkerProps): Promise<deleteHelpers> => {
+}: CreatedByOwnerOrWorkerProps): Promise<Response> => {
   // Validate who is updating
   if (by === 'worker') {
     if (!workerCreatePermission) {
+      log.error(
+        `Controller[${controller.constructor.name}]`,
+        '"fetch" handler',
+        'No "workerCreatePersmission" passed'
+      );
+
       return controller.fail(
         res,
         'Internal server error. If the error persists, contact our team'
@@ -101,6 +108,12 @@ export const createdByOwnerOrWorker = async ({
     // Return ok
     return controller.created(res, await fromClass(result as any));
   } catch (_) {
+    log.error(
+      `Controller[${controller.constructor.name}]`,
+      '"fetch" handler',
+      _.toString()
+    );
+
     return controller.fail(
       res,
       'Internal server error. If the error persists, contact our team.'
