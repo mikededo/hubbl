@@ -1,3 +1,5 @@
+import * as log from 'npmlog';
+
 import { Owner, Worker } from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../services';
@@ -29,9 +31,20 @@ describe('create', () => {
     unauthorized: jest.fn()
   } as any;
 
+  const logSpy = jest.spyOn(log, 'error').mockImplementation();
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  const logAsserts = () => {
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.any(String)
+    );
+  };
 
   describe('createdByOwnerOrWorker', () => {
     let fromClassSpy: any;
@@ -138,6 +151,7 @@ describe('create', () => {
         entityName: 'any' as any
       });
 
+      logAsserts();
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {},
@@ -288,6 +302,8 @@ describe('create', () => {
       expect(fromClassSpy).toHaveBeenCalledTimes(1);
       expect(fromClassSpy).toHaveBeenCalledWith(mockEntity);
       expect(mockController.created).toHaveBeenCalledTimes(0);
+
+      logAsserts();
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         mockRes,
@@ -313,19 +329,19 @@ describe('create', () => {
         entityName: 'Any' as any
       });
 
-      expect(cboowSpy).toHaveBeenCalledTimes(1),
-        expect(cboowSpy).toHaveBeenCalledWith({
-          service: {},
-          ownerService: {},
-          workerService: undefined,
-          controller: mockController,
-          res: {},
-          fromClass: {},
-          dto: mockEntityDto,
-          token: {},
-          by: 'owner',
-          entityName: 'Any'
-        });
+      expect(cboowSpy).toHaveBeenCalledTimes(1);
+      expect(cboowSpy).toHaveBeenCalledWith({
+        service: {},
+        ownerService: {},
+        workerService: undefined,
+        controller: mockController,
+        res: {},
+        fromClass: {},
+        dto: mockEntityDto,
+        token: {},
+        by: 'owner',
+        entityName: 'Any'
+      });
     });
   });
 });

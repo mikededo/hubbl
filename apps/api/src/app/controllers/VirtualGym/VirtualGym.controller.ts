@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+import * as log from 'npmlog';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
@@ -54,12 +55,23 @@ class IVirtualGymFetchController extends BaseController {
           )
         );
       } catch (_) {
+        log.error(
+          `Controller[${this.constructor.name}]`,
+          '"fetch" handler',
+          _.toString()
+        );
+
         return this.fail(
           res,
           'Internal server error. If the problem persists, contact our team.'
         );
       }
     } catch (_) {
+      log.error(
+        `Controller[${this.constructor.name}]`,
+        '"fetch" handler',
+        _.toString()
+      );
       return this.fail(
         res,
         'Internal server error. If the problem persists, contact our team.'
@@ -67,6 +79,7 @@ class IVirtualGymFetchController extends BaseController {
     }
   }
 }
+
 
 const fetchInstance = new IVirtualGymFetchController();
 

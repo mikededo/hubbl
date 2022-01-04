@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import * as log from 'npmlog';
 
 import {
   ClientDTO,
@@ -52,6 +53,8 @@ describe('update', () => {
     unauthorized: jest.fn()
   } as any;
 
+  const jsonResSpy = jest.spyOn(BaseController, 'jsonResponse');
+  const logSpy = jest.spyOn(log, 'error').mockImplementation();
   const mockRes = {
     locals: { token: { id: 1 } },
     json: jest.fn().mockReturnThis(),
@@ -59,14 +62,20 @@ describe('update', () => {
   } as any;
   const mockDiffIdRes = { ...mockRes, locals: { token: { id: 2 } } } as any;
 
-  let jsonResSpy: any;
-
   const token = jwt.sign(
     { id: 1, email: 'test@user.com', exp: Date.now() + 1000 },
     process.env.NX_JWT_TOKEN || 'test-secret-token'
   );
 
   /* Helpers */
+  const logAsserts = () => {
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.any(String)
+    );
+  };
 
   const fromJsonError = async (
     fromJsonSpy: any,
@@ -145,8 +154,6 @@ describe('update', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    jsonResSpy = jest.spyOn(BaseController, 'jsonResponse');
   });
 
   describe('Common updaters', () => {
@@ -215,6 +222,7 @@ describe('update', () => {
         expect(mockService.count).toHaveBeenCalledTimes(1);
         expect(mockService.save).toHaveBeenCalledTimes(1);
         expect(mockService.save).toHaveBeenCalledWith(mockPerson);
+        logAsserts();
         expect(mockController.fail).toHaveReturnedTimes(1);
         expect(mockController.fail).toHaveBeenCalledWith(
           mockRes,
@@ -308,6 +316,7 @@ describe('update', () => {
           countArgs: {}
         });
 
+        logAsserts();
         expect(mockController.fail).toHaveBeenCalledTimes(1);
         expect(mockController.fail).toHaveBeenCalledWith(
           mockRes,

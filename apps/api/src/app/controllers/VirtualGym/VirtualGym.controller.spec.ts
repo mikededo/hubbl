@@ -1,3 +1,4 @@
+import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
@@ -53,12 +54,19 @@ describe('VirtualGym Controller', () => {
   const fromClassSpy = jest
     .spyOn(VirtualGymDTO, 'fromClass')
     .mockResolvedValue(mockDto as any);
+  const logSpy = jest.spyOn(log, 'error').mockImplementation();
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   const failSpyAsserts = (failSpy: any) => {
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.any(String)
+    );
     expect(failSpy).toHaveBeenCalledTimes(1);
     expect(failSpy).toHaveBeenCalledWith(
       mockRes,

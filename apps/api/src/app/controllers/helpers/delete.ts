@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import * as log from 'npmlog';
 
 import {
   GymZone,
@@ -52,6 +53,12 @@ export const deletedByOwnerOrWorker = async ({
   // Validate who is updating
   if (by === 'worker') {
     if (!workerDeletePermission) {
+      log.error(
+        `Controller[${controller.constructor.name}]`,
+        '"fetch" handler',
+        'No "workerCreatePermission" passed'
+      );
+
       return controller.fail(
         res,
         'Internal server error. If the error persists, contact our team'
@@ -98,6 +105,12 @@ export const deletedByOwnerOrWorker = async ({
     // Return ok
     return controller.ok(res);
   } catch (_) {
+    log.error(
+      `Controller[${controller.constructor.name}]`,
+      '"fetch" handler',
+      _.toString()
+    );
+
     return controller.fail(
       res,
       'Internal server error. If the error persists, contact our team.'

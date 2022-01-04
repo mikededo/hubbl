@@ -18,6 +18,7 @@ import {
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
+import { DatabaseLogger } from './db.logger';
 
 const config: ConnectionOptions = {
   type: 'postgres',
@@ -45,7 +46,9 @@ const config: ConnectionOptions = {
     Worker
   ],
   synchronize: true,
-  namingStrategy: new SnakeNamingStrategy()
+  namingStrategy: new SnakeNamingStrategy(),
+  logger: new DatabaseLogger(),
+  logging: true
 };
 
 export default config;
