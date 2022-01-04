@@ -1,4 +1,5 @@
 import { Owner, Worker } from '@hubbl/shared/models/entities';
+import * as log from 'npmlog';
 
 import { BaseService } from '../../services';
 import * as deleteHelpers from './delete';
@@ -29,9 +30,20 @@ describe('delete', () => {
     unauthorized: jest.fn()
   } as any;
 
+  const logSpy = jest.spyOn(log, 'error').mockImplementation();
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  const logAsserts = () => {
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.any(String)
+    );
+  };
 
   describe('deletedByOwnerOrWorker', () => {
     let fromClassSpy: any;
@@ -135,6 +147,7 @@ describe('delete', () => {
         countArgs: {}
       });
 
+      logAsserts();
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {},
@@ -317,6 +330,8 @@ describe('delete', () => {
       // Common checks
       expect(mockService.softDelete).toHaveBeenCalledTimes(1);
       expect(mockService.softDelete).toHaveBeenCalledWith(1);
+
+      logAsserts();
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         mockRes,
@@ -342,19 +357,19 @@ describe('delete', () => {
         countArgs: {}
       });
 
-      expect(dboowSpy).toHaveBeenCalledTimes(1),
-        expect(dboowSpy).toHaveBeenCalledWith({
-          service: {},
-          ownerService: {},
-          workerService: undefined,
-          controller: mockController,
-          res: {},
-          token: {},
-          by: 'owner',
-          entityId: 1,
-          entityName: 'Any',
-          countArgs: {}
-        });
+      expect(dboowSpy).toHaveBeenCalledTimes(1);
+      expect(dboowSpy).toHaveBeenCalledWith({
+        service: {},
+        ownerService: {},
+        workerService: undefined,
+        controller: mockController,
+        res: {},
+        token: {},
+        by: 'owner',
+        entityId: 1,
+        entityName: 'Any',
+        countArgs: {}
+      });
     });
   });
 });
