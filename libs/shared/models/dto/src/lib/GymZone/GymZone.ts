@@ -167,6 +167,10 @@ export default class GymZoneDTO implements DTO<GymZone> {
     return result;
   }
 
+  /**
+   *
+   * @returns The parsed gym zone from the DTO
+   */
   public toClass(): GymZone {
     const result = new GymZone();
 
