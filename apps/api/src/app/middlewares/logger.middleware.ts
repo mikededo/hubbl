@@ -7,7 +7,11 @@ export const preRequest = (req: Request, _: Response, next: NextFunction) => {
   next();
 };
 
-export const postRequest = (req: Request, res: Response, next: NextFunction) => {
+export const postRequest = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   res.on('finish', () => {
     log.info('Request', `[${req.method} ${req.url}] -> ${res.statusCode}`);
   });

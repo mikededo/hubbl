@@ -18,8 +18,6 @@ export default class Calendar {
   @PrimaryGeneratedColumn()
   id!: number;
 
-
-
   /**
    * `Event`'s of the `Calendar`
    */

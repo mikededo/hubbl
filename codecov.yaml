@@ -1,5 +1,5 @@
 comment:
-  layout: "diff, flags, files"
+  layout: 'diff, flags, files'
   require_changes: true
 flags:
   # Apps
@@ -7,22 +7,22 @@ flags:
     paths:
       - apps/api/src
   client:
-    paths: 
-      - apps/client/src    
+    paths:
+      - apps/client/src
   client-e2e:
-    paths: 
+    paths:
       - apps/client-e2e/src
   core:
-    paths: 
+    paths:
       - apps/core/src
   core-e2e:
-    paths: 
+    paths:
       - apps/core-e2e/src
   landing:
-    paths: 
+    paths:
       - apps/landing/src
   landing-e2e:
-    paths: 
+    paths:
       - apps/landing-e2e/src
   # Libs
   shared-models:

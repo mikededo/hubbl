@@ -1,3 +1,3 @@
-import VirtualGymDTO from "./VirtualGym";
+import VirtualGymDTO from './VirtualGym';
 
 export default VirtualGymDTO;

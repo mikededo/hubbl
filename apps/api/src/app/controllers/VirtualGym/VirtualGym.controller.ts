@@ -32,7 +32,7 @@ class IVirtualGymFetchController extends BaseController {
     }
 
     const { token } = res.locals;
-    
+
     try {
       // Get the person, if any
       const person = await this.personService.findOne(token.id);
@@ -79,7 +79,6 @@ class IVirtualGymFetchController extends BaseController {
     }
   }
 }
-
 
 const fetchInstance = new IVirtualGymFetchController();
 
