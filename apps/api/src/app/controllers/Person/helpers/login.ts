@@ -1,6 +1,7 @@
 import { compare } from 'bcrypt';
 import { Request, Response } from 'express';
 import { sign } from 'jsonwebtoken';
+import * as log from 'npmlog';
 
 import {
   ClientDTO,
@@ -86,6 +87,12 @@ export const login = async ({
         entity: await fromClass(entityFound)
       });
     } catch (_) {
+      log.error(
+        `Controller[${controller.constructor.name}]`,
+        '"login" handler',
+        _.toString()
+      );
+
       return controller.fail(
         res,
         'Internal server error. If the error persists, contact our team.'

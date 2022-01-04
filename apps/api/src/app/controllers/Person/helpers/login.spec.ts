@@ -5,6 +5,7 @@ import { PersonDTOGroups } from '@hubbl/shared/models/dto';
 
 import BaseController from '../../Base';
 import * as logins from './login';
+import * as log from 'npmlog';
 
 jest.mock('bcrypt');
 
@@ -57,6 +58,7 @@ describe('login', () => {
     );
 
     let jsonResSpy: any;
+    let logSpy: any;
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -69,6 +71,7 @@ describe('login', () => {
       };
 
       jsonResSpy = jest.spyOn(BaseController, 'jsonResponse');
+      logSpy = jest.spyOn(log, 'error').mockImplementation();
     });
 
     const queryAssertions = () => {
@@ -223,7 +226,7 @@ describe('login', () => {
     });
 
     it('should send a fail on service error', async () => {
-      mockService.getOne.mockRejectedValue();
+      mockService.getOne.mockRejectedValue({});
 
       await logins.login({
         service: mockService,
@@ -236,6 +239,12 @@ describe('login', () => {
       });
 
       expect(mockService.getOne).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        expect.any(String)
+      );
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {} as any,
@@ -263,6 +272,12 @@ describe('login', () => {
 
       queryAssertions();
       expect(compareSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        expect.any(String)
+      );
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {} as any,
@@ -300,6 +315,12 @@ describe('login', () => {
       );
       // Then fail
       expect(mockController.ok).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        expect.any(String)
+      );
       expect(mockController.fail).toHaveBeenCalledWith(
         mockRes,
         'Internal server error. If the error persists, contact our team.'
