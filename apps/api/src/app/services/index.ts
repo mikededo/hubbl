@@ -8,6 +8,7 @@ import {
   TrainerService,
   WorkerService
 } from './Person';
+import { RepositoryAccessor } from './util';
 import VirtualGymService from './VirtualGym';
 
 export {
@@ -17,6 +18,7 @@ export {
   GymZoneService,
   OwnerService,
   PersonService,
+  RepositoryAccessor,
   TrainerService,
   VirtualGymService,
   WorkerService

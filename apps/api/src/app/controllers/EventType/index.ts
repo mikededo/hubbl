@@ -1,3 +1,6 @@
-import { EventTypeCreateController } from './EventType.controller';
+import {
+  EventTypeCreateController,
+  EventTypeUpdateController
+} from './EventType.controller';
 
-export { EventTypeCreateController };
+export { EventTypeCreateController, EventTypeUpdateController };

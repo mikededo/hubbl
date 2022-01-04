@@ -4,10 +4,15 @@ import { DTOGroups, EventTypeDTO } from '@hubbl/shared/models/dto';
 import { AppPalette } from '@hubbl/shared/types';
 
 import { EventTypeService, OwnerService, WorkerService } from '../../services';
+import { UpdateByOwnerWorkerController } from '../Base';
 import * as create from '../helpers/create';
-import { EventTypeCreateController } from './EventType.controller';
+import {
+  EventTypeCreateController,
+  EventTypeUpdateController
+} from './EventType.controller';
 
 jest.mock('../../services');
+jest.mock('@hubbl/shared/models/dto');
 
 describe('EventType controller', () => {
   const mockEventType = {
@@ -106,6 +111,22 @@ describe('EventType controller', () => {
       expect(cboowSpy).not.toHaveBeenCalled();
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith(mockRes, 'fromJson-error');
+    });
+  });
+
+  describe('EventTypeUpdateController', () => {
+    it('should create an UpdateByOwnerWorkerController', () => {
+      jest.spyOn(EventTypeDTO, 'fromJson');
+
+      expect(EventTypeUpdateController).toBeInstanceOf(
+        UpdateByOwnerWorkerController
+      );
+      expect(EventTypeUpdateController['serviceCtr']).toBe(EventTypeService);
+      expect(EventTypeUpdateController['fromJson']).toBe(EventTypeDTO.fromJson);
+      expect(EventTypeUpdateController['entityName']).toBe('EventType');
+      expect(EventTypeUpdateController['workerUpdatePermission']).toBe(
+        'updateEventTypes'
+      );
     });
   });
 });
