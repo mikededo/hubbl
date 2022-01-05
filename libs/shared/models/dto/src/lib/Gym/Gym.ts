@@ -7,12 +7,11 @@ import {
 } from 'class-validator';
 
 import { Gym, VirtualGym } from '@hubbl/shared/models/entities';
-import { ThemeColor } from '@hubbl/shared/types';
+import { DTOGroups, ThemeColor } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import { PersonDTOGroups } from '../Person';
 import {
-  DTOGroups,
   emailError,
   enumError,
   numberError,

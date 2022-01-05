@@ -1,4 +1,6 @@
-import { DTOGroups, PersonDTOGroups } from '@hubbl/shared/models/dto';
+import { PersonDTOGroups } from '@hubbl/shared/models/dto';
+
+import { DTOGroups } from './enums';
 
 export type BaseFromJsonCallable<T> = (
   json: any,

@@ -1,7 +1,8 @@
 import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { DTOGroups } from '@hubbl/shared/types';
 
 import { OwnerService, PersonService, VirtualGymService } from '../../services';
 import { UpdateByOwnerWorkerController } from '../Base';

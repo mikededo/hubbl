@@ -2,12 +2,12 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
 import {
-  DTOGroups,
   EventTypeDTO,
   GymZoneDTO,
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import { EventType, GymZone, VirtualGym } from '@hubbl/shared/models/entities';
+import { BaseFromJsonCallable, DTOGroups } from '@hubbl/shared/types';
 
 import {
   EventTypeService,
@@ -17,7 +17,7 @@ import {
   VirtualGymService,
   WorkerService
 } from '../../services';
-import { BaseFromJsonCallable, updatedByOwnerOrWorker } from '../helpers';
+import { updatedByOwnerOrWorker } from '../helpers';
 import BaseController from './Base.controller';
 
 type UpdatableEntityNames = 'EventType' | 'VirtualGym' | 'GymZone';

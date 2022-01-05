@@ -6,9 +6,10 @@ import {
 } from 'class-validator';
 
 import { GymZone, VirtualGym } from '@hubbl/shared/models/entities';
+import { DTOGroups } from '@hubbl/shared/types';
 
 import DTO from '../Base';
-import { DTOGroups, numberError, stringError, validationParser } from '../util';
+import { numberError, stringError, validationParser } from '../util';
 
 export default class VirtualGymDTO implements DTO<VirtualGym> {
   @IsNumber(

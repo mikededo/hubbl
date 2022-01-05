@@ -8,12 +8,11 @@ import {
 } from 'class-validator';
 
 import { Calendar, GymZone, VirtualGym } from '@hubbl/shared/models/entities';
-import { GymZoneIntervals } from '@hubbl/shared/types';
+import { DTOGroups, GymZoneIntervals } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import {
   booleanError,
-  DTOGroups,
   enumError,
   numberError,
   stringError,
