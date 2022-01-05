@@ -4,10 +4,11 @@ import { DTOGroups, EventTypeDTO } from '@hubbl/shared/models/dto';
 import { AppPalette } from '@hubbl/shared/types';
 
 import { EventTypeService, OwnerService, WorkerService } from '../../services';
-import { UpdateByOwnerWorkerController } from '../Base';
+import { UpdateByOwnerWorkerController, DeleteByOwnerWorkerController } from '../Base';
 import * as create from '../helpers/create';
 import {
   EventTypeCreateController,
+  EventTypeDeleteController,
   EventTypeUpdateController
 } from './EventType.controller';
 
@@ -126,6 +127,21 @@ describe('EventType controller', () => {
       expect(EventTypeUpdateController['entityName']).toBe('EventType');
       expect(EventTypeUpdateController['workerUpdatePermission']).toBe(
         'updateEventTypes'
+      );
+    });
+  });
+
+  describe('EventTypeDeleteController', () => {
+    it('should create an DeleteByOwnerWorkerController', () => {
+      jest.spyOn(EventTypeDTO, 'fromJson');
+
+      expect(EventTypeDeleteController).toBeInstanceOf(
+        DeleteByOwnerWorkerController
+      );
+      expect(EventTypeDeleteController['serviceCtr']).toBe(EventTypeService);
+      expect(EventTypeDeleteController['entityName']).toBe('EventType');
+      expect(EventTypeDeleteController['workerDeletePermission']).toBe(
+        'deleteEventTypes'
       );
     });
   });
