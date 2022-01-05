@@ -1,5 +1,6 @@
-import { Owner, Worker } from '@hubbl/shared/models/entities';
 import * as log from 'npmlog';
+
+import { Owner, Worker } from '@hubbl/shared/models/entities';
 
 import { BaseService } from '../../services';
 import * as deleteHelpers from './delete';
@@ -63,8 +64,8 @@ describe('delete', () => {
       }: CommonShouldDeleteByProps) => {
         fromClassSpy.mockResolvedValue(mockEntityDto);
         const countSpy = jest.spyOn(service, 'count').mockResolvedValue(1);
-        const softDeleteSpy = jest
-          .spyOn(service, 'softDelete')
+        const deleteSpy = jest
+          .spyOn(service, 'delete')
           .mockResolvedValue(mockEntity as any);
         const mockRes = {
           json: jest.fn().mockReturnThis(),
@@ -88,8 +89,8 @@ describe('delete', () => {
         // Common checks
         expect(countSpy).toHaveBeenCalledTimes(1);
         expect(countSpy).toHaveBeenCalledWith({ any: 'any' });
-        expect(softDeleteSpy).toHaveBeenCalledTimes(1);
-        expect(softDeleteSpy).toHaveBeenCalledWith(1);
+        expect(deleteSpy).toHaveBeenCalledTimes(1);
+        expect(deleteSpy).toHaveBeenCalledWith(1);
         expect(mockController.ok).toHaveBeenCalledTimes(1);
         expect(mockController.ok).toHaveBeenCalledWith(mockRes);
       };
@@ -97,7 +98,7 @@ describe('delete', () => {
       it('should delete by owner', async () => {
         const mockService = {
           count: jest.fn().mockResolvedValue(1),
-          softDelete: jest.fn()
+          delete: jest.fn()
         } as any;
         const mockOwnerService = {
           count: jest.fn().mockResolvedValue(1)
@@ -115,7 +116,7 @@ describe('delete', () => {
       it('should delete by worker', async () => {
         const mockService = {
           count: jest.fn().mockResolvedValue(1),
-          softDelete: jest.fn()
+          delete: jest.fn()
         } as any;
         const mockWorkerService = {
           findOne: jest.fn().mockResolvedValue({ any: true })
@@ -266,7 +267,7 @@ describe('delete', () => {
       fromClassSpy.mockResolvedValue(mockEntityDto);
       const mockService = {
         count: jest.fn().mockResolvedValue(0),
-        softDelete: jest.fn().mockRejectedValue(mockEntity as any)
+        delete: jest.fn().mockRejectedValue(mockEntity as any)
       } as any;
       const mockOwnerService = { count: jest.fn().mockResolvedValue(1) } as any;
 
@@ -292,7 +293,7 @@ describe('delete', () => {
       // Common checks
       expect(mockService.count).toHaveBeenCalledTimes(1);
       expect(mockService.count).toHaveBeenCalledWith({ id: 1 });
-      expect(mockService.softDelete).not.toHaveBeenCalled();
+      expect(mockService.delete).not.toHaveBeenCalled();
       expect(mockController.notFound).toHaveBeenCalledTimes(1);
       expect(mockController.notFound).toHaveBeenCalledWith(
         mockRes,
@@ -300,11 +301,11 @@ describe('delete', () => {
       );
     });
 
-    it('should send fail if error on softDelete', async () => {
+    it('should send fail if error on delete', async () => {
       fromClassSpy.mockResolvedValue(mockEntityDto);
       const mockService = {
         count: jest.fn().mockResolvedValue(1),
-        softDelete: jest.fn().mockRejectedValue(mockEntity as any)
+        delete: jest.fn().mockRejectedValue(mockEntity as any)
       } as any;
       const mockOwnerService = { count: jest.fn().mockResolvedValue(1) } as any;
 
@@ -328,8 +329,8 @@ describe('delete', () => {
       });
 
       // Common checks
-      expect(mockService.softDelete).toHaveBeenCalledTimes(1);
-      expect(mockService.softDelete).toHaveBeenCalledWith(1);
+      expect(mockService.delete).toHaveBeenCalledTimes(1);
+      expect(mockService.delete).toHaveBeenCalledWith(1);
 
       logAsserts();
       expect(mockController.fail).toHaveBeenCalledTimes(1);

@@ -1,4 +1,5 @@
 import {
+  DeleteResult,
   FindCondition,
   FindManyOptions,
   FindOneOptions,
@@ -38,8 +39,8 @@ export default class BaseService<T> {
     return this.repository.update(id, value);
   }
 
-  public softDelete(criteria: number | string): Promise<UpdateResult> {
-    return this.repository.softDelete(criteria);
+  public delete(criteria: number | string): Promise<DeleteResult> {
+    return this.repository.delete(criteria);
   }
 
   public count(args: FindManyOptions<T> | FindCondition<T>): Promise<number> {
