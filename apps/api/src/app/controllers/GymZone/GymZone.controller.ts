@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 import * as log from 'npmlog';
+import { getRepository } from 'typeorm';
 
 import { DTOGroups, GymZoneDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
@@ -11,12 +11,8 @@ import {
   PersonService,
   WorkerService
 } from '../../services';
-import BaseController from '../Base';
-import {
-  createdByOwnerOrWorker,
-  deletedByOwnerOrWorker,
-  updatedByOwnerOrWorker
-} from '../helpers';
+import BaseController, { UpdateByOwnerWorkerController } from '../Base';
+import { createdByOwnerOrWorker, deletedByOwnerOrWorker } from '../helpers';
 
 class IGymZoneFetchController extends BaseController {
   protected service: GymZoneService = undefined;
@@ -132,50 +128,12 @@ const createInstance = new IGymZoneCreateController();
 
 export const GymZoneCreateController = createInstance;
 
-class IGymZoneUpdateController extends BaseController {
-  protected service: GymZoneService = undefined;
-  protected ownerService: OwnerService = undefined;
-  protected workerService: WorkerService = undefined;
-
-  protected async run(req: Request, res: Response): Promise<Response> {
-    if (!this.service) {
-      this.service = new GymZoneService(getRepository);
-    }
-
-    if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
-    }
-
-    if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
-    }
-
-    const { token } = res.locals;
-
-    try {
-      const dto = await GymZoneDTO.fromJson(req.body, DTOGroups.UPDATE);
-
-      return updatedByOwnerOrWorker({
-        service: this.service,
-        ownerService: this.ownerService,
-        workerService: this.workerService,
-        controller: this,
-        res,
-        token,
-        by: req.query.by as any,
-        dto,
-        entityName: 'GymZone',
-        updatableBy: '["owner", "worker"]',
-        countArgs: { id: dto.id },
-        workerUpdatePermission: 'updateGymZones'
-      });
-    } catch (e) {
-      return this.clientError(res, e);
-    }
-  }
-}
-
-const updateInstance = new IGymZoneUpdateController();
+const updateInstance = new UpdateByOwnerWorkerController(
+  GymZoneService,
+  GymZoneDTO.fromJson,
+  'GymZone',
+  'updateGymZones'
+);
 
 export const GymZoneUpdateController = updateInstance;
 
