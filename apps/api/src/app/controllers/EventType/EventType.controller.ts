@@ -44,7 +44,7 @@ class IEventTypeFetchController extends BaseController {
         return this.ok(
           res,
           await Promise.all(
-            result.map(async (ev) => {
+            result.map((ev) => {
               // Needs to be added as the find query does not parse the gym id
               ev.gym = gymId;
 

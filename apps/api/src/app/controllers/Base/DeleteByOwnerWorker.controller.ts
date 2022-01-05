@@ -1,9 +1,14 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
-import { EventType, GymZone } from '@hubbl/shared/models/entities';
+import {
+  EventTemplate,
+  EventType,
+  GymZone
+} from '@hubbl/shared/models/entities';
 
 import {
+  EventTemplateService,
   EventTypeService,
   GymZoneService,
   OwnerService,
@@ -13,13 +18,19 @@ import {
 import { deletedByOwnerOrWorker } from '../helpers';
 import BaseController from './Base.controller';
 
-type DeletableEntityNames = 'EventType' | 'GymZone';
+type DeletableEntityNames = 'EventTemplate' | 'EventType' | 'GymZone';
 
-type WorkerDeletePermissions = 'deleteEventTypes' | 'deleteGymZones';
+type WorkerDeletePermissions =
+  | 'deleteEventTemplates'
+  | 'deleteEventTypes'
+  | 'deleteGymZones';
 
-type DeletableEntities = EventType | GymZone;
+type DeletableEntities = EventTemplate | EventType | GymZone;
 
-type DeletableServices = EventTypeService | GymZoneService;
+type DeletableServices =
+  | EventTemplateService
+  | EventTypeService
+  | GymZoneService;
 
 export default class DeleteByOwnerWorkerController extends BaseController {
   protected service: DeletableServices = undefined;

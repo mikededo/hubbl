@@ -141,6 +141,24 @@ export default class Worker {
   @Column('bool', { default: false })
   deleteEventTypes!: boolean;
 
+  /**
+   * The `Worker` is allowed or not to CREATE `EventTemplates`'s.
+   */
+  @Column('bool', { default: false })
+  createEventTemplates!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to UPDATE `EventTemplates`'s.
+   */
+  @Column('bool', { default: false })
+  updateEventTemplates!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to DELETE `EventTemplates`'s.
+   */
+  @Column('bool', { default: false })
+  deleteEventTemplates!: boolean;
+
   @CreateDateColumn()
   createdAt!: Date;
 

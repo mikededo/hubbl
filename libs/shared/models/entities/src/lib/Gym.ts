@@ -10,6 +10,7 @@ import {
 
 import { ThemeColor } from '@hubbl/shared/types';
 
+import EventTemplate from './EventTemplate';
 import EventType from './EventType';
 import Person from './Person';
 import VirtualGym from './VirtualGym';
@@ -46,6 +47,16 @@ export default class Gym {
     onUpdate: 'CASCADE'
   })
   eventTypes!: EventType[];
+
+  /**
+   * `EventTemplate`'s that belong to the gym, and will be common
+   * to all workers
+   */
+  @OneToMany(() => EventTemplate, (et) => et.gym, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  eventTemplates!: EventTemplate[];
 
   /**
    * Relation that allows us to know what users

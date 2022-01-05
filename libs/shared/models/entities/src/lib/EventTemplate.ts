@@ -4,14 +4,15 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
 import Event from './Event';
 import EventType from './EventType';
+import Gym from './Gym';
 
 @Entity()
 export default class EventTemplate {
@@ -33,9 +34,12 @@ export default class EventTemplate {
   /**
    * `EventType` of the `EventTemplate`
    */
-  @OneToOne(() => EventType, { cascade: true, eager: true, nullable: false })
+  @ManyToOne(() => EventType, (ev) => ev.eventTemplates, {
+    cascade: true,
+    onDelete: 'SET NULL'
+  })
   @JoinColumn({ name: 'event_type_fk' })
-  type!: EventType;
+  type!: number | EventType;
 
   /**
    * `Event`'s that have been created with the current template
@@ -46,6 +50,15 @@ export default class EventTemplate {
     onUpdate: 'CASCADE'
   })
   events!: Event[];
+
+  /**
+   * `Gym` to which the `EventTemplate` belongs
+   */
+  @ManyToOne(() => Gym, (g) => g.eventTemplates, {
+    nullable: false,
+    onDelete: 'CASCADE'
+  })
+  gym!: number;
 
   @CreateDateColumn()
   createdAt!: Date;

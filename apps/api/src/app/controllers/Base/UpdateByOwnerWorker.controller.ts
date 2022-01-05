@@ -3,13 +3,20 @@ import { getRepository } from 'typeorm';
 
 import {
   DTOGroups,
+  EventTemplateDTO,
   EventTypeDTO,
   GymZoneDTO,
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
-import { EventType, GymZone, VirtualGym } from '@hubbl/shared/models/entities';
+import {
+  EventTemplate,
+  EventType,
+  GymZone,
+  VirtualGym
+} from '@hubbl/shared/models/entities';
 
 import {
+  EventTemplateService,
   EventTypeService,
   GymZoneService,
   OwnerService,
@@ -20,21 +27,31 @@ import {
 import { BaseFromJsonCallable, updatedByOwnerOrWorker } from '../helpers';
 import BaseController from './Base.controller';
 
-type UpdatableEntityNames = 'EventType' | 'VirtualGym' | 'GymZone';
+type UpdatableEntityNames =
+  | 'EventTemplate'
+  | 'EventType'
+  | 'VirtualGym'
+  | 'GymZone';
 
 type WorkerUpdatePermissions =
+  | 'updateEventTemplates'
   | 'updateEventTypes'
   | 'updateGymZones'
   | 'updateVirtualGyms';
 
-type UpdatableEntities = EventType | GymZone | VirtualGym;
+type UpdatableEntities = EventTemplate | EventType | GymZone | VirtualGym;
 
 type UpdatableFromJson =
+  | BaseFromJsonCallable<EventTemplateDTO>
   | BaseFromJsonCallable<EventTypeDTO>
   | BaseFromJsonCallable<GymZoneDTO>
   | BaseFromJsonCallable<VirtualGymDTO>;
 
-type UpdatableServices = EventTypeService | GymZoneService | VirtualGymService;
+type UpdatableServices =
+  | EventTemplateService
+  | EventTypeService
+  | GymZoneService
+  | VirtualGymService;
 
 export default class UpdateByOwnerWorkerController extends BaseController {
   protected service: UpdatableServices = undefined;

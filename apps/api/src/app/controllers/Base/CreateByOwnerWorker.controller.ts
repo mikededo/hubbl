@@ -1,10 +1,20 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, EventTypeDTO, GymZoneDTO } from '@hubbl/shared/models/dto';
-import { EventType, GymZone } from '@hubbl/shared/models/entities';
+import {
+  DTOGroups,
+  EventTemplateDTO,
+  EventTypeDTO,
+  GymZoneDTO
+} from '@hubbl/shared/models/dto';
+import {
+  EventTemplate,
+  EventType,
+  GymZone
+} from '@hubbl/shared/models/entities';
 
 import {
+  EventTemplateService,
   EventTypeService,
   GymZoneService,
   OwnerService,
@@ -18,23 +28,31 @@ import {
 } from '../helpers';
 import BaseController from './Base.controller';
 
-type CreatableEntityNames = 'EventType' | 'GymZone';
+type CreatableEntityNames = 'EventTemplate' | 'EventType' | 'GymZone';
 
-type WorkerCreatePermissions = 'createEventTypes' | 'createGymZones';
+type WorkerCreatePermissions =
+  | 'createEventTemplates'
+  | 'createEventTypes'
+  | 'createGymZones';
 
-type CreatableEntities = EventType | GymZone;
+type CreatableEntities = EventTemplate | EventType | GymZone;
 
 type CreatableFromJson =
+  | BaseFromJsonCallable<EventTemplateDTO>
   | BaseFromJsonCallable<EventTypeDTO>
   | BaseFromJsonCallable<GymZoneDTO>;
 
 type CreatableFromClass =
+  | BaseFromClassCallable<EventTemplate, EventTemplateDTO>
   | BaseFromClassCallable<EventType, EventTypeDTO>
   | BaseFromClassCallable<GymZone, GymZoneDTO>;
 
-type CreatableServices = EventTypeService | GymZoneService;
+type CreatableServices =
+  | EventTemplateService
+  | EventTypeService
+  | GymZoneService;
 
-export default class IEventTypeCreateController extends BaseController {
+export default class CreateByOwnerWorkerController extends BaseController {
   protected service: CreatableServices = undefined;
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;

@@ -4,12 +4,14 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 
 import { AppPalette } from '@hubbl/shared/types';
 
+import EventTemplate from './EventTemplate';
 import Gym from './Gym';
 
 @Entity()
@@ -38,6 +40,9 @@ export default class EventType {
     default: AppPalette.BLUE
   })
   labelColor!: AppPalette;
+
+  @OneToMany(() => EventTemplate, (et) => et.type)
+  eventTemplates!: EventTemplate[];
 
   /**
    * `Gym` to which the `EventType` belongs
