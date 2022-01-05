@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
   EventTemplateCreateController,
+  EventTemplateDeleteController,
   EventTemplateUpdateController
 } from '../controllers';
 import middlewares from '../middlewares';
@@ -20,6 +21,13 @@ EventTemplateRouter.post('', middlewares.auth, (req, res) => {
  */
 EventTemplateRouter.put('', middlewares.auth, (req, res) => {
   EventTemplateUpdateController.execute(req, res);
+});
+
+/**
+ * @description Deletes an event template in the database
+ */
+EventTemplateRouter.delete('/:id', middlewares.auth, (req, res) => {
+  EventTemplateDeleteController.execute(req, res);
 });
 
 export default EventTemplateRouter;

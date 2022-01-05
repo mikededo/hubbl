@@ -36,9 +36,7 @@ export default class EventTemplate {
    */
   @ManyToOne(() => EventType, (ev) => ev.eventTemplates, {
     cascade: true,
-    eager: true,
-    nullable: false,
-    onDelete: 'CASCADE'
+    onDelete: 'SET NULL'
   })
   @JoinColumn({ name: 'event_type_fk' })
   type!: number;

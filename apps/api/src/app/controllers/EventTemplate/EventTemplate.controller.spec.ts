@@ -3,10 +3,12 @@ import { EventTemplateDTO } from '@hubbl/shared/models/dto';
 import { EventTemplateService } from '../../services';
 import {
   CreateByOwnerWorkerController,
+  DeleteByOwnerWorkerController,
   UpdateByOwnerWorkerController
 } from '../Base';
 import {
   EventTemplateCreateController,
+  EventTemplateDeleteController,
   EventTemplateUpdateController
 } from './EventTemplate.controller';
 
@@ -53,6 +55,23 @@ describe('EventTemplate controller', () => {
       expect(EventTemplateUpdateController['entityName']).toBe('EventTemplate');
       expect(EventTemplateUpdateController['workerUpdatePermission']).toBe(
         'updateEventTemplates'
+      );
+    });
+  });
+
+  describe('EventTemplateDeleteController', () => {
+    it('should create an DeleteByOwnerWorkerController', () => {
+      jest.spyOn(EventTemplateDTO, 'fromJson');
+
+      expect(EventTemplateDeleteController).toBeInstanceOf(
+        DeleteByOwnerWorkerController
+      );
+      expect(EventTemplateDeleteController['serviceCtr']).toBe(
+        EventTemplateService
+      );
+      expect(EventTemplateDeleteController['entityName']).toBe('EventTemplate');
+      expect(EventTemplateDeleteController['workerDeletePermission']).toBe(
+        'deleteEventTemplates'
       );
     });
   });
