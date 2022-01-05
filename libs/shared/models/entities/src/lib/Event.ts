@@ -42,7 +42,8 @@ export default class Event {
    */
   @ManyToOne(() => EventTemplate, (et) => et.events, {
     nullable: false,
-    eager: true
+    eager: true,
+    onDelete: 'SET NULL'
   })
   template!: EventTemplate;
 

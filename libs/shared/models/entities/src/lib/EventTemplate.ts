@@ -12,6 +12,7 @@ import {
 
 import Event from './Event';
 import EventType from './EventType';
+import Gym from './Gym';
 
 @Entity()
 export default class EventTemplate {
@@ -33,9 +34,14 @@ export default class EventTemplate {
   /**
    * `EventType` of the `EventTemplate`
    */
-  @OneToOne(() => EventType, { cascade: true, eager: true, nullable: false })
+  @OneToOne(() => EventType, {
+    cascade: true,
+    eager: true,
+    nullable: false,
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({ name: 'event_type_fk' })
-  type!: EventType;
+  type!: number;
 
   /**
    * `Event`'s that have been created with the current template
@@ -46,6 +52,15 @@ export default class EventTemplate {
     onUpdate: 'CASCADE'
   })
   events!: Event[];
+
+  /**
+   * `Gym` to which the `EventTemplate` belongs
+   */
+  @OneToMany(() => Gym, (g) => g.eventTemplates, {
+    nullable: false,
+    onDelete: 'CASCADE'
+  })
+  gym!: number;
 
   @CreateDateColumn()
   createdAt!: Date;

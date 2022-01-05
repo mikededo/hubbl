@@ -1,4 +1,5 @@
 import BaseService from './Base';
+import EventTemplateService from './EventTemplate';
 import EventTypeService from './EventType';
 import GymZoneService from './GymZone';
 import {
@@ -14,6 +15,7 @@ import VirtualGymService from './VirtualGym';
 export {
   BaseService,
   ClientService,
+  EventTemplateService,
   EventTypeService,
   GymZoneService,
   OwnerService,
