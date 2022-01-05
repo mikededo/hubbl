@@ -18,7 +18,6 @@ describe('DeleteByOwnerWorkerController controller', () => {
   } as any;
   const mockRes = { locals: { token: { id: 1 } } } as any;
 
-
   beforeEach(() => {
     jest.clearAllMocks();
 

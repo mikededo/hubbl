@@ -249,9 +249,7 @@ describe('GymZone controller', () => {
       );
       expect(GymZoneCreateController['serviceCtr']).toBe(GymZoneService);
       expect(GymZoneCreateController['fromJson']).toBe(GymZoneDTO.fromJson);
-      expect(GymZoneCreateController['fromClass']).toBe(
-        GymZoneDTO.fromClass
-      );
+      expect(GymZoneCreateController['fromClass']).toBe(GymZoneDTO.fromClass);
       expect(GymZoneCreateController['entityName']).toBe('GymZone');
       expect(GymZoneCreateController['workerCreatePermission']).toBe(
         'createGymZones'

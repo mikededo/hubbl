@@ -14,7 +14,7 @@ import {
   VirtualGymUpdateController
 } from './VirtualGym.controller';
 
-jest.mock('@hubbl/shared/models/dto')
+jest.mock('@hubbl/shared/models/dto');
 jest.mock('../../services');
 
 describe('VirtualGym Controller', () => {
@@ -260,21 +260,23 @@ describe('VirtualGym Controller', () => {
     });
   });
 
-    describe('VirtualGymUpdateController', () => {
-      it('should create an UpdateByOwnerWorkerController', () => {
-        jest.spyOn(VirtualGymDTO, 'fromJson');
+  describe('VirtualGymUpdateController', () => {
+    it('should create an UpdateByOwnerWorkerController', () => {
+      jest.spyOn(VirtualGymDTO, 'fromJson');
 
-        expect(VirtualGymUpdateController).toBeInstanceOf(
-          UpdateByOwnerWorkerController
-        );
-        expect(VirtualGymUpdateController['serviceCtr']).toBe(VirtualGymService);
-        expect(VirtualGymUpdateController['fromJson']).toBe(VirtualGymDTO.fromJson);
-        expect(VirtualGymUpdateController['entityName']).toBe('VirtualGym');
-        expect(VirtualGymUpdateController['workerUpdatePermission']).toBe(
-          'updateVirtualGyms'
-        );
-      });
+      expect(VirtualGymUpdateController).toBeInstanceOf(
+        UpdateByOwnerWorkerController
+      );
+      expect(VirtualGymUpdateController['serviceCtr']).toBe(VirtualGymService);
+      expect(VirtualGymUpdateController['fromJson']).toBe(
+        VirtualGymDTO.fromJson
+      );
+      expect(VirtualGymUpdateController['entityName']).toBe('VirtualGym');
+      expect(VirtualGymUpdateController['workerUpdatePermission']).toBe(
+        'updateVirtualGyms'
+      );
     });
+  });
 
   describe('VirtualGymDeleteController', () => {
     it('should create the services if does not have any', async () => {

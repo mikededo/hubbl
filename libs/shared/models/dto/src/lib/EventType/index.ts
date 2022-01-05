@@ -1,3 +1,3 @@
-import EventTypeDTO from "./EventType";
+import EventTypeDTO from './EventType';
 
 export default EventTypeDTO;
