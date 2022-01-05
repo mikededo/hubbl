@@ -9,9 +9,11 @@ import {
   PersonService,
   WorkerService
 } from '../../services';
-import { UpdateByOwnerWorkerController } from '../Base';
+import {
+  DeleteByOwnerWorkerController,
+  UpdateByOwnerWorkerController
+} from '../Base';
 import * as create from '../helpers/create';
-import * as deleteHelpers from '../helpers/delete';
 import {
   GymZoneCreateController,
   GymZoneDeleteController,
@@ -335,47 +337,17 @@ describe('GymZone controller', () => {
   });
 
   describe('GymZoneDeleteController', () => {
-    it('should create the services if does not have any', async () => {
-      jest.spyOn(GymZoneDeleteController, 'fail').mockImplementation();
+    it('should create an DeleteByOwnerWorkerController', () => {
+      jest.spyOn(GymZoneDTO, 'fromJson');
 
-      GymZoneDeleteController['service'] = undefined;
-      GymZoneDeleteController['ownerService'] = undefined;
-      GymZoneDeleteController['workerService'] = undefined;
-      await GymZoneDeleteController.execute({} as any, {} as any);
-
-      expect(GymZoneService).toHaveBeenCalled();
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
-      expect(OwnerService).toHaveBeenCalled();
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
-      expect(WorkerService).toHaveBeenCalled();
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
-    });
-
-    it('should call deletedByOwnerOrWorker', async () => {
-      const dboowSpy = jest
-        .spyOn(deleteHelpers, 'deletedByOwnerOrWorker')
-        .mockImplementation();
-
-      GymZoneDeleteController['service'] = {} as any;
-      GymZoneDeleteController['ownerService'] = {} as any;
-      GymZoneDeleteController['workerService'] = {} as any;
-
-      await GymZoneDeleteController.execute(mockReq, mockRes);
-
-      expect(dboowSpy).toHaveBeenCalledTimes(1);
-      expect(dboowSpy).toHaveBeenCalledWith({
-        service: {},
-        ownerService: {},
-        workerService: {},
-        controller: GymZoneDeleteController,
-        res: mockRes,
-        token: { id: 1 },
-        by: mockReq.query.by,
-        entityId: mockReq.params.id,
-        entityName: 'GymZone',
-        countArgs: { id: 1 },
-        workerDeletePermission: 'deleteGymZones'
-      });
+      expect(GymZoneDeleteController).toBeInstanceOf(
+        DeleteByOwnerWorkerController
+      );
+      expect(GymZoneDeleteController['serviceCtr']).toBe(GymZoneService);
+      expect(GymZoneDeleteController['entityName']).toBe('GymZone');
+      expect(GymZoneDeleteController['workerDeletePermission']).toBe(
+        'deleteGymZones'
+      );
     });
   });
 });
