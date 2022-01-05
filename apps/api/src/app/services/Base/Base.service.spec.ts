@@ -97,17 +97,17 @@ describe('BaseService', () => {
     });
   });
 
-  describe('#softDelete', () => {
-    it('should softDelete an item', async () => {
+  describe('#delete', () => {
+    it('should delete an item', async () => {
       const mockRepository = {
-        softDelete: jest.fn().mockImplementation(() => Promise.resolve({}))
+        delete: jest.fn().mockImplementation(() => Promise.resolve({}))
       };
       const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
 
       const service = new BaseService(Mock, mockRepoAccessor);
-      await service.softDelete(1);
+      await service.delete(1);
 
-      expect(mockRepository.softDelete).toHaveBeenCalledWith(1);
+      expect(mockRepository.delete).toHaveBeenCalledWith(1);
     });
   });
 
