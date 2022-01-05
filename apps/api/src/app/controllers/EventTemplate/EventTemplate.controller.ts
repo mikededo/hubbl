@@ -1,7 +1,10 @@
 import { EventTemplateDTO } from '@hubbl/shared/models/dto';
 
 import { EventTemplateService } from '../../services';
-import { CreateByOwnerWorkerController } from '../Base';
+import {
+  CreateByOwnerWorkerController,
+  UpdateByOwnerWorkerController
+} from '../Base';
 
 const createInstance = new CreateByOwnerWorkerController(
   EventTemplateService,
@@ -12,3 +15,12 @@ const createInstance = new CreateByOwnerWorkerController(
 );
 
 export const EventTemplateCreateController = createInstance;
+
+const updateInstance = new UpdateByOwnerWorkerController(
+  EventTemplateService,
+  EventTemplateDTO.fromJson,
+  'EventTemplate',
+  'updateEventTemplates'
+);
+
+export const EventTemplateUpdateController = updateInstance;

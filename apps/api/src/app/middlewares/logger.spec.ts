@@ -9,7 +9,7 @@ describe('Logger middleware', () => {
 
   describe('preRequest', () => {
     it('should log the incoming request method and url, and call next', () => {
-      const mockReq = { method: 'POST', url: 'some/url/of/the/api' };
+      const mockReq = { method: 'POST', originalUrl: 'some/url/of/the/api' };
       const mockNext = jest.fn().mockImplementation();
       const logSpy = jest.spyOn(log, 'info').mockImplementation();
 
@@ -18,7 +18,7 @@ describe('Logger middleware', () => {
       expect(logSpy).toHaveBeenCalledTimes(1);
       expect(logSpy).toHaveBeenCalledWith(
         'Request',
-        `[${mockReq.method} ${mockReq.url}]`
+        `[${mockReq.method} ${mockReq.originalUrl}]`
       );
       expect(mockNext).toHaveBeenCalledTimes(1);
     });
@@ -28,7 +28,7 @@ describe('Logger middleware', () => {
     it('should log the post request method, url and statusCode on "finish", and call next', () => {
       let mockResCallback: any;
 
-      const mockReq = { method: 'PUT', url: 'some/url/of/the/api' };
+      const mockReq = { method: 'PUT', originalUrl: 'some/url/of/the/api' };
       const mockRes = {
         statusCode: 201,
         on: jest.fn().mockImplementation((value: string, callback: any) => {
@@ -48,7 +48,7 @@ describe('Logger middleware', () => {
       expect(logSpy).toHaveBeenCalledTimes(1);
       expect(logSpy).toHaveBeenCalledWith(
         'Request',
-        `[${mockReq.method} ${mockReq.url}] -> ${mockRes.statusCode}`
+        `[${mockReq.method} ${mockReq.originalUrl}] -> ${mockRes.statusCode}`
       );
       expect(mockRes.on).toHaveBeenCalledTimes(1);
       expect(mockRes.on).toHaveBeenCalledWith('finish', expect.anything());

@@ -1,8 +1,14 @@
 import { EventTemplateDTO } from '@hubbl/shared/models/dto';
 
 import { EventTemplateService } from '../../services';
-import { CreateByOwnerWorkerController } from '../Base';
-import { EventTemplateCreateController } from './EventTemplate.controller';
+import {
+  CreateByOwnerWorkerController,
+  UpdateByOwnerWorkerController
+} from '../Base';
+import {
+  EventTemplateCreateController,
+  EventTemplateUpdateController
+} from './EventTemplate.controller';
 
 jest.mock('../../services');
 jest.mock('@hubbl/shared/models/dto');
@@ -27,6 +33,26 @@ describe('EventTemplate controller', () => {
       expect(EventTemplateCreateController['entityName']).toBe('EventTemplate');
       expect(EventTemplateCreateController['workerCreatePermission']).toBe(
         'createEventTemplates'
+      );
+    });
+  });
+
+  describe('EventTemplateUpdateController', () => {
+    it('should create an UpdateByOwnerWorkerController', () => {
+      jest.spyOn(EventTemplateDTO, 'fromJson');
+
+      expect(EventTemplateUpdateController).toBeInstanceOf(
+        UpdateByOwnerWorkerController
+      );
+      expect(EventTemplateUpdateController['serviceCtr']).toBe(
+        EventTemplateService
+      );
+      expect(EventTemplateUpdateController['fromJson']).toBe(
+        EventTemplateDTO.fromJson
+      );
+      expect(EventTemplateUpdateController['entityName']).toBe('EventTemplate');
+      expect(EventTemplateUpdateController['workerUpdatePermission']).toBe(
+        'updateEventTemplates'
       );
     });
   });

@@ -1,3 +1,6 @@
-import { EventTemplateCreateController } from './EventTemplate.controller';
+import {
+  EventTemplateCreateController,
+  EventTemplateUpdateController
+} from './EventTemplate.controller';
 
-export { EventTemplateCreateController };
+export { EventTemplateCreateController, EventTemplateUpdateController };
