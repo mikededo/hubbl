@@ -86,15 +86,11 @@ describe('EventType controller', () => {
     });
 
     it('should fetch the gym zones', async () => {
-      let mockResCallback: any;
-
       const resultList = {
         map: jest.fn().mockImplementation((callback: any) => {
           expect(callback).toBeDefined();
-          // Capture the callback
-          mockResCallback = callback;
 
-          return [mockDto, mockDto];
+          return [mockEventType, mockEventType].map(callback);
         })
       };
       const fromClassSpy = jest
@@ -112,7 +108,6 @@ describe('EventType controller', () => {
       EventTypeFetchController['personService'] = mockPersonService as any;
 
       await EventTypeFetchController.execute(mockReq, mockRes);
-      const result = [mockEventType, mockEventType].map(mockResCallback);
 
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
       expect(mockPersonService.findOne).toHaveBeenCalledWith(
@@ -126,7 +121,6 @@ describe('EventType controller', () => {
       expect(listSpy).toHaveBeenCalled();
       expect(fromClassSpy).toHaveBeenCalledTimes(2);
       expect(fromClassSpy).toHaveBeenCalledWith(mockEventType);
-      expect(result.length).toBe(2);
       expect(okSpy).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledWith(mockRes, [mockDto, mockDto]);
     });

@@ -47,10 +47,12 @@ class IGymZoneFetchController extends BaseController {
           .leftJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
             id: (person.gym as Gym).id
           })
-          .where('gymZone.id = :gymZoneId', { gymZoneId: req.params.id })
-          .getOne();
+          .getMany();
 
-        return this.ok(res, await GymZoneDTO.fromClass(result));
+        return this.ok(
+          res,
+          await Promise.all(result.map(GymZoneDTO.fromClass))
+        );
       } catch (_) {
         log.error(
           `Controller[${this.constructor.name}]`,
