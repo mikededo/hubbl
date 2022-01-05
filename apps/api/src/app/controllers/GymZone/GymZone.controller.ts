@@ -2,20 +2,15 @@ import { Request, Response } from 'express';
 import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, GymZoneDTO } from '@hubbl/shared/models/dto';
+import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-import {
-  GymZoneService,
-  OwnerService,
-  PersonService,
-  WorkerService
-} from '../../services';
+import { GymZoneService, PersonService } from '../../services';
 import BaseController, {
+  CreateByOwnerWorkerController,
   DeleteByOwnerWorkerController,
   UpdateByOwnerWorkerController
 } from '../Base';
-import { createdByOwnerOrWorker } from '../helpers';
 
 class IGymZoneFetchController extends BaseController {
   protected service: GymZoneService = undefined;
@@ -88,47 +83,13 @@ const fetchInstance = new IGymZoneFetchController();
 
 export const GymZoneFetchController = fetchInstance;
 
-class IGymZoneCreateController extends BaseController {
-  protected service: GymZoneService = undefined;
-  protected ownerService: OwnerService = undefined;
-  protected workerService: WorkerService = undefined;
-
-  protected async run(req: Request, res: Response): Promise<Response> {
-    if (!this.service) {
-      this.service = new GymZoneService(getRepository);
-    }
-
-    if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
-    }
-
-    if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
-    }
-
-    const { token } = res.locals;
-
-    try {
-      return createdByOwnerOrWorker({
-        service: this.service,
-        ownerService: this.ownerService,
-        workerService: this.workerService,
-        controller: this,
-        res,
-        fromClass: GymZoneDTO.fromClass,
-        token,
-        by: req.query.by as any,
-        dto: await GymZoneDTO.fromJson(req.body, DTOGroups.CREATE),
-        entityName: 'GymZone',
-        workerCreatePermission: 'createGymZones'
-      });
-    } catch (e) {
-      return this.clientError(res, e);
-    }
-  }
-}
-
-const createInstance = new IGymZoneCreateController();
+const createInstance = new CreateByOwnerWorkerController(
+  GymZoneService,
+  GymZoneDTO.fromJson,
+  GymZoneDTO.fromClass,
+  'GymZone',
+  'createGymZones'
+);
 
 export const GymZoneCreateController = createInstance;
 

@@ -4,12 +4,15 @@ import * as log from 'npmlog';
 import {
   EventTypeDTO,
   GymZoneDTO,
+  TrainerDTO,
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import {
   EventType,
+  Gym,
   GymZone,
   Owner,
+  Trainer,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
@@ -18,11 +21,21 @@ import { BaseService } from '../../services';
 import BaseController from '../Base';
 import { BaseFromClassCallable, ParsedToken } from './types';
 
-type CommonCreateByServices = BaseService<EventType | VirtualGym | GymZone>;
+type CommonCreateByServices = BaseService<
+  EventType | VirtualGym | GymZone | Trainer
+>;
 
-type CommonCreateByDTOs = EventTypeDTO | VirtualGymDTO | GymZoneDTO;
+type CommonCreateByDTOs =
+  | EventTypeDTO
+  | VirtualGymDTO
+  | GymZoneDTO
+  | TrainerDTO<Gym | number>;
 
-type CommonCreateByEntities = 'EventType' | 'VirtualGym' | 'GymZone';
+type CommonCreateByEntities =
+  | 'EventType'
+  | 'VirtualGym'
+  | 'GymZone'
+  | 'Trainer';
 
 type WorkerCreatePermissions =
   | 'createClients'
@@ -109,7 +122,7 @@ export const createdByOwnerOrWorker = async ({
 
   try {
     // If valid, update the entity
-    const result = await service.save(dto.toClass());
+    const result = await service.save(await dto.toClass());
 
     // Return ok
     return controller.created(res, await fromClass(result as any));
