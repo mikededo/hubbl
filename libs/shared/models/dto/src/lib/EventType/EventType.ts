@@ -7,10 +7,16 @@ import {
 } from 'class-validator';
 
 import { EventType } from '@hubbl/shared/models/entities';
-import { AppPalette, DTOGroups } from '@hubbl/shared/types';
+import { AppPalette } from '@hubbl/shared/types';
 
 import DTO from '../Base';
-import { enumError, numberError, stringError, validationParser } from '../util';
+import {
+  DTOGroups,
+  enumError,
+  numberError,
+  stringError,
+  validationParser
+} from '../util';
 
 export default class EventTypeDTO implements DTO<EventType> {
   @IsNumber({}, { message: numberError('id') })

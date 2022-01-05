@@ -16,10 +16,10 @@ import {
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
-import { BaseFromClassCallable, ParsedToken } from '@hubbl/shared/types';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';
+import { BaseFromClassCallable, ParsedToken } from './types';
 
 type CommonCreateByServices = BaseService<
   EventType | VirtualGym | GymZone | Trainer

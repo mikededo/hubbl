@@ -1,9 +1,3 @@
-enum DTOGroups {
-  ALL = 'all',
-  CREATE = 'create',
-  UPDATE = 'update'
-}
-
 /**
  * Defines the theme of the app that is being used
  */
@@ -58,11 +52,4 @@ enum Gender {
   OTHER = 'OTHER'
 }
 
-export {
-  DTOGroups,
-  AppPalette,
-  AppTheme,
-  Gender,
-  GymZoneIntervals,
-  ThemeColor
-};
+export { AppPalette, AppTheme, Gender, GymZoneIntervals, ThemeColor };

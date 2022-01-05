@@ -7,13 +7,14 @@ import {
 } from 'class-validator';
 
 import { Gym, Person, Worker } from '@hubbl/shared/models/entities';
-import { DTOGroups, Gender } from '@hubbl/shared/types';
+import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import {
   booleanError,
+  DTOGroups,
   numberError,
   stringError,
   validationParser

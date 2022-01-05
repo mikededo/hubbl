@@ -3,12 +3,12 @@ import * as log from 'npmlog';
 
 import {
   ClientDTO,
+  DTOGroups,
   OwnerDTO,
   TrainerDTO,
   WorkerDTO
 } from '@hubbl/shared/models/dto';
 import { Owner, Worker } from '@hubbl/shared/models/entities';
-import { DTOGroups } from '@hubbl/shared/types';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';

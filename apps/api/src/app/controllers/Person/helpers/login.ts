@@ -16,13 +16,13 @@ import {
   Trainer,
   Worker
 } from '@hubbl/shared/models/entities';
-import {
-  BaseFromClassCallable,
-  BasePersonFromJsonCallable
-} from '@hubbl/shared/types';
 
 import { BaseService } from '../../../services';
 import BaseController from '../../Base';
+import {
+  BaseFromClassCallable,
+  BasePersonFromJsonCallable
+} from '../../helpers';
 
 type LoggableEntities = Owner | Worker | Trainer | Client;
 

@@ -2,12 +2,13 @@ import { genSalt, hash } from 'bcrypt';
 import { IsArray, IsNumber, IsString, validateOrReject } from 'class-validator';
 
 import { Event, Gym, Person, Trainer } from '@hubbl/shared/models/entities';
-import { DTOGroups, Gender } from '@hubbl/shared/types';
+import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import {
   arrayError,
+  DTOGroups,
   numberError,
   stringError,
   validationParser
