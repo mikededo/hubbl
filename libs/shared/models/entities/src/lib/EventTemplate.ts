@@ -4,8 +4,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
@@ -34,7 +34,7 @@ export default class EventTemplate {
   /**
    * `EventType` of the `EventTemplate`
    */
-  @OneToOne(() => EventType, {
+  @ManyToOne(() => EventType, (ev) => ev.eventTemplates, {
     cascade: true,
     eager: true,
     nullable: false,
@@ -56,7 +56,7 @@ export default class EventTemplate {
   /**
    * `Gym` to which the `EventTemplate` belongs
    */
-  @OneToMany(() => Gym, (g) => g.eventTemplates, {
+  @ManyToOne(() => Gym, (g) => g.eventTemplates, {
     nullable: false,
     onDelete: 'CASCADE'
   })

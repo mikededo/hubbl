@@ -1,3 +1,4 @@
+export * from './EventTemplate';
 export * from './EventType';
 export * from './GymZone';
 export * from './Person';
