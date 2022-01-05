@@ -104,7 +104,7 @@ export const deletedByOwnerOrWorker = async ({
 
   try {
     // If valid, update the entity
-    await service.softDelete(entityId);
+    await service.delete(entityId);
 
     // Return ok
     return controller.ok(res);
