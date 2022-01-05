@@ -64,7 +64,6 @@ class IGymZoneFetchController extends BaseController {
         );
       }
     } catch (_) {
-      console.log(_);
       log.error(
         `Controller[${this.constructor.name}]`,
         '"fetch" handler',

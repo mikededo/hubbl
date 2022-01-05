@@ -1,6 +1,10 @@
-import { EventTypeDTO } from '@hubbl/shared/models/dto';
+import * as log from 'npmlog';
+import { getRepository } from 'typeorm';
 
-import { EventTypeService } from '../../services';
+import { EventTypeDTO } from '@hubbl/shared/models/dto';
+import { AppPalette } from '@hubbl/shared/types';
+
+import { EventTypeService, PersonService } from '../../services';
 import {
   CreateByOwnerWorkerController,
   DeleteByOwnerWorkerController,
@@ -9,6 +13,7 @@ import {
 import {
   EventTypeCreateController,
   EventTypeDeleteController,
+  EventTypeFetchController,
   EventTypeUpdateController
 } from './EventType.controller';
 
@@ -16,8 +21,218 @@ jest.mock('../../services');
 jest.mock('@hubbl/shared/models/dto');
 
 describe('EventType controller', () => {
+  const mockPerson = {
+    id: 1,
+    gym: { id: 1 }
+  };
+  const mockEventType = {
+    id: 1,
+    name: 'Test',
+    description: '',
+    labelColor: AppPalette.BLUE,
+    gym: 1
+  };
+  const mockDto = {
+    ...mockEventType,
+    toClass: jest.fn()
+  };
+  const mockReq = {
+    params: { id: 1 },
+    query: { by: 'owner' },
+    body: {},
+    headers: { authorization: 'Any token' }
+  } as any;
+
+  const logSpy = jest.spyOn(log, 'error').mockImplementation();
+  const mockRes = { locals: { token: { id: 1 } } } as any;
+
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  const failSpyAsserts = (failSpy: any) => {
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      expect.any(String)
+    );
+    expect(failSpy).toHaveBeenCalledTimes(1);
+    expect(failSpy).toHaveBeenCalledWith(
+      mockRes,
+      'Internal server error. If the problem persists, contact our team.'
+    );
+  };
+
+  describe('EventTypeFetchController', () => {
+    const mockEventTypeService = { find: jest.fn().mockImplementation() };
+    const mockPersonService = { findOne: jest.fn().mockImplementation() };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should create the services if does not have any', async () => {
+      jest.spyOn(EventTypeFetchController, 'fail').mockImplementation();
+
+      EventTypeFetchController['service'] = undefined;
+      EventTypeFetchController['personService'] = undefined;
+      await EventTypeFetchController.execute({} as any, {} as any);
+
+      expect(EventTypeService).toHaveBeenCalledTimes(1);
+      expect(EventTypeService).toHaveBeenCalledWith(getRepository);
+      expect(PersonService).toHaveBeenCalledTimes(1);
+      expect(PersonService).toHaveBeenCalledWith(getRepository);
+    });
+
+    it('should fetch the gym zones', async () => {
+      let mockResCallback: any;
+
+      const resultList = {
+        map: jest.fn().mockImplementation((callback: any) => {
+          expect(callback).toBeDefined();
+          // Capture the callback
+          mockResCallback = callback;
+
+          return [mockDto, mockDto];
+        })
+      };
+      const fromClassSpy = jest
+        .spyOn(EventTypeDTO, 'fromClass')
+        .mockResolvedValue(mockDto as any);
+      const okSpy = jest
+        .spyOn(EventTypeFetchController, 'ok')
+        .mockImplementation();
+      const listSpy = jest.spyOn(resultList, 'map');
+
+      mockPersonService.findOne.mockResolvedValue(mockPerson);
+      mockEventTypeService.find.mockResolvedValue(resultList);
+
+      EventTypeFetchController['service'] = mockEventTypeService as any;
+      EventTypeFetchController['personService'] = mockPersonService as any;
+
+      await EventTypeFetchController.execute(mockReq, mockRes);
+      const result = [mockEventType, mockEventType].map(mockResCallback);
+
+      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOne).toHaveBeenCalledWith(
+        mockRes.locals.token.id
+      );
+      expect(mockEventTypeService.find).toHaveBeenCalledTimes(1);
+      expect(mockEventTypeService.find).toHaveBeenCalledWith({
+        where: { gym: mockPerson.gym.id }
+      });
+      expect(mockEventTypeService.find).toHaveReturned();
+      expect(listSpy).toHaveBeenCalled();
+      expect(fromClassSpy).toHaveBeenCalledTimes(2);
+      expect(fromClassSpy).toHaveBeenCalledWith(mockEventType);
+      expect(result.length).toBe(2);
+      expect(okSpy).toHaveBeenCalledTimes(1);
+      expect(okSpy).toHaveBeenCalledWith(mockRes, [mockDto, mockDto]);
+    });
+
+    it('should call fail on person service error', async () => {
+      const failSpy = jest
+        .spyOn(EventTypeFetchController, 'fail')
+        .mockImplementation();
+      mockPersonService.findOne.mockRejectedValue({});
+
+      EventTypeFetchController['service'] = {} as any;
+      EventTypeFetchController['personService'] = mockPersonService as any;
+
+      await EventTypeFetchController.execute(mockReq, mockRes);
+
+      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      // Ensure fail is called
+      failSpyAsserts(failSpy);
+    });
+
+    it('should call clientError if person does not exist', async () => {
+      const clientErrorSpy = jest
+        .spyOn(EventTypeFetchController, 'clientError')
+        .mockImplementation();
+      mockPersonService.findOne.mockResolvedValue(undefined);
+
+      EventTypeFetchController['service'] = {} as any;
+      EventTypeFetchController['personService'] = mockPersonService as any;
+
+      await EventTypeFetchController.execute(mockReq, mockRes);
+
+      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      // Ensure fail is called
+      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
+      expect(clientErrorSpy).toHaveBeenCalledWith(
+        mockRes,
+        'Person does not exist'
+      );
+    });
+
+    it('should call fail on service error', async () => {
+      const failSpy = jest
+        .spyOn(EventTypeFetchController, 'fail')
+        .mockImplementation();
+      mockEventTypeService.find.mockRejectedValue({});
+      mockPersonService.findOne.mockResolvedValue(mockPerson);
+
+      EventTypeFetchController['service'] = mockEventTypeService as any;
+      EventTypeFetchController['personService'] = mockPersonService as any;
+
+      await EventTypeFetchController.execute(mockReq, mockRes);
+
+      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockEventTypeService.find).toHaveBeenCalledTimes(1);
+      expect(mockEventTypeService.find).toHaveBeenCalledWith({
+        where: { gym: mockPerson.gym.id }
+      });
+      // Ensure fail is called
+      failSpyAsserts(failSpy);
+    });
+
+    it('should call fail on fromClass error', async () => {
+      let mockResCallback: any;
+
+      const resultList = {
+        map: jest.fn().mockImplementation((callback: any) => {
+          expect(callback).toBeDefined();
+          // Capture the callback
+          mockResCallback = callback;
+
+          throw {};
+        })
+      };
+      const fromClassSpy = jest
+        .spyOn(EventTypeDTO, 'fromClass')
+        .mockRejectedValue('mockDto as any');
+      const failSpy = jest
+        .spyOn(EventTypeFetchController, 'fail')
+        .mockImplementation();
+
+      mockPersonService.findOne.mockResolvedValue(mockPerson);
+      mockEventTypeService.find.mockResolvedValue(resultList);
+
+      EventTypeFetchController['service'] = mockEventTypeService as any;
+      EventTypeFetchController['personService'] = mockPersonService as any;
+
+      await EventTypeFetchController.execute(mockReq, mockRes);
+      [mockEventType, mockEventType].map(async (e) => {
+        try {
+          await mockResCallback(e);
+        } catch (e) {
+          // Nothing
+        }
+      });
+
+      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockEventTypeService.find).toHaveBeenCalledTimes(1);
+      expect(mockEventTypeService.find).toHaveBeenCalledWith({
+        where: { gym: mockPerson.gym.id }
+      });
+      // Ensure fromClass is called
+      expect(fromClassSpy).toHaveBeenCalledTimes(2);
+      expect(fromClassSpy).toHaveBeenCalledWith(mockEventType);
+      // Ensure fail is called
+      failSpyAsserts(failSpy);
+    });
   });
 
   describe('EventTypeCreateController', () => {

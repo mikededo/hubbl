@@ -26,6 +26,10 @@ export default class BaseService<T> {
     return this.repository.save(value);
   }
 
+  public find(options?: FindManyOptions<T>): Promise<T[]> {
+    return this.repository.find(options);
+  }
+
   public findOne(id: number, options?: FindOneOptions<T>): Promise<T> {
     return this.repository.findOne(id, options);
   }

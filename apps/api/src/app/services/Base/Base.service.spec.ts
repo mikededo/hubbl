@@ -43,6 +43,26 @@ describe('BaseService', () => {
     });
   });
 
+  describe('#find', () => {
+    it('should find one item', async () => {
+      const mockRepository = {
+        find: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            id: 1,
+            email: 'found@user.com',
+            password: 'hashed-pwd'
+          })
+        )
+      };
+      const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
+
+      const service = new BaseService(Mock, mockRepoAccessor);
+      await service.find({} as any);
+
+      expect(mockRepository.find).toHaveBeenCalledWith({});
+    });
+  });
+
   describe('#findOne', () => {
     it('should find one item', async () => {
       const mockRepository = {
