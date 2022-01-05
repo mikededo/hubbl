@@ -4,7 +4,7 @@ import { getRepository } from 'typeorm';
 import { DTOGroups, EventTypeDTO } from '@hubbl/shared/models/dto';
 
 import { EventTypeService, OwnerService, WorkerService } from '../../services';
-import BaseController, { UpdateByOwnerWorkerController } from '../Base';
+import BaseController, { DeleteByOwnerWorkerController, UpdateByOwnerWorkerController } from '../Base';
 import { createdByOwnerOrWorker } from '../helpers';
 
 class IEventTypeCreateController extends BaseController {
@@ -59,3 +59,11 @@ const updateInstance = new UpdateByOwnerWorkerController(
 );
 
 export const EventTypeUpdateController = updateInstance;
+
+const deleteInstance = new DeleteByOwnerWorkerController(
+  EventTypeService,
+  'EventType',
+  'deleteEventTypes'
+);
+
+export const EventTypeDeleteController = deleteInstance;

@@ -4,7 +4,7 @@ import { DTOGroups } from '@hubbl/shared/models/dto';
 
 import { OwnerService, WorkerService } from '../../services';
 import * as update from '../helpers/update';
-import { UpdateByOwnerWorkerController } from './UpdateByOwnerWorker.controller';
+import UpdateByOwnerWorkerController from './UpdateByOwnerWorker.controller';
 
 jest.mock('../../services');
 

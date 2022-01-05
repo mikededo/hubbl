@@ -24,9 +24,7 @@ type UpdatableEntityNames = 'EventType' | 'VirtualGym' | 'GymZone';
 
 type WorkerUpdatePermissions =
   | 'updateEventTypes'
-  | 'updateEvents'
   | 'updateGymZones'
-  | 'updateTrainers'
   | 'updateVirtualGyms';
 
 type UpdatableEntities = EventType | GymZone | VirtualGym;
@@ -38,7 +36,7 @@ type UpdatableFromJson =
 
 type UpdatableServices = EventTypeService | GymZoneService | VirtualGymService;
 
-export class UpdateByOwnerWorkerController extends BaseController {
+export default class UpdateByOwnerWorkerController extends BaseController {
   protected service: UpdatableServices = undefined;
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
