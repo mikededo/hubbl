@@ -43,7 +43,7 @@ export default class EventType {
    * `Gym` to which the `EventType` belongs
    */
   @ManyToOne(() => Gym, (g) => g.eventTypes)
-  gym!: Gym;
+  gym!: number;
 
   @CreateDateColumn()
   createdAt!: Date;

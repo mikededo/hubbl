@@ -1,10 +1,12 @@
 import { Application } from 'express';
 import * as log from 'npmlog';
 
+import EventTypeRouter from './EventTypes.routes';
 import PersonRouter from './Persons.routes';
 import VirtualGymRouter from './VirtualGym.routes';
 
 const Routes = {
+  'event-types': EventTypeRouter,
   persons: PersonRouter,
   'virtual-gyms': VirtualGymRouter
 };

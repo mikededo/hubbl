@@ -3,15 +3,10 @@ import { getRepository } from 'typeorm';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
 
-import {
-  OwnerService,
-  PersonService,
-  VirtualGymService,
-  WorkerService
-} from '../../services';
+import { OwnerService, PersonService, VirtualGymService } from '../../services';
+import { UpdateByOwnerWorkerController } from '../Base';
 import * as create from '../helpers/create';
 import * as deleteHelpers from '../helpers/delete';
-import * as update from '../helpers/update';
 import {
   VirtualGymCreateController,
   VirtualGymDeleteController,
@@ -19,6 +14,7 @@ import {
   VirtualGymUpdateController
 } from './VirtualGym.controller';
 
+jest.mock('@hubbl/shared/models/dto');
 jest.mock('../../services');
 
 describe('VirtualGym Controller', () => {
@@ -265,87 +261,20 @@ describe('VirtualGym Controller', () => {
   });
 
   describe('VirtualGymUpdateController', () => {
-    it('should create the services if does not have any', async () => {
-      jest.spyOn(update, 'updatedByOwnerOrWorker').mockImplementation();
-      jest.spyOn(VirtualGymDTO, 'fromJson').mockResolvedValue(mockDto as any);
+    it('should create an UpdateByOwnerWorkerController', () => {
+      jest.spyOn(VirtualGymDTO, 'fromJson');
 
-      VirtualGymUpdateController['service'] = undefined;
-      VirtualGymUpdateController['ownerService'] = undefined;
-      VirtualGymUpdateController['workerService'] = undefined;
-      await VirtualGymUpdateController.execute(
-        { ...mockReq, query: { by: 'any' } },
-        mockRes
+      expect(VirtualGymUpdateController).toBeInstanceOf(
+        UpdateByOwnerWorkerController
       );
-
-      expect(VirtualGymService).toHaveBeenCalled();
-      expect(VirtualGymService).toHaveBeenCalledWith(getRepository);
-      expect(OwnerService).toHaveBeenCalled();
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
-      expect(WorkerService).toHaveBeenCalled();
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
-    });
-
-    it('should call updatedByOwnerOrWorker', async () => {
-      const uboowSpy = jest
-        .spyOn(update, 'updatedByOwnerOrWorker')
-        .mockImplementation();
-      const fromJsonSpy = jest
-        .spyOn(VirtualGymDTO, 'fromJson')
-        .mockResolvedValue(mockDto as any);
-
-      VirtualGymUpdateController['service'] = {} as any;
-      VirtualGymUpdateController['ownerService'] = {} as any;
-      VirtualGymUpdateController['workerService'] = {} as any;
-
-      await VirtualGymUpdateController.execute(
-        { ...mockReq, query: { by: 'any' } },
-        mockRes
+      expect(VirtualGymUpdateController['serviceCtr']).toBe(VirtualGymService);
+      expect(VirtualGymUpdateController['fromJson']).toBe(
+        VirtualGymDTO.fromJson
       );
-
-      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
-      expect(uboowSpy).toHaveBeenCalledTimes(1);
-      expect(uboowSpy).toHaveBeenCalledWith({
-        service: {},
-        ownerService: {},
-        workerService: {},
-        controller: VirtualGymUpdateController,
-        res: mockRes,
-        token: mockRes.locals.token,
-        dto: mockDto,
-        by: 'any',
-        entityName: 'VirtualGym',
-        updatableBy: '["owner", "worker"]',
-        workerUpdatePermission: 'updateVirtualGyms',
-        countArgs: { id: mockDto.id }
-      });
-    });
-
-    it('should call clientError on fromJson error', async () => {
-      const uboowSpy = jest
-        .spyOn(update, 'updatedByOwnerOrWorker')
-        .mockImplementation();
-      const fromJsonSpy = jest
-        .spyOn(VirtualGymDTO, 'fromJson')
-        .mockRejectedValue('fromJson-error');
-
-      const clientErrorSpy = jest
-        .spyOn(VirtualGymUpdateController, 'clientError')
-        .mockImplementation();
-
-      VirtualGymUpdateController['service'] = {} as any;
-      VirtualGymUpdateController['ownerService'] = {} as any;
-
-      await VirtualGymUpdateController.execute(
-        { ...mockReq, query: { by: 'any' } },
-        mockRes
+      expect(VirtualGymUpdateController['entityName']).toBe('VirtualGym');
+      expect(VirtualGymUpdateController['workerUpdatePermission']).toBe(
+        'updateVirtualGyms'
       );
-
-      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
-      expect(uboowSpy).not.toHaveBeenCalled();
-      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
-      expect(clientErrorSpy).toHaveBeenCalledWith(mockRes, 'fromJson-error');
     });
   });
 

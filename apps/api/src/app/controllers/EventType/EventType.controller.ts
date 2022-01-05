@@ -2,23 +2,23 @@ import { Request, Response } from 'express';
 import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
-import { GymZoneDTO } from '@hubbl/shared/models/dto';
-import { Gym } from '@hubbl/shared/models/entities';
+import { EventTypeDTO } from '@hubbl/shared/models/dto';
 
-import { GymZoneService, PersonService } from '../../services';
+import { EventTypeService, PersonService } from '../../services';
 import BaseController, {
   CreateByOwnerWorkerController,
   DeleteByOwnerWorkerController,
   UpdateByOwnerWorkerController
 } from '../Base';
+import { Gym } from '@hubbl/shared/models/entities';
 
-class IGymZoneFetchController extends BaseController {
-  protected service: GymZoneService = undefined;
+class IEventTypeFetchController extends BaseController {
+  protected service: EventTypeService = undefined;
   protected personService: PersonService = undefined;
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new GymZoneService(getRepository);
+      this.service = new EventTypeService(getRepository);
     }
 
     if (!this.personService) {
@@ -35,22 +35,23 @@ class IGymZoneFetchController extends BaseController {
       }
 
       try {
-        const result = await this.service
-          .createQueryBuilder({ alias: 'gymZone' })
-          .leftJoinAndSelect('gymZone.calendar', 'calendar')
-          .leftJoinAndSelect(
-            'gymZone.virtualGym',
-            'virtualGym',
-            'virtualGym.id = :id',
-            { id: req.params.vgId }
-          )
-          .leftJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
-            id: (person.gym as Gym).id
-          })
-          .where('gymZone.id = :gymZoneId', { gymZoneId: req.params.id })
-          .getOne();
+        const gymId = (person.gym as Gym).id;
 
-        return this.ok(res, await GymZoneDTO.fromClass(result));
+        const result = await this.service.find({
+          where: { gym: gymId }
+        });
+
+        return this.ok(
+          res,
+          await Promise.all(
+            result.map(async (ev) => {
+              // Needs to be added as the find query does not parse the gym id
+              ev.gym = gymId;
+
+              return EventTypeDTO.fromClass(ev);
+            })
+          )
+        );
       } catch (_) {
         log.error(
           `Controller[${this.constructor.name}]`,
@@ -78,33 +79,33 @@ class IGymZoneFetchController extends BaseController {
   }
 }
 
-const fetchInstance = new IGymZoneFetchController();
+const fetchInstance = new IEventTypeFetchController();
 
-export const GymZoneFetchController = fetchInstance;
+export const EventTypeFetchController = fetchInstance;
 
 const createInstance = new CreateByOwnerWorkerController(
-  GymZoneService,
-  GymZoneDTO.fromJson,
-  GymZoneDTO.fromClass,
-  'GymZone',
-  'createGymZones'
+  EventTypeService,
+  EventTypeDTO.fromJson,
+  EventTypeDTO.fromClass,
+  'EventType',
+  'createEventTypes'
 );
 
-export const GymZoneCreateController = createInstance;
+export const EventTypeCreateController = createInstance;
 
 const updateInstance = new UpdateByOwnerWorkerController(
-  GymZoneService,
-  GymZoneDTO.fromJson,
-  'GymZone',
-  'updateGymZones'
+  EventTypeService,
+  EventTypeDTO.fromJson,
+  'EventType',
+  'updateEventTypes'
 );
 
-export const GymZoneUpdateController = updateInstance;
+export const EventTypeUpdateController = updateInstance;
 
 const deleteInstance = new DeleteByOwnerWorkerController(
-  GymZoneService,
-  'GymZone',
-  'deleteGymZones'
+  EventTypeService,
+  'EventType',
+  'deleteEventTypes'
 );
 
-export const GymZoneDeleteController = deleteInstance;
+export const EventTypeDeleteController = deleteInstance;

@@ -5,6 +5,7 @@ import {
   ClientDTO,
   DTO,
   DTOGroups,
+  EventTypeDTO,
   GymZoneDTO,
   OwnerDTO,
   TrainerDTO,
@@ -13,6 +14,7 @@ import {
 } from '@hubbl/shared/models/dto';
 import {
   Client,
+  EventType,
   Gym,
   GymZone,
   Owner,
@@ -32,6 +34,7 @@ type UpdatableServices =
   | BaseService<Worker>
   | BaseService<Trainer>
   | BaseService<Client>
+  | BaseService<EventType>
   | BaseService<VirtualGym>
   | BaseService<GymZone>;
 
@@ -40,6 +43,7 @@ type UpdatableEntities =
   | 'Worker'
   | 'Trainer'
   | 'Client'
+  | 'EventType'
   | 'VirtualGym'
   | 'GymZone';
 
@@ -90,16 +94,23 @@ type CommonUpdateByServices =
   | BaseService<Worker>
   | BaseService<Trainer>
   | BaseService<Client>
+  | BaseService<EventType>
   | BaseService<VirtualGym>
   | BaseService<GymZone>;
 
 type CommonUpdateByDTOs =
   | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>
+  | EventTypeDTO
   | VirtualGymDTO
   | GymZoneDTO;
 
-type CommonUpdateByEntities = 'Trainer' | 'Client' | 'VirtualGym' | 'GymZone';
+type CommonUpdateByEntities =
+  | 'Trainer'
+  | 'Client'
+  | 'EventType'
+  | 'VirtualGym'
+  | 'GymZone';
 
 type CommonUpdateByValues =
   | '["client", "owner", "worker"]'

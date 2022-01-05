@@ -1,17 +1,14 @@
 import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, GymZoneDTO } from '@hubbl/shared/models/dto';
+import { GymZoneDTO } from '@hubbl/shared/models/dto';
 
+import { GymZoneService, PersonService } from '../../services';
 import {
-  GymZoneService,
-  OwnerService,
-  PersonService,
-  WorkerService
-} from '../../services';
-import * as create from '../helpers/create';
-import * as deleteHelpers from '../helpers/delete';
-import * as update from '../helpers/update';
+  CreateByOwnerWorkerController,
+  DeleteByOwnerWorkerController,
+  UpdateByOwnerWorkerController
+} from '../Base';
 import {
   GymZoneCreateController,
   GymZoneDeleteController,
@@ -20,6 +17,7 @@ import {
 } from './GymZone.controller';
 
 jest.mock('../../services');
+jest.mock('@hubbl/shared/models/dto');
 
 describe('GymZone controller', () => {
   const mockPerson = {
@@ -243,198 +241,50 @@ describe('GymZone controller', () => {
   });
 
   describe('GymZoneCreateController', () => {
-    it('should create the services if does not have any', async () => {
-      jest.spyOn(GymZoneCreateController, 'fail').mockImplementation();
+    it('should create an CreateByOwnerWorkerController', () => {
+      jest.spyOn(GymZoneDTO, 'fromJson');
 
-      GymZoneCreateController['service'] = undefined;
-      GymZoneCreateController['ownerService'] = undefined;
-      GymZoneCreateController['workerService'] = undefined;
-      await GymZoneCreateController.execute({} as any, {} as any);
-
-      expect(GymZoneService).toHaveBeenCalled();
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
-      expect(OwnerService).toHaveBeenCalled();
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
-      expect(WorkerService).toHaveBeenCalled();
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
-    });
-
-    it('should call createdByOwnerOrWorker', async () => {
-      const cboowSpy = jest
-        .spyOn(create, 'createdByOwnerOrWorker')
-        .mockImplementation();
-      const fromJsonSpy = jest
-        .spyOn(GymZoneDTO, 'fromJson')
-        .mockResolvedValue(mockDto as any);
-
-      GymZoneCreateController['service'] = {} as any;
-      GymZoneCreateController['ownerService'] = {} as any;
-      GymZoneCreateController['workerService'] = {} as any;
-
-      await GymZoneCreateController.execute(mockReq, mockRes);
-
-      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.CREATE);
-      expect(cboowSpy).toHaveBeenCalledTimes(1);
-      expect(cboowSpy).toHaveBeenCalledWith({
-        service: {},
-        ownerService: {},
-        workerService: {},
-        controller: GymZoneCreateController,
-        res: mockRes,
-        fromClass: GymZoneDTO.fromClass,
-        token: { id: 1 },
-        by: mockReq.query.by,
-        dto: mockDto,
-        entityName: 'GymZone',
-        workerCreatePermission: 'createGymZones'
-      });
-    });
-
-    it('should call clientError on fromJson error', async () => {
-      const cboowSpy = jest
-        .spyOn(create, 'createdByOwnerOrWorker')
-        .mockImplementation();
-      const fromJsonSpy = jest
-        .spyOn(GymZoneDTO, 'fromJson')
-        .mockRejectedValue('fromJson-error');
-
-      const clientErrorSpy = jest
-        .spyOn(GymZoneCreateController, 'clientError')
-        .mockImplementation();
-
-      GymZoneCreateController['service'] = {} as any;
-      GymZoneCreateController['ownerService'] = {} as any;
-      GymZoneCreateController['workerService'] = {} as any;
-
-      await GymZoneCreateController.execute(mockReq, mockRes);
-
-      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.CREATE);
-      expect(cboowSpy).not.toHaveBeenCalled();
-      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
-      expect(clientErrorSpy).toHaveBeenCalledWith(mockRes, 'fromJson-error');
+      expect(GymZoneCreateController).toBeInstanceOf(
+        CreateByOwnerWorkerController
+      );
+      expect(GymZoneCreateController['serviceCtr']).toBe(GymZoneService);
+      expect(GymZoneCreateController['fromJson']).toBe(GymZoneDTO.fromJson);
+      expect(GymZoneCreateController['fromClass']).toBe(GymZoneDTO.fromClass);
+      expect(GymZoneCreateController['entityName']).toBe('GymZone');
+      expect(GymZoneCreateController['workerCreatePermission']).toBe(
+        'createGymZones'
+      );
     });
   });
 
   describe('GymZoneUpdateController', () => {
-    it('should create the services if does not have any', async () => {
-      jest.spyOn(GymZoneUpdateController, 'fail').mockImplementation();
+    it('should create an UpdateByOwnerWorkerController', () => {
+      jest.spyOn(GymZoneDTO, 'fromJson');
 
-      GymZoneUpdateController['service'] = undefined;
-      GymZoneUpdateController['ownerService'] = undefined;
-      GymZoneUpdateController['workerService'] = undefined;
-      await GymZoneUpdateController.execute({} as any, {} as any);
-
-      expect(GymZoneService).toHaveBeenCalled();
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
-      expect(OwnerService).toHaveBeenCalled();
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
-      expect(WorkerService).toHaveBeenCalled();
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
-    });
-
-    it('should call updatedByOwnerOrWorker', async () => {
-      const uboowSpy = jest
-        .spyOn(update, 'updatedByOwnerOrWorker')
-        .mockImplementation();
-      const fromJsonSpy = jest
-        .spyOn(GymZoneDTO, 'fromJson')
-        .mockResolvedValue(mockDto as any);
-
-      GymZoneUpdateController['service'] = {} as any;
-      GymZoneUpdateController['ownerService'] = {} as any;
-      GymZoneUpdateController['workerService'] = {} as any;
-
-      await GymZoneUpdateController.execute(mockReq, mockRes);
-
-      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
-      expect(uboowSpy).toHaveBeenCalledTimes(1);
-      expect(uboowSpy).toHaveBeenCalledWith({
-        service: {},
-        ownerService: {},
-        workerService: {},
-        controller: GymZoneUpdateController,
-        res: mockRes,
-        token: { id: 1 },
-        by: mockReq.query.by,
-        dto: mockDto,
-        entityName: 'GymZone',
-        updatableBy: '["owner", "worker"]',
-        countArgs: { id: 1 },
-        workerUpdatePermission: 'updateGymZones'
-      });
-    });
-
-    it('should call clientError on fromJson error', async () => {
-      const uboowSpy = jest
-        .spyOn(update, 'updatedByOwnerOrWorker')
-        .mockImplementation();
-      const fromJsonSpy = jest
-        .spyOn(GymZoneDTO, 'fromJson')
-        .mockRejectedValue('fromJson-error');
-
-      const clientErrorSpy = jest
-        .spyOn(GymZoneUpdateController, 'clientError')
-        .mockImplementation();
-
-      GymZoneUpdateController['service'] = {} as any;
-      GymZoneUpdateController['ownerService'] = {} as any;
-      GymZoneUpdateController['workerService'] = {} as any;
-
-      await GymZoneUpdateController.execute(mockReq, mockRes);
-
-      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
-      expect(uboowSpy).not.toHaveBeenCalled();
-      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
-      expect(clientErrorSpy).toHaveBeenCalledWith(mockRes, 'fromJson-error');
+      expect(GymZoneUpdateController).toBeInstanceOf(
+        UpdateByOwnerWorkerController
+      );
+      expect(GymZoneUpdateController['serviceCtr']).toBe(GymZoneService);
+      expect(GymZoneUpdateController['fromJson']).toBe(GymZoneDTO.fromJson);
+      expect(GymZoneUpdateController['entityName']).toBe('GymZone');
+      expect(GymZoneUpdateController['workerUpdatePermission']).toBe(
+        'updateGymZones'
+      );
     });
   });
 
   describe('GymZoneDeleteController', () => {
-    it('should create the services if does not have any', async () => {
-      jest.spyOn(GymZoneDeleteController, 'fail').mockImplementation();
+    it('should create an DeleteByOwnerWorkerController', () => {
+      jest.spyOn(GymZoneDTO, 'fromJson');
 
-      GymZoneDeleteController['service'] = undefined;
-      GymZoneDeleteController['ownerService'] = undefined;
-      GymZoneDeleteController['workerService'] = undefined;
-      await GymZoneDeleteController.execute({} as any, {} as any);
-
-      expect(GymZoneService).toHaveBeenCalled();
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
-      expect(OwnerService).toHaveBeenCalled();
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
-      expect(WorkerService).toHaveBeenCalled();
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
-    });
-
-    it('should call deletedByOwnerOrWorker', async () => {
-      const dboowSpy = jest
-        .spyOn(deleteHelpers, 'deletedByOwnerOrWorker')
-        .mockImplementation();
-
-      GymZoneDeleteController['service'] = {} as any;
-      GymZoneDeleteController['ownerService'] = {} as any;
-      GymZoneDeleteController['workerService'] = {} as any;
-
-      await GymZoneDeleteController.execute(mockReq, mockRes);
-
-      expect(dboowSpy).toHaveBeenCalledTimes(1);
-      expect(dboowSpy).toHaveBeenCalledWith({
-        service: {},
-        ownerService: {},
-        workerService: {},
-        controller: GymZoneDeleteController,
-        res: mockRes,
-        token: { id: 1 },
-        by: mockReq.query.by,
-        entityId: mockReq.params.id,
-        entityName: 'GymZone',
-        countArgs: { id: 1 },
-        workerDeletePermission: 'deleteGymZones'
-      });
+      expect(GymZoneDeleteController).toBeInstanceOf(
+        DeleteByOwnerWorkerController
+      );
+      expect(GymZoneDeleteController['serviceCtr']).toBe(GymZoneService);
+      expect(GymZoneDeleteController['entityName']).toBe('GymZone');
+      expect(GymZoneDeleteController['workerDeletePermission']).toBe(
+        'deleteGymZones'
+      );
     });
   });
 });
