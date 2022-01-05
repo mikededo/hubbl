@@ -39,7 +39,7 @@ export default class EventTemplate {
     onDelete: 'SET NULL'
   })
   @JoinColumn({ name: 'event_type_fk' })
-  type!: number;
+  type!: number | EventType;
 
   /**
    * `Event`'s that have been created with the current template

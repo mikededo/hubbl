@@ -5,7 +5,7 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { EventTemplate } from '@hubbl/shared/models/entities';
+import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
 
 import DTO from '../Base';
 import { DTOGroups, numberError, stringError, validationParser } from '../util';
@@ -42,14 +42,19 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
   )
   gym!: number;
 
+  /* Non required validation */
+  eventCount!: number;
+
   private static propMapper(from: EventTemplate | any): EventTemplateDTO {
     const result = new EventTemplateDTO();
 
     result.id = from.id;
     result.name = from.name;
     result.description = from.description;
-    result.type = from.type;
+    result.type = from.type instanceof EventType ? from.type.id : from.type;
     result.gym = from.gym;
+
+    result.eventCount = from.eventCount;
 
     return result;
   }

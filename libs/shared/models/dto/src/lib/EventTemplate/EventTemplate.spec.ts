@@ -1,10 +1,6 @@
 import * as ClassValidator from 'class-validator';
 
-import {
-  Calendar,
-  EventTemplate,
-  VirtualGym
-} from '@hubbl/shared/models/entities';
+import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
 
 import * as Util from '../util';
 import EventTemplateDTO from './EventTemplate';
@@ -18,7 +14,9 @@ const propCompare = (
   expect(got.id).toBe(want.id);
   expect(got.name).toBe(want.name);
   expect(got.description).toBe(want.description);
-  expect(got.type).toBe(want.type);
+  expect(got.type).toBe(
+    want.type instanceof EventType ? want.type.id : want.type
+  );
   expect(got.gym).toBe(want.gym);
 };
 
@@ -79,22 +77,26 @@ describe('EventTemplate', () => {
         .mockResolvedValue();
 
       const eventTemplate = new EventTemplate();
-      const calendar = new Calendar();
-      const virtualGym = new VirtualGym();
+      const eventType = new EventType();
 
-      calendar.id = 1;
-      virtualGym.id = 1;
+      eventType.id = 1;
 
       eventTemplate.id = 1;
       eventTemplate.name = 'Test';
       eventTemplate.description = '';
-      eventTemplate.type = 1;
+      eventTemplate.type = eventType;
       eventTemplate.gym = 1;
 
-      const result = await EventTemplateDTO.fromClass(eventTemplate);
+      const result = await EventTemplateDTO.fromClass({
+        ...eventTemplate,
+        eventCount: 5
+      } as any);
 
       expect(result).toBeDefined();
       propCompare(eventTemplate, result);
+
+      // Additional fields
+      expect(result.eventCount).toBe(5);
 
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(1);

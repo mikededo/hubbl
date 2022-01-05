@@ -3,11 +3,19 @@ import { Router } from 'express';
 import {
   EventTemplateCreateController,
   EventTemplateDeleteController,
+  EventTemplateFetchController,
   EventTemplateUpdateController
 } from '../controllers';
 import middlewares from '../middlewares';
 
 const EventTemplateRouter: Router = Router();
+
+/**
+ * @description Creates an event template in the database
+ */
+EventTemplateRouter.get('/:id', middlewares.auth, (req, res) => {
+  EventTemplateFetchController.execute(req, res);
+});
 
 /**
  * @description Creates an event template in the database

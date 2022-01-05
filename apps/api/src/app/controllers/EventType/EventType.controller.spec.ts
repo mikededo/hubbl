@@ -85,7 +85,7 @@ describe('EventType controller', () => {
       expect(PersonService).toHaveBeenCalledWith(getRepository);
     });
 
-    it('should fetch the gym zones', async () => {
+    it('should fetch the event types', async () => {
       const resultList = {
         map: jest.fn().mockImplementation((callback: any) => {
           expect(callback).toBeDefined();
