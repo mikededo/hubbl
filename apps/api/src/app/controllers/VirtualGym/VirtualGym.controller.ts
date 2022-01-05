@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { VirtualGymDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
+import { DTOGroups } from '@hubbl/shared/types';
 
 import { OwnerService, PersonService, VirtualGymService } from '../../services';
 import BaseController, { UpdateByOwnerWorkerController } from '../Base';

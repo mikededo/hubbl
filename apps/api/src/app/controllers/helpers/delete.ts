@@ -11,7 +11,7 @@ import {
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';
-import { ParsedToken } from './types';
+import { ParsedToken } from '@hubbl/shared/types';
 
 type CommonDeleteByServices =
   | BaseService<EventType>

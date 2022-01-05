@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
-import { DTOGroups, EventTypeDTO, GymZoneDTO } from '@hubbl/shared/models/dto';
+import { EventTypeDTO, GymZoneDTO } from '@hubbl/shared/models/dto';
 import { EventType, GymZone } from '@hubbl/shared/models/entities';
+import {
+  BaseFromClassCallable,
+  BaseFromJsonCallable,
+  DTOGroups
+} from '@hubbl/shared/types';
 
 import {
   EventTypeService,
@@ -11,11 +16,7 @@ import {
   RepositoryAccessor,
   WorkerService
 } from '../../services';
-import {
-  BaseFromClassCallable,
-  BaseFromJsonCallable,
-  createdByOwnerOrWorker
-} from '../helpers';
+import { createdByOwnerOrWorker } from '../helpers';
 import BaseController from './Base.controller';
 
 type CreatableEntityNames = 'EventType' | 'GymZone';
