@@ -1,5 +1,6 @@
 import DTO from './Base';
 import ClientDTO from './Client';
+import EventAppointmentDTO from './EventAppointment';
 import EventTemplateDTO from './EventTemplate';
 import EventTypeDTO from './EventType';
 import GymZoneDTO from './GymZone';
@@ -14,6 +15,7 @@ export {
   ClientDTO,
   DTO,
   DTOGroups,
+  EventAppointmentDTO,
   EventTemplateDTO,
   EventTypeDTO,
   GymZoneDTO,

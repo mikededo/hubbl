@@ -20,7 +20,7 @@ export default class EventAppointment extends Appointment {
     nullable: false,
     cascade: true
   })
-  client!: Client;
+  client!: number;
 
   /**
    * `Event` that is linked to the `Appointment`
@@ -30,7 +30,7 @@ export default class EventAppointment extends Appointment {
     nullable: false,
     cascade: true
   })
-  event!: Event;
+  event!: number;
 
   @CreateDateColumn()
   createdAt!: Date;
