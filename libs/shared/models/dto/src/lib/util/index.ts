@@ -4,6 +4,7 @@ import {
   booleanError,
   emailError,
   enumError,
+  instanceError,
   lengthError,
   numberError,
   stringError
@@ -20,6 +21,7 @@ export {
   DTOGroups,
   emailError,
   enumError,
+  instanceError,
   lengthError,
   numberError,
   ParsedValidation,

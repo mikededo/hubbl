@@ -1,0 +1,131 @@
+import {
+  IsInstance,
+  IsNumber,
+  IsOptional,
+  validateOrReject
+} from 'class-validator';
+
+import {
+  CalendarDate,
+  Event,
+  EventAppointment
+} from '@hubbl/shared/models/entities';
+
+import DTO from '../Base';
+import {
+  DTOGroups,
+  instanceError,
+  numberError,
+  validationParser
+} from '../util';
+
+export default class EventDTO implements DTO<Event> {
+  @IsNumber(
+    {},
+    { message: numberError('id'), groups: [DTOGroups.ALL, DTOGroups.UPDATE] }
+  )
+  id!: number;
+
+  @IsNumber(
+    {},
+    {
+      message: numberError('trainer'),
+      groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+    }
+  )
+  trainer!: number;
+
+  @IsNumber(
+    {},
+    {
+      message: numberError('calendar'),
+      groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+    }
+  )
+  calendar!: number;
+
+  @IsOptional()
+  template!: number;
+
+  @IsInstance(CalendarDate, { message: instanceError('CalendarDate', 'date') })
+  date!: CalendarDate;
+
+  /* Non required validation fields */
+  appointments!: EventAppointment[];
+
+  private static propMapper(from: Event | any): EventDTO {
+    const result = new EventDTO();
+
+    result.id = from.id;
+    result.trainer = from.trainer;
+    result.calendar = from.calendar;
+    result.template = from.template;
+
+    result.date = new CalendarDate();
+    result.date.year = from.date.year;
+    result.date.month = from.date.month;
+    result.date.day = from.date.day;
+
+    return result;
+  }
+
+  /**
+   * Parses the json passed to the DTO and validates it
+   *
+   * @param json Body of the request
+   * @param variant Variant to validate for
+   * @returns The parsed `EventDTO`
+   */
+  public static async fromJson(
+    json: any,
+    variant: DTOGroups
+  ): Promise<EventDTO> {
+    const result = EventDTO.propMapper(json);
+
+    await validateOrReject(result, {
+      validationError: { target: false },
+      groups: [variant]
+    }).catch((errors) => {
+      throw validationParser(errors);
+    });
+
+    return result;
+  }
+
+  /**
+   * Parses the original class to the DTO and validates it
+   *
+   * @param event The fetched event
+   * @returns The parsed `EventDTO`
+   */
+  public static async fromClass(event: Event): Promise<EventDTO> {
+    const result = EventDTO.propMapper(event);
+
+    result.appointments = event.appointments;
+
+    await validateOrReject(result, {
+      validationError: { target: false },
+      groups: [DTOGroups.ALL]
+    }).catch((errors) => {
+      throw validationParser(errors);
+    });
+
+    return result;
+  }
+
+  /**
+   *
+   * @returns The parsed event from the DTO
+   */
+  public toClass(): Event {
+    const result = new Event();
+
+    result.id = this.id;
+    result.trainer = this.trainer;
+    result.calendar = this.calendar;
+    result.template = this.template;
+    result.date = this.date;
+
+    return result;
+  }
+}

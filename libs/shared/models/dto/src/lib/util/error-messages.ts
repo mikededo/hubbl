@@ -15,3 +15,6 @@ export const lengthError = (prop: string, min: number, max?: number) =>
     : `[${prop}] Should have a min length of ${min}`;
 
 export const emailError = () => 'Email is not valid';
+
+export const instanceError = (typeName: string, prop: string) =>
+  `[${prop}] is not instance of "${typeName}"`;

@@ -24,10 +24,9 @@ export default class Event {
    */
   @ManyToOne(() => Trainer, (t) => t.events, {
     nullable: false,
-    lazy: true,
     cascade: true
   })
-  trainer!: Trainer;
+  trainer!: number;
 
   /**
    * `Calendar` to which the `Event` belongs
@@ -35,22 +34,21 @@ export default class Event {
   @ManyToOne(() => Calendar, (c) => c.events, {
     nullable: false
   })
-  calendar!: Calendar;
+  calendar!: number;
 
   /**
    * `EventTemplate` from which has been created
    */
   @ManyToOne(() => EventTemplate, (et) => et.events, {
-    nullable: false,
     eager: true,
     onDelete: 'SET NULL'
   })
-  template!: EventTemplate;
+  template!: number;
 
   /**
    * `Appointment`'s set for the `Event`
    */
-  @OneToMany(() => EventAppointment, (a) => a.event)
+  @OneToMany(() => EventAppointment, (a) => a.event, { eager: true })
   appointments!: EventAppointment[];
 
   /**
