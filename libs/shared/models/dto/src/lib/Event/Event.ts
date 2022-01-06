@@ -1,7 +1,9 @@
 import {
+  IsBoolean,
   IsInstance,
   IsNumber,
   IsOptional,
+  IsString,
   validateOrReject
 } from 'class-validator';
 
@@ -13,9 +15,11 @@ import {
 
 import DTO from '../Base';
 import {
+  booleanError,
   DTOGroups,
   instanceError,
   numberError,
+  stringError,
   validationParser
 } from '../util';
 
@@ -25,6 +29,49 @@ export default class EventDTO implements DTO<Event> {
     { message: numberError('id'), groups: [DTOGroups.ALL, DTOGroups.UPDATE] }
   )
   id!: number;
+
+  @IsString({
+    message: stringError('name'),
+    groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+  })
+  name!: string;
+
+  @IsOptional()
+  @IsString({ message: stringError('description') })
+  description!: string;
+
+  @IsNumber(
+    {},
+    {
+      message: numberError('capacity'),
+      groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+    }
+  )
+  capacity!: number;
+
+  @IsBoolean({
+    message: booleanError('covidPassport'),
+    groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+  })
+  covidPassport!: boolean;
+
+  @IsBoolean({
+    message: booleanError('maskRequired'),
+    groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+  })
+  maskRequired!: boolean;
+
+  @IsString({
+    message: stringError('startTime'),
+    groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+  })
+  startTime!: string;
+
+  @IsString({
+    message: stringError('endTime'),
+    groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+  })
+  endTime!: string;
 
   @IsNumber(
     {},
@@ -57,6 +104,13 @@ export default class EventDTO implements DTO<Event> {
     const result = new EventDTO();
 
     result.id = from.id;
+    result.name = from.name;
+    result.description = from.description;
+    result.capacity = from.capacity;
+    result.covidPassport = from.covidPassport;
+    result.maskRequired = from.maskRequired;
+    result.startTime = from.startTime;
+    result.endTime = from.endTime;
     result.trainer = from.trainer;
     result.calendar = from.calendar;
     result.template = from.template;
@@ -121,6 +175,13 @@ export default class EventDTO implements DTO<Event> {
     const result = new Event();
 
     result.id = this.id;
+    result.name = this.name;
+    result.description = this.description;
+    result.capacity = this.capacity;
+    result.covidPassport = this.covidPassport;
+    result.maskRequired = this.maskRequired;
+    result.startTime = this.startTime;
+    result.endTime = this.endTime;
     result.trainer = this.trainer;
     result.calendar = this.calendar;
     result.template = this.template;

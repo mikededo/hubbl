@@ -9,6 +9,13 @@ jest.mock('@hubbl/shared/models/entities');
 
 const propCompare = (want: Event | EventDTO, got: Event | EventDTO) => {
   expect(got.id).toBe(want.id);
+  expect(got.name).toBe(want.name);
+  expect(got.description).toBe(want.description);
+  expect(got.capacity).toBe(want.capacity);
+  expect(got.covidPassport).toBe(want.covidPassport);
+  expect(got.maskRequired).toBe(want.maskRequired);
+  expect(got.startTime).toBe(want.startTime);
+  expect(got.endTime).toBe(want.endTime);
   expect(got.trainer).toBe(want.trainer);
   expect(got.calendar).toBe(want.calendar);
   expect(got.template).toBe(want.template);
@@ -27,6 +34,13 @@ describe('Event', () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = {
         id: 1,
+        name: 'Event',
+        description: 'Description',
+        capacity: 1000,
+        covidPassport: true,
+        maskRequired: true,
+        startTime: '09:00:00',
+        endTime: '10:00:00',
         trainer: 1,
         calendar: 1,
         template: 1,
@@ -81,6 +95,13 @@ describe('Event', () => {
       date.year = 2000;
 
       event.id = 1;
+      event.name = 'Event';
+      event.description = 'Description';
+      event.capacity = 1000;
+      event.covidPassport = true;
+      event.maskRequired = true;
+      event.startTime = '09:00:00';
+      event.endTime = '10:00:00';
       event.trainer = 1;
       event.calendar = 1;
       event.template = 1;
@@ -123,6 +144,13 @@ describe('Event', () => {
       const dto = new EventDTO();
 
       dto.id = 1;
+      dto.name = 'Event';
+      dto.description = 'Description';
+      dto.capacity = 1000;
+      dto.covidPassport = true;
+      dto.maskRequired = true;
+      dto.startTime = '09:00:00';
+      dto.endTime = '10:00:00';
       dto.trainer = 1;
       dto.calendar = 1;
       dto.template = 1;
