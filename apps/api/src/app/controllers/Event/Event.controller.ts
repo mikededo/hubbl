@@ -51,6 +51,7 @@ class IEventCreateController extends BaseController {
         .andWhere('e.date.year = :year', { year: dto.date.year })
         .andWhere('e.date.month = :month', { month: dto.date.month })
         .andWhere('e.date.day = :day', { day: dto.date.day })
+        .andWhere('e.calendar = :calendar', { calendar: dto.calendar })
         .getCount();
 
       if (overlappedEvents) {
@@ -127,6 +128,7 @@ class IEventUpdateController extends BaseController {
         .andWhere('e.date.month = :month', { month: dto.date.month })
         .andWhere('e.date.day = :day', { day: dto.date.day })
         .andWhere('e.id != :id', { id: dto.id })
+        .andWhere('e.calendar = :calendar', { calendar: dto.calendar })
         .getCount();
 
       if (overlappedEvents) {

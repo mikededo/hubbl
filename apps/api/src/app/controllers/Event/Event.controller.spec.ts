@@ -195,7 +195,7 @@ describe('Event controller', () => {
       expect(mockService.where).toHaveBeenCalledWith('e.startTime < :endTime', {
         endTime: mockDto.endTime
       });
-      expect(mockService.andWhere).toHaveBeenCalledTimes(4);
+      expect(mockService.andWhere).toHaveBeenCalledTimes(5);
       expect(mockService.andWhere).toHaveBeenNthCalledWith(
         1,
         'e.endTime > :startTime',
@@ -215,6 +215,11 @@ describe('Event controller', () => {
         4,
         'e.date.day = :day',
         { day: mockDto.date.day }
+      );
+      expect(mockService.andWhere).toHaveBeenNthCalledWith(
+        5,
+        'e.calendar = :calendar',
+        { calendar: mockDto.calendar }
       );
       expect(mockService.getCount).toHaveBeenCalledTimes(1);
       expect(mockService.getCount).toHaveReturned();
@@ -247,7 +252,7 @@ describe('Event controller', () => {
 
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
-      expect(mockService.andWhere).toHaveBeenCalledTimes(4);
+      expect(mockService.andWhere).toHaveBeenCalledTimes(5);
     });
 
     it('should send fail on service error', async () => {
@@ -286,7 +291,7 @@ describe('Event controller', () => {
       expect(mockService.where).toHaveBeenCalledWith('e.startTime < :endTime', {
         endTime: mockDto.endTime
       });
-      expect(mockService.andWhere).toHaveBeenCalledTimes(5);
+      expect(mockService.andWhere).toHaveBeenCalledTimes(6);
       expect(mockService.andWhere).toHaveBeenNthCalledWith(
         1,
         'e.endTime > :startTime',
@@ -310,6 +315,11 @@ describe('Event controller', () => {
       expect(mockService.andWhere).toHaveBeenNthCalledWith(5, 'e.id != :id', {
         id: mockDto.id
       });
+      expect(mockService.andWhere).toHaveBeenNthCalledWith(
+        6,
+        'e.calendar = :calendar',
+        { calendar: mockDto.calendar }
+      );
       expect(mockService.getCount).toHaveBeenCalledTimes(1);
       expect(mockService.getCount).toHaveReturned();
       expect(uboowSpy).toHaveBeenCalledTimes(1);
@@ -342,7 +352,7 @@ describe('Event controller', () => {
 
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
-      expect(mockService.andWhere).toHaveBeenCalledTimes(5);
+      expect(mockService.andWhere).toHaveBeenCalledTimes(6);
     });
 
     it('should send fail on service error', async () => {
