@@ -3,7 +3,12 @@ import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 
-import { EventService, OwnerService, WorkerService } from '../../services';
+import {
+  EventService,
+  GymZoneService,
+  OwnerService,
+  WorkerService
+} from '../../services';
 import BaseController, { DeleteByOwnerWorkerController } from '../Base';
 import {
   createdByOwnerOrWorker,
@@ -15,6 +20,7 @@ class IEventCreateController extends BaseController {
   protected service: EventService = undefined;
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
+  protected gymZoneService: GymZoneService = undefined;
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
@@ -29,6 +35,10 @@ class IEventCreateController extends BaseController {
       this.workerService = new WorkerService(getRepository);
     }
 
+    if (!this.gymZoneService) {
+      this.gymZoneService = new GymZoneService(getRepository);
+    }
+
     let dto: EventDTO;
 
     try {
@@ -40,6 +50,28 @@ class IEventCreateController extends BaseController {
     // Check the times
     if (dto.startTime >= dto.endTime) {
       return this.clientError(res, 'Start and end time values are not valid');
+    }
+
+    // Ensure event is being created in a calendar which belongs
+    // to a class type gym zone
+    try {
+      const { isClassType } = await this.gymZoneService
+        .createQueryBuilder({ alias: 'gz' })
+        .select('gz.isClassType')
+        .where('gz.calendar = :calendar', { calendar: dto.calendar })
+        .getOne();
+
+      if (!isClassType) {
+        return this.clientError(
+          res,
+          'Cannot create an Event to a non class GymZone'
+        );
+      }
+    } catch (e) {
+      return this.fail(
+        res,
+        'Internal server error. If the problem persists, contact our team.'
+      );
     }
 
     try {
