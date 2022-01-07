@@ -32,7 +32,7 @@ export default class Owner {
    */
   @OneToOne(() => Gym, { cascade: true, eager: true })
   @JoinColumn()
-  gym!: Gym;
+  gym!: number;
 
   @CreateDateColumn()
   createdAt!: Date;

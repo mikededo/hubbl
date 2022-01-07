@@ -5,6 +5,7 @@ import {
   ClientDTO,
   DTO,
   DTOGroups,
+  EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
   GymZoneDTO,
@@ -15,6 +16,7 @@ import {
 } from '@hubbl/shared/models/dto';
 import {
   Client,
+  Event,
   EventTemplate,
   EventType,
   Gym,
@@ -31,21 +33,24 @@ import { ParsedToken } from './types';
 
 /* COMMON UPDATERS */
 
-type UpdatableServices =
-  | BaseService<Owner>
-  | BaseService<Worker>
-  | BaseService<Trainer>
-  | BaseService<Client>
-  | BaseService<EventTemplate>
-  | BaseService<EventType>
-  | BaseService<VirtualGym>
-  | BaseService<GymZone>;
+type UpdatableServices = BaseService<
+  | Owner
+  | Worker
+  | Trainer
+  | Client
+  | Event
+  | EventTemplate
+  | EventType
+  | VirtualGym
+  | GymZone
+>;
 
 type UpdatableEntities =
   | 'Owner'
   | 'Worker'
   | 'Trainer'
   | 'Client'
+  | 'Event'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -96,6 +101,7 @@ export const findAndUpdateEntity = async ({
 type CommonUpdateByDTOs =
   | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>
+  | EventDTO
   | EventTemplateDTO
   | EventTypeDTO
   | VirtualGymDTO
@@ -104,6 +110,7 @@ type CommonUpdateByDTOs =
 type CommonUpdateByEntities =
   | 'Trainer'
   | 'Client'
+  | 'Event'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -115,9 +122,9 @@ type CommonUpdateByValues =
 
 type WorkerUpdatePermissions =
   | 'updateClients'
+  | 'updateEvents'
   | 'updateEventTemplates'
   | 'updateEventTypes'
-  | 'updateEvents'
   | 'updateGymZones'
   | 'updateTrainers'
   | 'updateVirtualGyms';

@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { EventCreateController } from '../controllers';
+
+import { EventCreateController, EventUpdateController } from '../controllers';
 import middlewares from '../middlewares';
 
 const EventRouter: Router = Router();
@@ -9,6 +10,13 @@ const EventRouter: Router = Router();
  */
 EventRouter.post('', middlewares.auth, (req, res) => {
   EventCreateController.execute(req, res);
+});
+
+/**
+ * @description Creates an event in the database
+ */
+EventRouter.put('', middlewares.auth, (req, res) => {
+  EventUpdateController.execute(req, res);
 });
 
 export default EventRouter;
