@@ -13,7 +13,10 @@ describe('EventAppointmentService', () => {
       new EventAppointmentService(mockRepoAccesser as any);
 
       expect(BaseService).toHaveBeenCalled();
-      expect(BaseService).toHaveBeenCalledWith(EventAppointment, mockRepoAccesser);
+      expect(BaseService).toHaveBeenCalledWith(
+        EventAppointment,
+        mockRepoAccesser
+      );
     });
   });
 });

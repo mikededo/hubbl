@@ -8,7 +8,7 @@ import PersonRouter from './Persons.routes';
 import VirtualGymRouter from './VirtualGym.routes';
 
 const Routes = {
-  'events': EventRouter,
+  events: EventRouter,
   'event-templates': EventTemplateRouter,
   'event-types': EventTypeRouter,
   persons: PersonRouter,
