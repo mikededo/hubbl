@@ -2,6 +2,12 @@ export const stringError = (prop: string) => `[${prop}] Should be a string`;
 
 export const numberError = (prop: string) => `[${prop}] Should be a number`;
 
+export const minError = (prop: string, min: number) =>
+  `[${prop}] Min value can be ${min}`;
+
+export const maxError = (prop: string, max: number) =>
+  `[${prop}] Max value can be ${max}`;
+
 export const booleanError = (prop: string) => `[${prop}] Should be a boolean`;
 
 export const arrayError = (prop: string) => `[${prop}] Should be an array`;
