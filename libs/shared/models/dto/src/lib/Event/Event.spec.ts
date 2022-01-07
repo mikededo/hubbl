@@ -4,6 +4,7 @@ import { CalendarDate, Event } from '@hubbl/shared/models/entities';
 
 import * as Util from '../util';
 import EventDTO from './Event';
+import { CalendarDateDTO } from '..';
 
 jest.mock('@hubbl/shared/models/entities');
 
@@ -47,20 +48,31 @@ describe('Event', () => {
         date: { day: 29, month: 6, year: 2000 } as CalendarDate
       };
 
+      const calendarJsonSpy = jest
+        .spyOn(CalendarDateDTO, 'fromJson')
+        .mockResolvedValue({ day: 29, month: 6, year: 2000 } as any);
+
       const result = await EventDTO.fromJson(json, 'any' as any);
 
       expect(result).toBeDefined();
       propCompare(json as any, result);
 
+      // Parse calendar
+      expect(calendarJsonSpy).toHaveBeenCalledTimes(1);
       // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vorSpy).toHaveBeenCalledWith(expect.any(EventDTO), {
+      expect(vorSpy).toHaveBeenCalledTimes(2);
+      expect(vorSpy).toHaveBeenNthCalledWith(
+        1,
+        { day: 29, month: 6, year: 2000 },
+        { validationError: { target: false } }
+      );
+      expect(vorSpy).toHaveBeenNthCalledWith(2, expect.any(EventDTO), {
         validationError: { target: false },
         groups: ['any']
       });
     });
 
-    it('should not create a DTO if json is not valid', async () => {
+    it('should not create a DTO if date json is not valid', async () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
@@ -77,6 +89,28 @@ describe('Event', () => {
       }
 
       expect(vorSpy).toHaveBeenCalledTimes(1);
+      expect(vpSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not create a DTO if event json is not valid', async () => {
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockResolvedValueOnce()
+        .mockRejectedValue({});
+      const vpSpy = jest
+        .spyOn(Util, 'validationParser')
+        .mockReturnValue({} as any);
+      jest.spyOn(CalendarDateDTO, 'fromJson').mockResolvedValue({} as any);
+
+      expect.assertions(3);
+
+      try {
+        await EventDTO.fromJson({ date: {} }, 'any' as any);
+      } catch (e) {
+        expect(e).toBeDefined();
+      }
+
+      expect(vorSpy).toHaveBeenCalledTimes(2);
       expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });

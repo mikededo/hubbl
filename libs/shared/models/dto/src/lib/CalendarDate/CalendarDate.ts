@@ -40,10 +40,7 @@ export default class CalendarDateDTO implements DTO<CalendarDate> {
    * @param variant Variant to validate for
    * @returns The parsed `CalendarDateDTO`
    */
-  public static async fromJson(
-    json: any,
-    variant: DTOGroups
-  ): Promise<CalendarDateDTO> {
+  public static async fromJson(json: any): Promise<CalendarDateDTO> {
     const result = new CalendarDateDTO();
 
     if (!CalendarDateDTO.validDate(json.year, json.month - 1, json.day)) {
@@ -55,8 +52,7 @@ export default class CalendarDateDTO implements DTO<CalendarDate> {
     result.day = json.day;
 
     await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [variant]
+      validationError: { target: false }
     }).catch((errors) => {
       throw validationParser(errors);
     });

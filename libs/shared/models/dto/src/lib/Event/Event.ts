@@ -22,6 +22,7 @@ import {
   stringError,
   validationParser
 } from '../util';
+import { CalendarDateDTO } from '..';
 
 export default class EventDTO implements DTO<Event> {
   @IsNumber(
@@ -135,6 +136,12 @@ export default class EventDTO implements DTO<Event> {
     variant: DTOGroups
   ): Promise<EventDTO> {
     const result = EventDTO.propMapper(json);
+
+    await validateOrReject(await CalendarDateDTO.fromJson(json.date), {
+      validationError: { target: false }
+    }).catch((errors) => {
+      throw validationParser(errors, 'date');
+    });
 
     await validateOrReject(result, {
       validationError: { target: false },
