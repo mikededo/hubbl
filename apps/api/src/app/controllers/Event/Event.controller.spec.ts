@@ -3,10 +3,12 @@ import { getRepository } from 'typeorm';
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 
 import { EventService, OwnerService, WorkerService } from '../../services';
+import { DeleteByOwnerWorkerController } from '../Base';
 import * as create from '../helpers/create';
 import * as update from '../helpers/update';
 import {
   EventCreateController,
+  EventDeleteController,
   EventUpdateController
 } from './Event.controller';
 
@@ -345,6 +347,21 @@ describe('Event controller', () => {
 
     it('should send fail on service error', async () => {
       serviceFailAsserts(EventUpdateController);
+    });
+  });
+
+  describe('EventDeleteController', () => {
+    it('should create an DeleteByOwnerWorkerController', () => {
+      jest.spyOn(EventDTO, 'fromJson');
+
+      expect(EventDeleteController).toBeInstanceOf(
+        DeleteByOwnerWorkerController
+      );
+      expect(EventDeleteController['serviceCtr']).toBe(EventService);
+      expect(EventDeleteController['entityName']).toBe('Event');
+      expect(EventDeleteController['workerDeletePermission']).toBe(
+        'deleteEvents'
+      );
     });
   });
 });

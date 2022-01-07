@@ -2,6 +2,7 @@ import { Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  Event,
   EventTemplate,
   EventType,
   GymZone,
@@ -15,12 +16,14 @@ import BaseController from '../Base';
 import { ParsedToken } from './types';
 
 type CommonDeleteByServices =
+  | BaseService<Event>
   | BaseService<EventTemplate>
   | BaseService<EventType>
   | BaseService<VirtualGym>
   | BaseService<GymZone>;
 
 type CommonDeleteByEntities =
+  | 'Event'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -28,6 +31,7 @@ type CommonDeleteByEntities =
 
 type WorkerDeletePermissions =
   | 'deleteClients'
+  | 'deleteEvents'
   | 'deleteEventTemplates'
   | 'deleteEventTypes'
   | 'deleteEvents'
