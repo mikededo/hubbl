@@ -29,6 +29,9 @@ const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
   worker.createEventTemplates = false;
   worker.updateEventTemplates = false;
   worker.deleteEventTemplates = false;
+  worker.createEventAppointments = false;
+  worker.updateEventAppointments = false;
+  worker.deleteEventAppointments = false;
 };
 
 const workerPropCompare = (
@@ -55,6 +58,9 @@ const workerPropCompare = (
   expect(got.createEventTemplates).toBe(want.createEventTemplates);
   expect(got.updateEventTemplates).toBe(want.updateEventTemplates);
   expect(got.deleteEventTemplates).toBe(want.deleteEventTemplates);
+  expect(got.createEventAppointments).toBe(want.createEventAppointments);
+  expect(got.updateEventAppointments).toBe(want.updateEventAppointments);
+  expect(got.deleteEventAppointments).toBe(want.deleteEventAppointments);
 };
 
 describe('WorkerDTO', () => {
@@ -86,7 +92,10 @@ describe('WorkerDTO', () => {
         deleteEventTypes: false,
         createEventTemplates: false,
         updateEventTemplates: false,
-        deleteEventTemplates: false
+        deleteEventTemplates: false,
+        createEventAppointments: false,
+        updateEventAppointments: false,
+        deleteEventAppointments: false
       });
 
       const result = await WorkerDTO.fromJson(json, 'any' as any);

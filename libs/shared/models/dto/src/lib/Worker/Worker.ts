@@ -97,6 +97,15 @@ export default class WorkerDTO<T extends Gym | number>
   @IsBoolean({ message: booleanError('deleteEventTemplates') })
   deleteEventTemplates!: boolean;
 
+  @IsBoolean({ message: booleanError('createEventAppointments') })
+  createEventAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('updateEventAppointments') })
+  updateEventAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('deleteEventAppointments') })
+  deleteEventAppointments!: boolean;
+
   private static mapWorkerProps<T extends Gym | number>(
     to: WorkerDTO<T>,
     from: any
@@ -122,6 +131,9 @@ export default class WorkerDTO<T extends Gym | number>
     to.createEventTemplates = from.createEventTemplates;
     to.updateEventTemplates = from.updateEventTemplates;
     to.deleteEventTemplates = from.deleteEventTemplates;
+    to.createEventAppointments = from.createEventAppointments;
+    to.updateEventAppointments = from.updateEventAppointments;
+    to.deleteEventAppointments = from.deleteEventAppointments;
   }
 
   /**
@@ -246,6 +258,9 @@ export default class WorkerDTO<T extends Gym | number>
     worker.createEventTemplates = this.createEventTemplates;
     worker.updateEventTemplates = this.updateEventTemplates;
     worker.deleteEventTemplates = this.deleteEventTemplates;
+    worker.createEventAppointments = this.createEventAppointments;
+    worker.updateEventAppointments = this.updateEventAppointments;
+    worker.deleteEventAppointments = this.deleteEventAppointments;
 
     return worker;
   }
