@@ -21,7 +21,7 @@ export default class CalendarAppointment extends Appointment {
     nullable: false,
     cascade: true
   })
-  client!: Client;
+  client!: number;
 
   /**
    * `Event` that is linked to the `Appointment`
@@ -31,7 +31,7 @@ export default class CalendarAppointment extends Appointment {
     nullable: false,
     cascade: true
   })
-  calendar!: Calendar;
+  calendar!: number;
 
   /**
    * `CalendarDate` of the event
