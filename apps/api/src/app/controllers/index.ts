@@ -1,3 +1,4 @@
+export * from './Appointments';
 export * from './Event';
 export * from './EventTemplate';
 export * from './EventType';

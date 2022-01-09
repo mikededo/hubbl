@@ -47,7 +47,7 @@ type CommonCreateByDTOs =
   | TrainerDTO<Gym | number>;
 
 type CommonCreateByEntities =
-| 'EventAppointment'
+  | 'EventAppointment'
   | 'Event'
   | 'EventTemplate'
   | 'EventType'

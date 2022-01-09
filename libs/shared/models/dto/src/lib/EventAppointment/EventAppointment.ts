@@ -23,13 +23,16 @@ export default class EventAppointmentDTO implements DTO<EventAppointment> {
   )
   id!: number;
 
-  @IsString({ message: stringError('startTime') })
+  @IsString({ message: stringError('startTime'), groups: [DTOGroups.ALL] })
   startTime!: string;
 
-  @IsString({ message: stringError('endTime') })
+  @IsString({ message: stringError('endTime'), groups: [DTOGroups.ALL] })
   endTime!: string;
 
-  @IsBoolean({ message: booleanError('cancelled') })
+  @IsBoolean({
+    message: booleanError('cancelled'),
+    groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+  })
   cancelled!: boolean;
 
   @IsNumber(

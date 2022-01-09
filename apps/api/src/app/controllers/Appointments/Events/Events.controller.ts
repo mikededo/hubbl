@@ -1,7 +1,10 @@
+import { Request, Response } from 'express';
+import * as log from 'npmlog';
+import { getRepository } from 'typeorm';
+
 import { DTOGroups, EventAppointmentDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
-import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
+
 import {
   ClientService,
   EventAppointmentService,
@@ -12,8 +15,6 @@ import {
 import BaseController from '../../Base';
 import { createdByOwnerOrWorker, ParsedToken } from '../../helpers';
 
-// TODO: Add service failing checks
-
 class IEventAppointmentCreateController extends BaseController {
   protected service: EventAppointmentService = undefined;
   protected eventService: EventService = undefined;
@@ -21,6 +22,19 @@ class IEventAppointmentCreateController extends BaseController {
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
   protected clientService: ClientService = undefined;
+
+  private async onFail(res: Response, error: any): Promise<Response> {
+    log.error(
+      `Controller[${this.constructor.name}]`,
+      '"create" handler',
+      error.toString()
+    );
+
+    return this.fail(
+      res,
+      'Internal server error. If the error persists, contact our team'
+    );
+  }
 
   /**
    * Checks the following, before creating an event
@@ -32,13 +46,19 @@ class IEventAppointmentCreateController extends BaseController {
     res: Response,
     id: number
   ): Promise<Response | Event> {
-    // Check if the event exists
-    const event = await this.eventService.findOne(id);
-    if (!event) {
-      return this.clientError(
-        res,
-        'Event to create the appointment does not exist'
-      );
+    let event: Event;
+
+    try {
+      // Check if the event exists
+      event = await this.eventService.findOne(id);
+      if (!event) {
+        return this.clientError(
+          res,
+          'Event to create the appointment does not exist'
+        );
+      }
+    } catch (e) {
+      return this.onFail(res, e);
     }
 
     // Check event date
@@ -47,17 +67,26 @@ class IEventAppointmentCreateController extends BaseController {
       event.date.month - 1,
       event.date.day
     );
+    const splittedStartTime = event.startTime.split(':');
+    eventDate.setHours(+splittedStartTime[0]);
+    eventDate.setMinutes(+splittedStartTime[1]);
+    eventDate.setSeconds(+splittedStartTime[2]);
+
     if (eventDate < new Date()) {
-      return this.clientError(
+      return this.forbidden(
         res,
         'Can not create an appointment to a past event'
       );
     }
 
-    // Check capacity
-    const appointmentCount = await this.service.count({ event: id });
-    if (appointmentCount === event.capacity) {
-      return this.clientError(res, 'No places left for the seleted event.');
+    try {
+      // Check capacity
+      const appointmentCount = await this.service.count({ event: id });
+      if (appointmentCount >= event.capacity) {
+        return this.forbidden(res, 'No places left for the seleted event.');
+      }
+    } catch (e) {
+      return this.onFail(res, e);
     }
 
     return event;
@@ -68,18 +97,26 @@ class IEventAppointmentCreateController extends BaseController {
     id: number,
     event: Event
   ): Promise<Response> | undefined {
-    // Check if the client exists
-    const client = await this.clientService.findOne(id);
-    if (!client) {
-      return this.clientError(res, 'Person does not exist');
-    }
+    try {
+      // Check if the client exists
+      const client = await this.clientService.findOne(id);
+      if (!client) {
+        return this.clientError(res, 'Person does not exist');
+      }
 
-    // Check if event requires covid passport
-    if (event.covidPassport && !client.covidPassport) {
-      return this.clientError(
-        res,
-        'Client does not have the covid passport and the event requires it'
-      );
+      // Check if event requires covid passport
+      if (event.covidPassport && !client.covidPassport) {
+        return this.forbidden(
+          res,
+          'Client does not have the covid passport and the event requires it'
+        );
+      }
+
+      if (await this.service.count({ client: id, event: event.id })) {
+        return this.forbidden(res, 'Client has already a place in the event');
+      }
+    } catch (e) {
+      return this.onFail(res, e);
     }
   }
 
@@ -188,10 +225,7 @@ class IEventAppointmentCreateController extends BaseController {
 
       return this.ok(res);
     } catch (e) {
-      return this.fail(
-        res,
-        'Internal server error. If the error persists, contact our team.'
-      );
+      return this.onFail(res, e);
     }
   }
 
