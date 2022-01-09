@@ -5,7 +5,7 @@ import {
   validateOrReject
 } from 'class-validator';
 
-import { EventAppointment } from '@hubbl/shared/models/entities';
+import { Client, Event, EventAppointment } from '@hubbl/shared/models/entities';
 
 import DTO from '../Base';
 import {
@@ -60,8 +60,9 @@ export default class EventAppointmentDTO implements DTO<EventAppointment> {
     result.startTime = from.startTime;
     result.endTime = from.endTime;
     result.cancelled = from.cancelled;
-    result.client = from.client;
-    result.event = from.event;
+    result.client =
+      from.client instanceof Client ? from.client.person.id : from.client;
+    result.event = from.event instanceof Event ? from.event.id : from.event;
 
     return result;
   }

@@ -3,7 +3,7 @@ import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventAppointmentDTO } from '@hubbl/shared/models/dto';
-import { Event } from '@hubbl/shared/models/entities';
+import { Event, EventAppointment } from '@hubbl/shared/models/entities';
 
 import {
   ClientService,
@@ -16,7 +16,8 @@ import BaseController from '../../Base';
 import {
   createdByOwnerOrWorker,
   deletedByOwnerOrWorker,
-  ParsedToken
+  ParsedToken,
+  updatedByOwnerOrWorker
 } from '../../helpers';
 
 abstract class BaseEventAppointmentController extends BaseController {
@@ -30,7 +31,7 @@ abstract class BaseEventAppointmentController extends BaseController {
   protected async onFail(
     res: Response,
     error: any,
-    operation: 'create' | 'delete'
+    operation: 'create' | 'cancel' | 'delete'
   ): Promise<Response> {
     log.error(
       `Controller[${this.constructor.name}]`,
@@ -47,7 +48,7 @@ abstract class BaseEventAppointmentController extends BaseController {
   protected async baseEventValidation(
     res: Response,
     id: number,
-    operation: 'create' | 'delete'
+    operation: 'create' | 'cancel' | 'delete'
   ): Promise<Response | Event> {
     let event: Event;
 
@@ -290,6 +291,79 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
 const createInstance = new IEventAppointmentCreateController();
 
 export const EventCreateController = createInstance;
+
+class IEventAppointmentCancelController extends BaseEventAppointmentController {
+  private async cancelByOwnerOrWorker(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    const eventId = +req.params.eId;
+    const appointmentId = +req.params.id;
+
+    const maybeEvent = await this.baseEventValidation(
+      res,
+      +req.params.eId,
+      'cancel'
+    );
+
+    if (!(maybeEvent instanceof Event)) {
+      return maybeEvent;
+    }
+
+    let appointment: EventAppointment;
+    try {
+      // Check if exists any appointment for the selected event and client
+      appointment = await this.service
+        .createQueryBuilder({ alias: 'ea' })
+        .where('ea.id = :id', { id: appointmentId })
+        // Join the relations since they are skipped by typeorm
+        .leftJoinAndSelect('ea.client', 'c')
+        .leftJoinAndMapOne('c.person', 'person', 'p', 'p.id = ea.client')
+        .leftJoinAndSelect('ea.event', 'event')
+        .getOne();
+
+      if (!appointment) {
+        return this.forbidden(res, 'The appointment does not exist.');
+      } else if (appointment.cancelled) {
+        return this.forbidden(res, 'The appointment is already cancelled.');
+      }
+    } catch (e) {
+      return this.onFail(res, e, 'cancel');
+    }
+
+    return updatedByOwnerOrWorker({
+      service: this.service,
+      ownerService: this.ownerService,
+      workerService: this.workerService,
+      controller: this,
+      res,
+      token: res.locals.token as ParsedToken,
+      by: req.query.by as any,
+      dto: await EventAppointmentDTO.fromClass({
+        ...appointment,
+        cancelled: true
+      }),
+      entityName: 'EventAppointment',
+      updatableBy: '["owner", "worker"]',
+      countArgs: { id: eventId },
+      workerUpdatePermission: 'updateEventAppointments'
+    });
+  }
+
+  protected run(req: Request, res: Response): Promise<Response> {
+    this.checkServices();
+
+    if (req.query.by === 'client') {
+      return;
+    }
+
+    return this.cancelByOwnerOrWorker(req, res);
+  }
+}
+
+const cancelInstance = new IEventAppointmentCancelController();
+
+export const EventCancelController = cancelInstance;
 
 class IEventAppointmentDeleteController extends BaseEventAppointmentController {
   private async deleteByOwnerOrWorker(

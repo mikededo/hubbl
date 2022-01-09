@@ -5,6 +5,7 @@ import {
   ClientDTO,
   DTO,
   DTOGroups,
+  EventAppointmentDTO,
   EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
@@ -17,6 +18,7 @@ import {
 import {
   Client,
   Event,
+  EventAppointment,
   EventTemplate,
   EventType,
   Gym,
@@ -39,6 +41,7 @@ type UpdatableServices = BaseService<
   | Trainer
   | Client
   | Event
+  | EventAppointment
   | EventTemplate
   | EventType
   | VirtualGym
@@ -51,6 +54,7 @@ type UpdatableEntities =
   | 'Trainer'
   | 'Client'
   | 'Event'
+  | 'EventAppointment'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -102,6 +106,7 @@ type CommonUpdateByDTOs =
   | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>
   | EventDTO
+  | EventAppointmentDTO
   | EventTemplateDTO
   | EventTypeDTO
   | VirtualGymDTO
@@ -111,6 +116,7 @@ type CommonUpdateByEntities =
   | 'Trainer'
   | 'Client'
   | 'Event'
+  | 'EventAppointment'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -123,6 +129,7 @@ type CommonUpdateByValues =
 type WorkerUpdatePermissions =
   | 'updateClients'
   | 'updateEvents'
+  | 'updateEventAppointments'
   | 'updateEventTemplates'
   | 'updateEventTypes'
   | 'updateGymZones'
