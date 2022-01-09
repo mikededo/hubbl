@@ -268,9 +268,9 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
 
     try {
       // Save the appointment
-      await this.service.save(dto.toClass());
+      const event = await this.service.save(dto.toClass());
 
-      return this.ok(res);
+      return this.created(res, await EventAppointmentDTO.fromClass(event));
     } catch (e) {
       return this.onFail(res, e, 'create');
     }

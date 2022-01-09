@@ -72,6 +72,7 @@ describe('Appointments.Event controller', () => {
   const mockClientService = { findOne: jest.fn() };
 
   const fromJsonSpy = jest.spyOn(EventAppointmentDTO, 'fromJson');
+  const fromClassSpy = jest.spyOn(EventAppointmentDTO, 'fromClass');
 
   const logSpy = jest.spyOn(npmlog, 'error').mockImplementation();
 
@@ -218,6 +219,7 @@ describe('Appointments.Event controller', () => {
       mockEventService.findOne.mockResolvedValue(mockEvent);
       mockAppointmentService.count.mockResolvedValue(0);
       mockClientService.findOne.mockResolvedValue(mockClient);
+      mockAppointmentService.save.mockResolvedValue(mockEvent);
 
       setupServices(EventCreateController);
     };
@@ -393,8 +395,10 @@ describe('Appointments.Event controller', () => {
     });
 
     it('should create an EventAppointment by a client', async () => {
-      const okSpy = jest
-        .spyOn(EventCreateController, 'ok')
+      fromClassSpy.mockResolvedValue(mockDto);
+
+      const createdSpy = jest
+        .spyOn(EventCreateController, 'created')
         .mockImplementation();
       setupSucessfullTests();
 
@@ -411,8 +415,10 @@ describe('Appointments.Event controller', () => {
       expect(mockDto.toClass).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.save).toHaveBeenCalledWith(mockAppointment);
-      expect(okSpy).toHaveBeenCalledTimes(1);
-      expect(okSpy).toHaveBeenCalledWith(mockRes);
+      expect(fromClassSpy).toHaveBeenCalledTimes(1);
+      expect(fromClassSpy).toHaveBeenCalledWith(mockEvent);
+      expect(createdSpy).toHaveBeenCalledTimes(1);
+      expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
     });
 
     it('should create an EventAppointment by an owner or a worker', async () => {
@@ -575,13 +581,15 @@ describe('Appointments.Event controller', () => {
 
       it('should send fail on ok error', async () => {
         fromJsonSpy.mockResolvedValue(mockDto);
+        fromJsonSpy.mockResolvedValue(mockDto);
+
         mockEventService.findOne.mockResolvedValue(mockEvent);
         mockClientService.findOne.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockImplementation();
 
-        const okSpy = jest
-          .spyOn(EventCreateController, 'ok')
+        const createdSpy = jest
+          .spyOn(EventCreateController, 'created')
           .mockImplementation(() => {
             throw 'error-thrown';
           });
@@ -595,8 +603,8 @@ describe('Appointments.Event controller', () => {
         expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
         expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
-        expect(okSpy).toHaveBeenCalledTimes(1);
-        expect(okSpy).toHaveBeenCalledWith(mockRes);
+        expect(createdSpy).toHaveBeenCalledTimes(1);
+        expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
         failAsserts(EventCreateController, failSpy, 'create');
       });
     });
