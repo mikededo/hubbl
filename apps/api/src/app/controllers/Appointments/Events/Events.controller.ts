@@ -322,11 +322,49 @@ class IEventAppointmentDeleteController extends BaseEventAppointmentController {
     });
   }
 
+  private async deleteByClient(req: Request, res: Response): Promise<Response> {
+    const eventId = +req.params.eId;
+    const appointmentId = +req.params.id;
+
+    const maybeEvent = await this.baseEventValidation(res, eventId, 'delete');
+
+    if (!(maybeEvent instanceof Event)) {
+      return maybeEvent;
+    }
+
+    const { token } = res.locals;
+
+    try {
+      // Check if exists any appointment for the selected event and client
+      const appointmentCount = await this.service.count({
+        id: appointmentId,
+        client: token.id,
+        event: eventId
+      });
+      if (!appointmentCount) {
+        return this.unauthorized(
+          res,
+          'Client does not have permissions to delete the appointment.'
+        );
+      }
+    } catch (e) {
+      return this.onFail(res, e, 'delete');
+    }
+
+    try {
+      await this.service.delete(appointmentId);
+
+      return this.ok(res);
+    } catch (e) {
+      return this.onFail(res, e, 'delete');
+    }
+  }
+
   protected run(req: Request, res: Response): Promise<Response> {
     this.checkServices();
 
     if (req.query.by === 'client') {
-      return;
+      return this.deleteByClient(req, res);
     }
 
     return this.deleteByOwnerOrWorker(req, res);
