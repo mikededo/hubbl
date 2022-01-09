@@ -1,55 +1,64 @@
 version: '2.4'
+
 services:
+  # Backend
   postgres:
     container_name: postgresql
     image: postgres
     environment:
-      POSTGRES_USER: '${POSTGRES_USER:-postgres}'
-      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-changeme}'
-      POSTGRES_DB: '${POSTGRES_DATABASE:-hubbl-db}'
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DATABASE:-hubbl-db}
       PGDATA: /data/postgres
     volumes:
-      - 'postgres:/data/postgres'
+      - postgres:/data/postgres
     ports:
       - '5432:5432'
     networks:
       - postgres
     restart: unless-stopped
+
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: '${PGADMIN_DEFAULT_EMAIL:-admin@hubbl.org}'
-      PGADMIN_DEFAULT_PASSWORD: '${PGADMIN_DEFAULT_PASSWORD:-admin}'
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@hubbl.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
-      - 'pgadmin:/var/lib/pgadmin'
+      - pgadmin:/var/lib/pgadmin
     ports:
       - '${PG_ADMIN_PORT:-5050}:80'
     networks:
       - postgres
     restart: unless-stopped
+  
+  # Api
   api:
     container_name: api
-    image: 'node:lts-alpine'
+    image: node:lts-alpine
     volumes:
-      - '.:/app'
+      - .:/app
     command:
-      - /bin/sh
-      - '-c'
-      - |
-        cd /app
-        npm install
-        npm install -g nx
-        nx serve api
+     - /bin/sh
+     - -c
+     - |
+      cd /app
+      npm install
+      npx nx serve api
     ports:
-      - '3333:3333'
+      - 3333:3333
     networks:
       - postgres
     mem_limit: 1G
+    restart: unless-stopped
+
+
 networks:
   postgres:
     driver: bridge
+
+
 volumes:
-  postgres: null
-  pgadmin: null
+  postgres:
+  pgadmin:
