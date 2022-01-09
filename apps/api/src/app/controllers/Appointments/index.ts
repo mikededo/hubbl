@@ -1,3 +1,3 @@
-import { EventCreateController } from './Events';
+import * as Events from './Events';
 
-export const Appointments = { EventCreateController };
+export const Appointments = { ...Events };

@@ -3,6 +3,7 @@ import * as log from 'npmlog';
 
 import {
   Event,
+  EventAppointment,
   EventTemplate,
   EventType,
   GymZone,
@@ -17,6 +18,7 @@ import { ParsedToken } from './types';
 
 type CommonDeleteByServices =
   | BaseService<Event>
+  | BaseService<EventAppointment>
   | BaseService<EventTemplate>
   | BaseService<EventType>
   | BaseService<VirtualGym>
@@ -24,6 +26,7 @@ type CommonDeleteByServices =
 
 type CommonDeleteByEntities =
   | 'Event'
+  | 'EventAppointment'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -32,6 +35,7 @@ type CommonDeleteByEntities =
 type WorkerDeletePermissions =
   | 'deleteClients'
   | 'deleteEvents'
+  | 'deleteEventAppointments'
   | 'deleteEventTemplates'
   | 'deleteEventTypes'
   | 'deleteEvents'

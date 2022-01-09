@@ -11,6 +11,10 @@ EventAppointmentRouter.post('', middlewares.auth, (req, res) => {
   Appointments.EventCreateController.execute(req, res);
 });
 
+EventAppointmentRouter.delete('/:eId/:id', middlewares.auth, (req, res) => {
+  Appointments.EventDeleteController.execute(req, res);
+});
+
 AppointmentsRouter.use('/events', EventAppointmentRouter);
 
 export default AppointmentsRouter;

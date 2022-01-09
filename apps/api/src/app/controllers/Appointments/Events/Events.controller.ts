@@ -13,7 +13,11 @@ import {
   WorkerService
 } from '../../../services';
 import BaseController from '../../Base';
-import { createdByOwnerOrWorker, ParsedToken } from '../../helpers';
+import {
+  createdByOwnerOrWorker,
+  deletedByOwnerOrWorker,
+  ParsedToken
+} from '../../helpers';
 
 abstract class BaseEventAppointmentController extends BaseController {
   protected service: EventAppointmentService = undefined;
@@ -23,10 +27,14 @@ abstract class BaseEventAppointmentController extends BaseController {
   protected workerService: WorkerService = undefined;
   protected clientService: ClientService = undefined;
 
-  protected async onFail(res: Response, error: any): Promise<Response> {
+  protected async onFail(
+    res: Response,
+    error: any,
+    operation: 'create' | 'delete'
+  ): Promise<Response> {
     log.error(
       `Controller[${this.constructor.name}]`,
-      '"create" handler',
+      `"${operation}" handler`,
       error.toString()
     );
 
@@ -36,7 +44,7 @@ abstract class BaseEventAppointmentController extends BaseController {
     );
   }
 
-  protected async existingEvent(
+  protected async baseEventValidation(
     res: Response,
     id: number,
     operation: 'create' | 'delete'
@@ -45,7 +53,8 @@ abstract class BaseEventAppointmentController extends BaseController {
 
     try {
       // Check if the event exists
-      event = await this.eventService.findOne(id);
+      event = await this.eventService.findOne(id, { cache: true });
+
       if (!event) {
         return this.clientError(
           res,
@@ -53,7 +62,7 @@ abstract class BaseEventAppointmentController extends BaseController {
         );
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, operation);
     }
 
     // Check event date
@@ -70,7 +79,7 @@ abstract class BaseEventAppointmentController extends BaseController {
     if (eventDate < new Date()) {
       return this.forbidden(
         res,
-        'Can not create an appointment to a past event'
+        `Can not ${operation} an appointment to a past event`
       );
     }
 
@@ -101,7 +110,29 @@ abstract class BaseEventAppointmentController extends BaseController {
         return this.forbidden(res, 'Client has already a place in the event');
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
+    }
+  }
+
+  protected checkServices() {
+    if (!this.service) {
+      this.service = new EventAppointmentService(getRepository);
+    }
+
+    if (!this.eventService) {
+      this.eventService = new EventService(getRepository);
+    }
+
+    if (!this.ownerService) {
+      this.ownerService = new OwnerService(getRepository);
+    }
+
+    if (!this.workerService) {
+      this.workerService = new WorkerService(getRepository);
+    }
+
+    if (!this.clientService) {
+      this.clientService = new ClientService(getRepository);
     }
   }
 }
@@ -117,7 +148,7 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
     res: Response,
     id: number
   ): Promise<Response | Event> {
-    const maybeEvent = await this.existingEvent(res, id, 'create');
+    const maybeEvent = await this.baseEventValidation(res, id, 'create');
 
     if (!(maybeEvent instanceof Event)) {
       return maybeEvent;
@@ -130,7 +161,7 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
         return this.forbidden(res, 'No places left for the seleted event.');
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
 
     return maybeEvent;
@@ -241,30 +272,12 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
 
       return this.ok(res);
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
   }
 
   protected async run(req: Request, res: Response): Promise<Response> {
-    if (!this.service) {
-      this.service = new EventAppointmentService(getRepository);
-    }
-
-    if (!this.eventService) {
-      this.eventService = new EventService(getRepository);
-    }
-
-    if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
-    }
-
-    if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
-    }
-
-    if (!this.clientService) {
-      this.clientService = new ClientService(getRepository);
-    }
+    this.checkServices();
 
     if (req.query.by === 'client') {
       return this.createByClient(req, res);
@@ -277,3 +290,49 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
 const createInstance = new IEventAppointmentCreateController();
 
 export const EventCreateController = createInstance;
+
+class IEventAppointmentDeleteController extends BaseEventAppointmentController {
+  private async deleteByOwnerOrWorker(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    const maybeEvent = await this.baseEventValidation(
+      res,
+      +req.params.eId,
+      'delete'
+    );
+
+    if (!(maybeEvent instanceof Event)) {
+      return maybeEvent;
+    }
+
+    const id = +req.params.id;
+    return deletedByOwnerOrWorker({
+      service: this.service,
+      ownerService: this.ownerService,
+      workerService: this.workerService,
+      controller: this,
+      res,
+      token: res.locals.token as ParsedToken,
+      by: req.query.by as any,
+      entityId: id,
+      entityName: 'EventAppointment',
+      countArgs: { id },
+      workerDeletePermission: 'deleteEventAppointments'
+    });
+  }
+
+  protected run(req: Request, res: Response): Promise<Response> {
+    this.checkServices();
+
+    if (req.query.by === 'client') {
+      return;
+    }
+
+    return this.deleteByOwnerOrWorker(req, res);
+  }
+}
+
+const deleteInstance = new IEventAppointmentDeleteController();
+
+export const EventDeleteController = deleteInstance;
