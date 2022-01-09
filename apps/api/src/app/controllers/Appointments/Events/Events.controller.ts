@@ -15,7 +15,7 @@ import {
 import BaseController from '../../Base';
 import { createdByOwnerOrWorker, ParsedToken } from '../../helpers';
 
-class IEventAppointmentCreateController extends BaseController {
+abstract class BaseEventAppointmentController extends BaseController {
   protected service: EventAppointmentService = undefined;
   protected eventService: EventService = undefined;
 
@@ -23,7 +23,7 @@ class IEventAppointmentCreateController extends BaseController {
   protected workerService: WorkerService = undefined;
   protected clientService: ClientService = undefined;
 
-  private async onFail(res: Response, error: any): Promise<Response> {
+  protected async onFail(res: Response, error: any): Promise<Response> {
     log.error(
       `Controller[${this.constructor.name}]`,
       '"create" handler',
@@ -36,15 +36,10 @@ class IEventAppointmentCreateController extends BaseController {
     );
   }
 
-  /**
-   * Checks the following, before creating an event
-   * 1. Event exists in the system
-   * 2. Event is not past
-   * 3. Event's capacity is not exceeded
-   */
-  private async eventValidation(
+  protected async existingEvent(
     res: Response,
-    id: number
+    id: number,
+    operation: 'create' | 'delete'
   ): Promise<Response | Event> {
     let event: Event;
 
@@ -54,7 +49,7 @@ class IEventAppointmentCreateController extends BaseController {
       if (!event) {
         return this.clientError(
           res,
-          'Event to create the appointment does not exist'
+          `Event to ${operation} the appointment does not exist`
         );
       }
     } catch (e) {
@@ -79,20 +74,10 @@ class IEventAppointmentCreateController extends BaseController {
       );
     }
 
-    try {
-      // Check capacity
-      const appointmentCount = await this.service.count({ event: id });
-      if (appointmentCount >= event.capacity) {
-        return this.forbidden(res, 'No places left for the seleted event.');
-      }
-    } catch (e) {
-      return this.onFail(res, e);
-    }
-
     return event;
   }
 
-  private async clientValidation(
+  protected async clientValidation(
     res: Response,
     id: number,
     event: Event
@@ -118,6 +103,37 @@ class IEventAppointmentCreateController extends BaseController {
     } catch (e) {
       return this.onFail(res, e);
     }
+  }
+}
+
+class IEventAppointmentCreateController extends BaseEventAppointmentController {
+  /**
+   * Checks the following, before creating an event
+   * 1. Event exists in the system
+   * 2. Event is not past
+   * 3. Event's capacity is not exceeded
+   */
+  private async eventValidation(
+    res: Response,
+    id: number
+  ): Promise<Response | Event> {
+    const maybeEvent = await this.existingEvent(res, id, 'create');
+
+    if (!(maybeEvent instanceof Event)) {
+      return maybeEvent;
+    }
+
+    try {
+      // Check capacity
+      const appointmentCount = await this.service.count({ event: id });
+      if (appointmentCount >= maybeEvent.capacity) {
+        return this.forbidden(res, 'No places left for the seleted event.');
+      }
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+
+    return maybeEvent;
   }
 
   /**

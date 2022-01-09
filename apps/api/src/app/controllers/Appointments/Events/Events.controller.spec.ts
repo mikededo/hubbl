@@ -21,11 +21,11 @@ jest.mock('@hubbl/shared/models/dto');
  * Create mock event using the Event constructor so
  * `instanceof` checks do not fail
  */
-const createMockEvent = (): Event => {
+const createMockEvent = (capacity = 25): Event => {
   const result = new Event();
 
   result.id = 1;
-  result.capacity = 25;
+  result.capacity = capacity;
   result.covidPassport = true;
   result.startTime = '10:00:00';
   result.endTime = '11:00:00';
@@ -188,7 +188,7 @@ describe('Appointments.Event controller', () => {
 
     const eventCapacityAsserts = async (mockReq: any) => {
       fromJsonSpy.mockResolvedValue(mockDto);
-      mockEventService.findOne.mockResolvedValue({ ...mockEvent, capacity: 5 });
+      mockEventService.findOne.mockResolvedValue(createMockEvent(5));
       mockAppointmentService.count.mockResolvedValue(6);
 
       setupControllers();
@@ -206,10 +206,7 @@ describe('Appointments.Event controller', () => {
 
     const serviceCountFailAsserts = async (mockReq: any) => {
       fromJsonSpy.mockResolvedValue(mockDto);
-      mockEventService.findOne.mockResolvedValue({
-        ...mockEvent,
-        capacity: 5
-      });
+      mockEventService.findOne.mockResolvedValue(mockEvent);
       mockAppointmentService.count.mockRejectedValue('error-thrown');
 
       setupControllers();
