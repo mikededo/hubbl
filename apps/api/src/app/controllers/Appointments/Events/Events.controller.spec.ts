@@ -223,7 +223,8 @@ describe('Appointments.Event controller', () => {
       });
       expect(mockAppointmentService.count).toHaveBeenNthCalledWith(2, {
         client: mockDto.client,
-        event: mockDto.event
+        event: mockDto.event,
+        cancelled: false
       });
       // Client validation
       expect(mockClientService.findOne).toHaveBeenCalledTimes(1);

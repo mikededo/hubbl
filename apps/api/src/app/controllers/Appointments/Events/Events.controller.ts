@@ -107,7 +107,13 @@ abstract class BaseEventAppointmentController extends BaseController {
         );
       }
 
-      if (await this.service.count({ client: id, event: event.id })) {
+      if (
+        await this.service.count({
+          client: id,
+          event: event.id,
+          cancelled: false
+        })
+      ) {
         return this.forbidden(res, 'Client has already a place in the event');
       }
     } catch (e) {
