@@ -129,8 +129,8 @@ describe('Appointments.Event controller', () => {
     mockReq: any,
     operation: Operations
   ) => {
-    const clientErrorSpy = jest
-      .spyOn(controller, 'clientError')
+    const forbiddenSpy = jest
+      .spyOn(controller, 'forbidden')
       .mockReturnValue({} as any);
     fromJsonSpy.mockResolvedValue(mockDto);
     mockEventService.findOne.mockResolvedValue(undefined);
@@ -143,8 +143,8 @@ describe('Appointments.Event controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     }
     expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-    expect(clientErrorSpy).toHaveBeenCalledTimes(1);
-    expect(clientErrorSpy).toHaveBeenCalledWith(
+    expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+    expect(forbiddenSpy).toHaveBeenCalledWith(
       mockRes,
       `Event to ${operation} the appointment does not exist`
     );
@@ -302,8 +302,8 @@ describe('Appointments.Event controller', () => {
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
       expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
-      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
-      expect(clientErrorSpy).toHaveBeenCalledWith(
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
         mockRes,
         'Person does not exist'
       );
@@ -482,7 +482,7 @@ describe('Appointments.Event controller', () => {
         await fromJsonErrorAsserts(mockReq);
       });
 
-      it('should send clientError on event not found', async () => {
+      it('should send forbidden on event not found', async () => {
         await eventNotFoundAsserts(EventCreateController, mockReq, 'create');
       });
 
@@ -506,7 +506,7 @@ describe('Appointments.Event controller', () => {
         await serviceCountFailAsserts(mockReq);
       });
 
-      it('should send clientError if person does not exist', async () => {
+      it('should send forbidden if person does not exist', async () => {
         await personDoesNotExistAsserts(mockReq);
       });
 

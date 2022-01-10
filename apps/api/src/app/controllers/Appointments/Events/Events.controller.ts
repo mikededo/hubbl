@@ -57,7 +57,7 @@ abstract class BaseEventAppointmentController extends BaseController {
       event = await this.eventService.findOne({ id, options: { cache: true } });
 
       if (!event) {
-        return this.clientError(
+        return this.forbidden(
           res,
           `Event to ${operation} the appointment does not exist`
         );
@@ -96,7 +96,7 @@ abstract class BaseEventAppointmentController extends BaseController {
       // Check if the client exists
       const client = await this.clientService.findOne({ id });
       if (!client) {
-        return this.clientError(res, 'Person does not exist');
+        return this.forbidden(res, 'Person does not exist');
       }
 
       // Check if event requires covid passport
@@ -194,7 +194,6 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
 
     // Validate the event
     const maybeEvent = await this.eventValidation(res, dto.event);
-
     if (!(maybeEvent instanceof Event)) {
       return maybeEvent;
     }
