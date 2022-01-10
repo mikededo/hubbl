@@ -214,8 +214,9 @@ describe('Appointments.Event controller', () => {
     const validationAsserts = () => {
       // Event validation
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockEventService.findOne).toHaveBeenCalledWith(mockDto.event, {
-        cache: true
+      expect(mockEventService.findOne).toHaveBeenCalledWith({
+        id: mockDto.event,
+        options: { cache: true }
       });
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
       expect(mockAppointmentService.count).toHaveBeenNthCalledWith(1, {
@@ -228,7 +229,9 @@ describe('Appointments.Event controller', () => {
       });
       // Client validation
       expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockClientService.findOne).toHaveBeenCalledWith(mockDto.client);
+      expect(mockClientService.findOne).toHaveBeenCalledWith({
+        id: mockDto.client
+      });
     };
 
     const setupSucessfullTests = () => {
@@ -740,8 +743,9 @@ describe('Appointments.Event controller', () => {
       await EventCancelController.execute(mockReq, mockRes);
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockEventService.findOne).toHaveBeenCalledWith(mockReq.params.id, {
-        cache: true
+      expect(mockEventService.findOne).toHaveBeenCalledWith({
+        id: mockReq.params.id,
+        options: { cache: true }
       });
       expect(mockAppointmentService.createQueryBuilder).toHaveBeenCalledTimes(
         1
@@ -812,8 +816,9 @@ describe('Appointments.Event controller', () => {
       await EventCancelController.execute(mockClientReq, mockRes);
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockEventService.findOne).toHaveBeenCalledWith(mockReq.params.id, {
-        cache: true
+      expect(mockEventService.findOne).toHaveBeenCalledWith({
+        id: mockReq.params.id,
+        options: { cache: true }
       });
       expect(mockAppointmentService.createQueryBuilder).toHaveBeenCalledTimes(
         1
@@ -1003,8 +1008,9 @@ describe('Appointments.Event controller', () => {
       await EventDeleteController.execute(mockReq, mockRes);
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockEventService.findOne).toHaveBeenCalledWith(mockReq.params.id, {
-        cache: true
+      expect(mockEventService.findOne).toHaveBeenCalledWith({
+        id: mockReq.params.id,
+        options: { cache: true }
       });
       expect(dboow).toHaveBeenCalledTimes(1);
       expect(dboow).toHaveBeenCalledWith({
@@ -1035,10 +1041,10 @@ describe('Appointments.Event controller', () => {
       await EventDeleteController.execute(mockClientReq, mockRes);
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockEventService.findOne).toHaveBeenCalledWith(
-        mockClientReq.params.id,
-        { cache: true }
-      );
+      expect(mockEventService.findOne).toHaveBeenCalledWith({
+        id: mockClientReq.params.id,
+        options: { cache: true }
+      });
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.count).toHaveBeenCalledWith({
         id: mockClientReq.params.id,

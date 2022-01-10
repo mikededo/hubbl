@@ -180,7 +180,7 @@ describe('create', () => {
       });
 
       expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockWorkerService.findOne).toHaveBeenCalledWith(1);
+      expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
@@ -208,7 +208,7 @@ describe('create', () => {
       });
 
       expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockWorkerService.findOne).toHaveBeenCalledWith(1);
+      expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},

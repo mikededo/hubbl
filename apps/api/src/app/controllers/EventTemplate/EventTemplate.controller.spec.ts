@@ -132,9 +132,9 @@ describe('EventTemplate controller', () => {
 
       await EventTemplateFetchController.execute(mockReq, mockRes);
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockPersonService.findOne).toHaveBeenCalledWith(
-        mockRes.locals.token.id
-      );
+      expect(mockPersonService.findOne).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
       expect(mockEventTemplateService.createQueryBuilder).toHaveBeenCalledTimes(
         1
       );

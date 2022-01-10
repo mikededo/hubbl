@@ -110,9 +110,9 @@ describe('EventType controller', () => {
       await EventTypeFetchController.execute(mockReq, mockRes);
 
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockPersonService.findOne).toHaveBeenCalledWith(
-        mockRes.locals.token.id
-      );
+      expect(mockPersonService.findOne).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
       expect(mockEventTypeService.find).toHaveBeenCalledTimes(1);
       expect(mockEventTypeService.find).toHaveBeenCalledWith({
         where: { gym: mockPerson.gym.id }

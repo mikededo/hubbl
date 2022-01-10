@@ -54,7 +54,7 @@ abstract class BaseEventAppointmentController extends BaseController {
 
     try {
       // Check if the event exists
-      event = await this.eventService.findOne(id, { cache: true });
+      event = await this.eventService.findOne({ id, options: { cache: true } });
 
       if (!event) {
         return this.clientError(
@@ -94,7 +94,7 @@ abstract class BaseEventAppointmentController extends BaseController {
   ): Promise<Response> | undefined {
     try {
       // Check if the client exists
-      const client = await this.clientService.findOne(id);
+      const client = await this.clientService.findOne({ id });
       if (!client) {
         return this.clientError(res, 'Person does not exist');
       }

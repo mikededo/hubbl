@@ -28,7 +28,7 @@ class IEventTypeFetchController extends BaseController {
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne(token.id);
+      const person = await this.personService.findOne({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
