@@ -297,7 +297,6 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
     req: Request,
     res: Response
   ): Promise<Response> {
-    const eventId = +req.params.eId;
     const appointmentId = +req.params.id;
 
     const maybeEvent = await this.baseEventValidation(
@@ -310,12 +309,15 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
       return maybeEvent;
     }
 
+    const eventId = +req.params.eId;
+
     let appointment: EventAppointment;
     try {
       // Check if exists any appointment for the selected event and client
       appointment = await this.service
         .createQueryBuilder({ alias: 'ea' })
         .where('ea.id = :id', { id: appointmentId })
+        .andWhere('ea.event = :id', { id: eventId })
         // Join the relations since they are skipped by typeorm
         .leftJoinAndSelect('ea.client', 'c')
         .leftJoinAndMapOne('c.person', 'person', 'p', 'p.id = ea.client')
@@ -345,16 +347,67 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
       }),
       entityName: 'EventAppointment',
       updatableBy: '["owner", "worker"]',
-      countArgs: { id: eventId },
+      countArgs: { id: appointmentId },
       workerUpdatePermission: 'updateEventAppointments'
     });
+  }
+
+  private async cancelByClient(req: Request, res: Response): Promise<Response> {
+    const appointmentId = +req.params.id;
+
+    const maybeEvent = await this.baseEventValidation(
+      res,
+      +req.params.eId,
+      'cancel'
+    );
+
+    if (!(maybeEvent instanceof Event)) {
+      return maybeEvent;
+    }
+
+    const { token } = res.locals;
+    const eventId = +req.params.eId;
+
+    let appointment: EventAppointment;
+    try {
+      // Check if exists any appointment for the selected event and client
+      appointment = await this.service
+        .createQueryBuilder({ alias: 'ea' })
+        .where('ea.id = :id', { id: appointmentId })
+        .andWhere('ea.client = :client', { client: token.id })
+        .andWhere('ea.event = :event', { event: eventId })
+        // Join the relations since they are skipped by typeorm
+        .leftJoinAndSelect('ea.client', 'c')
+        .leftJoinAndMapOne('c.person', 'person', 'p', 'p.id = ea.client')
+        .leftJoinAndSelect('ea.event', 'event')
+        .getOne();
+
+      if (!appointment) {
+        return this.forbidden(res, 'The appointment does not exist.');
+      } else if (appointment.cancelled) {
+        return this.forbidden(res, 'The appointment is already cancelled.');
+      }
+    } catch (e) {
+      return this.onFail(res, e, 'cancel');
+    }
+
+    try {
+      await this.service.update(appointmentId, {
+        ...appointment,
+        cancelled: true
+      });
+
+      return this.ok(res);
+    } catch (e) {
+      return this.onFail(res, e, 'cancel');
+    }
   }
 
   protected run(req: Request, res: Response): Promise<Response> {
     this.checkServices();
 
     if (req.query.by === 'client') {
-      return;
+      return this.cancelByClient(req, res);
     }
 
     return this.cancelByOwnerOrWorker(req, res);
