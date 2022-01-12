@@ -2,7 +2,7 @@ import npmlog = require('npmlog');
 import { getRepository } from 'typeorm';
 
 import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
-import { GymZone } from '@hubbl/shared/models/entities';
+import { CalendarDate, GymZone } from '@hubbl/shared/models/entities';
 
 import { queries } from '../../../constants';
 import {
@@ -22,7 +22,7 @@ type Operations = 'create';
 jest.mock('../../../services');
 jest.mock('@hubbl/shared/models/dto');
 
-const createMockGymZone = (capacity = 5) => {
+const createMockGymZone = (capacity = 5): GymZone => {
   const result = new GymZone();
 
   result.id = 1;
@@ -30,6 +30,23 @@ const createMockGymZone = (capacity = 5) => {
   result.openTime = '06:00:00';
   result.closeTime = '23:00:00';
   result.covidPassport = true;
+
+  return result;
+};
+
+const createMockAppointment = (appointment: any): CalendarAppointmentDTO => {
+  const result = new CalendarAppointmentDTO();
+
+  result.id = appointment.id ?? 1;
+  result.startTime = appointment.startTime ?? '09:00:00';
+  result.endTime = appointment.endTime ?? '10:00:00';
+  result.cancelled = appointment.cancelled ?? false;
+  result.client = appointment.client ?? 1;
+  result.calendar = appointment.calendar ?? 1;
+  result.date =
+    appointment.date ?? ({ year: 2022, month: 6, day: 29 } as CalendarDate);
+
+  result.toClass = jest.fn().mockReturnValue(appointment);
 
   return result;
 };
@@ -46,27 +63,27 @@ describe('Appointments.Calendar controller', () => {
     date: { year: 2022, month: 6, day: 29 }
   };
   const mockClient = { covidPassport: true };
-  const mockDto = {
-    ...mockAppointment,
-    toClass: jest.fn().mockReturnValue(mockAppointment)
-  } as any;
+  const mockDto = createMockAppointment(mockAppointment);
 
   const mockReq = {
     query: { by: 'owner' },
     body: mockAppointment,
     params: { eId: 1, id: 1 }
   } as any;
+  const mockClientReq = { ...mockReq, query: { by: 'client' } } as any;
   const mockRes = { locals: { token: { id: 2 } } } as any;
 
   // Services
   const mockAppointmentService = {
     count: jest.fn(),
+    save: jest.fn(),
     manager: { query: jest.fn() }
   };
   const mockGymZoneService = { findOne: jest.fn() };
   const mockClientService = { findOne: jest.fn() };
 
   const fromJsonSpy = jest.spyOn(CalendarAppointmentDTO, 'fromJson');
+  const fromClassSpy = jest.spyOn(CalendarAppointmentDTO, 'fromClass');
 
   const logSpy = jest.spyOn(npmlog, 'error').mockImplementation();
 
@@ -106,6 +123,7 @@ describe('Appointments.Calendar controller', () => {
     mockAppointmentService.manager.query.mockResolvedValue({ max: 0 });
     mockAppointmentService.count.mockResolvedValue(0);
     mockClientService.findOne.mockResolvedValue(mockClient);
+    mockAppointmentService.save.mockResolvedValue(mockAppointment);
 
     setupServices(CalendarCreateController);
   };
@@ -397,6 +415,9 @@ describe('Appointments.Calendar controller', () => {
     const clientErrorSpy = jest
       .spyOn(CalendarCreateController, 'clientError')
       .mockReturnValue({} as any);
+    const failSpy = jest
+      .spyOn(CalendarCreateController, 'fail')
+      .mockReturnValue({} as any);
 
     const validationAsserts = () => {
       // Event validation
@@ -466,6 +487,30 @@ describe('Appointments.Calendar controller', () => {
       expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
+    it('should create a CalendarAppointment by a client', async () => {
+      fromClassSpy.mockResolvedValue(mockDto);
+
+      const createdSpy = jest
+        .spyOn(CalendarCreateController, 'created')
+        .mockImplementation();
+      setupSucessfullTests();
+
+      await CalendarCreateController.execute(mockClientReq, mockRes);
+
+      validationAsserts();
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(fromJsonSpy).toHaveBeenCalledWith(
+        { ...mockAppointment, client: mockRes.locals.token.id },
+        DTOGroups.CREATE
+      );
+      expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
+      expect(mockAppointmentService.save).toHaveBeenCalledWith(mockAppointment);
+      expect(fromClassSpy).toHaveBeenCalledTimes(1);
+      expect(fromClassSpy).toHaveBeenCalledWith(mockAppointment);
+      expect(createdSpy).toHaveBeenCalledTimes(1);
+      expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
+    });
+
     it('should create a CalendarAppointment by an owner or a worker', async () => {
       setupSucessfullTests();
       const cboowSpy = jest
@@ -497,7 +542,10 @@ describe('Appointments.Calendar controller', () => {
       });
     });
 
-    describe('owner/worker', () => {
+    /**
+     * Common tests shared by the creation of a calendar appointment
+     */
+    const baseTests = (mockReq: any) => () => {
       it('should send clientError on fromJson error', async () => {
         await fromJsonErrorAsserts(mockReq);
       });
@@ -560,6 +608,97 @@ describe('Appointments.Calendar controller', () => {
           mockReq,
           'create'
         );
+      });
+    };
+
+    describe('owner/worker', baseTests(mockReq));
+
+    describe('client', () => {
+      // Run common tests
+      baseTests(mockClientReq)();
+
+      // Run specific tests
+      it('should send fail on service.save error', async () => {
+        fromJsonSpy.mockResolvedValue(mockDto);
+
+        mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
+        mockAppointmentService.manager.query.mockResolvedValue({ max: 0 });
+        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockAppointmentService.count.mockResolvedValue(0);
+        mockAppointmentService.save.mockRejectedValue('error-thrown');
+
+        setupServices(CalendarCreateController);
+
+        await CalendarCreateController.execute(mockClientReq, mockRes);
+
+        expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+        expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
+        expect(fromClassSpy).toHaveBeenCalledTimes(0);
+        failAsserts(CalendarCreateController, failSpy, 'create');
+      });
+
+      it('should send fail on fromClass error', async () => {
+        fromJsonSpy.mockResolvedValue(mockDto);
+        fromClassSpy.mockRejectedValue('error-thrown');
+
+        mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
+        mockAppointmentService.manager.query.mockResolvedValue({
+          max: 0
+        });
+        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockAppointmentService.count.mockResolvedValue(0);
+        mockAppointmentService.save.mockResolvedValue(mockAppointment);
+
+        setupServices(CalendarCreateController);
+
+        await CalendarCreateController.execute(mockClientReq, mockRes);
+
+        expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+        expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
+        expect(fromClassSpy).toHaveBeenCalledTimes(1);
+        failAsserts(CalendarCreateController, failSpy, 'create');
+      });
+
+      it('should send fail on created error', async () => {
+        fromJsonSpy.mockResolvedValue(mockDto);
+        fromClassSpy.mockResolvedValue(mockDto);
+
+        mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
+        mockAppointmentService.manager.query.mockResolvedValue({
+          max: 0
+        });
+        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockAppointmentService.count.mockResolvedValue(0);
+        mockAppointmentService.save.mockImplementation();
+
+        const createdSpy = jest
+          .spyOn(CalendarCreateController, 'created')
+          .mockImplementation(() => {
+            throw 'error-thrown';
+          });
+
+        setupServices(CalendarCreateController);
+
+        await CalendarCreateController.execute(mockClientReq, mockRes);
+
+        expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+        expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
+        expect(fromClassSpy).toHaveBeenCalledTimes(1);
+        expect(createdSpy).toHaveBeenCalledTimes(1);
+        expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
+        failAsserts(CalendarCreateController, failSpy, 'create');
       });
     });
   });

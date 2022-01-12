@@ -162,7 +162,7 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
     super('create');
   }
 
-  protected async appointmentValidation(
+  private async appointmentValidation(
     res: Response,
     appointment: CalendarAppointmentDTO
   ): Promise<Response | GymZone> {
@@ -210,15 +210,20 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
     return gymZone;
   }
 
-  private async createByOwnerOrWorker(
-    req: Request,
-    res: Response
-  ): Promise<Response> {
-    // Parse the appointment
+  /**
+   * Validates the appointment recieved in the `body` and the client
+   * to which the appointment is being assigned. If there's any error,
+   * it will send the response and return a `Promise<Response>`. Otherwise,
+   * it will return the `CalendarAppointmentDTO`.
+   */
+  private async validOrRejected(
+    res: Response,
+    body: any
+  ): Promise<Response | CalendarAppointmentDTO> {
     let dto: CalendarAppointmentDTO;
 
     try {
-      dto = await CalendarAppointmentDTO.fromJson(req.body, DTOGroups.CREATE);
+      dto = await CalendarAppointmentDTO.fromJson(body, DTOGroups.CREATE);
     } catch (e) {
       return this.clientError(res, e);
     }
@@ -240,6 +245,19 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
       return clientValidation;
     }
 
+    return dto;
+  }
+
+  private async createByOwnerOrWorker(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    const maybeValid = await this.validOrRejected(res, req.body);
+
+    if (!(maybeValid instanceof CalendarAppointmentDTO)) {
+      return maybeValid;
+    }
+
     return createdByOwnerOrWorker({
       // Use any to skip same prop names issues
       service: this.service as any,
@@ -250,17 +268,42 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
       fromClass: CalendarAppointmentDTO.fromClass,
       token: res.locals.token as ParsedToken,
       by: req.query.by as any,
-      dto,
+      dto: maybeValid,
       entityName: 'CalendarAppointment',
       workerCreatePermission: 'createCalendarAppointments'
     });
+  }
+
+  private async createByClient(req: Request, res: Response): Promise<Response> {
+    // Get the id of the client from the token
+    const { token } = res.locals;
+
+    const maybeValid = await this.validOrRejected(res, {
+      ...req.body,
+      client: token.id
+    });
+
+    if (!(maybeValid instanceof CalendarAppointmentDTO)) {
+      return maybeValid;
+    }
+
+    try {
+      const appointment = await this.service.save(maybeValid.toClass());
+
+      return this.created(
+        res,
+        await CalendarAppointmentDTO.fromClass(appointment)
+      );
+    } catch (e) {
+      return this.onFail(res, e);
+    }
   }
 
   protected run(req: Request, res: Response): Promise<any> {
     this.checkServices();
 
     if (req.query.by === 'client') {
-      return;
+      return this.createByClient(req, res);
     }
 
     return this.createByOwnerOrWorker(req, res);
