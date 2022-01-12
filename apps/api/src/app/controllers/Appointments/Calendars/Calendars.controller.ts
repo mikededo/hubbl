@@ -252,10 +252,10 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
     req: Request,
     res: Response
   ): Promise<Response> {
-    const maybeValid = await this.validOrRejected(res, req.body);
+    const maybeValidDto = await this.validOrRejected(res, req.body);
 
-    if (!(maybeValid instanceof CalendarAppointmentDTO)) {
-      return maybeValid;
+    if (!(maybeValidDto instanceof CalendarAppointmentDTO)) {
+      return maybeValidDto;
     }
 
     return createdByOwnerOrWorker({
@@ -268,7 +268,7 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
       fromClass: CalendarAppointmentDTO.fromClass,
       token: res.locals.token as ParsedToken,
       by: req.query.by as any,
-      dto: maybeValid,
+      dto: maybeValidDto,
       entityName: 'CalendarAppointment',
       workerCreatePermission: 'createCalendarAppointments'
     });
@@ -278,17 +278,17 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
     // Get the id of the client from the token
     const { token } = res.locals;
 
-    const maybeValid = await this.validOrRejected(res, {
+    const maybeValidDto = await this.validOrRejected(res, {
       ...req.body,
       client: token.id
     });
 
-    if (!(maybeValid instanceof CalendarAppointmentDTO)) {
-      return maybeValid;
+    if (!(maybeValidDto instanceof CalendarAppointmentDTO)) {
+      return maybeValidDto;
     }
 
     try {
-      const appointment = await this.service.save(maybeValid.toClass());
+      const appointment = await this.service.save(maybeValidDto.toClass());
 
       return this.created(
         res,

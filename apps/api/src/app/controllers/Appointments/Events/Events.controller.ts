@@ -252,7 +252,6 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
 
     // Validate the event
     const maybeEvent = await this.eventValidation(res, dto.event);
-
     if (!(maybeEvent instanceof Event)) {
       return maybeEvent;
     }
@@ -274,9 +273,12 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
 
     try {
       // Save the appointment
-      const event = await this.service.save(dto.toClass());
+      const appointment = await this.service.save(dto.toClass());
 
-      return this.created(res, await EventAppointmentDTO.fromClass(event));
+      return this.created(
+        res,
+        await EventAppointmentDTO.fromClass(appointment)
+      );
     } catch (e) {
       return this.onFail(res, e, 'create');
     }

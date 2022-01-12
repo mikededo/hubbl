@@ -599,9 +599,9 @@ describe('Appointments.Event controller', () => {
         failAsserts(EventCreateController, failSpy, 'create');
       });
 
-      it('should send fail on ok error', async () => {
+      it('should send fail on created error', async () => {
         fromJsonSpy.mockResolvedValue(mockDto);
-        fromJsonSpy.mockResolvedValue(mockDto);
+        fromClassSpy.mockResolvedValue(mockDto);
 
         mockEventService.findOne.mockResolvedValue(mockEvent);
         mockClientService.findOne.mockResolvedValue(mockClient);
@@ -623,6 +623,7 @@ describe('Appointments.Event controller', () => {
         expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
         expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
+        expect(fromClassSpy).toHaveBeenCalledTimes(1);
         expect(createdSpy).toHaveBeenCalledTimes(1);
         expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
         failAsserts(EventCreateController, failSpy, 'create');
