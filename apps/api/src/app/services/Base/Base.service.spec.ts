@@ -17,6 +17,16 @@ describe('BaseService', () => {
     });
   });
 
+  describe('#manager', () => {
+    it('should return repository manager', () => {
+      const mockRepository = { manager: { prop: 'manager' } };
+      const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
+
+      const service = new BaseService(Mock, mockRepoAccessor);
+      expect(service.manager).toStrictEqual(mockRepository.manager);
+    });
+  });
+
   describe('#save', () => {
     it('should save an item', async () => {
       const mockRepository = {

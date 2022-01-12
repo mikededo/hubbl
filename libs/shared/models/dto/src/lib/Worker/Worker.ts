@@ -106,6 +106,15 @@ export default class WorkerDTO<T extends Gym | number>
   @IsBoolean({ message: booleanError('deleteEventAppointments') })
   deleteEventAppointments!: boolean;
 
+  @IsBoolean({ message: booleanError('createCalendarAppointments') })
+  createCalendarAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('updateCalendarAppointments') })
+  updateCalendarAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('deleteCalendarAppointments') })
+  deleteCalendarAppointments!: boolean;
+
   private static mapWorkerProps<T extends Gym | number>(
     to: WorkerDTO<T>,
     from: any
@@ -134,6 +143,9 @@ export default class WorkerDTO<T extends Gym | number>
     to.createEventAppointments = from.createEventAppointments;
     to.updateEventAppointments = from.updateEventAppointments;
     to.deleteEventAppointments = from.deleteEventAppointments;
+    to.createCalendarAppointments = from.createCalendarAppointments;
+    to.updateCalendarAppointments = from.updateCalendarAppointments;
+    to.deleteCalendarAppointments = from.deleteCalendarAppointments;
   }
 
   /**
@@ -261,6 +273,9 @@ export default class WorkerDTO<T extends Gym | number>
     worker.createEventAppointments = this.createEventAppointments;
     worker.updateEventAppointments = this.updateEventAppointments;
     worker.deleteEventAppointments = this.deleteEventAppointments;
+    worker.createCalendarAppointments = this.createCalendarAppointments;
+    worker.updateCalendarAppointments = this.updateCalendarAppointments;
+    worker.deleteCalendarAppointments = this.deleteCalendarAppointments;
 
     return worker;
   }

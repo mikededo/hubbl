@@ -28,6 +28,10 @@ export default class BaseService<T> {
     this.repository = accessor(type, 'postgres');
   }
 
+  public get manager() {
+    return this.repository.manager;
+  }
+
   public save(value: T): Promise<T> {
     return this.repository.save(value);
   }

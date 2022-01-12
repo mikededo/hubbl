@@ -2,6 +2,7 @@ import { Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  CalendarAppointmentDTO,
   EventAppointmentDTO,
   EventDTO,
   EventTemplateDTO,
@@ -11,6 +12,7 @@ import {
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import {
+  CalendarAppointment,
   Event,
   EventAppointment,
   EventTemplate,
@@ -28,6 +30,7 @@ import BaseController from '../Base';
 import { BaseFromClassCallable, ParsedToken } from './types';
 
 type CommonCreateByServices = BaseService<
+  | CalendarAppointment
   | EventAppointment
   | Event
   | EventTemplate
@@ -38,6 +41,7 @@ type CommonCreateByServices = BaseService<
 >;
 
 type CommonCreateByDTOs =
+  | CalendarAppointmentDTO
   | EventAppointmentDTO
   | EventDTO
   | EventTemplateDTO
@@ -47,6 +51,7 @@ type CommonCreateByDTOs =
   | TrainerDTO<Gym | number>;
 
 type CommonCreateByEntities =
+  | 'CalendarAppointment'
   | 'EventAppointment'
   | 'Event'
   | 'EventTemplate'
@@ -56,6 +61,7 @@ type CommonCreateByEntities =
   | 'Trainer';
 
 type WorkerCreatePermissions =
+  | 'createCalendarAppointments'
   | 'createEventAppointments'
   | 'createEvents'
   | 'createClients'
@@ -66,6 +72,7 @@ type WorkerCreatePermissions =
   | 'createTrainers';
 
 type FromClassCallables =
+  | BaseFromClassCallable<CalendarAppointment, CalendarAppointmentDTO>
   | BaseFromClassCallable<EventAppointment, EventAppointmentDTO>
   | BaseFromClassCallable<Event, EventDTO>
   | BaseFromClassCallable<EventTemplate, EventTemplateDTO>
