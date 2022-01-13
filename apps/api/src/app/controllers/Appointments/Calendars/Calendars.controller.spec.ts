@@ -13,9 +13,15 @@ import {
   WorkerService
 } from '../../../services';
 import * as create from '../../helpers/create';
-import { CalendarCreateController } from './Calendars.controller';
+import * as deleteHelpers from '../../helpers/delete';
+import {
+  CalendarCreateController,
+  CalendarDeleteController
+} from './Calendars.controller';
 
-type TypesOfControllers = typeof CalendarCreateController;
+type TypesOfControllers =
+  | typeof CalendarCreateController
+  | typeof CalendarDeleteController;
 
 type Operations = 'create';
 
@@ -175,7 +181,7 @@ describe('Appointments.Calendar controller', () => {
     expect(forbiddenSpy).toHaveBeenCalledTimes(1);
     expect(forbiddenSpy).toHaveBeenCalledWith(
       mockRes,
-      `Can not ${operation} an appointment to a past event`
+      `Can not ${operation} a past appointment`
     );
   };
 
@@ -699,6 +705,58 @@ describe('Appointments.Calendar controller', () => {
         expect(createdSpy).toHaveBeenCalledTimes(1);
         expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
         failAsserts(CalendarCreateController, failSpy, 'create');
+      });
+    });
+  });
+
+  describe('CalendarDeleteController', () => {
+    it('should create the services if does not have any', async () => {
+      jest.spyOn(CalendarDeleteController, 'fail').mockImplementation();
+
+      CalendarDeleteController['service'] = undefined;
+      CalendarDeleteController['gymZoneService'] = undefined;
+      CalendarDeleteController['ownerService'] = undefined;
+      CalendarDeleteController['workerService'] = undefined;
+      CalendarDeleteController['clientService'] = undefined;
+
+      await CalendarDeleteController.execute({} as any, {} as any);
+
+      expect(CalendarAppointmentService).toHaveBeenCalledTimes(1);
+      expect(CalendarAppointmentService).toHaveBeenCalledWith(getRepository);
+      expect(GymZoneService).toHaveBeenCalledTimes(1);
+      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
+      expect(OwnerService).toHaveBeenCalledTimes(1);
+      expect(OwnerService).toHaveBeenCalledWith(getRepository);
+      expect(WorkerService).toHaveBeenCalledTimes(1);
+      expect(WorkerService).toHaveBeenCalledWith(getRepository);
+      expect(ClientService).toHaveBeenCalledTimes(1);
+      expect(ClientService).toHaveBeenCalledWith(getRepository);
+    });
+
+    describe('owner/worker', () => {
+      it('should call deletedByOwnerOrWorker with params id', async () => {
+        const dboow = jest
+          .spyOn(deleteHelpers, 'deletedByOwnerOrWorker')
+          .mockImplementation();
+
+        setupServices(CalendarDeleteController);
+
+        await CalendarDeleteController.execute(mockReq, mockRes);
+
+        expect(dboow).toHaveBeenCalledTimes(1);
+        expect(dboow).toHaveBeenCalledWith({
+          service: mockAppointmentService,
+          ownerService: {},
+          workerService: {},
+          controller: CalendarDeleteController,
+          res: mockRes,
+          token: mockRes.locals.token,
+          by: mockReq.query.by,
+          entityId: mockReq.params.id,
+          entityName: 'CalendarAppointment',
+          countArgs: { id: mockReq.params.id },
+          workerDeletePermission: 'deleteCalendarAppointments'
+        });
       });
     });
   });

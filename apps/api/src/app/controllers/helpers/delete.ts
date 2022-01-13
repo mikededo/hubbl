@@ -2,6 +2,7 @@ import { Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  CalendarAppointment,
   Event,
   EventAppointment,
   EventTemplate,
@@ -17,6 +18,7 @@ import BaseController from '../Base';
 import { ParsedToken } from './types';
 
 type CommonDeleteByServices =
+  | BaseService<CalendarAppointment>
   | BaseService<Event>
   | BaseService<EventAppointment>
   | BaseService<EventTemplate>
@@ -25,6 +27,7 @@ type CommonDeleteByServices =
   | BaseService<GymZone>;
 
 type CommonDeleteByEntities =
+  | 'CalendarAppointment'
   | 'Event'
   | 'EventAppointment'
   | 'EventTemplate'
@@ -33,6 +36,7 @@ type CommonDeleteByEntities =
   | 'GymZone';
 
 type WorkerDeletePermissions =
+  | 'deleteCalendarAppointments'
   | 'deleteClients'
   | 'deleteEvents'
   | 'deleteEventAppointments'

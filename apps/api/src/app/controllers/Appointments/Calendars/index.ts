@@ -1,3 +1,3 @@
-import { CalendarCreateController } from './Calendars.controller';
+import { CalendarCreateController, CalendarDeleteController } from './Calendars.controller';
 
-export { CalendarCreateController };
+export { CalendarCreateController, CalendarDeleteController };

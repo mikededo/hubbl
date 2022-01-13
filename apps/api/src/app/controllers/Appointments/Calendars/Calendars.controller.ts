@@ -14,7 +14,11 @@ import {
   WorkerService
 } from '../../../services';
 import BaseController from '../../Base';
-import { createdByOwnerOrWorker, ParsedToken } from '../../helpers';
+import {
+  createdByOwnerOrWorker,
+  deletedByOwnerOrWorker,
+  ParsedToken
+} from '../../helpers';
 
 type MaxConcurrentQueryProps = Pick<
   CalendarAppointmentDTO,
@@ -29,7 +33,7 @@ abstract class BaseCalendarAppointmentController extends BaseController {
   protected workerService: WorkerService = undefined;
   protected clientService: ClientService = undefined;
 
-  constructor(private operation: 'create') {
+  constructor(private operation: 'create' | 'delete') {
     super();
   }
 
@@ -62,17 +66,7 @@ abstract class BaseCalendarAppointmentController extends BaseController {
     );
   }
 
-  protected async baseAppointmentValidation(
-    res: Response,
-    appointment: CalendarAppointmentDTO
-  ): Promise<Response> | undefined {
-    if (appointment.startTime >= appointment.endTime) {
-      return this.forbidden(
-        res,
-        'End time of the appointment must be after the appointment.'
-      );
-    }
-
+  protected isPastEvent(appointment: CalendarAppointmentDTO): boolean {
     const appointmentDate = new Date(
       appointment.date.year,
       appointment.date.month - 1,
@@ -83,14 +77,7 @@ abstract class BaseCalendarAppointmentController extends BaseController {
     appointmentDate.setMinutes(+splittedStartTime[1]);
     appointmentDate.setSeconds(+splittedStartTime[2]);
 
-    if (appointmentDate < new Date()) {
-      return this.forbidden(
-        res,
-        `Can not ${this.operation} an appointment to a past event`
-      );
-    }
-
-    return undefined;
+    return appointmentDate < new Date();
   }
 
   protected async clientValidation(
@@ -162,15 +149,25 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
     super('create');
   }
 
+  /**
+   * Validates the appointment date, the gym zone and if the appoinment
+   * fits the gym zone schedule, and if the total capacity of the gym zone
+   * has beenr reached.
+   */
   private async appointmentValidation(
     res: Response,
     appointment: CalendarAppointmentDTO
   ): Promise<Response | GymZone> {
     // Validate the date of the appointment
-    const validation = await this.baseAppointmentValidation(res, appointment);
+    if (appointment.startTime >= appointment.endTime) {
+      return this.forbidden(
+        res,
+        'End time of the appointment must be after the appointment.'
+      );
+    }
 
-    if (validation) {
-      return validation;
+    if (this.isPastEvent(appointment)) {
+      return this.forbidden(res, 'Can not create a past appointment');
     }
 
     // Get the gym zone
@@ -313,3 +310,44 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
 const createInstance = new ICalendarAppointmentCreateController();
 
 export const CalendarCreateController = createInstance;
+
+class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentController {
+  constructor() {
+    super('delete');
+  }
+
+  private async deleteByOwnerOrWorker(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    const id = +req.params.id;
+    return deletedByOwnerOrWorker({
+      // Use any to skip same prop names issues
+      service: this.service as any,
+      ownerService: this.ownerService,
+      workerService: this.workerService,
+      controller: this,
+      res,
+      token: res.locals.token as ParsedToken,
+      by: req.query.by as any,
+      entityId: id,
+      entityName: 'CalendarAppointment',
+      countArgs: { id },
+      workerDeletePermission: 'deleteCalendarAppointments'
+    });
+  }
+
+  protected run(req: Request, res: Response): Promise<any> {
+    this.checkServices();
+
+    if (req.query.by === 'client') {
+      return;
+    }
+
+    return this.deleteByOwnerOrWorker(req, res);
+  }
+}
+
+const deleteInstance = new ICalendarAppointmentDeleteController();
+
+export const CalendarDeleteController = deleteInstance;
