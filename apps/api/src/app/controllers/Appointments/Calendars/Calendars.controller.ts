@@ -3,7 +3,7 @@ import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
-import { GymZone } from '@hubbl/shared/models/entities';
+import { CalendarAppointment, GymZone } from '@hubbl/shared/models/entities';
 
 import { queries } from '../../../constants';
 import {
@@ -18,7 +18,8 @@ import {
   createdByOwnerOrWorker,
   deletedByClient,
   deletedByOwnerOrWorker,
-  ParsedToken
+  ParsedToken,
+  updatedByOwnerOrWorker
 } from '../../helpers';
 
 type MaxConcurrentQueryProps = Pick<
@@ -34,7 +35,7 @@ abstract class BaseCalendarAppointmentController extends BaseController {
   protected workerService: WorkerService = undefined;
   protected clientService: ClientService = undefined;
 
-  constructor(private operation: 'create' | 'delete') {
+  constructor(private operation: 'create' | 'cancel' | 'delete') {
     super();
   }
 
@@ -311,6 +312,64 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
 const createInstance = new ICalendarAppointmentCreateController();
 
 export const CalendarCreateController = createInstance;
+
+class ICalendarAppointmentCancelController extends BaseCalendarAppointmentController {
+  private async cancelByOwnerOrWorker(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    const appointmentId = +req.params.id;
+
+    // Check if the appointment exists
+    let appointment: CalendarAppointment;
+    try {
+      appointment = await this.service.findOne({
+        id: appointmentId,
+        options: { loadRelationIds: true }
+      });
+
+      if (!appointment) {
+        return this.forbidden(res, 'The appointment does not exist');
+      } else if (appointment.cancelled) {
+        return this.forbidden(res, 'The appointment is already cancelled');
+      }
+    } catch (e) {
+      this.onFail(res, e);
+    }
+
+    return updatedByOwnerOrWorker({
+      service: this.service as any,
+      ownerService: this.ownerService,
+      workerService: this.workerService,
+      controller: this,
+      res,
+      token: res.locals.token as ParsedToken,
+      by: req.query.by as any,
+      dto: await CalendarAppointmentDTO.fromClass({
+        ...appointment,
+        cancelled: true
+      }),
+      entityName: 'CalendarAppointment',
+      updatableBy: '["client", "owner", "worker"]',
+      countArgs: { id: appointmentId },
+      workerUpdatePermission: 'updateCalendarAppointments'
+    });
+  }
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    this.checkServices();
+
+    if (req.query.by === 'client') {
+      return;
+    }
+
+    return this.cancelByOwnerOrWorker(req, res);
+  }
+}
+
+const cancelInstance = new ICalendarAppointmentCancelController('cancel');
+
+export const CalendarCancelController = cancelInstance;
 
 class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentController {
   constructor() {

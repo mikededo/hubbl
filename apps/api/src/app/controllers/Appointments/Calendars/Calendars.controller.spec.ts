@@ -14,16 +14,19 @@ import {
 } from '../../../services';
 import * as create from '../../helpers/create';
 import * as deleteHelpers from '../../helpers/delete';
+import * as update from '../../helpers/update';
 import {
+  CalendarCancelController,
   CalendarCreateController,
   CalendarDeleteController
 } from './Calendars.controller';
 
 type TypesOfControllers =
   | typeof CalendarCreateController
+  | typeof CalendarCancelController
   | typeof CalendarDeleteController;
 
-type Operations = 'create';
+type Operations = 'create' | 'cancel';
 
 jest.mock('../../../services');
 jest.mock('@hubbl/shared/models/dto');
@@ -82,6 +85,7 @@ describe('Appointments.Calendar controller', () => {
   // Services
   const mockAppointmentService = {
     count: jest.fn(),
+    findOne: jest.fn(),
     save: jest.fn(),
     manager: { query: jest.fn() }
   };
@@ -705,6 +709,105 @@ describe('Appointments.Calendar controller', () => {
         expect(createdSpy).toHaveBeenCalledTimes(1);
         expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
         failAsserts(CalendarCreateController, failSpy, 'create');
+      });
+    });
+  });
+
+  describe('CalendarCancelController', () => {
+    const forbiddenSpy = jest
+      .spyOn(CalendarCancelController, 'forbidden')
+      .mockImplementation();
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should call updatedByOwnerOrWorker by any owner or worker', async () => {
+      const fromClassSpy = jest
+        .spyOn(CalendarAppointmentDTO, 'fromClass')
+        .mockResolvedValue({ ...mockDto, cancelled: true } as any);
+      const uboow = jest
+        .spyOn(update, 'updatedByOwnerOrWorker')
+        .mockImplementation();
+      mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
+
+      setupServices(CalendarCancelController);
+
+      await CalendarCancelController.execute(mockReq, mockRes);
+
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
+        id: mockReq.params.id,
+        options: { loadRelationIds: true }
+      });
+      expect(fromClassSpy).toHaveBeenCalledTimes(1);
+      expect(fromClassSpy).toHaveBeenCalledWith({
+        ...mockAppointment,
+        cancelled: true
+      });
+      expect(uboow).toHaveBeenCalledTimes(1);
+      expect(uboow).toHaveBeenCalledWith({
+        service: mockAppointmentService,
+        ownerService: {},
+        workerService: {},
+        controller: CalendarCancelController,
+        res: mockRes,
+        token: mockRes.locals.token,
+        by: mockReq.query.by,
+        dto: { ...mockDto, cancelled: true },
+        entityName: 'CalendarAppointment',
+        updatableBy: '["client", "owner", "worker"]',
+        countArgs: { id: mockReq.params.id },
+        workerUpdatePermission: 'updateCalendarAppointments'
+      });
+    });
+
+    describe('owner/worker', () => {
+      it('should send forbidden if the appointment does not exist', async () => {
+        mockAppointmentService.findOne.mockResolvedValue(undefined);
+
+        setupServices(CalendarCancelController);
+
+        await CalendarCancelController.execute(mockReq, mockRes);
+
+        expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+        expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+        expect(forbiddenSpy).toHaveBeenCalledWith(
+          mockRes,
+          'The appointment does not exist'
+        );
+      });
+
+      it('should send forbidden if the appointment does not exist', async () => {
+        mockAppointmentService.findOne.mockResolvedValue({
+          ...mockAppointment,
+          cancelled: true
+        });
+
+        setupServices(CalendarCancelController);
+
+        await CalendarCancelController.execute(mockReq, mockRes);
+
+        expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+        expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+        expect(forbiddenSpy).toHaveBeenCalledWith(
+          mockRes,
+          'The appointment is already cancelled'
+        );
+      });
+
+      it('should send fail on service.findOne error', async () => {
+        const failSpy = jest
+          .spyOn(CalendarCancelController, 'fail')
+          .mockImplementation();
+        mockAppointmentService.findOne.mockRejectedValue('error-thrown');
+
+        setupServices(CalendarCancelController);
+
+        await CalendarCancelController.execute(mockReq, mockRes);
+
+        expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+        failAsserts(CalendarCancelController, failSpy, 'cancel');
       });
     });
   });

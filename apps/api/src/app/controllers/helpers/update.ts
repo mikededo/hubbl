@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  CalendarAppointmentDTO,
   ClientDTO,
   DTO,
   DTOGroups,
@@ -16,6 +17,7 @@ import {
   WorkerDTO
 } from '@hubbl/shared/models/dto';
 import {
+  CalendarAppointment,
   Client,
   Event,
   EventAppointment,
@@ -39,6 +41,7 @@ type UpdatableServices = BaseService<
   | Owner
   | Worker
   | Trainer
+  | CalendarAppointment
   | Client
   | Event
   | EventAppointment
@@ -52,6 +55,7 @@ type UpdatableEntities =
   | 'Owner'
   | 'Worker'
   | 'Trainer'
+  | 'CalendarAppointment'
   | 'Client'
   | 'Event'
   | 'EventAppointment'
@@ -106,6 +110,7 @@ type CommonUpdateByDTOs =
   | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>
   | EventDTO
+  | CalendarAppointmentDTO
   | EventAppointmentDTO
   | EventTemplateDTO
   | EventTypeDTO
@@ -114,6 +119,7 @@ type CommonUpdateByDTOs =
 
 type CommonUpdateByEntities =
   | 'Trainer'
+  | 'CalendarAppointment'
   | 'Client'
   | 'Event'
   | 'EventAppointment'
@@ -127,6 +133,7 @@ type CommonUpdateByValues =
   | '["owner", "worker"]';
 
 type WorkerUpdatePermissions =
+  | 'updateCalendarAppointments'
   | 'updateClients'
   | 'updateEvents'
   | 'updateEventAppointments'
