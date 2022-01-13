@@ -447,7 +447,7 @@ describe('Event controller', () => {
         by: mockReq.query.by,
         dto: mockDto,
         entityName: 'Event',
-        updatableBy: '["owner", "worker"]',
+        updatableBy: '["client", "owner", "worker"]',
         countArgs: { id: mockDto.id },
         workerUpdatePermission: 'updateEvents'
       });

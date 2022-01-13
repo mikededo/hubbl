@@ -349,7 +349,7 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
         cancelled: true
       }),
       entityName: 'EventAppointment',
-      updatableBy: '["owner", "worker"]',
+      updatableBy: '["client", "owner", "worker"]',
       countArgs: { id: appointmentId },
       workerUpdatePermission: 'updateEventAppointments'
     });
