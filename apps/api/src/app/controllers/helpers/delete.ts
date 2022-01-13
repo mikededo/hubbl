@@ -186,14 +186,10 @@ export const deletedByOwner = ({
     countArgs
   });
 
-type DeleteByClientServices =
-  | BaseService<CalendarAppointment>
-  | BaseService<EventAppointment>;
-
 type DeleteByClientEntityNames = 'CalendarAppointment' | 'EventAppointment';
 
 type DeleteByClient<T> = {
-  service: DeleteByClientServices;
+  service: BaseService<T>;
   clientService: BaseService<Client>;
   controller: BaseController;
   res: Response;

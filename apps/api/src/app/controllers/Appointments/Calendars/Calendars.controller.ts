@@ -3,7 +3,7 @@ import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
-import { CalendarAppointment, GymZone } from '@hubbl/shared/models/entities';
+import { GymZone } from '@hubbl/shared/models/entities';
 
 import { queries } from '../../../constants';
 import {
@@ -342,7 +342,7 @@ class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentContro
     const appointmentId = +req.params.id;
     const { token } = res.locals;
 
-    return deletedByClient<CalendarAppointment>({
+    return deletedByClient({
       service: this.service,
       clientService: this.clientService,
       controller: this,

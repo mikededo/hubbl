@@ -15,6 +15,7 @@ import {
 import BaseController from '../../Base';
 import {
   createdByOwnerOrWorker,
+  deletedByClient,
   deletedByOwnerOrWorker,
   ParsedToken,
   updatedByOwnerOrWorker
@@ -468,30 +469,16 @@ class IEventAppointmentDeleteController extends BaseEventAppointmentController {
 
     const { token } = res.locals;
 
-    try {
-      // Check if exists any appointment for the selected event and client
-      const appointmentCount = await this.service.count({
-        id: appointmentId,
-        client: token.id,
-        event: eventId
-      });
-      if (!appointmentCount) {
-        return this.unauthorized(
-          res,
-          'Client does not have permissions to delete the appointment.'
-        );
-      }
-    } catch (e) {
-      return this.onFail(res, e, 'delete');
-    }
-
-    try {
-      await this.service.delete(appointmentId);
-
-      return this.ok(res);
-    } catch (e) {
-      return this.onFail(res, e, 'delete');
-    }
+    return deletedByClient({
+      service: this.service,
+      clientService: this.clientService,
+      controller: this,
+      res,
+      entityId: appointmentId,
+      clientId: token.id,
+      countArgs: { id: appointmentId, client: token.id, event: eventId },
+      entityName: 'EventAppointment'
+    });
   }
 
   protected run(req: Request, res: Response): Promise<Response> {
