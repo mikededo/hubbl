@@ -759,5 +759,29 @@ describe('Appointments.Calendar controller', () => {
         });
       });
     });
+
+    describe('owner/worker', () => {
+      it('should call deletedByClient with params id', async () => {
+        const dbc = jest
+          .spyOn(deleteHelpers, 'deletedByClient')
+          .mockImplementation();
+
+        setupServices(CalendarDeleteController);
+
+        await CalendarDeleteController.execute(mockClientReq, mockRes);
+
+        expect(dbc).toHaveBeenCalledTimes(1);
+        expect(dbc).toHaveBeenCalledWith({
+          service: mockAppointmentService,
+          clientService: mockClientService,
+          controller: CalendarDeleteController,
+          res: mockRes,
+          entityId: mockReq.params.id,
+          clientId: mockRes.locals.token.id,
+          entityName: 'CalendarAppointment',
+          countArgs: { id: mockReq.params.id, client: mockRes.locals.token.id }
+        });
+      });
+    });
   });
 });

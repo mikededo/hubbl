@@ -37,12 +37,18 @@ describe('delete', () => {
     jest.clearAllMocks();
   });
 
-  const logAsserts = () => {
+  const failAsserts = () => {
     expect(logSpy).toHaveBeenCalledTimes(1);
     expect(logSpy).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(String),
-      expect.any(String)
+      `Controller[${mockController.constructor.name}]`,
+      `"delete" handler`,
+      'error-thrown'
+    );
+
+    expect(mockController.fail).toHaveBeenCalledTimes(1);
+    expect(mockController.fail).toHaveBeenCalledWith(
+      {},
+      'Internal server error. If the error persists, contact our team'
     );
   };
 
@@ -148,7 +154,12 @@ describe('delete', () => {
         countArgs: {}
       });
 
-      logAsserts();
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(
+        `Controller[${mockController.constructor.name}]`,
+        '"delete" handler',
+        'No "workerCreatePermission" passed'
+      );
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {},
@@ -267,7 +278,7 @@ describe('delete', () => {
       fromClassSpy.mockResolvedValue(mockEntityDto);
       const mockService = {
         count: jest.fn().mockResolvedValue(0),
-        delete: jest.fn().mockRejectedValue(mockEntity as any)
+        delete: jest.fn().mockRejectedValue('error-thrown')
       } as any;
       const mockOwnerService = { count: jest.fn().mockResolvedValue(1) } as any;
 
@@ -305,21 +316,16 @@ describe('delete', () => {
       fromClassSpy.mockResolvedValue(mockEntityDto);
       const mockService = {
         count: jest.fn().mockResolvedValue(1),
-        delete: jest.fn().mockRejectedValue(mockEntity as any)
+        delete: jest.fn().mockRejectedValue('error-thrown')
       } as any;
       const mockOwnerService = { count: jest.fn().mockResolvedValue(1) } as any;
-
-      const mockRes = {
-        json: jest.fn().mockReturnThis(),
-        status: jest.fn().mockReturnThis()
-      } as any;
 
       await deleteHelpers.deletedByOwnerOrWorker({
         controller: mockController,
         service: mockService,
         ownerService: mockOwnerService,
         workerService: undefined,
-        res: mockRes,
+        res: {} as any,
         by: 'owner',
         token: { id: 1, email: 'test@user.com', exp: Date.now() },
         entityId: 1,
@@ -332,12 +338,7 @@ describe('delete', () => {
       expect(mockService.delete).toHaveBeenCalledTimes(1);
       expect(mockService.delete).toHaveBeenCalledWith(1);
 
-      logAsserts();
-      expect(mockController.fail).toHaveBeenCalledTimes(1);
-      expect(mockController.fail).toHaveBeenCalledWith(
-        mockRes,
-        'Internal server error. If the error persists, contact our team.'
-      );
+      failAsserts();
     });
   });
 
@@ -371,6 +372,151 @@ describe('delete', () => {
         entityName: 'Any',
         countArgs: {}
       });
+    });
+  });
+
+  describe('deleteByClient', () => {
+    const mockService = {
+      count: jest.fn(),
+      delete: jest.fn()
+    };
+    const mockClientService = { count: jest.fn() };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should delete by client', async () => {
+      mockClientService.count.mockResolvedValue(1);
+      mockService.count.mockResolvedValue(1);
+
+      await deleteHelpers.deletedByClient({
+        service: mockService as any,
+        clientService: mockClientService as any,
+        controller: mockController,
+        res: {} as any,
+        clientId: 1,
+        entityId: mockEntity.id,
+        entityName: 'EntityName' as any,
+        countArgs: { id: mockEntity.id }
+      });
+
+      expect(mockClientService.count).toHaveBeenCalledTimes(1);
+      expect(mockClientService.count).toHaveBeenCalledWith({
+        person: { id: 1 }
+      });
+      expect(mockService.count).toHaveBeenCalledTimes(1);
+      expect(mockService.count).toHaveBeenCalledWith({ id: mockEntity.id });
+      expect(mockService.delete).toHaveBeenCalledTimes(1);
+      expect(mockService.delete).toHaveBeenCalledWith(mockEntity.id);
+      expect(mockController.ok).toHaveBeenCalledTimes(1);
+      expect(mockController.ok).toHaveBeenCalledWith({} as any);
+    });
+
+    it('should call unauthorized if client does not exist', async () => {
+      mockClientService.count.mockResolvedValue(0);
+
+      await deleteHelpers.deletedByClient({
+        service: mockService as any,
+        clientService: mockClientService as any,
+        controller: mockController,
+        res: {} as any,
+        clientId: 1,
+        entityId: mockEntity.id,
+        entityName: 'EntityName' as any,
+        countArgs: { id: mockEntity.id }
+      });
+
+      expect(mockClientService.count).toHaveBeenCalledTimes(1);
+      expect(mockController.unauthorized).toHaveBeenCalledTimes(1);
+      expect(mockController.unauthorized).toHaveBeenCalledWith(
+        {} as any,
+        'Client does not exist.'
+      );
+    });
+
+    it('should call fail on clientService error', async () => {
+      mockClientService.count.mockRejectedValue('error-thrown');
+
+      await deleteHelpers.deletedByClient({
+        service: mockService as any,
+        clientService: mockClientService as any,
+        controller: mockController,
+        res: {} as any,
+        clientId: 1,
+        entityId: mockEntity.id,
+        entityName: 'EntityName' as any,
+        countArgs: { id: mockEntity.id }
+      });
+
+      expect(mockClientService.count).toHaveBeenCalledTimes(1);
+      failAsserts();
+    });
+
+    it('should call forbidden if entity does not exist', async () => {
+      mockClientService.count.mockResolvedValue(1);
+      mockService.count.mockResolvedValue(0);
+
+      await deleteHelpers.deletedByClient({
+        service: mockService as any,
+        clientService: mockClientService as any,
+        controller: mockController,
+        res: {} as any,
+        clientId: 1,
+        entityId: mockEntity.id,
+        entityName: 'EntityName' as any,
+        countArgs: { id: mockEntity.id }
+      });
+
+      expect(mockClientService.count).toHaveBeenCalledTimes(1);
+      expect(mockService.count).toHaveBeenCalledTimes(1);
+      expect(mockController.forbidden).toHaveBeenCalledTimes(1);
+      expect(mockController.forbidden).toHaveBeenCalledWith(
+        {} as any,
+        'Client does not have permissions to delete the EntityName.'
+      );
+    });
+
+    it('should call fail on service.count error', async () => {
+      mockClientService.count.mockResolvedValue(1);
+      mockService.count.mockRejectedValue('error-thrown');
+
+      await deleteHelpers.deletedByClient({
+        service: mockService as any,
+        clientService: mockClientService as any,
+        controller: mockController,
+        res: {} as any,
+        clientId: 1,
+        entityId: mockEntity.id,
+        entityName: 'EntityName' as any,
+        countArgs: { id: mockEntity.id }
+      });
+
+      expect(mockClientService.count).toHaveBeenCalledTimes(1);
+      expect(mockService.count).toHaveBeenCalledTimes(1);
+      failAsserts();
+    });
+
+    it('should call fail on service.delete error', async () => {
+      mockClientService.count.mockResolvedValue(1);
+      mockService.count.mockResolvedValue(1);
+      mockService.delete.mockRejectedValue('error-thrown');
+
+      await deleteHelpers.deletedByClient({
+        service: mockService as any,
+        clientService: mockClientService as any,
+        controller: mockController,
+        res: {} as any,
+        clientId: 1,
+        entityId: mockEntity.id,
+        entityName: 'EntityName' as any,
+        countArgs: { id: mockEntity.id }
+      });
+
+      expect(mockClientService.count).toHaveBeenCalledTimes(1);
+      expect(mockService.count).toHaveBeenCalledTimes(1);
+      expect(mockService.delete).toHaveBeenCalledTimes(1);
+      failAsserts();
     });
   });
 });

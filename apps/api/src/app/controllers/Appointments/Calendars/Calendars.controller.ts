@@ -3,7 +3,7 @@ import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
-import { GymZone } from '@hubbl/shared/models/entities';
+import { CalendarAppointment, GymZone } from '@hubbl/shared/models/entities';
 
 import { queries } from '../../../constants';
 import {
@@ -16,6 +16,7 @@ import {
 import BaseController from '../../Base';
 import {
   createdByOwnerOrWorker,
+  deletedByClient,
   deletedByOwnerOrWorker,
   ParsedToken
 } from '../../helpers';
@@ -337,11 +338,27 @@ class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentContro
     });
   }
 
+  private async deleteByClient(req: Request, res: Response): Promise<Response> {
+    const appointmentId = +req.params.id;
+    const { token } = res.locals;
+
+    return deletedByClient<CalendarAppointment>({
+      service: this.service,
+      clientService: this.clientService,
+      controller: this,
+      res,
+      entityId: appointmentId,
+      clientId: token.id,
+      countArgs: { client: token.id, id: appointmentId },
+      entityName: 'CalendarAppointment'
+    });
+  }
+
   protected run(req: Request, res: Response): Promise<any> {
     this.checkServices();
 
     if (req.query.by === 'client') {
-      return;
+      return this.deleteByClient(req, res);
     }
 
     return this.deleteByOwnerOrWorker(req, res);
