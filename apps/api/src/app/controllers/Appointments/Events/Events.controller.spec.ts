@@ -72,19 +72,12 @@ describe('Appointments.Event controller', () => {
   const mockRes = { locals: { token: { id: 2 } } } as any;
 
   // Services
-  const mockQueryBuilder = {
-    where: jest.fn().mockReturnThis(),
-    andWhere: jest.fn().mockReturnThis(),
-    leftJoinAndSelect: jest.fn().mockReturnThis(),
-    leftJoinAndMapOne: jest.fn().mockReturnThis(),
-    getOne: jest.fn().mockReturnThis()
-  };
   const mockAppointmentService = {
     count: jest.fn(),
     update: jest.fn(),
     save: jest.fn(),
     delete: jest.fn(),
-    createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder)
+    findOne: jest.fn()
   };
   const mockEventService = { findOne: jest.fn() };
   const mockClientService = { findOne: jest.fn() };
@@ -639,30 +632,16 @@ describe('Appointments.Event controller', () => {
       .spyOn(EventCancelController, 'fail')
       .mockImplementation();
 
-    const queryBuilderCallAsserts = (andWhereTimes = 1) => {
-      expect(mockAppointmentService.createQueryBuilder).toHaveBeenCalledTimes(
-        1
-      );
-      expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(andWhereTimes);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.leftJoinAndMapOne).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.getOne).toHaveBeenCalledTimes(1);
-    };
-
-    const appointmentNotFoundAsserts = async (
-      mockReq: any,
-      andWhereTimes = 1
-    ) => {
+    const appointmentNotFoundAsserts = async (mockReq: any) => {
       mockEventService.findOne.mockResolvedValue(mockEvent);
-      mockQueryBuilder.getOne.mockResolvedValue(undefined);
+      mockAppointmentService.findOne.mockResolvedValue(undefined);
 
       setupServices(EventCancelController);
 
       await EventCancelController.execute(mockReq, mockRes);
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-      queryBuilderCallAsserts(andWhereTimes);
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledWith(
         mockRes,
@@ -670,19 +649,16 @@ describe('Appointments.Event controller', () => {
       );
     };
 
-    const appointmentCancelledAsserts = async (
-      mockReq: any,
-      andWhereTimes = 1
-    ) => {
+    const appointmentCancelledAsserts = async (mockReq: any) => {
       mockEventService.findOne.mockResolvedValue(mockEvent);
-      mockQueryBuilder.getOne.mockResolvedValue({ cancelled: true });
+      mockAppointmentService.findOne.mockResolvedValue({ cancelled: true });
 
       setupServices(EventCancelController);
 
       await EventCancelController.execute(mockReq, mockRes);
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-      queryBuilderCallAsserts(andWhereTimes);
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledWith(
         mockRes,
@@ -690,19 +666,16 @@ describe('Appointments.Event controller', () => {
       );
     };
 
-    const createQueryBuilderFailAsserts = async (
-      mockReq: any,
-      andWhereTimes = 1
-    ) => {
+    const serviceFindOneFailAsserts = async (mockReq: any) => {
       mockEventService.findOne.mockResolvedValue(mockEvent);
-      mockQueryBuilder.getOne.mockRejectedValue('error-thrown');
+      mockAppointmentService.findOne.mockRejectedValue('error-thrown');
 
       setupServices(EventCancelController);
 
       await EventCancelController.execute(mockReq, mockRes);
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-      queryBuilderCallAsserts(andWhereTimes);
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       failAsserts(EventCancelController, failSpy, 'cancel');
     };
 
@@ -737,7 +710,7 @@ describe('Appointments.Event controller', () => {
         .spyOn(update, 'updatedByOwnerOrWorker')
         .mockImplementation();
       mockEventService.findOne.mockResolvedValue(mockEvent);
-      mockQueryBuilder.getOne.mockResolvedValue(mockAppointment);
+      mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
 
       setupServices(EventCancelController);
 
@@ -748,40 +721,11 @@ describe('Appointments.Event controller', () => {
         id: mockReq.params.eId,
         options: { cache: true }
       });
-      expect(mockAppointmentService.createQueryBuilder).toHaveBeenCalledTimes(
-        1
-      );
-      expect(mockAppointmentService.createQueryBuilder).toHaveBeenCalledWith({
-        alias: 'ea'
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
+        id: mockReq.params.id,
+        options: { where: { event: mockReq.params.eId }, loadRelationIds: true }
       });
-      expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith('ea.id = :id', {
-        id: mockAppointment.id
-      });
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('ea.event = :id', {
-        id: mockEvent.id
-      });
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
-        1,
-        'ea.client',
-        'c'
-      );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
-        2,
-        'ea.event',
-        'event'
-      );
-      expect(mockQueryBuilder.leftJoinAndMapOne).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.leftJoinAndMapOne).toHaveBeenCalledWith(
-        'c.person',
-        'person',
-        'p',
-        'p.id = ea.client'
-      );
-      expect(mockQueryBuilder.getOne).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.getOne).toHaveReturned();
       expect(fromClassSpy).toHaveBeenCalledTimes(1);
       expect(fromClassSpy).toHaveBeenCalledWith({
         ...mockAppointment,
@@ -807,7 +751,7 @@ describe('Appointments.Event controller', () => {
 
     it('should cancel an appointment by a client', async () => {
       mockEventService.findOne.mockResolvedValue(mockEvent);
-      mockQueryBuilder.getOne.mockResolvedValue(mockAppointment);
+      mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
 
       const okSpy = jest
         .spyOn(EventCancelController, 'ok')
@@ -821,47 +765,14 @@ describe('Appointments.Event controller', () => {
         id: mockReq.params.eId,
         options: { cache: true }
       });
-      expect(mockAppointmentService.createQueryBuilder).toHaveBeenCalledTimes(
-        1
-      );
-      expect(mockAppointmentService.createQueryBuilder).toHaveBeenCalledWith({
-        alias: 'ea'
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
+        id: mockReq.params.id,
+        options: {
+          where: { client: mockRes.locals.token.id, event: mockReq.params.eId },
+          loadRelationIds: true
+        }
       });
-      expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith('ea.id = :id', {
-        id: mockAppointment.id
-      });
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.andWhere).toHaveBeenNthCalledWith(
-        1,
-        'ea.client = :client',
-        { client: mockRes.locals.token.id }
-      );
-      expect(mockQueryBuilder.andWhere).toHaveBeenNthCalledWith(
-        2,
-        'ea.event = :event',
-        { event: mockEvent.id }
-      );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
-        1,
-        'ea.client',
-        'c'
-      );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
-        2,
-        'ea.event',
-        'event'
-      );
-      expect(mockQueryBuilder.leftJoinAndMapOne).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.leftJoinAndMapOne).toHaveBeenCalledWith(
-        'c.person',
-        'person',
-        'p',
-        'p.id = ea.client'
-      );
-      expect(mockQueryBuilder.getOne).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.getOne).toHaveReturned();
       expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.update).toHaveBeenCalledWith(
         mockAppointment.id,
@@ -896,8 +807,8 @@ describe('Appointments.Event controller', () => {
         await appointmentCancelledAsserts(mockReq);
       });
 
-      it('should send fail on service.createQueryBuilder error', async () => {
-        await createQueryBuilderFailAsserts(mockReq);
+      it('should send fail on sevice.findOne error', async () => {
+        await serviceFindOneFailAsserts(mockReq);
       });
     });
 
@@ -923,20 +834,20 @@ describe('Appointments.Event controller', () => {
       });
 
       it('should send forbidden if the appointment does not exist', async () => {
-        await appointmentNotFoundAsserts(mockClientReq, 2);
+        await appointmentNotFoundAsserts(mockClientReq);
       });
 
       it('should send forbidden if the appointment is already cancelled', async () => {
-        await appointmentCancelledAsserts(mockClientReq, 2);
+        await appointmentCancelledAsserts(mockClientReq);
       });
 
-      it('should send fail on service.createQueryBuilder error', async () => {
-        await createQueryBuilderFailAsserts(mockClientReq, 2);
+      it('should send fail on sevice.findOne error', async () => {
+        await serviceFindOneFailAsserts(mockClientReq);
       });
 
       it('should send fail on service.delete error', async () => {
         mockEventService.findOne.mockResolvedValue(mockEvent);
-        mockQueryBuilder.getOne.mockResolvedValue(mockAppointment);
+        mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
         mockAppointmentService.update.mockRejectedValueOnce('error-thrown');
 
         setupServices(EventCancelController);
@@ -944,14 +855,14 @@ describe('Appointments.Event controller', () => {
         await EventCancelController.execute(mockClientReq, mockRes);
 
         expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-        queryBuilderCallAsserts(2);
+        expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
         failAsserts(EventCancelController, failSpy, 'cancel');
       });
 
       it('should send fail on ok error', async () => {
         mockEventService.findOne.mockResolvedValue(mockEvent);
-        mockQueryBuilder.getOne.mockResolvedValue(mockAppointment);
+        mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
         mockAppointmentService.update.mockResolvedValue({});
 
         const okSpy = jest
@@ -965,7 +876,7 @@ describe('Appointments.Event controller', () => {
         await EventCancelController.execute(mockClientReq, mockRes);
 
         expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
-        queryBuilderCallAsserts(2);
+        expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
         expect(okSpy).toHaveBeenCalledTimes(1);
         expect(okSpy).toHaveBeenCalledWith(mockRes);

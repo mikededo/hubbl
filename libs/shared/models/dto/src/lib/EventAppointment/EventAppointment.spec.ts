@@ -1,11 +1,6 @@
 import * as ClassValidator from 'class-validator';
 
-import {
-  Client,
-  Event,
-  EventAppointment,
-  Person
-} from '@hubbl/shared/models/entities';
+import { Client, Event, EventAppointment } from '@hubbl/shared/models/entities';
 
 import * as Util from '../util';
 import EventAppointmentDTO from './EventAppointment';
@@ -86,21 +81,13 @@ describe('Event', () => {
         .mockResolvedValue();
 
       const appointment = new EventAppointment();
-      const client = new Client();
-      const person = new Person();
-      const event = new Event();
-
-      person.id = 1;
-      client.person = person;
-
-      event.id = 1;
 
       appointment.id = 1;
       appointment.startTime = '09:00:00';
       appointment.endTime = '10:00:00';
       appointment.cancelled = false;
-      appointment.client = client;
-      appointment.event = event;
+      appointment.client = 1;
+      appointment.event = 1;
 
       const result = await EventAppointmentDTO.fromClass(appointment);
 

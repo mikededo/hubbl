@@ -322,15 +322,10 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
     let appointment: EventAppointment;
     try {
       // Check if exists any appointment for the selected event and client
-      appointment = await this.service
-        .createQueryBuilder({ alias: 'ea' })
-        .where('ea.id = :id', { id: appointmentId })
-        .andWhere('ea.event = :id', { id: eventId })
-        // Join the relations since they are skipped by typeorm
-        .leftJoinAndSelect('ea.client', 'c')
-        .leftJoinAndMapOne('c.person', 'person', 'p', 'p.id = ea.client')
-        .leftJoinAndSelect('ea.event', 'event')
-        .getOne();
+      appointment = await this.service.findOne({
+        id: appointmentId,
+        options: { where: { event: eventId }, loadRelationIds: true }
+      });
 
       if (!appointment) {
         return this.forbidden(res, 'The appointment does not exist.');
@@ -379,16 +374,13 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
     let appointment: EventAppointment;
     try {
       // Check if exists any appointment for the selected event and client
-      appointment = await this.service
-        .createQueryBuilder({ alias: 'ea' })
-        .where('ea.id = :id', { id: appointmentId })
-        .andWhere('ea.client = :client', { client: token.id })
-        .andWhere('ea.event = :event', { event: eventId })
-        // Join the relations since they are skipped by typeorm
-        .leftJoinAndSelect('ea.client', 'c')
-        .leftJoinAndMapOne('c.person', 'person', 'p', 'p.id = ea.client')
-        .leftJoinAndSelect('ea.event', 'event')
-        .getOne();
+      appointment = await this.service.findOne({
+        id: appointmentId,
+        options: {
+          where: { client: token.id, event: eventId },
+          loadRelationIds: true
+        }
+      });
 
       if (!appointment) {
         return this.forbidden(res, 'The appointment does not exist.');
