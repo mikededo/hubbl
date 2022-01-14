@@ -743,7 +743,7 @@ describe('Appointments.Event controller', () => {
         by: mockReq.query.by,
         dto: { ...mockDto, cancelled: true },
         entityName: 'EventAppointment',
-        updatableBy: '["owner", "worker"]',
+        updatableBy: '["client", "owner", "worker"]',
         countArgs: { id: mockAppointment.id },
         workerUpdatePermission: 'updateEventAppointments'
       });

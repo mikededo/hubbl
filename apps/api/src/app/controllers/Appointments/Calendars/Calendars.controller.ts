@@ -329,12 +329,12 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
       });
 
       if (!appointment) {
-        return this.forbidden(res, 'The appointment does not exist');
+        return this.forbidden(res, 'The appointment does not exist.');
       } else if (appointment.cancelled) {
-        return this.forbidden(res, 'The appointment is already cancelled');
+        return this.forbidden(res, 'The appointment is already cancelled.');
       }
     } catch (e) {
-      this.onFail(res, e);
+      return this.onFail(res, e);
     }
 
     return updatedByOwnerOrWorker({
@@ -356,11 +356,56 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
     });
   }
 
+  private async cancelByClient(req: Request, res: Response): Promise<Response> {
+    const appointmentId = +req.params.id;
+    const { token } = res.locals;
+
+    try {
+      // Check if the client exists
+      const client = await this.clientService.findOne({
+        id: token.id
+      });
+      if (!client) {
+        return this.forbidden(res, 'Person does not exist.');
+      }
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+
+    // Check if the appointment exists
+    let appointment: CalendarAppointment;
+    try {
+      appointment = await this.service.findOne({
+        id: appointmentId,
+        options: { where: { client: token.id }, loadRelationIds: true }
+      });
+
+      if (!appointment) {
+        return this.forbidden(res, 'The appointment does not exist.');
+      } else if (appointment.cancelled) {
+        return this.forbidden(res, 'The appointment is already cancelled.');
+      }
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+
+    try {
+      await this.service.update(appointmentId, {
+        ...appointment,
+        cancelled: true
+      });
+
+      return this.ok(res);
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+  }
+
   protected async run(req: Request, res: Response): Promise<Response> {
     this.checkServices();
 
     if (req.query.by === 'client') {
-      return;
+      return this.cancelByClient(req, res);
     }
 
     return this.cancelByOwnerOrWorker(req, res);

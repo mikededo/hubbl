@@ -87,6 +87,7 @@ describe('Appointments.Calendar controller', () => {
     count: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
+    update: jest.fn(),
     manager: { query: jest.fn() }
   };
   const mockGymZoneService = { findOne: jest.fn() };
@@ -722,6 +723,53 @@ describe('Appointments.Calendar controller', () => {
       jest.clearAllMocks();
     });
 
+    const appointmentDoesNotExistAsserts = async (mockReq: any) => {
+      mockAppointmentService.findOne.mockResolvedValue(undefined);
+
+      setupServices(CalendarCancelController);
+
+      await CalendarCancelController.execute(mockReq, mockRes);
+
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockRes,
+        'The appointment does not exist.'
+      );
+    };
+
+    const appointmentCancelledAsserts = async (mockReq: any) => {
+      mockAppointmentService.findOne.mockResolvedValue({
+        ...mockAppointment,
+        cancelled: true
+      });
+
+      setupServices(CalendarCancelController);
+
+      await CalendarCancelController.execute(mockReq, mockRes);
+
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockRes,
+        'The appointment is already cancelled.'
+      );
+    };
+
+    const serviceFindOneFailAsserts = async (mockReq: any) => {
+      const failSpy = jest
+        .spyOn(CalendarCancelController, 'fail')
+        .mockImplementation();
+      mockAppointmentService.findOne.mockRejectedValue('error-thrown');
+
+      setupServices(CalendarCancelController);
+
+      await CalendarCancelController.execute(mockReq, mockRes);
+
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+      failAsserts(CalendarCancelController, failSpy, 'cancel');
+    };
+
     it('should call updatedByOwnerOrWorker by any owner or worker', async () => {
       const fromClassSpy = jest
         .spyOn(CalendarAppointmentDTO, 'fromClass')
@@ -762,51 +810,114 @@ describe('Appointments.Calendar controller', () => {
       });
     });
 
+    it('should cancel an appointment by a client', async () => {
+      mockClientService.findOne.mockResolvedValue(mockClient);
+      mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
+
+      const okSpy = jest
+        .spyOn(CalendarCancelController, 'ok')
+        .mockImplementation();
+      setupServices(CalendarCancelController);
+
+      await CalendarCancelController.execute(mockClientReq, mockRes);
+
+      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOne).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
+      expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
+        id: mockReq.params.id,
+        options: {
+          where: { client: mockRes.locals.token.id },
+          loadRelationIds: true
+        }
+      });
+      expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
+      expect(mockAppointmentService.update).toHaveBeenCalledWith(
+        mockReq.params.id,
+        { ...mockAppointment, cancelled: true }
+      );
+      expect(okSpy).toHaveBeenCalledTimes(1);
+      expect(okSpy).toHaveBeenCalledWith(mockRes);
+    });
+
     describe('owner/worker', () => {
       it('should send forbidden if the appointment does not exist', async () => {
-        mockAppointmentService.findOne.mockResolvedValue(undefined);
-
-        setupServices(CalendarCancelController);
-
-        await CalendarCancelController.execute(mockReq, mockRes);
-
-        expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
-        expect(forbiddenSpy).toHaveBeenCalledTimes(1);
-        expect(forbiddenSpy).toHaveBeenCalledWith(
-          mockRes,
-          'The appointment does not exist'
-        );
+        await appointmentDoesNotExistAsserts(mockReq);
       });
 
-      it('should send forbidden if the appointment does not exist', async () => {
-        mockAppointmentService.findOne.mockResolvedValue({
-          ...mockAppointment,
-          cancelled: true
-        });
-
-        setupServices(CalendarCancelController);
-
-        await CalendarCancelController.execute(mockReq, mockRes);
-
-        expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
-        expect(forbiddenSpy).toHaveBeenCalledTimes(1);
-        expect(forbiddenSpy).toHaveBeenCalledWith(
-          mockRes,
-          'The appointment is already cancelled'
-        );
+      it('should send forbidden if the appointment is already cacnelled', async () => {
+        await appointmentCancelledAsserts(mockReq);
       });
 
       it('should send fail on service.findOne error', async () => {
+        await serviceFindOneFailAsserts(mockReq);
+      });
+    });
+
+    describe('client', () => {
+      it('sould send forbidden if client does not exist', async () => {
+        mockClientService.findOne.mockResolvedValue(undefined);
+        setupServices(CalendarCancelController);
+
+        await CalendarCancelController.execute(mockClientReq, mockRes);
+
+        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+        expect(forbiddenSpy).toHaveBeenCalledWith(
+          mockRes,
+          'Person does not exist.'
+        );
+      });
+
+      it('sould send fail on clientService.findOne error', async () => {
+        mockClientService.findOne.mockRejectedValue('error-thrown');
         const failSpy = jest
           .spyOn(CalendarCancelController, 'fail')
           .mockImplementation();
-        mockAppointmentService.findOne.mockRejectedValue('error-thrown');
 
         setupServices(CalendarCancelController);
 
-        await CalendarCancelController.execute(mockReq, mockRes);
+        await CalendarCancelController.execute(mockClientReq, mockRes);
 
+        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        failAsserts(CalendarCancelController, failSpy, 'cancel');
+      });
+
+      it('should send forbidden if the appointment does not exist', async () => {
+        mockClientService.findOne.mockResolvedValue(mockClient);
+
+        await appointmentDoesNotExistAsserts(mockClientReq);
+      });
+
+      it('should send forbidden if the appointment is already cacnelled', async () => {
+        mockClientService.findOne.mockResolvedValue(mockClient);
+
+        await appointmentCancelledAsserts(mockClientReq);
+      });
+
+      it('should send fail on service.findOne error', async () => {
+        mockClientService.findOne.mockResolvedValue(mockClient);
+
+        await serviceFindOneFailAsserts(mockClientReq);
+      });
+
+      it('should send fail on service.update error', async () => {
+        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
+        mockAppointmentService.update.mockRejectedValue('error-thrown');
+
+        const failSpy = jest
+          .spyOn(CalendarCancelController, 'fail')
+          .mockImplementation();
+        setupServices(CalendarCancelController);
+
+        await CalendarCancelController.execute(mockClientReq, mockRes);
+
+        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
         failAsserts(CalendarCancelController, failSpy, 'cancel');
       });
     });
