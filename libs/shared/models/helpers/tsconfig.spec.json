@@ -15,5 +15,5 @@
     "**/*.test.jsx",
     "**/*.spec.jsx",
     "**/*.d.ts"
-, "../helpers/src/lib/validation-parser.spec.ts"  ]
+  ]
 }

@@ -7,18 +7,18 @@ import {
 } from 'class-validator';
 
 import { Gym, Person, Worker } from '@hubbl/shared/models/entities';
+import {
+  booleanError,
+  numberError,
+  stringError,
+  validationParser
+} from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import {
-  booleanError,
-  DTOGroups,
-  numberError,
-  stringError,
-  validationParser
-} from '../util';
+import { DTOGroups } from '../util';
 
 export default class WorkerDTO<T extends Gym | number>
   extends PersonDTO<T>

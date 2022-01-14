@@ -12,17 +12,17 @@ import {
   Event,
   EventAppointment
 } from '@hubbl/shared/models/entities';
-
-import DTO from '../Base';
 import {
   booleanError,
-  DTOGroups,
   instanceError,
   numberError,
   stringError,
   validationParser
-} from '../util';
-import { CalendarDateDTO } from '..';
+} from '@hubbl/shared/models/helpers';
+
+import DTO from '../Base';
+import CalendarDateDTO from '../CalendarDate';
+import { DTOGroups } from '../util';
 
 export default class EventDTO implements DTO<Event> {
   @IsNumber(

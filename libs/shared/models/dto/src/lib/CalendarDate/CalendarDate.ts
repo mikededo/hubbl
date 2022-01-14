@@ -1,10 +1,15 @@
 import { IsNumber, Max, Min, validateOrReject } from 'class-validator';
 
 import { CalendarDate } from '@hubbl/shared/models/entities';
+import {
+  maxError,
+  minError,
+  numberError,
+  validationParser
+} from '@hubbl/shared/models/helpers';
 
 import DTO from '../Base';
-import { DTOGroups, numberError, validationParser } from '../util';
-import { maxError, minError } from '../util/error-messages';
+import { DTOGroups } from '../util';
 
 export default class CalendarDateDTO implements DTO<CalendarDate> {
   @IsNumber({}, { message: numberError('year') })

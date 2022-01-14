@@ -1,12 +1,13 @@
 import * as ClassValidator from 'class-validator';
 
 import { CalendarDate, Event } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
-import * as Util from '../util';
+import CalendarDateDTO from '../CalendarDate';
 import EventDTO from './Event';
-import { CalendarDateDTO } from '..';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (want: Event | EventDTO, got: Event | EventDTO) => {
   expect(got.id).toBe(want.id);
@@ -77,7 +78,7 @@ describe('Event', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -98,7 +99,7 @@ describe('Event', () => {
         .mockResolvedValueOnce()
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
       jest.spyOn(CalendarDateDTO, 'fromJson').mockResolvedValue({} as any);
 
@@ -158,7 +159,7 @@ describe('Event', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

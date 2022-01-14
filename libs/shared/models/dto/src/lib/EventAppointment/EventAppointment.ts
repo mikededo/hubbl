@@ -6,15 +6,15 @@ import {
 } from 'class-validator';
 
 import { EventAppointment } from '@hubbl/shared/models/entities';
-
-import DTO from '../Base';
 import {
   booleanError,
-  DTOGroups,
   numberError,
   stringError,
   validationParser
-} from '../util';
+} from '@hubbl/shared/models/helpers';
+
+import DTO from '../Base';
+import { DTOGroups } from '../util';
 
 export default class EventAppointmentDTO implements DTO<EventAppointment> {
   @IsNumber(

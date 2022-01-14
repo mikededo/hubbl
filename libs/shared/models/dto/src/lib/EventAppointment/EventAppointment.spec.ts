@@ -1,11 +1,12 @@
 import * as ClassValidator from 'class-validator';
 
 import { Client, Event, EventAppointment } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
-import * as Util from '../util';
 import EventAppointmentDTO from './EventAppointment';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (
   want: EventAppointment | EventAppointmentDTO,
@@ -58,7 +59,7 @@ describe('Event', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -102,7 +103,7 @@ describe('Event', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

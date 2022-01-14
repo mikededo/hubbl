@@ -2,10 +2,13 @@ import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
 import { Gym, Worker } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
 import GymDTO from '../Gym';
 import * as Util from '../util';
 import WorkerDTO from './Worker';
+
+jest.mock('@hubbl/shared/models/helpers');
 
 const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
   worker.workerCode = 'some-uuid';
@@ -129,7 +132,7 @@ describe('WorkerDTO', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -182,7 +185,7 @@ describe('WorkerDTO', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

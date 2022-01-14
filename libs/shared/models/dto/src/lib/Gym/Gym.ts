@@ -7,18 +7,18 @@ import {
 } from 'class-validator';
 
 import { Gym, VirtualGym } from '@hubbl/shared/models/entities';
-import { ThemeColor } from '@hubbl/shared/types';
-
-import DTO from '../Base';
-import { PersonDTOGroups } from '../Person';
 import {
-  DTOGroups,
   emailError,
   enumError,
   numberError,
   stringError,
   validationParser
-} from '../util';
+} from '@hubbl/shared/models/helpers';
+import { ThemeColor } from '@hubbl/shared/types';
+
+import DTO from '../Base';
+import { PersonDTOGroups } from '../Person';
+import { DTOGroups } from '../util';
 
 export default class GymDTO implements DTO<Gym> {
   @IsNumber(

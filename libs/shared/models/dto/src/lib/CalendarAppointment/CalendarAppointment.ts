@@ -10,16 +10,16 @@ import {
   CalendarAppointment,
   CalendarDate
 } from '@hubbl/shared/models/entities';
-
-import DTO from '../Base';
-import CalendarDateDTO from '../CalendarDate';
 import {
   booleanError,
-  DTOGroups,
   numberError,
   stringError,
   validationParser
-} from '../util';
+} from '@hubbl/shared/models/helpers';
+
+import DTO from '../Base';
+import CalendarDateDTO from '../CalendarDate';
+import { DTOGroups } from '../util';
 
 export default class CalendarAppointmentDTO
   implements DTO<CalendarAppointment>

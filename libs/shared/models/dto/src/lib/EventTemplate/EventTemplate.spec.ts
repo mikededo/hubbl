@@ -1,11 +1,12 @@
 import * as ClassValidator from 'class-validator';
 
 import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
-import * as Util from '../util';
 import EventTemplateDTO from './EventTemplate';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (
   want: EventTemplate | EventTemplateDTO,
@@ -54,7 +55,7 @@ describe('EventTemplate', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -106,7 +107,7 @@ describe('EventTemplate', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

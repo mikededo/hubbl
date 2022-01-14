@@ -2,17 +2,17 @@ import { genSalt, hash } from 'bcrypt';
 import { IsArray, IsNumber, IsString, validateOrReject } from 'class-validator';
 
 import { Event, Gym, Person, Trainer } from '@hubbl/shared/models/entities';
+import {
+  arrayError,
+  numberError,
+  stringError,
+  validationParser
+} from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import {
-  arrayError,
-  DTOGroups,
-  numberError,
-  stringError,
-  validationParser
-} from '../util';
+import { DTOGroups } from '../util';
 
 export default class TrainerDTO<T extends Gym | number>
   extends PersonDTO<T>

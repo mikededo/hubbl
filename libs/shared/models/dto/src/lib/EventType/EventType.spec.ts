@@ -1,12 +1,13 @@
 import * as ClassValidator from 'class-validator';
 
 import { Calendar, EventType, VirtualGym } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 import { AppPalette } from '@hubbl/shared/types';
 
-import * as Util from '../util';
 import EventTypeDTO from './EventType';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (
   want: EventType | EventTypeDTO,
@@ -53,7 +54,7 @@ describe('EventType', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -101,7 +102,7 @@ describe('EventType', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 
