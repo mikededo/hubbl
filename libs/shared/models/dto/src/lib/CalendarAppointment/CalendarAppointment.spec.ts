@@ -27,7 +27,7 @@ const propCompare = (
   expect(got.date.day).toBe(want.date.day);
 };
 
-describe('Event', () => {
+describe('CalendarAppointment', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
