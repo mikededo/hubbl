@@ -145,7 +145,7 @@ describe('Appointments.Calendar controller', () => {
   const setupSucessfullTests = () => {
     fromJsonSpy.mockResolvedValue(mockDto);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-    mockAppointmentService.manager.query.mockResolvedValue({ max: 0 });
+    mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
     mockAppointmentService.count.mockResolvedValue(0);
     mockClientService.findOne.mockResolvedValue(mockClient);
     mockAppointmentService.save.mockResolvedValue(mockAppointment);
@@ -262,9 +262,9 @@ describe('Appointments.Calendar controller', () => {
 
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-    mockAppointmentService.manager.query.mockResolvedValue({
-      max: mockGymZone.capacity
-    });
+    mockAppointmentService.manager.query.mockResolvedValue([
+      { max: mockGymZone.capacity }
+    ]);
 
     setupServices(controller);
 
@@ -310,7 +310,7 @@ describe('Appointments.Calendar controller', () => {
 
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-    mockAppointmentService.manager.query.mockResolvedValue(0);
+    mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
     mockClientService.findOne.mockResolvedValue(undefined);
 
     setupServices(controller);
@@ -338,7 +338,7 @@ describe('Appointments.Calendar controller', () => {
 
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-    mockAppointmentService.manager.query.mockResolvedValue(0);
+    mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
     mockClientService.findOne.mockResolvedValue({
       covidPassport: false
     });
@@ -367,7 +367,7 @@ describe('Appointments.Calendar controller', () => {
 
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-    mockAppointmentService.manager.query.mockResolvedValue(0);
+    mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
     mockClientService.findOne.mockRejectedValue('error-thrown');
 
     setupServices(controller);
@@ -391,7 +391,7 @@ describe('Appointments.Calendar controller', () => {
 
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-    mockAppointmentService.manager.query.mockResolvedValue(0);
+    mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
     mockClientService.findOne.mockResolvedValue(mockClient);
     mockAppointmentService.count.mockResolvedValue(1);
 
@@ -420,7 +420,7 @@ describe('Appointments.Calendar controller', () => {
 
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-    mockAppointmentService.manager.query.mockResolvedValue(0);
+    mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
     mockClientService.findOne.mockResolvedValue(mockClient);
     mockAppointmentService.count.mockRejectedValue('error-thrown');
 
@@ -907,7 +907,7 @@ describe('Appointments.Calendar controller', () => {
         fromJsonSpy.mockResolvedValue(mockDto);
 
         mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-        mockAppointmentService.manager.query.mockResolvedValue({ max: 0 });
+        mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
         mockClientService.findOne.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockRejectedValue('error-thrown');
@@ -931,9 +931,11 @@ describe('Appointments.Calendar controller', () => {
         fromClassSpy.mockRejectedValue('error-thrown');
 
         mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-        mockAppointmentService.manager.query.mockResolvedValue({
-          max: 0
-        });
+        mockAppointmentService.manager.query.mockResolvedValue([
+          {
+            max: 0
+          }
+        ]);
         mockClientService.findOne.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockResolvedValue(mockAppointment);
@@ -957,9 +959,11 @@ describe('Appointments.Calendar controller', () => {
         fromClassSpy.mockResolvedValue(mockDto);
 
         mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-        mockAppointmentService.manager.query.mockResolvedValue({
-          max: 0
-        });
+        mockAppointmentService.manager.query.mockResolvedValue([
+          {
+            max: 0
+          }
+        ]);
         mockClientService.findOne.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockImplementation();

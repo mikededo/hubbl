@@ -47,7 +47,7 @@ abstract class BaseCalendarAppointmentController extends BaseController {
     super();
   }
 
-  protected maxConcurrentQuery({
+  protected async maxConcurrentQuery({
     date,
     calendar,
     startTime,
@@ -315,8 +315,9 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
 
     try {
       // Check gym zone capacity for the wanted interval
-      const { max } = await this.maxConcurrentQuery(appointment);
-      if (max >= gymZone.capacity) {
+      const { max } = (await this.maxConcurrentQuery(appointment))[0];
+
+      if (+max >= gymZone.capacity) {
         return this.forbidden(
           res,
           'Gym zone is full at the selected interval.'

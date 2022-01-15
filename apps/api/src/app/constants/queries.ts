@@ -8,13 +8,13 @@ export type MaxConcurentEventsResult = { max: number };
  */
 export const MAX_CONCURRENT_EVENTS_DAY = [
   'WITH count AS (',
-  'SELECT start_time AS app_time, 1 AS inc',
+  'SELECT start_time AS enter_time, 1 AS inc',
   'FROM calendar_appointment',
   'WHERE date_year = $1',
   'AND date_month = $2',
   'AND date_day = $3',
-  'AND start_time > $4',
-  'AND end_time < $5',
+  'AND start_time >= $4',
+  'AND end_time <= $5',
   'AND calendar_id = $6',
   'AND cancelled = false',
   'UNION ALL',
@@ -23,14 +23,14 @@ export const MAX_CONCURRENT_EVENTS_DAY = [
   'WHERE date_year = $1',
   'AND date_month = $2',
   'AND date_day = $3',
-  'AND start_time > $4',
-  'AND end_time < $5',
+  'AND start_time >= $4',
+  'AND end_time <= $5',
   'AND calendar_id = $6',
   'AND cancelled = false)',
-  'SELECT max(concurrent)',
-  'FROM (SELECT app_time, SUM(SUM(inc)) OVER (ORDER BY app_time) AS concurrent',
+  'SELECT COALESCE(MAX(concurrent), 0) as max',
+  'FROM (SELECT enter_time, SUM(SUM(inc)) OVER (ORDER BY enter_time) AS concurrent',
   'FROM count',
-  'GROUP BY app_time',
+  'GROUP BY enter_time',
   ') AS max_concurrent'
 ].join(' ');
 
@@ -38,12 +38,12 @@ export type AvailableTimesAppointmentsResult = { available: string }[];
 
 /**
  * Query to fetch the available start times to create
- * a calendar appointment.  
- * `$1` -> year of the date to search for  
- * `$2` -> month of the date to search for  
- * `$3` -> day of the date to search for  
- * `$4` -> identifier of the calendar  
- * `$5` -> intervals to which search (has to be in postgres interval  
+ * a calendar appointment.
+ * `$1` -> year of the date to search for
+ * `$2` -> month of the date to search for
+ * `$3` -> day of the date to search for
+ * `$4` -> identifier of the calendar
+ * `$5` -> intervals to which search (has to be in postgres interval
  * format)
  */
 export const AVAILABLE_TIMES_APPOINTMENTS = [
