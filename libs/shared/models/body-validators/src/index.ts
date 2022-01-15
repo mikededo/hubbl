@@ -1,1 +1,1 @@
-export * from './lib/shared-models-body-validators';
+export * from './lib';

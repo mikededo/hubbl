@@ -21,6 +21,10 @@ EventAppointmentRouter.delete('/:eId/:id', middlewares.auth, (req, res) => {
 });
 
 /* CALENDARS */
+CalendarAppointmentRouter.get('/:id', middlewares.auth, (req, res) => {
+  Appointments.CalendarFetchController.execute(req, res);
+});
+
 CalendarAppointmentRouter.post('', middlewares.auth, (req, res) => {
   Appointments.CalendarCreateController.execute(req, res);
 });

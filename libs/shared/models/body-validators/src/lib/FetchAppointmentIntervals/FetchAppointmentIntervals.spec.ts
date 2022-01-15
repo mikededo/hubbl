@@ -43,6 +43,7 @@ describe('FetchAppointmentInterval', () => {
 
       // Parse calendar
       expect(calendarJsonSpy).toHaveBeenCalledTimes(1);
+      expect(calendarJsonSpy).toHaveBeenCalledWith(body.date);
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(2);
       expect(vorSpy).toHaveBeenNthCalledWith(

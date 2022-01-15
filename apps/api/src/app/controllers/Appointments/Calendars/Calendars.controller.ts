@@ -2,15 +2,23 @@ import { Request, Response } from 'express';
 import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
+import { FetchAppointmentInterval } from '@hubbl/shared/models/body-validators';
 import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
-import { CalendarAppointment, GymZone } from '@hubbl/shared/models/entities';
+import {
+  CalendarAppointment,
+  CalendarDate,
+  GymZone,
+  Person
+} from '@hubbl/shared/models/entities';
 
 import { queries } from '../../../constants';
+import { AvailableTimesAppointmentsResult } from '../../../constants/queries';
 import {
   CalendarAppointmentService,
   ClientService,
   GymZoneService,
   OwnerService,
+  PersonService,
   WorkerService
 } from '../../../services';
 import BaseController from '../../Base';
@@ -145,6 +153,118 @@ abstract class BaseCalendarAppointmentController extends BaseController {
     }
   }
 }
+
+class ICalendarApointmentFetchController extends BaseController {
+  protected service: CalendarAppointmentService = undefined;
+  protected personService: PersonService = undefined;
+  protected gymZoneService: GymZoneService = undefined;
+
+  private async onFail(res: Response, error: any): Promise<Response> {
+    log.error(
+      `Controller[${this.constructor.name}]`,
+      `"fetch" handler`,
+      error.toString()
+    );
+
+    return this.fail(
+      res,
+      'Internal server error. If the error persists, contact our team'
+    );
+  }
+
+  private isPastDate(date: CalendarDate): boolean {
+    return new Date(date.year, date.month - 1, date.day) < new Date();
+  }
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.service) {
+      this.service = new CalendarAppointmentService(getRepository);
+    }
+
+    if (!this.personService) {
+      this.personService = new PersonService(getRepository);
+    }
+
+    if (!this.gymZoneService) {
+      this.gymZoneService = new GymZoneService(getRepository);
+    }
+
+    const { token } = res.locals;
+
+    // Check if person making the request exists
+    let person: Person;
+    try {
+      person = await this.personService.findOne({
+        id: token.id,
+        options: { loadRelationIds: true }
+      });
+      if (!person) {
+        return this.unauthorized(res, 'Person does not exist.');
+      }
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+
+    const calendarId = +req.params.id;
+
+    // Validate that is fetching a calendar from a gym zone
+    // to which they have access
+    try {
+      const count = await this.gymZoneService
+        .createQueryBuilder({ alias: 'gz' })
+        .where('gz.calendar = :calendarId', { calendarId })
+        .andWhere('gym.id = :gymId', { gymId: person.gym })
+        .andWhere('p.id = :personId', { personId: person.id })
+        .leftJoin('gz.virtualGym', 'vg')
+        .leftJoin('vg.gym', 'gym')
+        .leftJoin(Person, 'p')
+        .getCount();
+
+      if (!count) {
+        return this.forbidden(
+          res,
+          'Client does not have access to the chosen calendar.'
+        );
+      }
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+
+    let validatedBody: FetchAppointmentInterval;
+    try {
+      validatedBody = await FetchAppointmentInterval.validate(req.body);
+    } catch (e) {
+      return this.clientError(res, e);
+    }
+
+    // Check if date is past
+    if (this.isPastDate(validatedBody.date)) {
+      return this.clientError(res, 'Can not search for past dates.');
+    }
+
+    try {
+      const rawTimes: AvailableTimesAppointmentsResult =
+        await this.service.manager.query(queries.AVAILABLE_TIMES_APPOINTMENTS, [
+          validatedBody.date.year,
+          validatedBody.date.month,
+          validatedBody.date.day,
+          calendarId,
+          `${validatedBody.interval} minutes`
+        ]);
+
+      return this.ok(
+        res,
+        rawTimes.map(({ available }) => available)
+      );
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+  }
+}
+
+const fetchInstance = new ICalendarApointmentFetchController();
+
+export const CalendarFetchController = fetchInstance;
 
 class ICalendarAppointmentCreateController extends BaseCalendarAppointmentController {
   constructor() {
