@@ -2,10 +2,11 @@ import * as ClassValidator from 'class-validator';
 
 import { CalendarDate } from '@hubbl/shared/models/entities';
 
-import * as Util from '../util';
+import * as helpers from '@hubbl/shared/models/helpers';
 import CalendarDateDTO from './CalendarDate';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 describe('CalendarDate', () => {
   beforeEach(() => {
@@ -50,7 +51,7 @@ describe('CalendarDate', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -91,7 +92,7 @@ describe('CalendarDate', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

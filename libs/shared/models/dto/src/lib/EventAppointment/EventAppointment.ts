@@ -6,15 +6,15 @@ import {
 } from 'class-validator';
 
 import { EventAppointment } from '@hubbl/shared/models/entities';
-
-import DTO from '../Base';
 import {
   booleanError,
-  DTOGroups,
   numberError,
   stringError,
   validationParser
-} from '../util';
+} from '@hubbl/shared/models/helpers';
+
+import DTO from '../Base';
+import { DTOGroups } from '../util';
 
 export default class EventAppointmentDTO implements DTO<EventAppointment> {
   @IsNumber(
@@ -23,13 +23,16 @@ export default class EventAppointmentDTO implements DTO<EventAppointment> {
   )
   id!: number;
 
-  @IsString({ message: stringError('startTime') })
+  @IsString({ message: stringError('startTime'), groups: [DTOGroups.ALL] })
   startTime!: string;
 
-  @IsString({ message: stringError('endTime') })
+  @IsString({ message: stringError('endTime'), groups: [DTOGroups.ALL] })
   endTime!: string;
 
-  @IsBoolean({ message: booleanError('cancelled') })
+  @IsBoolean({
+    message: booleanError('cancelled'),
+    groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+  })
   cancelled!: boolean;
 
   @IsNumber(

@@ -17,21 +17,19 @@ export default class CalendarAppointment extends Appointment {
    * `Client` that is linked to the `Appointment`
    */
   @ManyToOne(() => Client, (c) => c.calendarAppointments, {
-    primary: true,
     nullable: false,
     cascade: true
   })
-  client!: Client;
+  client!: number;
 
   /**
    * `Event` that is linked to the `Appointment`
    */
   @ManyToOne(() => Calendar, (e) => e.appointments, {
-    primary: true,
     nullable: false,
     cascade: true
   })
-  calendar!: Calendar;
+  calendar!: number;
 
   /**
    * `CalendarDate` of the event

@@ -7,18 +7,18 @@ import {
 } from 'class-validator';
 
 import { Gym, Person, Worker } from '@hubbl/shared/models/entities';
+import {
+  booleanError,
+  numberError,
+  stringError,
+  validationParser
+} from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import {
-  booleanError,
-  DTOGroups,
-  numberError,
-  stringError,
-  validationParser
-} from '../util';
+import { DTOGroups } from '../util';
 
 export default class WorkerDTO<T extends Gym | number>
   extends PersonDTO<T>
@@ -97,6 +97,24 @@ export default class WorkerDTO<T extends Gym | number>
   @IsBoolean({ message: booleanError('deleteEventTemplates') })
   deleteEventTemplates!: boolean;
 
+  @IsBoolean({ message: booleanError('createEventAppointments') })
+  createEventAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('updateEventAppointments') })
+  updateEventAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('deleteEventAppointments') })
+  deleteEventAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('createCalendarAppointments') })
+  createCalendarAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('updateCalendarAppointments') })
+  updateCalendarAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('deleteCalendarAppointments') })
+  deleteCalendarAppointments!: boolean;
+
   private static mapWorkerProps<T extends Gym | number>(
     to: WorkerDTO<T>,
     from: any
@@ -122,6 +140,12 @@ export default class WorkerDTO<T extends Gym | number>
     to.createEventTemplates = from.createEventTemplates;
     to.updateEventTemplates = from.updateEventTemplates;
     to.deleteEventTemplates = from.deleteEventTemplates;
+    to.createEventAppointments = from.createEventAppointments;
+    to.updateEventAppointments = from.updateEventAppointments;
+    to.deleteEventAppointments = from.deleteEventAppointments;
+    to.createCalendarAppointments = from.createCalendarAppointments;
+    to.updateCalendarAppointments = from.updateCalendarAppointments;
+    to.deleteCalendarAppointments = from.deleteCalendarAppointments;
   }
 
   /**
@@ -246,6 +270,12 @@ export default class WorkerDTO<T extends Gym | number>
     worker.createEventTemplates = this.createEventTemplates;
     worker.updateEventTemplates = this.updateEventTemplates;
     worker.deleteEventTemplates = this.deleteEventTemplates;
+    worker.createEventAppointments = this.createEventAppointments;
+    worker.updateEventAppointments = this.updateEventAppointments;
+    worker.deleteEventAppointments = this.deleteEventAppointments;
+    worker.createCalendarAppointments = this.createCalendarAppointments;
+    worker.updateCalendarAppointments = this.updateCalendarAppointments;
+    worker.deleteCalendarAppointments = this.deleteCalendarAppointments;
 
     return worker;
   }

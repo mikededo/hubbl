@@ -2,6 +2,8 @@ import { Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  CalendarAppointmentDTO,
+  EventAppointmentDTO,
   EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
@@ -10,7 +12,9 @@ import {
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import {
+  CalendarAppointment,
   Event,
+  EventAppointment,
   EventTemplate,
   EventType,
   Gym,
@@ -26,10 +30,19 @@ import BaseController from '../Base';
 import { BaseFromClassCallable, ParsedToken } from './types';
 
 type CommonCreateByServices = BaseService<
-  Event | EventTemplate | EventType | VirtualGym | GymZone | Trainer
+  | CalendarAppointment
+  | EventAppointment
+  | Event
+  | EventTemplate
+  | EventType
+  | VirtualGym
+  | GymZone
+  | Trainer
 >;
 
 type CommonCreateByDTOs =
+  | CalendarAppointmentDTO
+  | EventAppointmentDTO
   | EventDTO
   | EventTemplateDTO
   | EventTypeDTO
@@ -38,6 +51,8 @@ type CommonCreateByDTOs =
   | TrainerDTO<Gym | number>;
 
 type CommonCreateByEntities =
+  | 'CalendarAppointment'
+  | 'EventAppointment'
   | 'Event'
   | 'EventTemplate'
   | 'EventType'
@@ -46,6 +61,8 @@ type CommonCreateByEntities =
   | 'Trainer';
 
 type WorkerCreatePermissions =
+  | 'createCalendarAppointments'
+  | 'createEventAppointments'
   | 'createEvents'
   | 'createClients'
   | 'createEventTemplates'
@@ -55,6 +72,8 @@ type WorkerCreatePermissions =
   | 'createTrainers';
 
 type FromClassCallables =
+  | BaseFromClassCallable<CalendarAppointment, CalendarAppointmentDTO>
+  | BaseFromClassCallable<EventAppointment, EventAppointmentDTO>
   | BaseFromClassCallable<Event, EventDTO>
   | BaseFromClassCallable<EventTemplate, EventTemplateDTO>
   | BaseFromClassCallable<EventType, EventTypeDTO>
@@ -103,7 +122,7 @@ export const createdByOwnerOrWorker = async ({
       );
     }
 
-    const worker = await workerService.findOne(token.id);
+    const worker = await workerService.findOne({ id: token.id });
 
     if (!worker) {
       return controller.unauthorized(

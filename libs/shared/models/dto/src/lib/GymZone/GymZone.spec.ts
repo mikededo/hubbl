@@ -1,11 +1,12 @@
 import * as ClassValidator from 'class-validator';
 
-import { GymZone, Calendar, VirtualGym } from '@hubbl/shared/models/entities';
+import { Calendar, GymZone, VirtualGym } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
-import * as Util from '../util';
 import GymZoneDTO from './GymZone';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (want: GymZone | GymZoneDTO, got: GymZone | GymZoneDTO) => {
   expect(got.id).toBe(want.id);
@@ -63,7 +64,7 @@ describe('GymZone', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -120,7 +121,7 @@ describe('GymZone', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

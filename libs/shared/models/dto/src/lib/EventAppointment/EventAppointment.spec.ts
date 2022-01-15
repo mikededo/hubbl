@@ -1,11 +1,12 @@
 import * as ClassValidator from 'class-validator';
 
-import { EventAppointment } from '@hubbl/shared/models/entities';
+import { Client, Event, EventAppointment } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
-import * as Util from '../util';
 import EventAppointmentDTO from './EventAppointment';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (
   want: EventAppointment | EventAppointmentDTO,
@@ -15,8 +16,12 @@ const propCompare = (
   expect(got.startTime).toBe(want.startTime);
   expect(got.endTime).toBe(want.endTime);
   expect(got.cancelled).toBe(want.cancelled);
-  expect(got.client).toBe(want.client);
-  expect(got.event).toBe(want.event);
+  expect(got.client).toBe(
+    want.client instanceof Client ? want.client.person.id : want.client
+  );
+  expect(got.event).toBe(
+    want.event instanceof Event ? want.event.id : want.event
+  );
 };
 
 describe('Event', () => {
@@ -54,7 +59,7 @@ describe('Event', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -76,19 +81,19 @@ describe('Event', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockResolvedValue();
 
-      const event = new EventAppointment();
+      const appointment = new EventAppointment();
 
-      event.id = 1;
-      event.startTime = '09:00:00';
-      event.endTime = '10:00:00';
-      event.cancelled = false;
-      event.client = 1;
-      event.event = 1;
+      appointment.id = 1;
+      appointment.startTime = '09:00:00';
+      appointment.endTime = '10:00:00';
+      appointment.cancelled = false;
+      appointment.client = 1;
+      appointment.event = 1;
 
-      const result = await EventAppointmentDTO.fromClass(event);
+      const result = await EventAppointmentDTO.fromClass(appointment);
 
       expect(result).toBeDefined();
-      propCompare(event, result);
+      propCompare(appointment, result);
 
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(1);
@@ -98,7 +103,7 @@ describe('Event', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

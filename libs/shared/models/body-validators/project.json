@@ -1,0 +1,23 @@
+{
+  "root": "libs/shared/models/body-validators",
+  "sourceRoot": "libs/shared/models/body-validators/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/shared/models/body-validators/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/models/body-validators"],
+      "options": {
+        "jestConfig": "libs/shared/models/body-validators/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

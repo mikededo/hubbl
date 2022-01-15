@@ -99,7 +99,9 @@ describe('VirtualGym Controller', () => {
       await VirtualGymFetchController.execute(mockReq, mockRes);
 
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockService.findOne).toHaveBeenCalledWith(mockRes.locals.token.id);
+      expect(mockService.findOne).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'virtualGym'

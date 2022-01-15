@@ -2,9 +2,11 @@ import { Request, Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  CalendarAppointmentDTO,
   ClientDTO,
   DTO,
   DTOGroups,
+  EventAppointmentDTO,
   EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
@@ -15,8 +17,10 @@ import {
   WorkerDTO
 } from '@hubbl/shared/models/dto';
 import {
+  CalendarAppointment,
   Client,
   Event,
+  EventAppointment,
   EventTemplate,
   EventType,
   Gym,
@@ -37,8 +41,10 @@ type UpdatableServices = BaseService<
   | Owner
   | Worker
   | Trainer
+  | CalendarAppointment
   | Client
   | Event
+  | EventAppointment
   | EventTemplate
   | EventType
   | VirtualGym
@@ -49,8 +55,10 @@ type UpdatableEntities =
   | 'Owner'
   | 'Worker'
   | 'Trainer'
+  | 'CalendarAppointment'
   | 'Client'
   | 'Event'
+  | 'EventAppointment'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -102,6 +110,8 @@ type CommonUpdateByDTOs =
   | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>
   | EventDTO
+  | CalendarAppointmentDTO
+  | EventAppointmentDTO
   | EventTemplateDTO
   | EventTypeDTO
   | VirtualGymDTO
@@ -109,8 +119,10 @@ type CommonUpdateByDTOs =
 
 type CommonUpdateByEntities =
   | 'Trainer'
+  | 'CalendarAppointment'
   | 'Client'
   | 'Event'
+  | 'EventAppointment'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -121,8 +133,10 @@ type CommonUpdateByValues =
   | '["owner", "worker"]';
 
 type WorkerUpdatePermissions =
+  | 'updateCalendarAppointments'
   | 'updateClients'
   | 'updateEvents'
+  | 'updateEventAppointments'
   | 'updateEventTemplates'
   | 'updateEventTypes'
   | 'updateGymZones'
@@ -173,7 +187,7 @@ export const updatedByOwnerOrWorker = async ({
       );
     }
 
-    const worker = await workerService.findOne(token.id);
+    const worker = await workerService.findOne({ id: token.id });
 
     if (!worker) {
       return controller.unauthorized(

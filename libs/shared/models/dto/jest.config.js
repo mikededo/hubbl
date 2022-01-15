@@ -11,5 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/libs/shared/models/dto',
-  coveragePathIgnorePatterns: ['<rootDir>/src/lib/index.ts']
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts']
 };

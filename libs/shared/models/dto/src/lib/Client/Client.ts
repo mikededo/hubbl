@@ -2,12 +2,13 @@ import { genSalt, hash } from 'bcrypt';
 import { IsBoolean, validateOrReject } from 'class-validator';
 
 import { Client, Gym, Person } from '@hubbl/shared/models/entities';
+import { booleanError, validationParser } from '@hubbl/shared/models/helpers';
 import { AppTheme, Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import { booleanError, DTOGroups, validationParser } from '../util';
+import { DTOGroups } from '../util';
 
 export default class ClientDTO<T extends Gym | number>
   extends PersonDTO<T>

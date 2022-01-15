@@ -2,10 +2,13 @@ import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
 import { Client, Gym } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
+import GymDTO from '../Gym';
 import * as Util from '../util';
 import ClientDTO from './Client';
-import GymDTO from '../Gym';
+
+jest.mock('@hubbl/shared/models/helpers');
 
 describe('ClientDTO', () => {
   beforeEach(() => {
@@ -45,7 +48,7 @@ describe('ClientDTO', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -99,7 +102,7 @@ describe('ClientDTO', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
         toClass: jest.fn().mockReturnValue({})

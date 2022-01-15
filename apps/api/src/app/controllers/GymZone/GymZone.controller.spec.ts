@@ -121,9 +121,9 @@ describe('GymZone controller', () => {
       await GymZoneFetchController.execute(mockReq, mockRes);
 
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockPersonService.findOne).toHaveBeenCalledWith(
-        mockRes.locals.token.id
-      );
+      expect(mockPersonService.findOne).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'gymZone'

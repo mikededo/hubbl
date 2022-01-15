@@ -1,4 +1,5 @@
 import BaseService from './Base';
+import CalendarAppointmentService from './CalendarAppointment';
 import EventService from './Event';
 import EventAppointmentService from './EventAppointment';
 import EventTemplateService from './EventTemplate';
@@ -16,6 +17,7 @@ import VirtualGymService from './VirtualGym';
 
 export {
   BaseService,
+  CalendarAppointmentService,
   ClientService,
   EventAppointmentService,
   EventService,

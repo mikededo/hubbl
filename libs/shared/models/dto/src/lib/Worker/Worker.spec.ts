@@ -2,10 +2,13 @@ import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
 import { Gym, Worker } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
 import GymDTO from '../Gym';
 import * as Util from '../util';
 import WorkerDTO from './Worker';
+
+jest.mock('@hubbl/shared/models/helpers');
 
 const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
   worker.workerCode = 'some-uuid';
@@ -29,6 +32,12 @@ const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
   worker.createEventTemplates = false;
   worker.updateEventTemplates = false;
   worker.deleteEventTemplates = false;
+  worker.createEventAppointments = false;
+  worker.updateEventAppointments = false;
+  worker.deleteEventAppointments = false;
+  worker.createCalendarAppointments = false;
+  worker.updateCalendarAppointments = false;
+  worker.deleteCalendarAppointments = false;
 };
 
 const workerPropCompare = (
@@ -55,6 +64,12 @@ const workerPropCompare = (
   expect(got.createEventTemplates).toBe(want.createEventTemplates);
   expect(got.updateEventTemplates).toBe(want.updateEventTemplates);
   expect(got.deleteEventTemplates).toBe(want.deleteEventTemplates);
+  expect(got.createEventAppointments).toBe(want.createEventAppointments);
+  expect(got.updateEventAppointments).toBe(want.updateEventAppointments);
+  expect(got.deleteEventAppointments).toBe(want.deleteEventAppointments);
+  expect(got.createCalendarAppointments).toBe(want.createCalendarAppointments);
+  expect(got.updateCalendarAppointments).toBe(want.updateCalendarAppointments);
+  expect(got.deleteCalendarAppointments).toBe(want.deleteCalendarAppointments);
 };
 
 describe('WorkerDTO', () => {
@@ -86,7 +101,13 @@ describe('WorkerDTO', () => {
         deleteEventTypes: false,
         createEventTemplates: false,
         updateEventTemplates: false,
-        deleteEventTemplates: false
+        deleteEventTemplates: false,
+        createEventAppointments: false,
+        updateEventAppointments: false,
+        deleteEventAppointments: false,
+        createCalendarAppointments: false,
+        updateCalendarAppointments: false,
+        deleteCalendarAppointments: false
       });
 
       const result = await WorkerDTO.fromJson(json, 'any' as any);
@@ -111,7 +132,7 @@ describe('WorkerDTO', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -164,7 +185,7 @@ describe('WorkerDTO', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       expect.assertions(3);
 

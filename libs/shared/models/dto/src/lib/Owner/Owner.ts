@@ -2,12 +2,13 @@ import { genSalt, hash } from 'bcrypt';
 import { IsNotEmpty, validateOrReject } from 'class-validator';
 
 import { Gym, Owner, Person } from '@hubbl/shared/models/entities';
+import { validationParser } from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import { DTOGroups, validationParser } from '../util';
+import { DTOGroups } from '../util';
 
 export default class OwnerDTO<T extends Gym | number>
   extends PersonDTO<T>

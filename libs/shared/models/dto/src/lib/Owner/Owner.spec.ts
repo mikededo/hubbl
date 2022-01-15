@@ -2,12 +2,15 @@ import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
 import { Gym, Owner } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 import { AppTheme, Gender } from '@hubbl/shared/types';
 
 import GymDTO from '../Gym';
+import { PersonDTOGroups } from '../Person';
 import * as Util from '../util';
 import OwnerDTO from './Owner';
-import { PersonDTOGroups } from '../Person';
+
+jest.mock('@hubbl/shared/models/helpers');
 
 describe('OwnerDTO', () => {
   beforeEach(() => {
@@ -45,7 +48,7 @@ describe('OwnerDTO', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -130,7 +133,7 @@ describe('OwnerDTO', () => {
       const vorSpy = jest
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
 
       jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
         toClass: jest.fn().mockReturnValue({})

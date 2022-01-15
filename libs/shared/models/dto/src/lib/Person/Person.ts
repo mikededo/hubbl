@@ -8,16 +8,16 @@ import {
 } from 'class-validator';
 
 import { Gym } from '@hubbl/shared/models/entities';
-import { AppTheme, Gender } from '@hubbl/shared/types';
-
 import {
-  DTOGroups,
   emailError,
   enumError,
   lengthError,
   numberError,
   stringError
-} from '../util';
+} from '@hubbl/shared/models/helpers';
+import { AppTheme, Gender } from '@hubbl/shared/types';
+
+import { DTOGroups } from '../util';
 
 export enum PersonDTOGroups {
   REGISTER = 'register',
