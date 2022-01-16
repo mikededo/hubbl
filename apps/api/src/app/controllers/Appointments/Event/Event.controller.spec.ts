@@ -18,7 +18,7 @@ import {
   EventCancelController,
   EventCreateController,
   EventDeleteController
-} from './Events.controller';
+} from './Event.controller';
 
 jest.mock('../../../services');
 jest.mock('@hubbl/shared/models/dto');

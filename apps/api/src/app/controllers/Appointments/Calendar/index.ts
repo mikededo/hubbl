@@ -3,7 +3,7 @@ import {
   CalendarCancelController,
   CalendarCreateController,
   CalendarDeleteController
-} from './Calendars.controller';
+} from './Calendar.controller';
 
 export {
   CalendarFetchController,

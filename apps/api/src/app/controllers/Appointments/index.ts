@@ -1,4 +1,4 @@
-import * as Calendars from './Calendars';
-import * as Events from './Events';
+import * as Calendar from './Calendar';
+import * as Event from './Event';
 
-export const Appointments = { ...Calendars, ...Events };
+export const Appointments = { ...Calendar, ...Event };

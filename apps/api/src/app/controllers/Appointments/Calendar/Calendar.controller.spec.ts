@@ -21,7 +21,7 @@ import {
   CalendarCreateController,
   CalendarDeleteController,
   CalendarFetchController
-} from './Calendars.controller';
+} from './Calendar.controller';
 import { GymZoneIntervals } from '@hubbl/shared/types';
 import { FetchAppointmentInterval } from '@hubbl/shared/models/body-validators';
 

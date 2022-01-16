@@ -2,6 +2,6 @@ import {
   EventCancelController,
   EventCreateController,
   EventDeleteController
-} from './Events.controller';
+} from './Event.controller';
 
 export { EventCancelController, EventCreateController, EventDeleteController };
