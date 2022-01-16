@@ -10,9 +10,7 @@ export type BasePersonFromJsonCallable<T> = (
   group: PersonDTOGroups
 ) => Promise<T>;
 
-export type BaseFromClassCallable<J, T extends DTO<J>> = (
-  entity: J
-) => Promise<T>;
+export type BaseFromClassCallable<J, T extends DTO<J>> = (entity: J) => T;
 
 export type ParsedToken = {
   id: number;

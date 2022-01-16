@@ -51,14 +51,12 @@ class IEventTemplateFetchController extends BaseController {
 
       return this.ok(
         res,
-        await Promise.all(
-          result.map((et) => {
-            // Needs to be added as the find query does not parse the gym id
-            et.gym = gymId;
+        result.map((et) => {
+          // Needs to be added as the find query does not parse the gym id
+          et.gym = gymId;
 
-            return EventTemplateDTO.fromClass(et);
-          })
-        )
+          return EventTemplateDTO.fromClass(et);
+        })
       );
     } catch (_) {
       log.error(

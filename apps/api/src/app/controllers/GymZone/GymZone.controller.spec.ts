@@ -108,7 +108,7 @@ describe('GymZone controller', () => {
 
       const fromClassSpy = jest
         .spyOn(GymZoneDTO, 'fromClass')
-        .mockResolvedValue(mockDto as any);
+        .mockReturnValue(mockDto as any);
       const okSpy = jest
         .spyOn(GymZoneFetchController, 'ok')
         .mockImplementation();
@@ -214,51 +214,6 @@ describe('GymZone controller', () => {
       expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
       expect(mockGymZoneService.leftJoin).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.getMany).toHaveBeenCalledTimes(1);
-      // Ensure fail is called
-      failSpyAsserts(failSpy);
-    });
-
-    it('should call fail on fromClass error', async () => {
-      let mockResCallback: any;
-
-      const resultList = {
-        map: jest.fn().mockImplementation((callback: any) => {
-          expect(callback).toBeDefined();
-          // Capture the callback
-          mockResCallback = callback;
-
-          throw {};
-        })
-      };
-      const failSpy = jest
-        .spyOn(GymZoneFetchController, 'fail')
-        .mockImplementation();
-      const fromClassSpy = jest
-        .spyOn(GymZoneDTO, 'fromClass')
-        .mockRejectedValue({});
-      mockGymZoneService.getMany.mockResolvedValue(resultList);
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-
-      GymZoneFetchController['service'] = mockGymZoneService as any;
-      GymZoneFetchController['personService'] = mockPersonService as any;
-
-      await GymZoneFetchController.execute(mockReq, mockRes);
-      [mockGymZone, mockGymZone].map(async (e) => {
-        try {
-          await mockResCallback(e);
-        } catch (e) {
-          // Nothing
-        }
-      });
-
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockGymZoneService.leftJoin).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.getMany).toHaveBeenCalledTimes(1);
-      // Ensure fromClass is called
-      expect(fromClassSpy).toHaveBeenCalledTimes(2);
-      expect(fromClassSpy).toHaveBeenCalledWith(mockGymZone);
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });

@@ -156,7 +156,7 @@ export const createdByOwnerOrWorker = async ({
     const result = await service.save(await dto.toClass());
 
     // Return ok
-    return controller.created(res, await fromClass(result as any));
+    return controller.created(res, fromClass(result as any));
   } catch (_) {
     log.error(
       `Controller[${controller.constructor.name}]`,

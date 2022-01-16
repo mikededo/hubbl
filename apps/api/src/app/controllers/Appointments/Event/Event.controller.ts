@@ -276,10 +276,7 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
       // Save the appointment
       const appointment = await this.service.save(dto.toClass());
 
-      return this.created(
-        res,
-        await EventAppointmentDTO.fromClass(appointment)
-      );
+      return this.created(res, EventAppointmentDTO.fromClass(appointment));
     } catch (e) {
       return this.onFail(res, e, 'create');
     }
@@ -344,7 +341,7 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
       res,
       token: res.locals.token as ParsedToken,
       by: req.query.by as any,
-      dto: await EventAppointmentDTO.fromClass({
+      dto: EventAppointmentDTO.fromClass({
         ...appointment,
         cancelled: true
       }),

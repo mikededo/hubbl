@@ -385,10 +385,7 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
     try {
       const appointment = await this.service.save(maybeValidDto.toClass());
 
-      return this.created(
-        res,
-        await CalendarAppointmentDTO.fromClass(appointment)
-      );
+      return this.created(res, CalendarAppointmentDTO.fromClass(appointment));
     } catch (e) {
       return this.onFail(res, e);
     }
@@ -441,7 +438,7 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
       res,
       token: res.locals.token as ParsedToken,
       by: req.query.by as any,
-      dto: await CalendarAppointmentDTO.fromClass({
+      dto: CalendarAppointmentDTO.fromClass({
         ...appointment,
         cancelled: true
       }),
