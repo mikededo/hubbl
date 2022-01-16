@@ -71,11 +71,7 @@ describe('EventType', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create a EventTypeDTO from a correct EventType', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
-
+    it('should create a EventTypeDTO from a correct EventType', () => {
       const eventType = new EventType();
       const calendar = new Calendar();
       const virtualGym = new VirtualGym();
@@ -89,31 +85,10 @@ describe('EventType', () => {
       eventType.labelColor = AppPalette.BLUE;
       eventType.gym = 1;
 
-      const result = await EventTypeDTO.fromClass(eventType);
+      const result = EventTypeDTO.fromClass(eventType);
 
       expect(result).toBeDefined();
       propCompare(eventType, result);
-
-      // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a EventTypeDTO from an incorrect EventType', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await EventTypeDTO.fromClass({} as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

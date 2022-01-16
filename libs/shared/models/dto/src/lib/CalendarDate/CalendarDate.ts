@@ -9,7 +9,6 @@ import {
 } from '@hubbl/shared/models/helpers';
 
 import DTO from '../Base';
-import { DTOGroups } from '../util';
 
 export default class CalendarDateDTO implements DTO<CalendarDate> {
   @IsNumber({}, { message: numberError('year') })
@@ -71,21 +70,12 @@ export default class CalendarDateDTO implements DTO<CalendarDate> {
    * @param calendarDate The fetched calendar date
    * @returns The parsed `CalendarDateDTO`
    */
-  public static async fromClass(
-    calendarDate: CalendarDate
-  ): Promise<CalendarDateDTO> {
+  public static fromClass(calendarDate: CalendarDate): CalendarDateDTO {
     const result = new CalendarDateDTO();
 
     result.year = calendarDate.year;
     result.month = calendarDate.month;
     result.day = calendarDate.day;
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

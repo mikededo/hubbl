@@ -114,18 +114,10 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
    * @param virtualGym The fetched virtual gym
    * @returns The dto to be send as a response
    */
-  public static async fromClass(
-    virtualGym: VirtualGym
-  ): Promise<VirtualGymDTO> {
+  public static fromClass(virtualGym: VirtualGym): VirtualGymDTO {
     const result = VirtualGymDTO.propMapper(virtualGym);
-    result.gymZones = virtualGym.gymZones || [];
 
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
+    result.gymZones = virtualGym.gymZones || [];
 
     return result;
   }

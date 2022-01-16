@@ -76,11 +76,7 @@ describe('VirtualGym', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create a VirtualGymDTO from a correct VirtualGym', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
-
+    it('should create a VirtualGymDTO from a correct VirtualGym', () => {
       const virtualGym = new VirtualGym();
       virtualGym.id = 1;
       virtualGym.name = 'Test';
@@ -90,33 +86,11 @@ describe('VirtualGym', () => {
       virtualGym.openTime = '09:00:00';
       virtualGym.closeTime = '21:00:00';
       virtualGym.gym = 1;
-      virtualGym.gymZones = [];
 
-      const result = await VirtualGymDTO.fromClass(virtualGym);
+      const result = VirtualGymDTO.fromClass(virtualGym);
 
       expect(result).toBeDefined();
-      propCompare(virtualGym, result);
-
-      // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a VirtualGymDTO from an incorrect VirtualGym', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await VirtualGymDTO.fromClass({} as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
+      propCompare({ ...virtualGym, gymZones: [] }, result);
     });
   });
 

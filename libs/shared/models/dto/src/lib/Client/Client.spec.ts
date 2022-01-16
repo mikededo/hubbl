@@ -66,9 +66,6 @@ describe('ClientDTO', () => {
 
   describe('#fromClass', () => {
     it('should create a ClientDTO from a correct Client', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const client = new Client();
@@ -77,13 +74,15 @@ describe('ClientDTO', () => {
       client.person = person;
       client.covidPassport = true;
 
-      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+      const gymFromClass = jest.spyOn(GymDTO, 'fromClass').mockReturnValue({
         ...(person.gym as Gym),
         toClass: jest.fn().mockReturnValue(person.gym)
       });
 
-      const result = await ClientDTO.fromClass(client);
+      const result = ClientDTO.fromClass(client);
 
+      expect(gymFromClass).toHaveBeenCalledTimes(1);
+      expect(gymFromClass).toHaveBeenCalledWith(person.gym);
       expect(result.id).toBe(client.person.id);
       expect(result.email).toBe(client.person.email);
       expect(result.password).toBe(client.person.password);
@@ -94,44 +93,6 @@ describe('ClientDTO', () => {
       expect(result.gym).toStrictEqual(client.person.gym);
       // Client props
       expect(result.covidPassport).toBe(client.covidPassport);
-      // Ensure validation has been called
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating an ClientDTO from an incorrect Client', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
-
-      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
-        toClass: jest.fn().mockReturnValue({})
-      } as any);
-
-      expect.assertions(3);
-
-      try {
-        await ClientDTO.fromClass({ person: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a ClientDTO from an incorrect Gym', async () => {
-      jest.spyOn(GymDTO, 'fromClass').mockImplementation(() => {
-        throw new Error();
-      });
-
-      expect.assertions(1);
-
-      try {
-        await ClientDTO.fromClass({ person: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
     });
   });
 

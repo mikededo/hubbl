@@ -1,8 +1,8 @@
 import * as ClassValidator from 'class-validator';
 
 import { CalendarDate } from '@hubbl/shared/models/entities';
-
 import * as helpers from '@hubbl/shared/models/helpers';
+
 import CalendarDateDTO from './CalendarDate';
 
 jest.mock('@hubbl/shared/models/entities');
@@ -68,42 +68,19 @@ describe('CalendarDate', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create a CalendarDateDTO from a correct CalendarDate', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
+    it('should create a CalendarDateDTO from a correct CalendarDate', () => {
       const date = new CalendarDate();
 
       date.year = 2000;
       date.month = 6;
       date.day = 29;
 
-      const result = await CalendarDateDTO.fromClass(date);
+      const result = CalendarDateDTO.fromClass(date);
 
       expect(result).toBeDefined();
       expect(result.year).toBe(date.year);
       expect(result.month).toBe(date.month);
       expect(result.day).toBe(date.day);
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a CalendarDateDTO from an incorrect CalendarDate', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await CalendarDateDTO.fromClass({} as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -73,7 +73,7 @@ export default class Event {
     nullable: false,
     cascade: true
   })
-  trainer!: number;
+  trainer!: number | Trainer;
 
   /**
    * `Calendar` to which the `Event` belongs
@@ -97,6 +97,12 @@ export default class Event {
    */
   @OneToMany(() => EventAppointment, (a) => a.event, { eager: true })
   appointments!: EventAppointment[];
+
+  /**
+   * Count of the appointments when events are fetched to see them
+   * in the calendar
+   */
+  appointmentCount!: number;
 
   /**
    * `CalendarDate` of the event

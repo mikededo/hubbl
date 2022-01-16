@@ -190,9 +190,9 @@ export default class WorkerDTO<T extends Gym | number>
    * @param gym The gym to assign to the DTO
    * @returns The dto  to be send as a response
    */
-  public static async fromClass<T extends Gym | number>(
+  public static fromClass<T extends Gym | number>(
     worker: Worker
-  ): Promise<WorkerDTO<T>> {
+  ): WorkerDTO<T> {
     const result = new WorkerDTO<T>();
 
     // Person props
@@ -207,19 +207,12 @@ export default class WorkerDTO<T extends Gym | number>
 
     // If the gym is not a number, parse it as a dto
     if (worker.person.gym instanceof Gym) {
-      const gymDto = await GymDTO.fromClass(worker.person.gym as Gym);
+      const gymDto = GymDTO.fromClass(worker.person.gym as Gym);
       result.gym = gymDto.toClass() as T;
     }
 
     // Worker props
     WorkerDTO.mapWorkerProps(result, worker);
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

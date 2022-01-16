@@ -114,11 +114,7 @@ describe('CalendarAppointment', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create an CalendarAppointmentDTO from a correct CalendarAppointment', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
-
+    it('should create an CalendarAppointmentDTO from a correct CalendarAppointment', () => {
       const appointment = new CalendarAppointment();
       const date = new CalendarDate();
 
@@ -134,31 +130,10 @@ describe('CalendarAppointment', () => {
       appointment.calendar = 1;
       appointment.date = date;
 
-      const result = await CalendarAppointmentDTO.fromClass(appointment);
+      const result = CalendarAppointmentDTO.fromClass(appointment);
 
       expect(result).toBeDefined();
       propCompare(appointment, result);
-
-      // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a CalendarAppointmentDTO from an incorrect CalendarAppointment', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await CalendarAppointmentDTO.fromClass({ date: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -81,7 +81,7 @@ export default class TrainerDTO<T extends Gym | number>
    * @param gym The gym to assign to the DTO
    * @returns The dto to be send as a response
    */
-  public static async fromClass(trainer: Trainer): Promise<TrainerDTO<Gym>> {
+  public static fromClass(trainer: Trainer): TrainerDTO<Gym> {
     const result = new TrainerDTO<Gym>();
 
     // Person props
@@ -98,13 +98,6 @@ export default class TrainerDTO<T extends Gym | number>
     result.managerId = trainer.managerId;
     result.workerCode = trainer.workerCode;
     result.events = trainer.events;
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: ['all']
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }
