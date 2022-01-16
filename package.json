@@ -1,6 +1,7 @@
 {
   "name": "hubbl",
   "version": "0.0.0",
+  "lockfileVersion": 2,
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
