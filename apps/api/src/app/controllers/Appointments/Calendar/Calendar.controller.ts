@@ -7,8 +7,7 @@ import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
 import {
   CalendarAppointment,
   CalendarDate,
-  GymZone,
-  Person
+  GymZone
 } from '@hubbl/shared/models/entities';
 
 import { queries } from '../../../constants';
@@ -27,7 +26,8 @@ import {
   deletedByClient,
   deletedByOwnerOrWorker,
   ParsedToken,
-  updatedByOwnerOrWorker
+  updatedByOwnerOrWorker,
+  userAccessToCalendar
 } from '../../helpers';
 
 type MaxConcurrentQueryProps = Pick<
@@ -190,44 +190,19 @@ class ICalendarApointmentFetchController extends BaseController {
     }
 
     const { token } = res.locals;
-
-    // Check if person making the request exists
-    let person: Person;
-    try {
-      person = await this.personService.findOne({
-        id: token.id,
-        options: { loadRelationIds: true }
-      });
-      if (!person) {
-        return this.unauthorized(res, 'Person does not exist.');
-      }
-    } catch (e) {
-      return this.onFail(res, e);
-    }
-
     const calendarId = +req.params.id;
 
-    // Validate that is fetching a calendar from a gym zone
-    // to which they have access
-    try {
-      const count = await this.gymZoneService
-        .createQueryBuilder({ alias: 'gz' })
-        .where('gz.calendar = :calendarId', { calendarId })
-        .andWhere('gym.id = :gymId', { gymId: person.gym })
-        .andWhere('p.id = :personId', { personId: person.id })
-        .leftJoin('gz.virtualGym', 'vg')
-        .leftJoin('vg.gym', 'gym')
-        .leftJoin(Person, 'p')
-        .getCount();
-
-      if (!count) {
-        return this.forbidden(
-          res,
-          'Client does not have access to the chosen calendar.'
-        );
-      }
-    } catch (e) {
-      return this.onFail(res, e);
+    // Check if person making the request exists
+    const person = await userAccessToCalendar({
+      controller: this,
+      personService: this.personService,
+      gymZoneService: this.gymZoneService,
+      res,
+      personId: token.id,
+      calendarId
+    });
+    if (person) {
+      return person;
     }
 
     let validatedBody: FetchAppointmentInterval;

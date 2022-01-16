@@ -1,8 +1,10 @@
 import npmlog = require('npmlog');
 import { getRepository } from 'typeorm';
 
+import { FetchAppointmentInterval } from '@hubbl/shared/models/body-validators';
 import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
-import { CalendarDate, GymZone, Person } from '@hubbl/shared/models/entities';
+import { CalendarDate, GymZone } from '@hubbl/shared/models/entities';
+import { GymZoneIntervals } from '@hubbl/shared/types';
 
 import { queries } from '../../../constants';
 import {
@@ -16,14 +18,13 @@ import {
 import * as create from '../../helpers/create';
 import * as deleteHelpers from '../../helpers/delete';
 import * as update from '../../helpers/update';
+import * as validations from '../../helpers/validations';
 import {
   CalendarCancelController,
   CalendarCreateController,
   CalendarDeleteController,
   CalendarFetchController
 } from './Calendar.controller';
-import { GymZoneIntervals } from '@hubbl/shared/types';
-import { FetchAppointmentInterval } from '@hubbl/shared/models/body-validators';
 
 type TypesOfControllers =
   | typeof CalendarCreateController
@@ -95,15 +96,8 @@ describe('Appointments.Calendar controller', () => {
     update: jest.fn(),
     manager: { query: jest.fn() }
   };
-  const mockGymZoneQueryBuilder = {
-    where: jest.fn().mockReturnThis(),
-    andWhere: jest.fn().mockReturnThis(),
-    leftJoin: jest.fn().mockReturnThis(),
-    getCount: jest.fn()
-  };
   const mockGymZoneService = {
-    findOne: jest.fn(),
-    createQueryBuilder: jest.fn().mockReturnValue(mockGymZoneQueryBuilder)
+    findOne: jest.fn()
   };
   const mockClientService = { findOne: jest.fn() };
 
@@ -444,11 +438,12 @@ describe('Appointments.Calendar controller', () => {
       },
       params: { id: 4 }
     } as any;
-    const mockPerson = { id: 3, gym: 1 };
+    const mockPerson = { id: 3, gym: 1 } as any;
 
     const mockPersonService = { findOne: jest.fn() };
 
     const bodyValidation = jest.spyOn(FetchAppointmentInterval, 'validate');
+    const calendarAccessSpy = jest.spyOn(validations, 'userAccessToCalendar');
     const failSpy = jest
       .spyOn(CalendarFetchController, 'fail')
       .mockReturnValue({} as any);
@@ -459,16 +454,8 @@ describe('Appointments.Calendar controller', () => {
 
     const setupServices = () => {
       CalendarFetchController['service'] = mockAppointmentService as any;
-      CalendarFetchController['personService'] = mockPersonService as any;
+      CalendarFetchController['personService'] = {} as any;
       CalendarFetchController['gymZoneService'] = mockGymZoneService as any;
-    };
-
-    const queryBuilderAsserts = () => {
-      expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneQueryBuilder.where).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenCalledTimes(3);
-      expect(mockGymZoneQueryBuilder.getCount).toHaveBeenCalledTimes(1);
     };
 
     it('should create the services if does not have any', async () => {
@@ -493,8 +480,7 @@ describe('Appointments.Calendar controller', () => {
         { available: '12:00:00' },
         { available: '13:00:00' }
       ];
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-      mockGymZoneQueryBuilder.getCount.mockResolvedValue(1);
+      calendarAccessSpy.mockResolvedValue(undefined);
       mockAppointmentService.manager.query.mockResolvedValue(queryResult);
 
       bodyValidation.mockResolvedValue(mockReq.body);
@@ -505,50 +491,16 @@ describe('Appointments.Calendar controller', () => {
 
       await CalendarFetchController.execute(mockReq, mockRes);
 
-      // Person validation
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockPersonService.findOne).toHaveBeenCalledWith({
-        id: mockRes.locals.token.id,
-        options: { loadRelationIds: true }
-      });
       // Check if person can access the calendar
-      expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledWith({
-        alias: 'gz'
+      expect(calendarAccessSpy).toHaveBeenCalledTimes(1);
+      expect(calendarAccessSpy).toHaveBeenCalledWith({
+        controller: CalendarFetchController,
+        personService: {},
+        gymZoneService: mockGymZoneService,
+        res: mockRes,
+        personId: mockRes.locals.token.id,
+        calendarId: mockReq.params.id
       });
-      expect(mockGymZoneQueryBuilder.where).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneQueryBuilder.where).toHaveBeenCalledWith(
-        'gz.calendar = :calendarId',
-        { calendarId: mockReq.params.id }
-      );
-      expect(mockGymZoneQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
-      expect(mockGymZoneQueryBuilder.andWhere).toHaveBeenNthCalledWith(
-        1,
-        'gym.id = :gymId',
-        { gymId: mockPerson.gym }
-      );
-      expect(mockGymZoneQueryBuilder.andWhere).toHaveBeenNthCalledWith(
-        2,
-        'p.id = :personId',
-        { personId: mockPerson.id }
-      );
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenCalledTimes(3);
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
-        1,
-        'gz.virtualGym',
-        'vg'
-      );
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
-        2,
-        'vg.gym',
-        'gym'
-      );
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
-        3,
-        Person,
-        'p'
-      );
-      expect(mockGymZoneQueryBuilder.getCount).toHaveBeenCalledTimes(1);
       // Validate the body
       expect(bodyValidation).toHaveBeenCalledTimes(1);
       expect(bodyValidation).toHaveBeenCalledWith(mockReq.body);
@@ -572,71 +524,20 @@ describe('Appointments.Calendar controller', () => {
       );
     });
 
-    it('should send unauthorized if person does not exist', async () => {
-      mockPersonService.findOne.mockResolvedValue(undefined);
-      const unauthorizedSpy = jest
-        .spyOn(CalendarFetchController, 'unauthorized')
-        .mockImplementation();
+    it('should return if accessValidation does not pass', async () => {
+      mockPersonService.findOne.mockRejectedValue(mockPerson);
+      calendarAccessSpy.mockResolvedValue('error' as any);
 
       setupServices();
 
       await CalendarFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
-      expect(unauthorizedSpy).toHaveBeenCalledWith(
-        mockRes,
-        'Person does not exist.'
-      );
-    });
-
-    it('should send unauthorized if person does not exist', async () => {
-      mockPersonService.findOne.mockRejectedValue('error-thrown');
-      setupServices();
-
-      await CalendarFetchController.execute(mockReq, mockRes);
-
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      failAsserts(CalendarFetchController, failSpy, 'fetch');
-    });
-
-    it('should send forbidden if user can not access the calendar', async () => {
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-      mockGymZoneQueryBuilder.getCount.mockResolvedValue(0);
-      const forbiddenSpy = jest
-        .spyOn(CalendarFetchController, 'forbidden')
-        .mockImplementation();
-
-      setupServices();
-
-      await CalendarFetchController.execute(mockReq, mockRes);
-
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      queryBuilderAsserts();
-      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
-      expect(forbiddenSpy).toHaveBeenCalledWith(
-        mockRes,
-        'Client does not have access to the chosen calendar.'
-      );
-    });
-
-    it('should send fail on queryBuilder error', async () => {
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-      mockGymZoneQueryBuilder.getCount.mockRejectedValue('error-thrown');
-
-      setupServices();
-
-      await CalendarFetchController.execute(mockReq, mockRes);
-
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      queryBuilderAsserts();
-      failAsserts(CalendarFetchController, failSpy, 'fetch');
+      expect(calendarAccessSpy).toHaveBeenCalledTimes(1);
+      expect(bodyValidation).not.toHaveBeenCalled();
     });
 
     it('should send clientError if body is not valid', async () => {
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-      mockGymZoneQueryBuilder.getCount.mockResolvedValue(1);
-
+      calendarAccessSpy.mockResolvedValue(undefined);
       bodyValidation.mockRejectedValue({});
       const clientErrorSpy = jest
         .spyOn(CalendarFetchController, 'clientError')
@@ -646,8 +547,8 @@ describe('Appointments.Calendar controller', () => {
 
       await CalendarFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      queryBuilderAsserts();
+      expect(calendarAccessSpy).toHaveBeenCalledTimes(1);
+      expect(bodyValidation).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith(mockRes, {});
     });
@@ -658,8 +559,7 @@ describe('Appointments.Calendar controller', () => {
         body: { date: { ...mockReq.body.date, year: 2000 } }
       };
 
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-      mockGymZoneQueryBuilder.getCount.mockResolvedValue(1);
+      calendarAccessSpy.mockResolvedValue(undefined);
       bodyValidation.mockResolvedValue(pastDateReq.body);
 
       const clientErrorSpy = jest
@@ -670,8 +570,8 @@ describe('Appointments.Calendar controller', () => {
 
       await CalendarFetchController.execute(pastDateReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      queryBuilderAsserts();
+      expect(calendarAccessSpy).toHaveBeenCalledTimes(1);
+      expect(bodyValidation).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith(
         mockRes,
@@ -680,8 +580,7 @@ describe('Appointments.Calendar controller', () => {
     });
 
     it('should send fail on query error', async () => {
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-      mockGymZoneQueryBuilder.getCount.mockResolvedValue(1);
+      calendarAccessSpy.mockResolvedValue(undefined);
       bodyValidation.mockResolvedValue(mockReq.body);
       mockAppointmentService.manager.query.mockRejectedValue('error-thrown');
 
@@ -689,8 +588,8 @@ describe('Appointments.Calendar controller', () => {
 
       await CalendarFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      queryBuilderAsserts();
+      expect(calendarAccessSpy).toHaveBeenCalledTimes(1);
+      expect(bodyValidation).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
       failAsserts(CalendarFetchController, failSpy, 'fetch');
     });
