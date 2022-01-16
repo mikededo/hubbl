@@ -19,7 +19,7 @@ jobs:
         uses: nrwl/nx-set-shas@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '14'
+          node-version: '16.10.0'
       - run: npm ci
       - run: npx nx affected --target=build --parallel --max-parallel=3
       - run: npx nx affected --target=test --parallel --max-parallel=2 --codeCoverage --coverageReporters lcov
@@ -40,7 +40,7 @@ jobs:
         uses: nrwl/nx-set-shas@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '14'
+          node-version: '16.10.0'
       - run: npm ci
       - run: npx nx affected --target=build --parallel --max-parallel=3
       - run: npx nx affected --target=test --parallel --max-parallel=2 --codeCoverage --coverageReporters lcov
