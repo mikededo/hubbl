@@ -10,7 +10,9 @@ import {
 import {
   CalendarDate,
   Event,
-  EventAppointment
+  EventAppointment,
+  Gym,
+  Trainer
 } from '@hubbl/shared/models/entities';
 import {
   booleanError,
@@ -22,6 +24,7 @@ import {
 
 import DTO from '../Base';
 import CalendarDateDTO from '../CalendarDate';
+import TrainerDTO from '../Trainer';
 import { DTOGroups } from '../util';
 
 export default class EventDTO implements DTO<Event> {
@@ -81,7 +84,7 @@ export default class EventDTO implements DTO<Event> {
       groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
     }
   )
-  trainer!: number;
+  trainer!: number | TrainerDTO<number | Gym>;
 
   @IsNumber(
     {},
@@ -100,6 +103,8 @@ export default class EventDTO implements DTO<Event> {
 
   /* Non required validation fields */
   appointments!: EventAppointment[];
+
+  appointmentCount!: number;
 
   private static propMapper(from: Event | any): EventDTO {
     const result = new EventDTO();
@@ -159,17 +164,17 @@ export default class EventDTO implements DTO<Event> {
    * @param event The fetched event
    * @returns The parsed `EventDTO`
    */
-  public static async fromClass(event: Event): Promise<EventDTO> {
+  public static fromClass(event: Event): EventDTO {
     const result = EventDTO.propMapper(event);
 
-    result.appointments = event.appointments;
+    // When from class, parse the trainer if is not a number
+    if (event.trainer instanceof Trainer) {
+      result.trainer = TrainerDTO.fromClass(event.trainer);
+    }
 
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
+    result.appointments = event.appointments;
+    // When events are fetched, they return the amount of appointments
+    result.appointmentCount = event.appointmentCount;
 
     return result;
   }
@@ -189,7 +194,7 @@ export default class EventDTO implements DTO<Event> {
     result.maskRequired = this.maskRequired;
     result.startTime = this.startTime;
     result.endTime = this.endTime;
-    result.trainer = this.trainer;
+    result.trainer = this.trainer as number;
     result.calendar = this.calendar;
     result.template = this.template;
     result.date = this.date;

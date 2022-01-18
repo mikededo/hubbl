@@ -672,7 +672,7 @@ describe('Appointments.Calendar controller', () => {
     });
 
     it('should create a CalendarAppointment by a client', async () => {
-      fromClassSpy.mockResolvedValue(mockDto);
+      fromClassSpy.mockReturnValue(mockDto);
 
       const createdSpy = jest
         .spyOn(CalendarCreateController, 'created')
@@ -825,37 +825,9 @@ describe('Appointments.Calendar controller', () => {
         failAsserts(CalendarCreateController, failSpy, 'create');
       });
 
-      it('should send fail on fromClass error', async () => {
-        fromJsonSpy.mockResolvedValue(mockDto);
-        fromClassSpy.mockRejectedValue('error-thrown');
-
-        mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-        mockAppointmentService.manager.query.mockResolvedValue([
-          {
-            max: 0
-          }
-        ]);
-        mockClientService.findOne.mockResolvedValue(mockClient);
-        mockAppointmentService.count.mockResolvedValue(0);
-        mockAppointmentService.save.mockResolvedValue(mockAppointment);
-
-        setupServices(CalendarCreateController);
-
-        await CalendarCreateController.execute(mockClientReq, mockRes);
-
-        expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-        expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
-        expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
-        expect(fromClassSpy).toHaveBeenCalledTimes(1);
-        failAsserts(CalendarCreateController, failSpy, 'create');
-      });
-
       it('should send fail on created error', async () => {
         fromJsonSpy.mockResolvedValue(mockDto);
-        fromClassSpy.mockResolvedValue(mockDto);
+        fromClassSpy.mockReturnValue(mockDto);
 
         mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
         mockAppointmentService.manager.query.mockResolvedValue([
@@ -950,7 +922,7 @@ describe('Appointments.Calendar controller', () => {
     it('should call updatedByOwnerOrWorker by any owner or worker', async () => {
       const fromClassSpy = jest
         .spyOn(CalendarAppointmentDTO, 'fromClass')
-        .mockResolvedValue({ ...mockDto, cancelled: true } as any);
+        .mockReturnValue({ ...mockDto, cancelled: true } as any);
       const uboow = jest
         .spyOn(update, 'updatedByOwnerOrWorker')
         .mockImplementation();

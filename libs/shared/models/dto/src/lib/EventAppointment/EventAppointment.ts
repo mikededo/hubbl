@@ -95,17 +95,8 @@ export default class EventAppointmentDTO implements DTO<EventAppointment> {
    * @param event The fetched event
    * @returns The parsed `EventDTO`
    */
-  public static async fromClass(
-    event: EventAppointment
-  ): Promise<EventAppointmentDTO> {
+  public static fromClass(event: EventAppointment): EventAppointmentDTO {
     const result = EventAppointmentDTO.propMapper(event);
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

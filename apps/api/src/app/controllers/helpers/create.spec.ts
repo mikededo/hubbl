@@ -62,7 +62,7 @@ describe('create', () => {
         workerService = {} as any,
         by
       }: CommonShouldCreateByProps) => {
-        fromClassSpy.mockResolvedValue(mockEntityDto);
+        fromClassSpy.mockReturnValue(mockEntityDto);
         const saveSpy = jest
           .spyOn(service, 'save')
           .mockResolvedValue(mockEntity);
@@ -263,51 +263,6 @@ describe('create', () => {
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
         'Ensure to pass the [by] parameter. Valid values are ["owner", "worker"].'
-      );
-    });
-
-    it('should send fail if fromClass error', async () => {
-      fromClassSpy.mockRejectedValue({});
-      const mockRes = {
-        json: jest.fn().mockReturnThis(),
-        status: jest.fn().mockReturnThis()
-      } as any;
-
-      const mockService = {
-        count: jest.fn().mockResolvedValue(1),
-        save: jest.fn().mockResolvedValue(mockEntity)
-      } as any;
-      const mockOwnerService = {
-        count: jest.fn().mockResolvedValue(1)
-      } as any;
-
-      await create.createdByOwnerOrWorker({
-        controller: mockController,
-        service: mockService,
-        ownerService: mockOwnerService,
-        workerService: {} as any,
-        res: mockRes,
-        fromClass: fromClassSpy,
-        by: 'owner',
-        dto: mockEntityDto,
-        token: { id: 1, email: 'test@user.com', exp: Date.now() },
-        entityName: 'VirtualGym',
-        workerCreatePermission: 'any' as any
-      });
-
-      // Common checks
-      expect(mockEntityDto.toClass).toHaveBeenCalledTimes(1);
-      expect(mockService.save).toHaveBeenCalledTimes(1);
-      expect(mockService.save).toHaveBeenCalledWith(mockEntity);
-      expect(fromClassSpy).toHaveBeenCalledTimes(1);
-      expect(fromClassSpy).toHaveBeenCalledWith(mockEntity);
-      expect(mockController.created).toHaveBeenCalledTimes(0);
-
-      logAsserts();
-      expect(mockController.fail).toHaveBeenCalledTimes(1);
-      expect(mockController.fail).toHaveBeenCalledWith(
-        mockRes,
-        'Internal server error. If the error persists, contact our team.'
       );
     });
   });

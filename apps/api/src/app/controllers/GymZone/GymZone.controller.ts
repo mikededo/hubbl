@@ -49,10 +49,7 @@ class IGymZoneFetchController extends BaseController {
           })
           .getMany();
 
-        return this.ok(
-          res,
-          await Promise.all(result.map(GymZoneDTO.fromClass))
-        );
+        return this.ok(res, result.map(GymZoneDTO.fromClass));
       } catch (_) {
         log.error(
           `Controller[${this.constructor.name}]`,

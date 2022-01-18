@@ -1,10 +1,12 @@
 import * as ClassValidator from 'class-validator';
 
-import { CalendarDate, Event } from '@hubbl/shared/models/entities';
+import { CalendarDate, Event, Trainer } from '@hubbl/shared/models/entities';
 import * as helpers from '@hubbl/shared/models/helpers';
+import * as Utils from '../util';
 
 import CalendarDateDTO from '../CalendarDate';
 import EventDTO from './Event';
+import TrainerDTO from '../Trainer';
 
 jest.mock('@hubbl/shared/models/entities');
 jest.mock('@hubbl/shared/models/helpers');
@@ -24,6 +26,32 @@ const propCompare = (want: Event | EventDTO, got: Event | EventDTO) => {
   expect(got.date.year).toBe(want.date.year);
   expect(got.date.month).toBe(want.date.month);
   expect(got.date.day).toBe(want.date.day);
+};
+
+const createEvent = (): Event => {
+  const event = new Event();
+  const date = new CalendarDate();
+
+  date.day = 29;
+  date.month = 6;
+  date.year = 2000;
+
+  event.id = 1;
+  event.name = 'Event';
+  event.description = 'Description';
+  event.capacity = 1000;
+  event.covidPassport = true;
+  event.maskRequired = true;
+  event.startTime = '09:00:00';
+  event.endTime = '10:00:00';
+  event.trainer = 1;
+  event.calendar = 1;
+  event.template = 1;
+  event.date = date;
+  event.appointments = [];
+  event.appointmentCount = 0;
+
+  return event;
 };
 
 describe('Event', () => {
@@ -117,60 +145,34 @@ describe('Event', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create an EventDTO from a correct Event', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
+    it('should create an EventDTO from a correct Event', () => {
+      const event = createEvent();
 
-      const event = new Event();
-      const date = new CalendarDate();
-
-      date.day = 29;
-      date.month = 6;
-      date.year = 2000;
-
-      event.id = 1;
-      event.name = 'Event';
-      event.description = 'Description';
-      event.capacity = 1000;
-      event.covidPassport = true;
-      event.maskRequired = true;
-      event.startTime = '09:00:00';
-      event.endTime = '10:00:00';
-      event.trainer = 1;
-      event.calendar = 1;
-      event.template = 1;
-      event.date = date;
-      event.appointments = [];
-
-      const result = await EventDTO.fromClass(event);
+      const result = EventDTO.fromClass(event);
 
       expect(result).toBeDefined();
       propCompare(event, result);
 
       // Additional fields
       expect(result.appointments).toStrictEqual([]);
-
-      // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
+      expect(result.appointmentCount).toBe(0);
     });
 
-    it('should fail on creating a EventDTO from an incorrect Event', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
+    it('should call Trainer#fromClass', () => {
+      const trainerSpy = jest
+        .spyOn(TrainerDTO, 'fromClass')
+        .mockImplementation();
+      const event = createEvent();
 
-      expect.assertions(3);
+      const trainer = new Trainer();
+      trainer.person = Utils.createPerson();
 
-      try {
-        await EventDTO.fromClass({ date: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
+      event.trainer = trainer;
 
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
+      EventDTO.fromClass(event);
+
+      expect(trainerSpy).toHaveBeenCalledTimes(1);
+      expect(trainerSpy).toHaveBeenCalledWith(trainer);
     });
   });
 

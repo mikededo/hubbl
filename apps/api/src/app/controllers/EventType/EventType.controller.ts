@@ -43,14 +43,12 @@ class IEventTypeFetchController extends BaseController {
 
         return this.ok(
           res,
-          await Promise.all(
-            result.map((ev) => {
-              // Needs to be added as the find query does not parse the gym id
-              ev.gym = gymId;
+          result.map((ev) => {
+            // Needs to be added as the find query does not parse the gym id
+            ev.gym = gymId;
 
-              return EventTypeDTO.fromClass(ev);
-            })
-          )
+            return EventTypeDTO.fromClass(ev);
+          })
         );
       } catch (_) {
         log.error(

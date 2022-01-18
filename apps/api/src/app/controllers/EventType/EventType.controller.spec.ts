@@ -95,7 +95,7 @@ describe('EventType controller', () => {
       };
       const fromClassSpy = jest
         .spyOn(EventTypeDTO, 'fromClass')
-        .mockResolvedValue(mockDto as any);
+        .mockReturnValue(mockDto as any);
       const okSpy = jest
         .spyOn(EventTypeFetchController, 'ok')
         .mockImplementation();
@@ -178,52 +178,6 @@ describe('EventType controller', () => {
       expect(mockEventTypeService.find).toHaveBeenCalledWith({
         where: { gym: mockPerson.gym.id }
       });
-      // Ensure fail is called
-      failSpyAsserts(failSpy);
-    });
-
-    it('should call fail on fromClass error', async () => {
-      let mockResCallback: any;
-
-      const resultList = {
-        map: jest.fn().mockImplementation((callback: any) => {
-          expect(callback).toBeDefined();
-          // Capture the callback
-          mockResCallback = callback;
-
-          throw {};
-        })
-      };
-      const fromClassSpy = jest
-        .spyOn(EventTypeDTO, 'fromClass')
-        .mockRejectedValue('mockDto as any');
-      const failSpy = jest
-        .spyOn(EventTypeFetchController, 'fail')
-        .mockImplementation();
-
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-      mockEventTypeService.find.mockResolvedValue(resultList);
-
-      EventTypeFetchController['service'] = mockEventTypeService as any;
-      EventTypeFetchController['personService'] = mockPersonService as any;
-
-      await EventTypeFetchController.execute(mockReq, mockRes);
-      [mockEventType, mockEventType].map(async (e) => {
-        try {
-          await mockResCallback(e);
-        } catch (e) {
-          // Nothing
-        }
-      });
-
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockEventTypeService.find).toHaveBeenCalledTimes(1);
-      expect(mockEventTypeService.find).toHaveBeenCalledWith({
-        where: { gym: mockPerson.gym.id }
-      });
-      // Ensure fromClass is called
-      expect(fromClassSpy).toHaveBeenCalledTimes(2);
-      expect(fromClassSpy).toHaveBeenCalledWith(mockEventType);
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });

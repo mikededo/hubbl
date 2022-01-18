@@ -60,7 +60,7 @@ export default class OwnerDTO<T extends Gym | number>
    * @param owner The fetched owner
    * @returns The dto  to be send as a response
    */
-  public static async fromClass(owner: Owner): Promise<OwnerDTO<Gym>> {
+  public static fromClass(owner: Owner): OwnerDTO<Gym> {
     const result = new OwnerDTO<Gym>();
 
     result.id = owner.person.id;
@@ -72,15 +72,8 @@ export default class OwnerDTO<T extends Gym | number>
     result.gender = owner.person.gender as Gender;
 
     // Parse the gym to a dto and after to a class
-    const gymDto = await GymDTO.fromClass(owner.person.gym as Gym);
+    const gymDto = GymDTO.fromClass(owner.person.gym as Gym);
     result.gym = gymDto.toClass();
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

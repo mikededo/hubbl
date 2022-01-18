@@ -127,17 +127,10 @@ export default class CalendarAppointmentDTO
    * @param event The fetched event
    * @returns The parsed `CalendarAppointmenDTO`
    */
-  public static async fromClass(
+  public static fromClass(
     calendarAppointment: CalendarAppointment
-  ): Promise<CalendarAppointmentDTO> {
+  ): CalendarAppointmentDTO {
     const result = CalendarAppointmentDTO.propMapper(calendarAppointment);
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

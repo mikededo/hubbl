@@ -66,9 +66,6 @@ describe('TrainerDTO', () => {
 
   describe('#fromClass', () => {
     it('should create an TrainerDTO from a correct Trainer', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const trainer = new Trainer();
@@ -78,7 +75,7 @@ describe('TrainerDTO', () => {
       trainer.workerCode = 'some-uuid';
       trainer.events = [];
 
-      const result = await TrainerDTO.fromClass(trainer);
+      const result = TrainerDTO.fromClass(trainer);
 
       expect(result.id).toBe(trainer.person.id);
       expect(result.email).toBe(trainer.person.email);
@@ -92,26 +89,6 @@ describe('TrainerDTO', () => {
       expect(result.managerId).toBe(trainer.managerId);
       expect(result.workerCode).toBe(trainer.workerCode);
       expect(result.events).toBe(trainer.events);
-      // Ensure validation has been called
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating an TrainerDTO from an incorrect Trainer', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await TrainerDTO.fromClass({ person: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

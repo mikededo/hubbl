@@ -41,7 +41,7 @@ class IVirtualGymFetchController extends BaseController {
 
         return this.ok(
           res,
-          await Promise.all(result.map((vg) => VirtualGymDTO.fromClass(vg)))
+          result.map((vg) => VirtualGymDTO.fromClass(vg))
         );
       } catch (_) {
         log.error(

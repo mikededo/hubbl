@@ -150,9 +150,6 @@ describe('WorkerDTO', () => {
 
   describe('#fromClass', () => {
     it('should create an WorkerDTO from a correct Worker', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const worker = new Worker();
@@ -160,13 +157,15 @@ describe('WorkerDTO', () => {
       worker.person = Util.createPerson(password);
       workerPropsAssign(worker);
 
-      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+      const gymFromClassSpy = jest.spyOn(GymDTO, 'fromClass').mockReturnValue({
         ...(worker.person.gym as Gym),
         toClass: jest.fn().mockReturnValue(worker.person.gym)
       });
 
-      const result = await WorkerDTO.fromClass(worker);
+      const result = WorkerDTO.fromClass(worker);
 
+      expect(gymFromClassSpy).toHaveBeenCalledTimes(1);
+      expect(gymFromClassSpy).toHaveBeenCalledWith(worker.person.gym);
       workerPropCompare(result, worker);
       expect(result.email).toBe(worker.person.email);
       expect(result.password).toBe(worker.person.password);
@@ -176,27 +175,6 @@ describe('WorkerDTO', () => {
 
       // Additional checks
       expect(result.gym).toBeInstanceOf(Gym);
-
-      // Ensure validation has been called
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating an WorkerDTO from an incorrect Worker', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await WorkerDTO.fromClass({ person: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

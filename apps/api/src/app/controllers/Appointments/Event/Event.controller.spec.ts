@@ -408,7 +408,7 @@ describe('Appointments.Event controller', () => {
     });
 
     it('should create an EventAppointment by a client', async () => {
-      fromClassSpy.mockResolvedValue(mockDto);
+      fromClassSpy.mockReturnValue(mockDto);
 
       const createdSpy = jest
         .spyOn(EventCreateController, 'created')
@@ -594,7 +594,7 @@ describe('Appointments.Event controller', () => {
 
       it('should send fail on created error', async () => {
         fromJsonSpy.mockResolvedValue(mockDto);
-        fromClassSpy.mockResolvedValue(mockDto);
+        fromClassSpy.mockReturnValue(mockDto);
 
         mockEventService.findOne.mockResolvedValue(mockEvent);
         mockClientService.findOne.mockResolvedValue(mockClient);
@@ -705,7 +705,7 @@ describe('Appointments.Event controller', () => {
     it('should call updatedByOwnerOrWorker by an owner or worker', async () => {
       const fromClassSpy = jest
         .spyOn(EventAppointmentDTO, 'fromClass')
-        .mockResolvedValue({ ...mockDto, cancelled: true });
+        .mockReturnValue({ ...mockDto, cancelled: true });
       const uboow = jest
         .spyOn(update, 'updatedByOwnerOrWorker')
         .mockImplementation();

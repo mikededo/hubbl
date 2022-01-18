@@ -154,15 +154,8 @@ export default class GymZoneDTO implements DTO<GymZone> {
    * @param gymZone The fetched gym zone
    * @returns The dto to be send as a response
    */
-  public static async fromClass(gymZone: GymZone): Promise<GymZoneDTO> {
+  public static fromClass(gymZone: GymZone): GymZoneDTO {
     const result = GymZoneDTO.propMapper(gymZone);
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

@@ -88,15 +88,8 @@ export default class EventTypeDTO implements DTO<EventType> {
    * @param eventType The fetched event type
    * @returns The dto to be send as a response
    */
-  public static async fromClass(eventType: EventType): Promise<EventTypeDTO> {
+  public static fromClass(eventType: EventType): EventTypeDTO {
     const result = EventTypeDTO.propMapper(eventType);
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }
