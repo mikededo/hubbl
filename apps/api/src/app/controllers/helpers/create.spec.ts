@@ -265,6 +265,33 @@ describe('create', () => {
         'Ensure to pass the [by] parameter. Valid values are ["owner", "worker"].'
       );
     });
+
+    it('should send fail if on service.save error', async () => {
+      const mockOwnerService = { count: jest.fn().mockResolvedValue(1) };
+      const mockService = { save: jest.fn().mockRejectedValue('error-thrown') };
+
+      await create.createdByOwnerOrWorker({
+        controller: mockController,
+        service: mockService as any,
+        ownerService: mockOwnerService as any,
+        workerService: {} as any,
+        res: {} as any,
+        fromClass: fromClassSpy,
+        token: { id: 1 } as any,
+        by: 'owner',
+        dto: mockEntityDto,
+        entityName: 'any' as any
+      });
+
+      expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
+      expect(mockService.save).toHaveBeenCalledTimes(1);
+      logAsserts();
+      expect(mockController.fail).toHaveBeenCalledTimes(1);
+      expect(mockController.fail).toHaveBeenCalledWith(
+        {},
+        'Internal server error. If the error persists, contact our team.'
+      );
+    });
   });
 
   describe('createByOwner', () => {

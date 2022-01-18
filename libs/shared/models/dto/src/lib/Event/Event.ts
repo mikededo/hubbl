@@ -169,7 +169,7 @@ export default class EventDTO implements DTO<Event> {
 
     // When from class, parse the trainer if is not a number
     if (event.trainer instanceof Trainer) {
-      result.trainer = TrainerDTO.fromClass(event.trainer);
+      result.trainer = TrainerDTO.fromClass(event.trainer, 'info');
     }
 
     result.appointments = event.appointments;

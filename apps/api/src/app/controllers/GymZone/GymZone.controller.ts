@@ -16,6 +16,19 @@ class IGymZoneFetchController extends BaseController {
   protected service: GymZoneService = undefined;
   protected personService: PersonService = undefined;
 
+  private onFail(res: Response, error: any): Response {
+    log.error(
+      `Controller[${this.constructor.name}]`,
+      '"fetch" handler',
+      error.toString()
+    );
+
+    return this.fail(
+      res,
+      'Internal server error. If the problem persists, contact our team.'
+    );
+  }
+
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new GymZoneService(getRepository);
@@ -49,30 +62,15 @@ class IGymZoneFetchController extends BaseController {
           })
           .getMany();
 
-        return this.ok(res, result.map(GymZoneDTO.fromClass));
-      } catch (_) {
-        log.error(
-          `Controller[${this.constructor.name}]`,
-          '"fetch" handler',
-          _.toString()
-        );
-
-        return this.fail(
+        return this.ok(
           res,
-          'Internal server error. If the problem persists, contact our team.'
+          await Promise.all(result.map(GymZoneDTO.fromClass))
         );
+      } catch (e) {
+        return this.onFail(res, e);
       }
-    } catch (_) {
-      log.error(
-        `Controller[${this.constructor.name}]`,
-        '"fetch" handler',
-        _.toString()
-      );
-
-      return this.fail(
-        res,
-        'Internal server error. If the problem persists, contact our team.'
-      );
+    } catch (e) {
+      return this.onFail(res, e);
     }
   }
 }

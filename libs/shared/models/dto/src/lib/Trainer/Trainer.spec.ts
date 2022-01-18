@@ -90,6 +90,33 @@ describe('TrainerDTO', () => {
       expect(result.workerCode).toBe(trainer.workerCode);
       expect(result.events).toBe(trainer.events);
     });
+
+    it('should return the info only params if variant is info', async () => {
+      const password = await hash('testpwd00', await genSalt(10));
+
+      const trainer = new Trainer();
+
+      trainer.person = Util.createPerson(password);
+      trainer.managerId = 1;
+      trainer.workerCode = 'some-uuid';
+      trainer.events = [];
+
+      const result = TrainerDTO.fromClass(trainer, 'info');
+
+      // Must have fields
+      expect(result.id).toBe(trainer.person.id);
+      expect(result.firstName).toBe(trainer.person.firstName);
+      expect(result.lastName).toBe(trainer.person.lastName);
+
+      expect(result.email).toBeUndefined();
+      expect(result.password).toBeUndefined();
+      expect(result.theme).toBeUndefined();
+      expect(result.gender).toBeUndefined();
+      expect(result.gym).toBeUndefined();
+      expect(result.managerId).toBeUndefined();
+      expect(result.workerCode).toBeUndefined();
+      expect(result.events).toBeUndefined();
+    });
   });
 
   describe('#toClass', () => {

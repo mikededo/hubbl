@@ -172,7 +172,7 @@ describe('Event', () => {
       EventDTO.fromClass(event);
 
       expect(trainerSpy).toHaveBeenCalledTimes(1);
-      expect(trainerSpy).toHaveBeenCalledWith(trainer);
+      expect(trainerSpy).toHaveBeenCalledWith(trainer, 'info');
     });
   });
 
