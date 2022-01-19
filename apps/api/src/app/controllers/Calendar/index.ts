@@ -1,3 +1,9 @@
-import { CalendarFetchEventsController } from './Calendar.controller';
+import {
+  CalendarFetchEventsController,
+  CalendarFetchEventAppointmentsController
+} from './Calendar.controller';
 
-export { CalendarFetchEventsController };
+export {
+  CalendarFetchEventsController,
+  CalendarFetchEventAppointmentsController
+};

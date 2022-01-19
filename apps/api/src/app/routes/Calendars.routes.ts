@@ -1,6 +1,9 @@
 import { Router } from 'express';
 
-import { CalendarFetchEventsController } from '../controllers';
+import {
+  CalendarFetchEventsController,
+  CalendarFetchEventAppointmentsController
+} from '../controllers';
 import middlewares from '../middlewares';
 
 const CalendarRouter: Router = Router();
@@ -11,6 +14,14 @@ const CalendarRouter: Router = Router();
  */
 CalendarRouter.get('/:id', middlewares.auth, (req, res) => {
   CalendarFetchEventsController.execute(req, res);
+});
+
+/**
+ * @descirption Returns the list of appointments with the client
+ * informations for a selected event
+ */
+CalendarRouter.get('/:id/events/:eId', middlewares.auth, (req, res) => {
+  CalendarFetchEventAppointmentsController.execute(req, res);
 });
 
 export default CalendarRouter;

@@ -1,19 +1,49 @@
+import { Request, Response } from 'express';
 import * as log from 'npmlog';
-
-import { Response, Request } from 'express';
+import { getRepository } from 'typeorm';
 
 import { EventDTO } from '@hubbl/shared/models/dto';
-import { EventService, GymZoneService, PersonService } from '../../services';
+
+import {
+  EventAppointmentService,
+  EventService,
+  GymZoneService,
+  PersonService
+} from '../../services';
 import BaseController from '../Base';
-import { getRepository } from 'typeorm';
 import { userAccessToCalendar } from '../helpers';
 
-class ICalendarFetchEventsController extends BaseController {
+abstract class CalendarFetchBase extends BaseController {
   protected gymZoneService: GymZoneService = undefined;
   protected personService: PersonService = undefined;
-  protected eventService: EventService = undefined;
 
-  private onFail(res: Response, error: any): Response {
+  protected checkServices() {
+    if (!this.gymZoneService) {
+      this.gymZoneService = new GymZoneService(getRepository);
+    }
+
+    if (!this.personService) {
+      this.personService = new PersonService(getRepository);
+    }
+  }
+
+  protected validDate(
+    year: number,
+    month: number,
+    day: number
+  ): Date | undefined {
+    const date = new Date(year, month - 1, day);
+    if (
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ) {
+      return undefined;
+    }
+    return date;
+  }
+
+  protected onFail(res: Response, error: any): Response {
     log.error(
       `Controller[${this.constructor.name}]`,
       '"fetch" handler',
@@ -25,6 +55,10 @@ class ICalendarFetchEventsController extends BaseController {
       'Internal server error. If the problem persists, contact our team.'
     );
   }
+}
+
+class ICalendarFetchEventsController extends CalendarFetchBase {
+  protected eventService: EventService = undefined;
 
   private parseParamDate(paramDate: string): [Date, Date] | undefined {
     if (!paramDate) {
@@ -36,12 +70,8 @@ class ICalendarFetchEventsController extends BaseController {
     }
 
     const [year, month, day] = paramDate.split('-');
-    const date = new Date(+year, +month - 1, +day);
-    if (
-      date.getFullYear() !== +year ||
-      date.getMonth() !== +month - 1 ||
-      date.getDate() !== +day
-    ) {
+    const date = this.validDate(+year, +month, +day);
+    if (!date) {
       return undefined;
     }
 
@@ -62,13 +92,7 @@ class ICalendarFetchEventsController extends BaseController {
   }
 
   protected async run(req: Request, res: Response): Promise<Response> {
-    if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
-    }
-
-    if (!this.personService) {
-      this.personService = new PersonService(getRepository);
-    }
+    this.checkServices();
 
     if (!this.eventService) {
       this.eventService = new EventService(getRepository);
@@ -147,3 +171,60 @@ class ICalendarFetchEventsController extends BaseController {
 const fetchEventsInstance = new ICalendarFetchEventsController();
 
 export const CalendarFetchEventsController = fetchEventsInstance;
+
+class ICalendarFetchEventAppointmentsController extends CalendarFetchBase {
+  protected eventAppointmentService: EventAppointmentService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    this.checkServices();
+
+    if (!this.eventAppointmentService) {
+      this.eventAppointmentService = new EventAppointmentService(getRepository);
+    }
+
+    const { token } = res.locals;
+    const calendarId = +req.params.id;
+    const eventId = +req.params.eId;
+
+    // TODO: Give access only to owners and workers
+
+    const validation = await userAccessToCalendar({
+      controller: this,
+      personService: this.personService,
+      gymZoneService: this.gymZoneService,
+      res,
+      personId: token.id,
+      calendarId
+    });
+    if (validation) {
+      return validation;
+    }
+
+    try {
+      const result = await this.eventAppointmentService
+        .createQueryBuilder({ alias: 'ea' })
+        .select([
+          'p.id as id',
+          'p.firstName as firstName',
+          'p.lastName as lastName',
+          'p.email as email',
+          'c.covidPassport as covidPassport',
+          'ea.cancelled as cancelled'
+        ])
+        .where('ea.event = :eventId', { eventId })
+        .leftJoin('ea.client', 'c')
+        .leftJoin('c.person', 'p', 'ea.client = p.id')
+        .getRawMany();
+
+      return this.ok(res, result);
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+  }
+}
+
+const fetchEventAppointmentsInstance =
+  new ICalendarFetchEventAppointmentsController();
+
+export const CalendarFetchEventAppointmentsController =
+  fetchEventAppointmentsInstance;
