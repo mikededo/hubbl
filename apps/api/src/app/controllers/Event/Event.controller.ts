@@ -75,6 +75,30 @@ class IEventCreateController extends BaseController {
     }
 
     try {
+      const count = await this.service
+        .createQueryBuilder({ alias: 'e' })
+        .where('e.startTime < :endTime', { endTime: dto.endTime })
+        .andWhere('e.endTime > :startTime', { startTime: dto.startTime })
+        .andWhere('e.date.year = :year', { year: dto.date.year })
+        .andWhere('e.date.month = :month', { month: dto.date.month })
+        .andWhere('e.date.day = :day', { day: dto.date.day })
+        .andWhere('e.trainer.person.id = :trainer', { trainer: dto.trainer })
+        .getCount();
+
+      if (count) {
+        return this.forbidden(
+          res,
+          'Trainer has already an event that overlaps with the given date and timestamps.'
+        );
+      }
+    } catch (e) {
+      return this.fail(
+        res,
+        'Internal server error. If the problem persists, contact our team.'
+      );
+    }
+
+    try {
       // Check if there's any event that overlaps
       const overlappedEvents = await this.service
         .createQueryBuilder({ alias: 'e' })

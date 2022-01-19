@@ -39,17 +39,22 @@ describe('Event controller', () => {
     ...mockEvent,
     toClass: jest.fn()
   };
+
   const mockService = {
     createQueryBuilder: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
     andWhere: jest.fn().mockReturnThis(),
     getCount: jest.fn()
   };
+  const fromJsonSpy = jest.spyOn(EventDTO, 'fromJson');
+
   const mockReq = { query: { by: 'owner' }, body: {} };
   const mockRes = { locals: { token: { id: 1 } } };
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    fromJsonSpy.mockResolvedValue(mockDto as any);
   });
 
   const servicesAsserts = async (
@@ -116,13 +121,11 @@ describe('Event controller', () => {
   };
 
   const overlappedAsserts = async (
-    controller: typeof EventCreateController | typeof EventUpdateController
+    controller: typeof EventCreateController | typeof EventUpdateController,
+    countTimes = 1
   ) => {
     mockService.getCount.mockResolvedValue(1);
 
-    const fromJsonSpy = jest
-      .spyOn(EventDTO, 'fromJson')
-      .mockResolvedValue(mockDto as any);
     const clientErrorSpy = jest
       .spyOn(controller, 'clientError')
       .mockImplementation();
@@ -134,7 +137,7 @@ describe('Event controller', () => {
     await controller.execute(mockReq as any, mockRes as any);
 
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-    expect(mockService.getCount).toHaveBeenCalledTimes(1);
+    expect(mockService.getCount).toHaveBeenCalledTimes(countTimes);
     expect(clientErrorSpy).toHaveBeenCalledTimes(1);
     expect(clientErrorSpy).toHaveBeenCalledWith(
       mockRes,
@@ -145,13 +148,11 @@ describe('Event controller', () => {
   };
 
   const serviceFailAsserts = async (
-    controller: typeof EventCreateController | typeof EventUpdateController
+    controller: typeof EventCreateController | typeof EventUpdateController,
+    countTimes = 1
   ) => {
     mockService.getCount.mockRejectedValue({});
 
-    const fromJsonSpy = jest
-      .spyOn(EventDTO, 'fromJson')
-      .mockResolvedValue(mockDto as any);
     const failErrorSpy = jest.spyOn(controller, 'fail').mockImplementation();
 
     controller['service'] = mockService as any;
@@ -161,7 +162,7 @@ describe('Event controller', () => {
     await controller.execute(mockReq as any, mockRes as any);
 
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-    expect(mockService.getCount).toHaveBeenCalledTimes(1);
+    expect(mockService.getCount).toHaveBeenCalledTimes(countTimes);
     expect(failErrorSpy).toHaveBeenCalledTimes(1);
     expect(failErrorSpy).toHaveBeenCalledWith(
       mockRes,
@@ -194,9 +195,6 @@ describe('Event controller', () => {
       mockService.getCount.mockResolvedValue(0);
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
 
-      const fromJsonSpy = jest
-        .spyOn(EventDTO, 'fromJson')
-        .mockResolvedValue(mockDto as any);
       const cboowSpy = jest
         .spyOn(create, 'createdByOwnerOrWorker')
         .mockImplementation();
@@ -227,15 +225,25 @@ describe('Event controller', () => {
       expect(mockGymZoneService.getOne).toHaveReturned();
 
       // Event service
-      expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
+      // Two query builders should be created: one to search if the trainer
+      // already has an event for the given date and interval, and a second
+      // to check if there are any overlapped events
+      // Calls checks
+      expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(2);
+      expect(mockService.where).toHaveBeenCalledTimes(2);
+      expect(mockService.andWhere).toHaveBeenCalledTimes(10);
+      expect(mockService.getCount).toHaveBeenCalledTimes(2);
+
+      // Common checks
       expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'e'
       });
-      expect(mockService.where).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledWith('e.startTime < :endTime', {
         endTime: mockDto.endTime
       });
-      expect(mockService.andWhere).toHaveBeenCalledTimes(5);
+      expect(mockService.getCount).toHaveReturnedTimes(2);
+
+      // Trainer already in event checks
       expect(mockService.andWhere).toHaveBeenNthCalledWith(
         1,
         'e.endTime > :startTime',
@@ -258,11 +266,38 @@ describe('Event controller', () => {
       );
       expect(mockService.andWhere).toHaveBeenNthCalledWith(
         5,
+        'e.trainer.person.id = :trainer',
+        { trainer: mockDto.trainer }
+      );
+
+      // Overlapping events query builder checks
+      expect(mockService.andWhere).toHaveBeenNthCalledWith(
+        6,
+        'e.endTime > :startTime',
+        { startTime: mockDto.startTime }
+      );
+      expect(mockService.andWhere).toHaveBeenNthCalledWith(
+        7,
+        'e.date.year = :year',
+        { year: mockDto.date.year }
+      );
+      expect(mockService.andWhere).toHaveBeenNthCalledWith(
+        8,
+        'e.date.month = :month',
+        { month: mockDto.date.month }
+      );
+      expect(mockService.andWhere).toHaveBeenNthCalledWith(
+        9,
+        'e.date.day = :day',
+        { day: mockDto.date.day }
+      );
+      expect(mockService.andWhere).toHaveBeenNthCalledWith(
+        10,
         'e.calendar = :calendar',
         { calendar: mockDto.calendar }
       );
-      expect(mockService.getCount).toHaveBeenCalledTimes(1);
       expect(mockService.getCount).toHaveReturned();
+
       expect(cboowSpy).toHaveBeenCalledTimes(1);
       expect(cboowSpy).toHaveBeenCalledWith({
         service: mockService,
@@ -282,23 +317,19 @@ describe('Event controller', () => {
     it('should send clientError on fromJson error', async () => {
       EventCreateController['gymZoneService'] = {} as any;
 
-      fromJsonFailAsserts(EventCreateController);
+      await fromJsonFailAsserts(EventCreateController);
     });
 
     it('should send clientError if times are not valid', async () => {
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
       EventCreateController['gymZoneService'] = mockGymZoneService;
 
-      invalidTimesAsserts(EventCreateController);
+      await invalidTimesAsserts(EventCreateController);
     });
 
     it('should send clientError if GymZone is not of class type', async () => {
-      mockService.getCount.mockResolvedValue(0);
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: false });
 
-      const fromJsonSpy = jest
-        .spyOn(EventDTO, 'fromJson')
-        .mockResolvedValue(mockDto as any);
       const clientErrorSpy = jest
         .spyOn(EventCreateController, 'clientError')
         .mockImplementation();
@@ -325,14 +356,10 @@ describe('Event controller', () => {
     });
 
     it('should send fail on GymZone service error', async () => {
-      mockService.getCount.mockResolvedValue(0);
       mockGymZoneService.getOne.mockImplementation(() => {
         throw 'error-thrown';
       });
 
-      const fromJsonSpy = jest
-        .spyOn(EventDTO, 'fromJson')
-        .mockResolvedValue(mockDto as any);
       const failErrorSpy = jest
         .spyOn(EventCreateController, 'fail')
         .mockImplementation();
@@ -355,11 +382,28 @@ describe('Event controller', () => {
       );
     });
 
-    it('should send clientError if events overlap', async () => {
+    it('should send forbidden if trainer already has an event', async () => {
+      mockService.getCount.mockResolvedValue(1);
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
-      EventCreateController['gymZoneService'] = mockGymZoneService;
 
-      await overlappedAsserts(EventCreateController);
+      const clientErrorSpy = jest
+        .spyOn(EventCreateController, 'forbidden')
+        .mockImplementation();
+
+      EventCreateController['service'] = mockService as any;
+      EventCreateController['gymZoneService'] = mockGymZoneService;
+      EventCreateController['ownerService'] = {} as any;
+      EventCreateController['workerService'] = {} as any;
+
+      await EventCreateController.execute(mockReq as any, mockRes as any);
+
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(mockService.getCount).toHaveBeenCalledTimes(1);
+      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
+      expect(clientErrorSpy).toHaveBeenCalledWith(
+        mockRes,
+        'Trainer has already an event that overlaps with the given date and timestamps.'
+      );
 
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
@@ -368,23 +412,56 @@ describe('Event controller', () => {
 
     it('should send fail on service error', async () => {
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
+      mockService.getCount.mockRejectedValue({});
+
+      const failErrorSpy = jest
+        .spyOn(EventCreateController, 'fail')
+        .mockImplementation();
+
+      EventCreateController['service'] = mockService as any;
+      EventCreateController['gymZoneService'] = mockGymZoneService;
+      EventCreateController['ownerService'] = {} as any;
+      EventCreateController['workerService'] = {} as any;
+
+      await EventCreateController.execute(mockReq as any, mockRes as any);
+
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(mockService.getCount).toHaveBeenCalledTimes(1);
+      expect(failErrorSpy).toHaveBeenCalledTimes(1);
+      expect(failErrorSpy).toHaveBeenCalledWith(
+        mockRes,
+        'Internal server error. If the problem persists, contact our team.'
+      );
+    });
+
+    it('should send clientError if events overlap', async () => {
+      mockService.getCount.mockResolvedValueOnce(0);
       EventCreateController['gymZoneService'] = mockGymZoneService;
 
-      serviceFailAsserts(EventCreateController);
+      await overlappedAsserts(EventCreateController, 2);
+
+      expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(2);
+      expect(mockService.where).toHaveBeenCalledTimes(2);
+      expect(mockService.andWhere).toHaveBeenCalledTimes(10);
+    });
+
+    it('should send fail on service error', async () => {
+      mockService.getCount.mockResolvedValueOnce(0);
+      mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
+      EventCreateController['gymZoneService'] = mockGymZoneService;
+
+      await serviceFailAsserts(EventCreateController, 2);
     });
   });
 
   describe('EventUpdateController', () => {
     it('should create the services if does not have any', async () => {
-      servicesAsserts(EventUpdateController);
+      await servicesAsserts(EventUpdateController);
     });
 
     it('should call updatedByOwnerOrWorker', async () => {
       mockService.getCount.mockResolvedValue(0);
 
-      const fromJsonSpy = jest
-        .spyOn(EventDTO, 'fromJson')
-        .mockResolvedValue(mockDto as any);
       const uboowSpy = jest
         .spyOn(update, 'updatedByOwnerOrWorker')
         .mockImplementation();
@@ -454,11 +531,11 @@ describe('Event controller', () => {
     });
 
     it('should send clientError on fromJson error', async () => {
-      fromJsonFailAsserts(EventUpdateController);
+      await fromJsonFailAsserts(EventUpdateController);
     });
 
     it('should send clientError if times are not valid', async () => {
-      invalidTimesAsserts(EventUpdateController);
+      await invalidTimesAsserts(EventUpdateController);
     });
 
     it('should send clientError if events overlap', async () => {
@@ -470,7 +547,7 @@ describe('Event controller', () => {
     });
 
     it('should send fail on service error', async () => {
-      serviceFailAsserts(EventUpdateController);
+      await serviceFailAsserts(EventUpdateController);
     });
   });
 
