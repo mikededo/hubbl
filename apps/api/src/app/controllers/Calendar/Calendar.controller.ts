@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
 import * as log from 'npmlog';
+import * as camelCaseKeys from 'camelcase-keys';
 import { getRepository } from 'typeorm';
 
 import { EventDTO } from '@hubbl/shared/models/dto';
 
 import {
+  CalendarAppointmentService,
   EventAppointmentService,
   EventService,
   GymZoneService,
@@ -33,6 +35,7 @@ abstract class CalendarFetchBase extends BaseController {
     day: number
   ): Date | undefined {
     const date = new Date(year, month - 1, day);
+
     if (
       date.getFullYear() !== year ||
       date.getMonth() !== month - 1 ||
@@ -40,6 +43,7 @@ abstract class CalendarFetchBase extends BaseController {
     ) {
       return undefined;
     }
+
     return date;
   }
 
@@ -205,10 +209,10 @@ class ICalendarFetchEventAppointmentsController extends CalendarFetchBase {
         .createQueryBuilder({ alias: 'ea' })
         .select([
           'p.id as id',
-          'p.firstName as firstName',
-          'p.lastName as lastName',
+          'p.firstName as first_name',
+          'p.lastName as last_name',
           'p.email as email',
-          'c.covidPassport as covidPassport',
+          'c.covidPassport as covid_passport',
           'ea.cancelled as cancelled'
         ])
         .where('ea.event = :eventId', { eventId })
@@ -216,7 +220,10 @@ class ICalendarFetchEventAppointmentsController extends CalendarFetchBase {
         .leftJoin('c.person', 'p', 'ea.client = p.id')
         .getRawMany();
 
-      return this.ok(res, result);
+      return this.ok(
+        res,
+        result.map((item) => camelCaseKeys(item))
+      );
     } catch (e) {
       return this.onFail(res, e);
     }
@@ -228,3 +235,92 @@ const fetchEventAppointmentsInstance =
 
 export const CalendarFetchEventAppointmentsController =
   fetchEventAppointmentsInstance;
+
+class ICalendarFetchCalenAppointmentsController extends CalendarFetchBase {
+  protected calenAppointmentService: CalendarAppointmentService = undefined;
+
+  private parseParamDate(paramDate: string): Date | undefined {
+    if (!paramDate) {
+      return undefined;
+    }
+
+    if (!paramDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return undefined;
+    }
+
+    const [year, month, day] = paramDate.split('-');
+    const date = this.validDate(+year, +month, +day);
+    if (!date) {
+      return undefined;
+    }
+
+    return date;
+  }
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    this.checkServices();
+
+    if (!this.calenAppointmentService) {
+      this.calenAppointmentService = new CalendarAppointmentService(
+        getRepository
+      );
+    }
+
+    const { token } = res.locals;
+    const calendarId = +req.params.id;
+
+    // TODO: Give access only to owners and workers
+
+    const validation = await userAccessToCalendar({
+      controller: this,
+      personService: this.personService,
+      gymZoneService: this.gymZoneService,
+      res,
+      personId: token.id,
+      calendarId
+    });
+    if (validation) {
+      return validation;
+    }
+
+    const date = this.parseParamDate(req.query.date as string);
+    if (!date) {
+      return this.clientError(res, 'Query param "date" not set or invalid.');
+    }
+
+    try {
+      const result = await this.calenAppointmentService
+        .createQueryBuilder({ alias: 'ca' })
+        .select([
+          'p.id as id',
+          'p.firstName as first_name',
+          'p.lastName as last_name',
+          'p.email as email',
+          'c.covidPassport as covid_passport',
+          'ca.id as appointment_id',
+          'ca.startTime as start_time',
+          'ca.endTime as end_time',
+          'ca.cancelled as cancelled'
+        ])
+        .where('ca.date.year = :year', { year: date.getFullYear() })
+        .andWhere('ca.date.month = :month', { month: date.getMonth() + 1 })
+        .andWhere('ca.date.day = :day', { day: date.getDate() })
+        .leftJoin('ca.client', 'c')
+        .leftJoin('c.person', 'p', 'ca.client = p.id')
+        .getRawMany();
+
+      return this.ok(
+        res,
+        result.map((item) => camelCaseKeys(item))
+      );
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+  }
+}
+
+const fetchCalenAppointmentsInstance =
+  new ICalendarFetchCalenAppointmentsController();
+
+export const CalendarFetchCalenAppointmentsController =
+  fetchCalenAppointmentsInstance;

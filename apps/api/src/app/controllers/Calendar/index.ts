@@ -1,9 +1,11 @@
 import {
   CalendarFetchEventsController,
-  CalendarFetchEventAppointmentsController
+  CalendarFetchEventAppointmentsController,
+  CalendarFetchCalenAppointmentsController
 } from './Calendar.controller';
 
 export {
   CalendarFetchEventsController,
-  CalendarFetchEventAppointmentsController
+  CalendarFetchEventAppointmentsController,
+  CalendarFetchCalenAppointmentsController
 };
