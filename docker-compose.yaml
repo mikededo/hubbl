@@ -35,7 +35,7 @@ services:
   
   # Api
   api:
-    container_name: api
+    container_name: hubbl-api
     image: node:lts-alpine
     volumes:
       - .:/app
