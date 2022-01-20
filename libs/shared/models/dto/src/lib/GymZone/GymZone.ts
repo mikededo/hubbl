@@ -8,17 +8,17 @@ import {
 } from 'class-validator';
 
 import { Calendar, GymZone, VirtualGym } from '@hubbl/shared/models/entities';
-import { GymZoneIntervals } from '@hubbl/shared/types';
-
-import DTO from '../Base';
 import {
   booleanError,
-  DTOGroups,
   enumError,
   numberError,
   stringError,
   validationParser
-} from '../util';
+} from '@hubbl/shared/models/helpers';
+import { GymZoneIntervals } from '@hubbl/shared/types';
+
+import DTO from '../Base';
+import { DTOGroups } from '../util';
 
 export default class GymZoneDTO implements DTO<GymZone> {
   @IsNumber(
@@ -154,15 +154,8 @@ export default class GymZoneDTO implements DTO<GymZone> {
    * @param gymZone The fetched gym zone
    * @returns The dto to be send as a response
    */
-  public static async fromClass(gymZone: GymZone): Promise<GymZoneDTO> {
+  public static fromClass(gymZone: GymZone): GymZoneDTO {
     const result = GymZoneDTO.propMapper(gymZone);
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

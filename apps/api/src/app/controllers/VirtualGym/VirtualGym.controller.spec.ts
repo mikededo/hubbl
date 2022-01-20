@@ -49,7 +49,7 @@ describe('VirtualGym Controller', () => {
 
   const fromClassSpy = jest
     .spyOn(VirtualGymDTO, 'fromClass')
-    .mockResolvedValue(mockDto as any);
+    .mockReturnValue(mockDto as any);
   const logSpy = jest.spyOn(log, 'error').mockImplementation();
 
   beforeEach(() => {
@@ -99,7 +99,9 @@ describe('VirtualGym Controller', () => {
       await VirtualGymFetchController.execute(mockReq, mockRes);
 
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockService.findOne).toHaveBeenCalledWith(mockRes.locals.token.id);
+      expect(mockService.findOne).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'virtualGym'
@@ -166,32 +168,6 @@ describe('VirtualGym Controller', () => {
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
       expect(mockService.getMany).toHaveBeenCalledTimes(1);
-      // Ensure fail is called
-      failSpyAsserts(failSpy);
-    });
-
-    it('should call fail on fromClass error', async () => {
-      const failSpy = jest
-        .spyOn(VirtualGymFetchController, 'fail')
-        .mockImplementation();
-      const fromClassSpy = jest
-        .spyOn(VirtualGymDTO, 'fromClass')
-        .mockRejectedValue({});
-      mockService.findOne.mockResolvedValue(mockPerson);
-      mockService.getMany.mockResolvedValue([mockVirtualGym]);
-
-      VirtualGymFetchController['service'] = mockService as any;
-      VirtualGymFetchController['personService'] = mockService as any;
-
-      await VirtualGymFetchController.execute(mockReq, mockRes);
-
-      expect(mockService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockService.where).toHaveBeenCalledTimes(1);
-      expect(mockService.getMany).toHaveBeenCalledTimes(1);
-      // Ensure fromClass is called
-      expect(fromClassSpy).toHaveBeenCalledTimes(1);
-      expect(fromClassSpy).toHaveBeenCalledWith(mockVirtualGym);
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });

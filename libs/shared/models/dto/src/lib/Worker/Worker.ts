@@ -7,18 +7,18 @@ import {
 } from 'class-validator';
 
 import { Gym, Person, Worker } from '@hubbl/shared/models/entities';
+import {
+  booleanError,
+  numberError,
+  stringError,
+  validationParser
+} from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import {
-  booleanError,
-  DTOGroups,
-  numberError,
-  stringError,
-  validationParser
-} from '../util';
+import { DTOGroups } from '../util';
 
 export default class WorkerDTO<T extends Gym | number>
   extends PersonDTO<T>
@@ -97,6 +97,24 @@ export default class WorkerDTO<T extends Gym | number>
   @IsBoolean({ message: booleanError('deleteEventTemplates') })
   deleteEventTemplates!: boolean;
 
+  @IsBoolean({ message: booleanError('createEventAppointments') })
+  createEventAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('updateEventAppointments') })
+  updateEventAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('deleteEventAppointments') })
+  deleteEventAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('createCalendarAppointments') })
+  createCalendarAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('updateCalendarAppointments') })
+  updateCalendarAppointments!: boolean;
+
+  @IsBoolean({ message: booleanError('deleteCalendarAppointments') })
+  deleteCalendarAppointments!: boolean;
+
   private static mapWorkerProps<T extends Gym | number>(
     to: WorkerDTO<T>,
     from: any
@@ -122,6 +140,12 @@ export default class WorkerDTO<T extends Gym | number>
     to.createEventTemplates = from.createEventTemplates;
     to.updateEventTemplates = from.updateEventTemplates;
     to.deleteEventTemplates = from.deleteEventTemplates;
+    to.createEventAppointments = from.createEventAppointments;
+    to.updateEventAppointments = from.updateEventAppointments;
+    to.deleteEventAppointments = from.deleteEventAppointments;
+    to.createCalendarAppointments = from.createCalendarAppointments;
+    to.updateCalendarAppointments = from.updateCalendarAppointments;
+    to.deleteCalendarAppointments = from.deleteCalendarAppointments;
   }
 
   /**
@@ -166,9 +190,9 @@ export default class WorkerDTO<T extends Gym | number>
    * @param gym The gym to assign to the DTO
    * @returns The dto  to be send as a response
    */
-  public static async fromClass<T extends Gym | number>(
+  public static fromClass<T extends Gym | number>(
     worker: Worker
-  ): Promise<WorkerDTO<T>> {
+  ): WorkerDTO<T> {
     const result = new WorkerDTO<T>();
 
     // Person props
@@ -183,19 +207,12 @@ export default class WorkerDTO<T extends Gym | number>
 
     // If the gym is not a number, parse it as a dto
     if (worker.person.gym instanceof Gym) {
-      const gymDto = await GymDTO.fromClass(worker.person.gym as Gym);
+      const gymDto = GymDTO.fromClass(worker.person.gym as Gym);
       result.gym = gymDto.toClass() as T;
     }
 
     // Worker props
     WorkerDTO.mapWorkerProps(result, worker);
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }
@@ -246,6 +263,12 @@ export default class WorkerDTO<T extends Gym | number>
     worker.createEventTemplates = this.createEventTemplates;
     worker.updateEventTemplates = this.updateEventTemplates;
     worker.deleteEventTemplates = this.deleteEventTemplates;
+    worker.createEventAppointments = this.createEventAppointments;
+    worker.updateEventAppointments = this.updateEventAppointments;
+    worker.deleteEventAppointments = this.deleteEventAppointments;
+    worker.createCalendarAppointments = this.createCalendarAppointments;
+    worker.updateCalendarAppointments = this.updateCalendarAppointments;
+    worker.deleteCalendarAppointments = this.deleteCalendarAppointments;
 
     return worker;
   }

@@ -11,7 +11,7 @@ import middlewares from '../middlewares';
 const EventTemplateRouter: Router = Router();
 
 /**
- * @description Creates an event template in the database
+ * @description Fetchs the event templates
  */
 EventTemplateRouter.get('/:id', middlewares.auth, (req, res) => {
   EventTemplateFetchController.execute(req, res);

@@ -1,4 +1,4 @@
-import { DTOGroups, PersonDTOGroups } from '@hubbl/shared/models/dto';
+import { DTOGroups, PersonDTOGroups, DTO } from '@hubbl/shared/models/dto';
 
 export type BaseFromJsonCallable<T> = (
   json: any,
@@ -10,7 +10,7 @@ export type BasePersonFromJsonCallable<T> = (
   group: PersonDTOGroups
 ) => Promise<T>;
 
-export type BaseFromClassCallable<J, T> = (entity: J) => Promise<T>;
+export type BaseFromClassCallable<J, T extends DTO<J>> = (entity: J) => T;
 
 export type ParsedToken = {
   id: number;

@@ -2,6 +2,10 @@ import { Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  CalendarAppointment,
+  Client,
+  Event,
+  EventAppointment,
   EventTemplate,
   EventType,
   GymZone,
@@ -14,20 +18,43 @@ import { BaseService } from '../../services';
 import BaseController from '../Base';
 import { ParsedToken } from './types';
 
+/* Common on fail call */
+const onFail = (controller: BaseController, res: Response, error: any) => {
+  log.error(
+    `Controller[${controller.constructor.name}]`,
+    `"delete" handler`,
+    error.toString()
+  );
+
+  return controller.fail(
+    res,
+    'Internal server error. If the error persists, contact our team'
+  );
+};
+
 type CommonDeleteByServices =
+  | BaseService<CalendarAppointment>
+  | BaseService<Event>
+  | BaseService<EventAppointment>
   | BaseService<EventTemplate>
   | BaseService<EventType>
   | BaseService<VirtualGym>
   | BaseService<GymZone>;
 
 type CommonDeleteByEntities =
+  | 'CalendarAppointment'
+  | 'Event'
+  | 'EventAppointment'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
   | 'GymZone';
 
 type WorkerDeletePermissions =
+  | 'deleteCalendarAppointments'
   | 'deleteClients'
+  | 'deleteEvents'
+  | 'deleteEventAppointments'
   | 'deleteEventTemplates'
   | 'deleteEventTypes'
   | 'deleteEvents'
@@ -66,7 +93,7 @@ export const deletedByOwnerOrWorker = async ({
     if (!workerDeletePermission) {
       log.error(
         `Controller[${controller.constructor.name}]`,
-        '"fetch" handler',
+        '"delete" handler',
         'No "workerCreatePermission" passed'
       );
 
@@ -76,7 +103,7 @@ export const deletedByOwnerOrWorker = async ({
       );
     }
 
-    const worker = await workerService.findOne(token.id);
+    const worker = await workerService.findOne({ id: token.id });
 
     if (!worker) {
       return controller.unauthorized(
@@ -116,16 +143,7 @@ export const deletedByOwnerOrWorker = async ({
     // Return ok
     return controller.ok(res);
   } catch (_) {
-    log.error(
-      `Controller[${controller.constructor.name}]`,
-      '"fetch" handler',
-      _.toString()
-    );
-
-    return controller.fail(
-      res,
-      'Internal server error. If the error persists, contact our team.'
-    );
+    return onFail(controller, res, _);
   }
 };
 
@@ -167,3 +185,58 @@ export const deletedByOwner = ({
     entityName,
     countArgs
   });
+
+type DeleteByClientEntityNames = 'CalendarAppointment' | 'EventAppointment';
+
+type DeleteByClient<T> = {
+  service: BaseService<T>;
+  clientService: BaseService<Client>;
+  controller: BaseController;
+  res: Response;
+  clientId: number;
+  entityId: string | number;
+  entityName: DeleteByClientEntityNames;
+  countArgs: Partial<T>;
+};
+
+export const deletedByClient = async <T>({
+  service,
+  clientService,
+  controller,
+  res,
+  clientId,
+  entityId,
+  entityName,
+  countArgs
+}: DeleteByClient<T>) => {
+  try {
+    const count = await clientService.count({ person: { id: clientId } });
+
+    if (!count) {
+      return controller.unauthorized(res, 'Client does not exist.');
+    }
+  } catch (e) {
+    return onFail(controller, res, e);
+  }
+
+  try {
+    // Check if the entity exists
+    const count = await service.count(countArgs);
+    if (!count) {
+      return controller.forbidden(
+        res,
+        `Client does not have permissions to delete the ${entityName}.`
+      );
+    }
+  } catch (e) {
+    return onFail(controller, res, e);
+  }
+
+  try {
+    await service.delete(entityId);
+
+    return controller.ok(res);
+  } catch (e) {
+    return onFail(controller, res, e);
+  }
+};

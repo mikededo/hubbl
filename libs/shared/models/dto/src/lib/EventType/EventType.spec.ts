@@ -1,12 +1,13 @@
 import * as ClassValidator from 'class-validator';
 
 import { Calendar, EventType, VirtualGym } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 import { AppPalette } from '@hubbl/shared/types';
 
-import * as Util from '../util';
 import EventTypeDTO from './EventType';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (
   want: EventType | EventTypeDTO,
@@ -53,7 +54,7 @@ describe('EventType', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -70,11 +71,7 @@ describe('EventType', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create a EventTypeDTO from a correct EventType', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
-
+    it('should create a EventTypeDTO from a correct EventType', () => {
       const eventType = new EventType();
       const calendar = new Calendar();
       const virtualGym = new VirtualGym();
@@ -88,31 +85,10 @@ describe('EventType', () => {
       eventType.labelColor = AppPalette.BLUE;
       eventType.gym = 1;
 
-      const result = await EventTypeDTO.fromClass(eventType);
+      const result = EventTypeDTO.fromClass(eventType);
 
       expect(result).toBeDefined();
       propCompare(eventType, result);
-
-      // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a EventTypeDTO from an incorrect EventType', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await EventTypeDTO.fromClass({} as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

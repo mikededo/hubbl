@@ -1,0 +1,23 @@
+{
+  "root": "libs/shared/models/helpers",
+  "sourceRoot": "libs/shared/models/helpers/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/shared/models/helpers/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/models/helpers"],
+      "options": {
+        "jestConfig": "libs/shared/models/helpers/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

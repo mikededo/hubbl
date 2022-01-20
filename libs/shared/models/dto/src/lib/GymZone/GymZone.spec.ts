@@ -1,11 +1,12 @@
 import * as ClassValidator from 'class-validator';
 
-import { GymZone, Calendar, VirtualGym } from '@hubbl/shared/models/entities';
+import { Calendar, GymZone, VirtualGym } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
-import * as Util from '../util';
 import GymZoneDTO from './GymZone';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (want: GymZone | GymZoneDTO, got: GymZone | GymZoneDTO) => {
   expect(got.id).toBe(want.id);
@@ -63,7 +64,7 @@ describe('GymZone', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -80,11 +81,7 @@ describe('GymZone', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create a GymZoneDTO from a correct GymZone', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
-
+    it('should create a GymZoneDTO from a correct GymZone', () => {
       const gymZone = new GymZone();
       const calendar = new Calendar();
       const virtualGym = new VirtualGym();
@@ -105,33 +102,13 @@ describe('GymZone', () => {
       gymZone.calendar = calendar;
       gymZone.virtualGym = virtualGym as any;
 
-      const result = await GymZoneDTO.fromClass(gymZone);
+      const result = GymZoneDTO.fromClass(gymZone);
 
       expect(result).toBeDefined();
       propCompare(gymZone, result);
 
       expect(result.calendar).toBe(calendar.id);
       expect(result.virtualGym).toBe(virtualGym.id);
-      // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a GymZoneDTO from an incorrect GymZone', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await GymZoneDTO.fromClass({} as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

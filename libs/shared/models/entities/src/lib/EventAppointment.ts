@@ -16,21 +16,19 @@ export default class EventAppointment extends Appointment {
    * `Client` that is linked to the `Appointment`
    */
   @ManyToOne(() => Client, (c) => c.eventAppointments, {
-    primary: true,
     nullable: false,
     cascade: true
   })
-  client!: Client;
+  client!: Client | number;
 
   /**
    * `Event` that is linked to the `Appointment`
    */
   @ManyToOne(() => Event, (e) => e.appointments, {
-    primary: true,
     nullable: false,
     cascade: true
   })
-  event!: Event;
+  event!: Event | number;
 
   @CreateDateColumn()
   createdAt!: Date;

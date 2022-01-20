@@ -1,10 +1,12 @@
 import * as ClassValidator from 'class-validator';
 
 import { Gym } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 import { ThemeColor } from '@hubbl/shared/types';
 
-import * as Util from '../util';
 import GymDTO from './Gym';
+
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (want: Gym | GymDTO, got: Gym | GymDTO) => {
   expect(got.id).toBe(want.id);
@@ -49,7 +51,7 @@ describe('Gym', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -66,11 +68,7 @@ describe('Gym', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create a GymDTO from a correct Gym', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
-
+    it('should create a GymDTO from a correct Gym', () => {
       const gym = new Gym();
       gym.id = 1;
       gym.name = 'Test';
@@ -79,30 +77,10 @@ describe('Gym', () => {
       gym.color = ThemeColor.BLUE;
       gym.virtualGyms = [];
 
-      const result = await GymDTO.fromClass(gym);
+      const result = GymDTO.fromClass(gym);
 
       propCompare(gym, result);
       expect(result.virtualGyms).toStrictEqual(gym.virtualGyms);
-      // Ensure validation has been called
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a GymDTO from an incorrect Gym', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await GymDTO.fromClass({ person: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

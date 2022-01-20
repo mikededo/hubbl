@@ -2,6 +2,9 @@ import { Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  CalendarAppointmentDTO,
+  EventAppointmentDTO,
+  EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
   GymZoneDTO,
@@ -9,6 +12,9 @@ import {
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import {
+  CalendarAppointment,
+  Event,
+  EventAppointment,
   EventTemplate,
   EventType,
   Gym,
@@ -24,10 +30,20 @@ import BaseController from '../Base';
 import { BaseFromClassCallable, ParsedToken } from './types';
 
 type CommonCreateByServices = BaseService<
-  EventTemplate | EventType | VirtualGym | GymZone | Trainer
+  | CalendarAppointment
+  | EventAppointment
+  | Event
+  | EventTemplate
+  | EventType
+  | VirtualGym
+  | GymZone
+  | Trainer
 >;
 
 type CommonCreateByDTOs =
+  | CalendarAppointmentDTO
+  | EventAppointmentDTO
+  | EventDTO
   | EventTemplateDTO
   | EventTypeDTO
   | VirtualGymDTO
@@ -35,6 +51,9 @@ type CommonCreateByDTOs =
   | TrainerDTO<Gym | number>;
 
 type CommonCreateByEntities =
+  | 'CalendarAppointment'
+  | 'EventAppointment'
+  | 'Event'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -42,6 +61,9 @@ type CommonCreateByEntities =
   | 'Trainer';
 
 type WorkerCreatePermissions =
+  | 'createCalendarAppointments'
+  | 'createEventAppointments'
+  | 'createEvents'
   | 'createClients'
   | 'createEventTemplates'
   | 'createEventTypes'
@@ -50,6 +72,9 @@ type WorkerCreatePermissions =
   | 'createTrainers';
 
 type FromClassCallables =
+  | BaseFromClassCallable<CalendarAppointment, CalendarAppointmentDTO>
+  | BaseFromClassCallable<EventAppointment, EventAppointmentDTO>
+  | BaseFromClassCallable<Event, EventDTO>
   | BaseFromClassCallable<EventTemplate, EventTemplateDTO>
   | BaseFromClassCallable<EventType, EventTypeDTO>
   | BaseFromClassCallable<VirtualGym, VirtualGymDTO>
@@ -97,7 +122,7 @@ export const createdByOwnerOrWorker = async ({
       );
     }
 
-    const worker = await workerService.findOne(token.id);
+    const worker = await workerService.findOne({ id: token.id });
 
     if (!worker) {
       return controller.unauthorized(
@@ -131,7 +156,7 @@ export const createdByOwnerOrWorker = async ({
     const result = await service.save(await dto.toClass());
 
     // Return ok
-    return controller.created(res, await fromClass(result as any));
+    return controller.created(res, fromClass(result as any));
   } catch (_) {
     log.error(
       `Controller[${controller.constructor.name}]`,

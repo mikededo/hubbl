@@ -89,7 +89,7 @@ export default abstract class BaseController {
   }
 
   /**
-   * Returns a 401 code response with the given message or the default, if no
+   * Returns a 403 code response with the given message or the default, if no
    * message has been passed
    *
    * @param res Response object of the request handler

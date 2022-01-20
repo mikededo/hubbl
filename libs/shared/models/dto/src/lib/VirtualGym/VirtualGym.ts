@@ -6,9 +6,14 @@ import {
 } from 'class-validator';
 
 import { GymZone, VirtualGym } from '@hubbl/shared/models/entities';
+import {
+  numberError,
+  stringError,
+  validationParser
+} from '@hubbl/shared/models/helpers';
 
 import DTO from '../Base';
-import { DTOGroups, numberError, stringError, validationParser } from '../util';
+import { DTOGroups } from '../util';
 
 export default class VirtualGymDTO implements DTO<VirtualGym> {
   @IsNumber(
@@ -109,18 +114,10 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
    * @param virtualGym The fetched virtual gym
    * @returns The dto to be send as a response
    */
-  public static async fromClass(
-    virtualGym: VirtualGym
-  ): Promise<VirtualGymDTO> {
+  public static fromClass(virtualGym: VirtualGym): VirtualGymDTO {
     const result = VirtualGymDTO.propMapper(virtualGym);
-    result.gymZones = virtualGym.gymZones || [];
 
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
+    result.gymZones = virtualGym.gymZones || [];
 
     return result;
   }

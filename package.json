@@ -18,6 +18,7 @@
     "@mui/material": "^5.2.3",
     "@nrwl/next": "13.4.5",
     "bcrypt": "^5.0.1",
+    "camelcase-keys": "^7.0.1",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "core-js": "^3.6.5",

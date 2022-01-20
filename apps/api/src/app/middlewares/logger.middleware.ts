@@ -13,7 +13,10 @@ export const postRequest = (
   next: NextFunction
 ) => {
   res.on('finish', () => {
-    log.info('Request', `[${req.method} ${req.originalUrl}] -> ${res.statusCode}`);
+    log.info(
+      'Request',
+      `[${req.method} ${req.originalUrl}] -> ${res.statusCode}`
+    );
   });
 
   next();

@@ -5,6 +5,6 @@
     "declaration": true,
     "types": []
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "../helpers/src/lib/validation-parser.spec.ts"],
   "exclude": ["**/*.spec.ts"]
 }

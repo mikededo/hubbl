@@ -2,12 +2,15 @@ import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
 import { Gym, Owner } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 import { AppTheme, Gender } from '@hubbl/shared/types';
 
 import GymDTO from '../Gym';
+import { PersonDTOGroups } from '../Person';
 import * as Util from '../util';
 import OwnerDTO from './Owner';
-import { PersonDTOGroups } from '../Person';
+
+jest.mock('@hubbl/shared/models/helpers');
 
 describe('OwnerDTO', () => {
   beforeEach(() => {
@@ -45,7 +48,7 @@ describe('OwnerDTO', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -99,21 +102,20 @@ describe('OwnerDTO', () => {
 
   describe('#fromClass', () => {
     it('should create an OwnerDTO from a correct Owner', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const owner = new Owner();
       owner.person = Util.createPerson(password);
 
-      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+      const gymFromClassSpy = jest.spyOn(GymDTO, 'fromClass').mockReturnValue({
         ...(owner.person.gym as Gym),
         toClass: jest.fn().mockReturnValue(owner.person.gym)
       });
 
-      const result = await OwnerDTO.fromClass(owner);
+      const result = OwnerDTO.fromClass(owner);
 
+      expect(gymFromClassSpy).toHaveBeenCalledTimes(1);
+      expect(gymFromClassSpy).toHaveBeenCalledWith(owner.person.gym);
       expect(result.id).toBe(1);
       expect(result.email).toBe('test@user.com');
       expect(result.password).toBe(password);
@@ -122,44 +124,6 @@ describe('OwnerDTO', () => {
       expect(result.theme).toBe(AppTheme.LIGHT);
       expect(result.gender).toBe(Gender.OTHER);
       expect(result.gym).toBeInstanceOf(Gym);
-      // Ensure validation has been called
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating an OwnerDTO from an incorrect Owner', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
-
-      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
-        toClass: jest.fn().mockReturnValue({})
-      } as any);
-
-      expect.assertions(3);
-
-      try {
-        await OwnerDTO.fromClass({ person: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalled();
-      expect(vpSpy).toHaveBeenCalled();
-    });
-
-    it('should fail on creating an OwnerDTO from an incorrect Gym', async () => {
-      jest.spyOn(GymDTO, 'fromClass').mockImplementation(() => {
-        throw new Error();
-      });
-
-      expect.assertions(1);
-
-      try {
-        await OwnerDTO.fromClass({ person: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
     });
   });
 

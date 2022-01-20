@@ -6,9 +6,14 @@ import {
 } from 'class-validator';
 
 import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
+import {
+  numberError,
+  stringError,
+  validationParser
+} from '@hubbl/shared/models/helpers';
 
 import DTO from '../Base';
-import { DTOGroups, numberError, stringError, validationParser } from '../util';
+import { DTOGroups } from '../util';
 
 export default class EventTemplateDTO implements DTO<EventTemplate> {
   @IsNumber({}, { message: numberError('id') })
@@ -42,7 +47,7 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
   )
   gym!: number;
 
-  /* Non required validation */
+  /* Non required validation fields */
   eventCount!: number;
 
   private static propMapper(from: EventTemplate | any): EventTemplateDTO {
@@ -85,27 +90,18 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
   /**
    * Parses the original class to the DTO
    *
-   * @param EventTemplate The fetched event type
+   * @param EventTemplate The fetched event template
    * @returns The dto to be send as a response
    */
-  public static async fromClass(
-    EventTemplate: EventTemplate
-  ): Promise<EventTemplateDTO> {
+  public static fromClass(EventTemplate: EventTemplate): EventTemplateDTO {
     const result = EventTemplateDTO.propMapper(EventTemplate);
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }
 
   /**
    *
-   * @returns The parsed event type from the DTO
+   * @returns The parsed event template from the DTO
    */
   public toClass(): EventTemplate {
     const result = new EventTemplate();

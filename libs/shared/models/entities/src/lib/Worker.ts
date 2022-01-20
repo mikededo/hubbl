@@ -159,6 +159,42 @@ export default class Worker {
   @Column('bool', { default: false })
   deleteEventTemplates!: boolean;
 
+  /**
+   * The `Worker` is allowed or not to CREATE `EventAppointment`'s.
+   */
+  @Column('bool', { default: false })
+  createEventAppointments!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to UPDATE `EventAppointment`'s.
+   */
+  @Column('bool', { default: false })
+  updateEventAppointments!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to DELETE `EventAppointment`'s.
+   */
+  @Column('bool', { default: false })
+  deleteEventAppointments!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to CREATE `CalendarAppointment`'s.
+   */
+  @Column('bool', { default: false })
+  createCalendarAppointments!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to UPDATE `CalendarAppointment`'s.
+   */
+  @Column('bool', { default: false })
+  updateCalendarAppointments!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to DELETE `CalendarAppointment`'s.
+   */
+  @Column('bool', { default: false })
+  deleteCalendarAppointments!: boolean;
+
   @CreateDateColumn()
   createdAt!: Date;
 

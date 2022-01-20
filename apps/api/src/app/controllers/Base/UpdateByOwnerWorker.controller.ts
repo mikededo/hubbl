@@ -3,12 +3,14 @@ import { getRepository } from 'typeorm';
 
 import {
   DTOGroups,
+  EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
   GymZoneDTO,
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import {
+  Event,
   EventTemplate,
   EventType,
   GymZone,
@@ -16,6 +18,7 @@ import {
 } from '@hubbl/shared/models/entities';
 
 import {
+  EventService,
   EventTemplateService,
   EventTypeService,
   GymZoneService,
@@ -28,26 +31,35 @@ import { BaseFromJsonCallable, updatedByOwnerOrWorker } from '../helpers';
 import BaseController from './Base.controller';
 
 type UpdatableEntityNames =
+  | 'Event'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
   | 'GymZone';
 
 type WorkerUpdatePermissions =
+  | 'updateEvents'
   | 'updateEventTemplates'
   | 'updateEventTypes'
   | 'updateGymZones'
   | 'updateVirtualGyms';
 
-type UpdatableEntities = EventTemplate | EventType | GymZone | VirtualGym;
+type UpdatableEntities =
+  | Event
+  | EventTemplate
+  | EventType
+  | GymZone
+  | VirtualGym;
 
 type UpdatableFromJson =
+  | BaseFromJsonCallable<EventDTO>
   | BaseFromJsonCallable<EventTemplateDTO>
   | BaseFromJsonCallable<EventTypeDTO>
   | BaseFromJsonCallable<GymZoneDTO>
   | BaseFromJsonCallable<VirtualGymDTO>;
 
 type UpdatableServices =
+  | EventService
   | EventTemplateService
   | EventTypeService
   | GymZoneService

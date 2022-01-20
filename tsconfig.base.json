@@ -15,9 +15,15 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@hubbl/shared/models/body-validators": [
+        "libs/shared/models/body-validators/src/index.ts"
+      ],
       "@hubbl/shared/models/dto": ["libs/shared/models/dto/src/index.ts"],
       "@hubbl/shared/models/entities": [
         "libs/shared/models/entities/src/index.ts"
+      ],
+      "@hubbl/shared/models/helpers": [
+        "libs/shared/models/helpers/src/index.ts"
       ],
       "@hubbl/shared/types": ["libs/shared/types/src/index.ts"]
     }

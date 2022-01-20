@@ -1,5 +1,9 @@
 import DTO from './Base';
+import CalendarAppointmentDTO from './CalendarAppointment';
+import CalendarDateDTO from './CalendarDate';
 import ClientDTO from './Client';
+import EventDTO from './Event';
+import EventAppointmentDTO from './EventAppointment';
 import EventTemplateDTO from './EventTemplate';
 import EventTypeDTO from './EventType';
 import GymZoneDTO from './GymZone';
@@ -11,9 +15,13 @@ import VirtualGymDTO from './VirtualGym';
 import WorkerDTO from './Worker';
 
 export {
+  CalendarAppointmentDTO,
+  CalendarDateDTO,
   ClientDTO,
   DTO,
   DTOGroups,
+  EventAppointmentDTO,
+  EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
   GymZoneDTO,

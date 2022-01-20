@@ -96,7 +96,7 @@ describe('EventTemplate controller', () => {
       };
       const fromClassSpy = jest
         .spyOn(EventTemplateDTO, 'fromClass')
-        .mockResolvedValue(mockDto as any);
+        .mockReturnValue(mockDto as any);
       const okSpy = jest
         .spyOn(EventTemplateFetchController, 'ok')
         .mockImplementation();
@@ -132,9 +132,9 @@ describe('EventTemplate controller', () => {
 
       await EventTemplateFetchController.execute(mockReq, mockRes);
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockPersonService.findOne).toHaveBeenCalledWith(
-        mockRes.locals.token.id
-      );
+      expect(mockPersonService.findOne).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
       expect(mockEventTemplateService.createQueryBuilder).toHaveBeenCalledTimes(
         1
       );
@@ -221,56 +221,6 @@ describe('EventTemplate controller', () => {
         mockEventTemplateService.loadRelationCountAndMap
       ).toHaveBeenCalledTimes(1);
       expect(mockEventTemplateService.where).toHaveBeenCalledTimes(1);
-      // Ensure fail is called
-      failSpyAsserts(failSpy);
-    });
-
-    it('should call fail on fromClass error', async () => {
-      let mockResCallback: any;
-
-      const resultList = {
-        map: jest.fn().mockImplementation((callback: any) => {
-          expect(callback).toBeDefined();
-          // Capture the callback
-          mockResCallback = callback;
-
-          throw {};
-        })
-      };
-      const fromClassSpy = jest
-        .spyOn(EventTemplateDTO, 'fromClass')
-        .mockRejectedValue('mockDto as any');
-      const failSpy = jest
-        .spyOn(EventTemplateFetchController, 'fail')
-        .mockImplementation();
-
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
-      mockEventTemplateService.getMany.mockResolvedValue(resultList);
-
-      EventTemplateFetchController['service'] = mockEventTemplateService as any;
-      EventTemplateFetchController['personService'] = mockPersonService as any;
-
-      await EventTemplateFetchController.execute(mockReq, mockRes);
-      [mockEventTemplate, mockEventTemplate].map(async (e) => {
-        try {
-          await mockResCallback(e);
-        } catch (e) {
-          // Nothing
-        }
-      });
-
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockEventTemplateService.createQueryBuilder).toHaveBeenCalledTimes(
-        1
-      );
-      expect(
-        mockEventTemplateService.loadRelationCountAndMap
-      ).toHaveBeenCalledTimes(1);
-      expect(mockEventTemplateService.where).toHaveBeenCalledTimes(1);
-      expect(mockEventTemplateService.getMany).toHaveBeenCalledTimes(1);
-      // Ensure fromClass is called
-      expect(fromClassSpy).toHaveBeenCalledTimes(2);
-      expect(fromClassSpy).toHaveBeenCalledWith(mockEventTemplate);
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });

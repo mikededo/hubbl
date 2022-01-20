@@ -17,6 +17,16 @@ describe('BaseService', () => {
     });
   });
 
+  describe('#manager', () => {
+    it('should return repository manager', () => {
+      const mockRepository = { manager: { prop: 'manager' } };
+      const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
+
+      const service = new BaseService(Mock, mockRepoAccessor);
+      expect(service.manager).toStrictEqual(mockRepository.manager);
+    });
+  });
+
   describe('#save', () => {
     it('should save an item', async () => {
       const mockRepository = {
@@ -64,7 +74,7 @@ describe('BaseService', () => {
   });
 
   describe('#findOne', () => {
-    it('should find one item', async () => {
+    it('should find one item by id', async () => {
       const mockRepository = {
         findOne: jest.fn().mockImplementation(() =>
           Promise.resolve({
@@ -77,9 +87,27 @@ describe('BaseService', () => {
       const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
 
       const service = new BaseService(Mock, mockRepoAccessor);
-      await service.findOne(1, {} as any);
+      await service.findOne({ id: 1, options: {} as any });
 
       expect(mockRepository.findOne).toHaveBeenCalledWith(1, {});
+    });
+
+    it('should find one item by id', async () => {
+      const mockRepository = {
+        findOne: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            id: 1,
+            email: 'found@user.com',
+            password: 'hashed-pwd'
+          })
+        )
+      };
+      const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
+
+      const service = new BaseService(Mock, mockRepoAccessor);
+      await service.findOne({ options: {} as any });
+
+      expect(mockRepository.findOne).toHaveBeenCalledWith({});
     });
   });
 

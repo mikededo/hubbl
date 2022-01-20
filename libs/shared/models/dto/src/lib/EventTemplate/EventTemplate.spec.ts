@@ -1,11 +1,12 @@
 import * as ClassValidator from 'class-validator';
 
 import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
-import * as Util from '../util';
 import EventTemplateDTO from './EventTemplate';
 
 jest.mock('@hubbl/shared/models/entities');
+jest.mock('@hubbl/shared/models/helpers');
 
 const propCompare = (
   want: EventTemplate | EventTemplateDTO,
@@ -54,7 +55,7 @@ describe('EventTemplate', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -71,11 +72,7 @@ describe('EventTemplate', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create a EventTemplateDTO from a correct EventTemplate', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
-
+    it('should create a EventTemplateDTO from a correct EventTemplate', () => {
       const eventTemplate = new EventTemplate();
       const eventType = new EventType();
 
@@ -87,7 +84,7 @@ describe('EventTemplate', () => {
       eventTemplate.type = eventType;
       eventTemplate.gym = 1;
 
-      const result = await EventTemplateDTO.fromClass({
+      const result = EventTemplateDTO.fromClass({
         ...eventTemplate,
         eventCount: 5
       } as any);
@@ -97,27 +94,6 @@ describe('EventTemplate', () => {
 
       // Additional fields
       expect(result.eventCount).toBe(5);
-
-      // Ensure class is validated
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating a EventTemplateDTO from an incorrect EventTemplate', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await EventTemplateDTO.fromClass({} as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

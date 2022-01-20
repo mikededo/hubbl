@@ -62,7 +62,7 @@ describe('create', () => {
         workerService = {} as any,
         by
       }: CommonShouldCreateByProps) => {
-        fromClassSpy.mockResolvedValue(mockEntityDto);
+        fromClassSpy.mockReturnValue(mockEntityDto);
         const saveSpy = jest
           .spyOn(service, 'save')
           .mockResolvedValue(mockEntity);
@@ -180,7 +180,7 @@ describe('create', () => {
       });
 
       expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockWorkerService.findOne).toHaveBeenCalledWith(1);
+      expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
@@ -208,7 +208,7 @@ describe('create', () => {
       });
 
       expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockWorkerService.findOne).toHaveBeenCalledWith(1);
+      expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
@@ -266,47 +266,29 @@ describe('create', () => {
       );
     });
 
-    it('should send fail if fromClass error', async () => {
-      fromClassSpy.mockRejectedValue({});
-      const mockRes = {
-        json: jest.fn().mockReturnThis(),
-        status: jest.fn().mockReturnThis()
-      } as any;
-
-      const mockService = {
-        count: jest.fn().mockResolvedValue(1),
-        save: jest.fn().mockResolvedValue(mockEntity)
-      } as any;
-      const mockOwnerService = {
-        count: jest.fn().mockResolvedValue(1)
-      } as any;
+    it('should send fail if on service.save error', async () => {
+      const mockOwnerService = { count: jest.fn().mockResolvedValue(1) };
+      const mockService = { save: jest.fn().mockRejectedValue('error-thrown') };
 
       await create.createdByOwnerOrWorker({
         controller: mockController,
-        service: mockService,
-        ownerService: mockOwnerService,
+        service: mockService as any,
+        ownerService: mockOwnerService as any,
         workerService: {} as any,
-        res: mockRes,
+        res: {} as any,
         fromClass: fromClassSpy,
+        token: { id: 1 } as any,
         by: 'owner',
         dto: mockEntityDto,
-        token: { id: 1, email: 'test@user.com', exp: Date.now() },
-        entityName: 'VirtualGym',
-        workerCreatePermission: 'any' as any
+        entityName: 'any' as any
       });
 
-      // Common checks
-      expect(mockEntityDto.toClass).toHaveBeenCalledTimes(1);
+      expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
       expect(mockService.save).toHaveBeenCalledTimes(1);
-      expect(mockService.save).toHaveBeenCalledWith(mockEntity);
-      expect(fromClassSpy).toHaveBeenCalledTimes(1);
-      expect(fromClassSpy).toHaveBeenCalledWith(mockEntity);
-      expect(mockController.created).toHaveBeenCalledTimes(0);
-
       logAsserts();
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
-        mockRes,
+        {},
         'Internal server error. If the error persists, contact our team.'
       );
     });

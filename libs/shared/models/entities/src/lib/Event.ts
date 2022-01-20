@@ -1,7 +1,9 @@
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -20,14 +22,58 @@ export default class Event {
   id!: number;
 
   /**
+   * Name of the `Event`
+   */
+  @Column('varchar', { nullable: false, length: 255 })
+  name!: string;
+
+  /**
+   * Optional description of the `Event`
+   */
+  @Column('text')
+  description!: string;
+
+  /**
+   * Maximum capacity of clients for this `Event`
+   */
+  @Column('integer', { nullable: false })
+  capacity!: number;
+
+  /**
+   * Whether persons that book a place in the `Event` must have
+   * the covid passport
+   */
+  @Column('boolean', { default: false })
+  covidPassport!: boolean;
+
+  /**
+   * Whether clients must wear masks in the `Event`
+   */
+  @Column('boolean', { default: false })
+  maskRequired!: boolean;
+
+  /**
+   * Time at which the `Event` starts
+   */
+  @Index('event-start-time-idx')
+  @Column('time', { nullable: false })
+  startTime!: string;
+
+  /**
+   * Time at which the `Event` ends
+   */
+  @Index('event-end-time-idx')
+  @Column('time', { nullable: false })
+  endTime!: string;
+
+  /**
    * `Trainer` assigned to the event
    */
   @ManyToOne(() => Trainer, (t) => t.events, {
     nullable: false,
-    lazy: true,
     cascade: true
   })
-  trainer!: Trainer;
+  trainer!: number | Trainer;
 
   /**
    * `Calendar` to which the `Event` belongs
@@ -35,23 +81,28 @@ export default class Event {
   @ManyToOne(() => Calendar, (c) => c.events, {
     nullable: false
   })
-  calendar!: Calendar;
+  calendar!: number | Calendar;
 
   /**
    * `EventTemplate` from which has been created
    */
   @ManyToOne(() => EventTemplate, (et) => et.events, {
-    nullable: false,
     eager: true,
     onDelete: 'SET NULL'
   })
-  template!: EventTemplate;
+  template!: number;
 
   /**
    * `Appointment`'s set for the `Event`
    */
-  @OneToMany(() => EventAppointment, (a) => a.event)
+  @OneToMany(() => EventAppointment, (a) => a.event, { eager: true })
   appointments!: EventAppointment[];
+
+  /**
+   * Count of the appointments when events are fetched to see them
+   * in the calendar
+   */
+  appointmentCount!: number;
 
   /**
    * `CalendarDate` of the event

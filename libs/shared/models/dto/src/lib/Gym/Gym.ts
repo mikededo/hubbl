@@ -7,18 +7,18 @@ import {
 } from 'class-validator';
 
 import { Gym, VirtualGym } from '@hubbl/shared/models/entities';
-import { ThemeColor } from '@hubbl/shared/types';
-
-import DTO from '../Base';
-import { PersonDTOGroups } from '../Person';
 import {
-  DTOGroups,
   emailError,
   enumError,
   numberError,
   stringError,
   validationParser
-} from '../util';
+} from '@hubbl/shared/models/helpers';
+import { ThemeColor } from '@hubbl/shared/types';
+
+import DTO from '../Base';
+import { PersonDTOGroups } from '../Person';
+import { DTOGroups } from '../util';
 
 export default class GymDTO implements DTO<Gym> {
   @IsNumber(
@@ -85,7 +85,7 @@ export default class GymDTO implements DTO<Gym> {
    * @param gym The fetched gym
    * @returns The dto to be send as a response
    */
-  public static async fromClass(gym: Gym): Promise<GymDTO> {
+  public static fromClass(gym: Gym): GymDTO {
     const result = new GymDTO();
 
     result.id = gym.id;
@@ -94,13 +94,6 @@ export default class GymDTO implements DTO<Gym> {
     result.phone = gym.phone;
     result.color = gym.color;
     result.virtualGyms = gym.virtualGyms;
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

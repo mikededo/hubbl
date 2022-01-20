@@ -2,12 +2,13 @@ import { genSalt, hash } from 'bcrypt';
 import { IsBoolean, validateOrReject } from 'class-validator';
 
 import { Client, Gym, Person } from '@hubbl/shared/models/entities';
+import { booleanError, validationParser } from '@hubbl/shared/models/helpers';
 import { AppTheme, Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import GymDTO from '../Gym';
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import { booleanError, DTOGroups, validationParser } from '../util';
+import { DTOGroups } from '../util';
 
 export default class ClientDTO<T extends Gym | number>
   extends PersonDTO<T>
@@ -60,9 +61,9 @@ export default class ClientDTO<T extends Gym | number>
    * @param gym The gym to assign to the DTO
    * @returns The dto  to be send as a response
    */
-  public static async fromClass<T extends Gym | number>(
+  public static fromClass<T extends Gym | number>(
     client: Client
-  ): Promise<ClientDTO<T>> {
+  ): ClientDTO<T> {
     const result = new ClientDTO<T>();
 
     result.id = client.person.id;
@@ -79,16 +80,9 @@ export default class ClientDTO<T extends Gym | number>
 
     // If the gym is not a number, parse it as a dto
     if (client.person.gym instanceof Gym) {
-      const gymDto = await GymDTO.fromClass(client.person.gym as Gym);
+      const gymDto = GymDTO.fromClass(client.person.gym as Gym);
       result.gym = gymDto.toClass() as T;
     }
-
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: [DTOGroups.ALL]
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
 
     return result;
   }

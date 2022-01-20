@@ -26,7 +26,7 @@ class IVirtualGymFetchController extends BaseController {
 
     try {
       // Get the person, if any
-      const person = await this.personService.findOne(token.id);
+      const person = await this.personService.findOne({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
@@ -41,7 +41,7 @@ class IVirtualGymFetchController extends BaseController {
 
         return this.ok(
           res,
-          await Promise.all(result.map((vg) => VirtualGymDTO.fromClass(vg)))
+          result.map((vg) => VirtualGymDTO.fromClass(vg))
         );
       } catch (_) {
         log.error(

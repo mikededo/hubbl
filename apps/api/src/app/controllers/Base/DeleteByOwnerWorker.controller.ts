@@ -2,12 +2,14 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
 import {
+  Event,
   EventTemplate,
   EventType,
   GymZone
 } from '@hubbl/shared/models/entities';
 
 import {
+  EventService,
   EventTemplateService,
   EventTypeService,
   GymZoneService,
@@ -18,16 +20,18 @@ import {
 import { deletedByOwnerOrWorker } from '../helpers';
 import BaseController from './Base.controller';
 
-type DeletableEntityNames = 'EventTemplate' | 'EventType' | 'GymZone';
+type DeletableEntityNames = 'Event' | 'EventTemplate' | 'EventType' | 'GymZone';
 
 type WorkerDeletePermissions =
+  | 'deleteEvents'
   | 'deleteEventTemplates'
   | 'deleteEventTypes'
   | 'deleteGymZones';
 
-type DeletableEntities = EventTemplate | EventType | GymZone;
+type DeletableEntities = Event | EventTemplate | EventType | GymZone;
 
 type DeletableServices =
+  | EventService
   | EventTemplateService
   | EventTypeService
   | GymZoneService;

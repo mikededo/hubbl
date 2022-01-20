@@ -28,7 +28,7 @@ class IEventTemplateFetchController extends BaseController {
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne(token.id);
+      const person = await this.personService.findOne({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
@@ -51,14 +51,12 @@ class IEventTemplateFetchController extends BaseController {
 
       return this.ok(
         res,
-        await Promise.all(
-          result.map((et) => {
-            // Needs to be added as the find query does not parse the gym id
-            et.gym = gymId;
+        result.map((et) => {
+          // Needs to be added as the find query does not parse the gym id
+          et.gym = gymId;
 
-            return EventTemplateDTO.fromClass(et);
-          })
-        )
+          return EventTemplateDTO.fromClass(et);
+        })
       );
     } catch (_) {
       log.error(

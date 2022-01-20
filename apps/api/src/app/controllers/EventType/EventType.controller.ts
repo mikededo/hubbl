@@ -28,7 +28,7 @@ class IEventTypeFetchController extends BaseController {
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne(token.id);
+      const person = await this.personService.findOne({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
@@ -43,14 +43,12 @@ class IEventTypeFetchController extends BaseController {
 
         return this.ok(
           res,
-          await Promise.all(
-            result.map((ev) => {
-              // Needs to be added as the find query does not parse the gym id
-              ev.gym = gymId;
+          result.map((ev) => {
+            // Needs to be added as the find query does not parse the gym id
+            ev.gym = gymId;
 
-              return EventTypeDTO.fromClass(ev);
-            })
-          )
+            return EventTypeDTO.fromClass(ev);
+          })
         );
       } catch (_) {
         log.error(

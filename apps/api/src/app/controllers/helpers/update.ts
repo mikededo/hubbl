@@ -2,9 +2,12 @@ import { Request, Response } from 'express';
 import * as log from 'npmlog';
 
 import {
+  CalendarAppointmentDTO,
   ClientDTO,
   DTO,
   DTOGroups,
+  EventAppointmentDTO,
+  EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
   GymZoneDTO,
@@ -14,7 +17,10 @@ import {
   WorkerDTO
 } from '@hubbl/shared/models/dto';
 import {
+  CalendarAppointment,
   Client,
+  Event,
+  EventAppointment,
   EventTemplate,
   EventType,
   Gym,
@@ -31,21 +37,28 @@ import { ParsedToken } from './types';
 
 /* COMMON UPDATERS */
 
-type UpdatableServices =
-  | BaseService<Owner>
-  | BaseService<Worker>
-  | BaseService<Trainer>
-  | BaseService<Client>
-  | BaseService<EventTemplate>
-  | BaseService<EventType>
-  | BaseService<VirtualGym>
-  | BaseService<GymZone>;
+type UpdatableServices = BaseService<
+  | Owner
+  | Worker
+  | Trainer
+  | CalendarAppointment
+  | Client
+  | Event
+  | EventAppointment
+  | EventTemplate
+  | EventType
+  | VirtualGym
+  | GymZone
+>;
 
 type UpdatableEntities =
   | 'Owner'
   | 'Worker'
   | 'Trainer'
+  | 'CalendarAppointment'
   | 'Client'
+  | 'Event'
+  | 'EventAppointment'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -96,6 +109,9 @@ export const findAndUpdateEntity = async ({
 type CommonUpdateByDTOs =
   | TrainerDTO<Gym | number>
   | ClientDTO<Gym | number>
+  | EventDTO
+  | CalendarAppointmentDTO
+  | EventAppointmentDTO
   | EventTemplateDTO
   | EventTypeDTO
   | VirtualGymDTO
@@ -103,7 +119,10 @@ type CommonUpdateByDTOs =
 
 type CommonUpdateByEntities =
   | 'Trainer'
+  | 'CalendarAppointment'
   | 'Client'
+  | 'Event'
+  | 'EventAppointment'
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
@@ -114,10 +133,12 @@ type CommonUpdateByValues =
   | '["owner", "worker"]';
 
 type WorkerUpdatePermissions =
+  | 'updateCalendarAppointments'
   | 'updateClients'
+  | 'updateEvents'
+  | 'updateEventAppointments'
   | 'updateEventTemplates'
   | 'updateEventTypes'
-  | 'updateEvents'
   | 'updateGymZones'
   | 'updateTrainers'
   | 'updateVirtualGyms';
@@ -166,7 +187,7 @@ export const updatedByOwnerOrWorker = async ({
       );
     }
 
-    const worker = await workerService.findOne(token.id);
+    const worker = await workerService.findOne({ id: token.id });
 
     if (!worker) {
       return controller.unauthorized(

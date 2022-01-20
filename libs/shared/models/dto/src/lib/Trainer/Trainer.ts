@@ -2,17 +2,17 @@ import { genSalt, hash } from 'bcrypt';
 import { IsArray, IsNumber, IsString, validateOrReject } from 'class-validator';
 
 import { Event, Gym, Person, Trainer } from '@hubbl/shared/models/entities';
+import {
+  arrayError,
+  numberError,
+  stringError,
+  validationParser
+} from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
-import {
-  arrayError,
-  DTOGroups,
-  numberError,
-  stringError,
-  validationParser
-} from '../util';
+import { DTOGroups } from '../util';
 
 export default class TrainerDTO<T extends Gym | number>
   extends PersonDTO<T>
@@ -81,30 +81,29 @@ export default class TrainerDTO<T extends Gym | number>
    * @param gym The gym to assign to the DTO
    * @returns The dto to be send as a response
    */
-  public static async fromClass(trainer: Trainer): Promise<TrainerDTO<Gym>> {
+  public static fromClass(
+    trainer: Trainer,
+    variant: 'info' | 'all' = 'all'
+  ): TrainerDTO<Gym> {
     const result = new TrainerDTO<Gym>();
 
     // Person props
     result.id = trainer.person.id;
-    result.email = trainer.person.email;
-    result.password = trainer.person.password;
     result.firstName = trainer.person.firstName;
     result.lastName = trainer.person.lastName;
-    result.gym = trainer.person.gym as Gym;
-    result.theme = trainer.person.theme;
-    result.gender = trainer.person.gender as Gender;
 
-    // Trainer props
-    result.managerId = trainer.managerId;
-    result.workerCode = trainer.workerCode;
-    result.events = trainer.events;
+    if (variant === 'all') {
+      result.email = trainer.person.email;
+      result.password = trainer.person.password;
+      result.theme = trainer.person.theme;
+      result.gym = trainer.person.gym as Gym;
+      result.gender = trainer.person.gender as Gender;
 
-    await validateOrReject(result, {
-      validationError: { target: false },
-      groups: ['all']
-    }).catch((errors) => {
-      throw validationParser(errors);
-    });
+      // Trainer props
+      result.managerId = trainer.managerId;
+      result.workerCode = trainer.workerCode;
+      result.events = trainer.events;
+    }
 
     return result;
   }

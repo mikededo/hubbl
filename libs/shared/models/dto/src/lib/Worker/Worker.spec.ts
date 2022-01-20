@@ -2,10 +2,13 @@ import { compare, genSalt, hash } from 'bcrypt';
 import * as ClassValidator from 'class-validator';
 
 import { Gym, Worker } from '@hubbl/shared/models/entities';
+import * as helpers from '@hubbl/shared/models/helpers';
 
 import GymDTO from '../Gym';
 import * as Util from '../util';
 import WorkerDTO from './Worker';
+
+jest.mock('@hubbl/shared/models/helpers');
 
 const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
   worker.workerCode = 'some-uuid';
@@ -29,6 +32,12 @@ const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
   worker.createEventTemplates = false;
   worker.updateEventTemplates = false;
   worker.deleteEventTemplates = false;
+  worker.createEventAppointments = false;
+  worker.updateEventAppointments = false;
+  worker.deleteEventAppointments = false;
+  worker.createCalendarAppointments = false;
+  worker.updateCalendarAppointments = false;
+  worker.deleteCalendarAppointments = false;
 };
 
 const workerPropCompare = (
@@ -55,6 +64,12 @@ const workerPropCompare = (
   expect(got.createEventTemplates).toBe(want.createEventTemplates);
   expect(got.updateEventTemplates).toBe(want.updateEventTemplates);
   expect(got.deleteEventTemplates).toBe(want.deleteEventTemplates);
+  expect(got.createEventAppointments).toBe(want.createEventAppointments);
+  expect(got.updateEventAppointments).toBe(want.updateEventAppointments);
+  expect(got.deleteEventAppointments).toBe(want.deleteEventAppointments);
+  expect(got.createCalendarAppointments).toBe(want.createCalendarAppointments);
+  expect(got.updateCalendarAppointments).toBe(want.updateCalendarAppointments);
+  expect(got.deleteCalendarAppointments).toBe(want.deleteCalendarAppointments);
 };
 
 describe('WorkerDTO', () => {
@@ -86,7 +101,13 @@ describe('WorkerDTO', () => {
         deleteEventTypes: false,
         createEventTemplates: false,
         updateEventTemplates: false,
-        deleteEventTemplates: false
+        deleteEventTemplates: false,
+        createEventAppointments: false,
+        updateEventAppointments: false,
+        deleteEventAppointments: false,
+        createCalendarAppointments: false,
+        updateCalendarAppointments: false,
+        deleteCalendarAppointments: false
       });
 
       const result = await WorkerDTO.fromJson(json, 'any' as any);
@@ -111,7 +132,7 @@ describe('WorkerDTO', () => {
         .spyOn(ClassValidator, 'validateOrReject')
         .mockRejectedValue({});
       const vpSpy = jest
-        .spyOn(Util, 'validationParser')
+        .spyOn(helpers, 'validationParser')
         .mockReturnValue({} as any);
 
       expect.assertions(3);
@@ -129,9 +150,6 @@ describe('WorkerDTO', () => {
 
   describe('#fromClass', () => {
     it('should create an WorkerDTO from a correct Worker', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockResolvedValue();
       const password = await hash('testpwd00', await genSalt(10));
 
       const worker = new Worker();
@@ -139,13 +157,15 @@ describe('WorkerDTO', () => {
       worker.person = Util.createPerson(password);
       workerPropsAssign(worker);
 
-      jest.spyOn(GymDTO, 'fromClass').mockResolvedValue({
+      const gymFromClassSpy = jest.spyOn(GymDTO, 'fromClass').mockReturnValue({
         ...(worker.person.gym as Gym),
         toClass: jest.fn().mockReturnValue(worker.person.gym)
       });
 
-      const result = await WorkerDTO.fromClass(worker);
+      const result = WorkerDTO.fromClass(worker);
 
+      expect(gymFromClassSpy).toHaveBeenCalledTimes(1);
+      expect(gymFromClassSpy).toHaveBeenCalledWith(worker.person.gym);
       workerPropCompare(result, worker);
       expect(result.email).toBe(worker.person.email);
       expect(result.password).toBe(worker.person.password);
@@ -155,27 +175,6 @@ describe('WorkerDTO', () => {
 
       // Additional checks
       expect(result.gym).toBeInstanceOf(Gym);
-
-      // Ensure validation has been called
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fail on creating an WorkerDTO from an incorrect Worker', async () => {
-      const vorSpy = jest
-        .spyOn(ClassValidator, 'validateOrReject')
-        .mockRejectedValue({});
-      const vpSpy = jest.spyOn(Util, 'validationParser').mockReturnValue({});
-
-      expect.assertions(3);
-
-      try {
-        await WorkerDTO.fromClass({ person: {} } as any);
-      } catch (e) {
-        expect(e).toBeDefined();
-      }
-
-      expect(vorSpy).toHaveBeenCalledTimes(1);
-      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
   });
 

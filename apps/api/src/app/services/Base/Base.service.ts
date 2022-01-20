@@ -11,6 +11,11 @@ import {
 
 import { RepositoryAccessor } from '../util';
 
+type FindOneProps<T> = {
+  id?: number;
+  options?: FindOneOptions<T>;
+};
+
 type CreateQueryBuilderProps = {
   alias?: string;
   queryRunner?: QueryRunner;
@@ -23,6 +28,10 @@ export default class BaseService<T> {
     this.repository = accessor(type, 'postgres');
   }
 
+  public get manager() {
+    return this.repository.manager;
+  }
+
   public save(value: T): Promise<T> {
     return this.repository.save(value);
   }
@@ -31,8 +40,10 @@ export default class BaseService<T> {
     return this.repository.find(options);
   }
 
-  public findOne(id: number, options?: FindOneOptions<T>): Promise<T> {
-    return this.repository.findOne(id, options);
+  public findOne({ id, options }: FindOneProps<T>): Promise<T> {
+    return id
+      ? this.repository.findOne(id, options)
+      : this.repository.findOne(options);
   }
 
   public update(id: number, value: T): Promise<UpdateResult> {
