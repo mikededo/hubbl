@@ -1,4 +1,5 @@
 import { getRepository } from 'typeorm';
+import * as log from 'npmlog';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 
@@ -51,11 +52,31 @@ describe('Event controller', () => {
   const mockReq = { query: { by: 'owner' }, body: {} };
   const mockRes = { locals: { token: { id: 1 } } };
 
+  const logSpy = jest.spyOn(log, 'error').mockImplementation();
+
   beforeEach(() => {
     jest.clearAllMocks();
 
     fromJsonSpy.mockResolvedValue(mockDto as any);
   });
+
+  const failSpyAsserts = (
+    controller: typeof EventCreateController | typeof EventUpdateController,
+    failSpy: any,
+    operation: 'create' | 'update'
+  ) => {
+    expect(logSpy).toHaveBeenCalledTimes(1);
+    expect(logSpy).toHaveBeenCalledWith(
+      `Controller[${controller.constructor.name}]`,
+      `"${operation}" handler`,
+      'error-thrown'
+    );
+    expect(failSpy).toHaveBeenCalledTimes(1);
+    expect(failSpy).toHaveBeenCalledWith(
+      mockRes,
+      'Internal server error. If the problem persists, contact our team.'
+    );
+  };
 
   const servicesAsserts = async (
     controller: typeof EventCreateController | typeof EventUpdateController
@@ -149,11 +170,12 @@ describe('Event controller', () => {
 
   const serviceFailAsserts = async (
     controller: typeof EventCreateController | typeof EventUpdateController,
+    operation: 'create' | 'update',
     countTimes = 1
   ) => {
-    mockService.getCount.mockRejectedValue({});
+    mockService.getCount.mockRejectedValue('error-thrown');
 
-    const failErrorSpy = jest.spyOn(controller, 'fail').mockImplementation();
+    const failSpy = jest.spyOn(controller, 'fail').mockImplementation();
 
     controller['service'] = mockService as any;
     controller['ownerService'] = {} as any;
@@ -163,11 +185,7 @@ describe('Event controller', () => {
 
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(mockService.getCount).toHaveBeenCalledTimes(countTimes);
-    expect(failErrorSpy).toHaveBeenCalledTimes(1);
-    expect(failErrorSpy).toHaveBeenCalledWith(
-      mockRes,
-      'Internal server error. If the problem persists, contact our team.'
-    );
+    failSpyAsserts(controller, failSpy, operation);
   };
 
   describe('EventCreateController', () => {
@@ -412,9 +430,9 @@ describe('Event controller', () => {
 
     it('should send fail on service error', async () => {
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
-      mockService.getCount.mockRejectedValue({});
+      mockService.getCount.mockRejectedValue('error-thrown');
 
-      const failErrorSpy = jest
+      const failSpy = jest
         .spyOn(EventCreateController, 'fail')
         .mockImplementation();
 
@@ -427,11 +445,7 @@ describe('Event controller', () => {
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(mockService.getCount).toHaveBeenCalledTimes(1);
-      expect(failErrorSpy).toHaveBeenCalledTimes(1);
-      expect(failErrorSpy).toHaveBeenCalledWith(
-        mockRes,
-        'Internal server error. If the problem persists, contact our team.'
-      );
+      failSpyAsserts(EventCreateController, failSpy, 'create');
     });
 
     it('should send clientError if events overlap', async () => {
@@ -450,7 +464,7 @@ describe('Event controller', () => {
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
       EventCreateController['gymZoneService'] = mockGymZoneService;
 
-      await serviceFailAsserts(EventCreateController, 2);
+      await serviceFailAsserts(EventCreateController, 'create', 2);
     });
   });
 
@@ -547,7 +561,7 @@ describe('Event controller', () => {
     });
 
     it('should send fail on service error', async () => {
-      await serviceFailAsserts(EventUpdateController);
+      await serviceFailAsserts(EventUpdateController, 'update');
     });
   });
 
