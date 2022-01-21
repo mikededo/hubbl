@@ -1,4 +1,4 @@
-name: CI
+name: CI Shared models DTO
 on:
   push:
     branches:
