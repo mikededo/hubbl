@@ -18,34 +18,45 @@ flags:
   api:
     paths:
       - apps/api/src
+    carryforward: true
   client:
     paths:
       - apps/client/src
+    carryforward: true
   client-e2e:
     paths:
       - apps/client-e2e/src
+    carryforward: true
   core:
     paths:
       - apps/core/src
+    carryforward: true
   core-e2e:
     paths:
       - apps/core-e2e/src
+    carryforward: true
   landing:
     paths:
       - apps/landing/src
+    carryforward: true
   landing-e2e:
     paths:
       - apps/landing-e2e/src
+    carryforward: true
   # Libs
   shared-models-body-validators:
     paths:
       - libs/shared/models/body-validators
+    carryforward: true
   shared-models-dto:
     paths:
       - libs/shared/models/dto
+    carryforward: true
   shared-models-helpers:
     paths:
       - libs/shared/models/helpers
+    carryforward: true
   shared-types:
     paths:
       - libs/shared/types
+    carryforward: true
