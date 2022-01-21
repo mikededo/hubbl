@@ -1,5 +1,6 @@
 name: CI Shared models body validators
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'develop'

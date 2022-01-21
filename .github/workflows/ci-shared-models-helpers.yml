@@ -1,5 +1,6 @@
 name: CI Shared models helpers
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'develop'
