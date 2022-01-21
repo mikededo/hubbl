@@ -1,6 +1,5 @@
 name: CI Shared models DTO
 on:
-  workflow_dispatch:
   push:
     branches:
       - 'develop'
