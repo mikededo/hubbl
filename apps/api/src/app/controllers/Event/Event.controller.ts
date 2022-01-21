@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
@@ -21,6 +22,19 @@ class IEventCreateController extends BaseController {
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
   protected gymZoneService: GymZoneService = undefined;
+
+  protected onFail(res: Response, error: any): Response {
+    log.error(
+      `Controller[${this.constructor.name}]`,
+      '"create" handler',
+      error.toString()
+    );
+
+    return this.fail(
+      res,
+      'Internal server error. If the problem persists, contact our team.'
+    );
+  }
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
@@ -68,10 +82,7 @@ class IEventCreateController extends BaseController {
         );
       }
     } catch (e) {
-      return this.fail(
-        res,
-        'Internal server error. If the problem persists, contact our team.'
-      );
+      return this.onFail(res, e);
     }
 
     try {
@@ -92,10 +103,7 @@ class IEventCreateController extends BaseController {
         );
       }
     } catch (e) {
-      return this.fail(
-        res,
-        'Internal server error. If the problem persists, contact our team.'
-      );
+      return this.onFail(res, e);
     }
 
     try {
@@ -117,10 +125,7 @@ class IEventCreateController extends BaseController {
         );
       }
     } catch (e) {
-      return this.fail(
-        res,
-        'Internal server error. If the problem persists, contact our team.'
-      );
+      return this.onFail(res, e);
     }
 
     return createdByOwnerOrWorker({
@@ -194,6 +199,12 @@ class IEventUpdateController extends BaseController {
         );
       }
     } catch (e) {
+      log.error(
+        `Controller[${this.constructor.name}]`,
+        '"update" handler',
+        e.toString()
+      );
+
       return this.fail(
         res,
         'Internal server error. If the problem persists, contact our team.'
