@@ -1,3 +1,4 @@
+import { instanceError, maxError, minError } from '.';
 import {
   arrayError,
   booleanError,
@@ -25,6 +26,24 @@ describe('error-messages', () => {
 
       expect(res).toBeDefined();
       expect(res).toBe('[prop] Should be a number');
+    });
+  });
+
+  describe('minError', () => {
+    it('should return an error message with the given type and prop', () => {
+      const res = minError('prop', 10);
+
+      expect(res).toBeDefined();
+      expect(res).toBe('[prop] Min value can be 10');
+    });
+  });
+
+  describe('maxError', () => {
+    it('should return an error message with the given type and prop', () => {
+      const res = maxError('prop', 10);
+
+      expect(res).toBeDefined();
+      expect(res).toBe('[prop] Max value can be 10');
     });
   });
 
@@ -79,6 +98,15 @@ describe('error-messages', () => {
 
       expect(res).toBeDefined();
       expect(res).toBe('Email is not valid');
+    });
+  });
+
+  describe('instanceError', () => {
+    it('should return an error message with the given type', () => {
+      const res = instanceError('Entity', 'prop');
+
+      expect(res).toBeDefined();
+      expect(res).toBe('[prop] is not instance of "Entity"');
     });
   });
 });
