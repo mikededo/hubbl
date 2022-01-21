@@ -1,4 +1,4 @@
-name: CI
+name: CI Api
 on:
   push:
     branches:

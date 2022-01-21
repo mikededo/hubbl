@@ -1,4 +1,4 @@
-name: 'CI'
+name: Common CI
 description: Runs tests for a project
 inputs: 
   proj-name: 
