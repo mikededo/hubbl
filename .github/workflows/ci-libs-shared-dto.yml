@@ -1,0 +1,39 @@
+name: CI
+on:
+  push:
+    branches:
+      - 'develop'
+    paths:
+      - 'libs/shared/models/dto/**'
+  pull_request:
+    paths:
+      - 'libs/shared/models/dto/**'
+
+jobs:
+  ci-develop:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [develop]
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/ci
+        name: Running CI on a push
+        with:
+          proj-name: shared-models-dto
+          codecov-token: ${{ secrets.CODECOV_TOKEN }}
+
+  ci-pr:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [develop]
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/ci
+        name: Running CI on a pull request
+        with:
+          proj-name: shared-models-dto
+          codecov-token: ${{ secrets.CODECOV_TOKEN }}

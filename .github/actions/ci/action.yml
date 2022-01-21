@@ -1,0 +1,32 @@
+name: 'CI'
+description: Runs tests for a project
+inputs: 
+  proj-name: 
+    description: Flag of the application being tested
+    required: true
+  codecov-token: 
+    description: Codecov token to upload the coverage
+    required: true
+outputs:
+  info:
+    description: "Running tests for"
+    value: ${{ inputs.proj-name }}
+runs:
+  using: "composite"
+  steps:
+    - name: Derive appropriate SHAs for base and head for `nx affected` commands
+      uses: nrwl/nx-set-shas@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '16.10.0'
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+    - name: Run tests
+      shell: bash
+      run: npx nx test ${{ inputs.proj-name }} --codeCoverage --coverageReporters lcov
+    - name: Upload coverage
+      uses: codecov/codecov-action@v2.1.0
+      with:
+        token: ${{ inputs.codecov-token }}
+        flags: ${{ inputs.proj-name}}

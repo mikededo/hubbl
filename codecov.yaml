@@ -1,6 +1,18 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 90%
+      libs:
+        target: 100%
+        flags:
+          - shared-models
+          - shared-types
+
 comment:
   layout: 'diff, flags, files'
   require_changes: true
+
 flags:
   # Apps
   api:
@@ -25,9 +37,15 @@ flags:
     paths:
       - apps/landing-e2e/src
   # Libs
-  shared-models:
+  shared-models-body-validators:
     paths:
-      - libs/shared/models
+      - libs/shared/models/body-validators
+  shared-models-dto:
+    paths:
+      - libs/shared/models/dto
+  shared-models-helpers:
+    paths:
+      - libs/shared/models/helpers
   shared-types:
     paths:
       - libs/shared/types
