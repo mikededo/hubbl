@@ -32,7 +32,7 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-  
+
   # Api
   api:
     container_name: hubbl-api
@@ -40,12 +40,12 @@ services:
     volumes:
       - .:/app
     command:
-     - /bin/sh
-     - -c
-     - |
-      cd /app
-      npm install
-      npx nx serve api
+      - /bin/sh
+      - -c
+      - |
+        cd /app
+        npm install
+        npx nx serve api
     ports:
       - 3333:3333
     networks:
@@ -53,11 +53,9 @@ services:
     mem_limit: 1G
     restart: unless-stopped
 
-
 networks:
   postgres:
     driver: bridge
-
 
 volumes:
   postgres:

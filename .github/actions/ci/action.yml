@@ -1,18 +1,18 @@
 name: Common CI
 description: Runs tests for a project
-inputs: 
-  proj-name: 
+inputs:
+  proj-name:
     description: Flag of the application being tested
     required: true
-  codecov-token: 
+  codecov-token:
     description: Codecov token to upload the coverage
     required: true
 outputs:
   info:
-    description: "Running tests for"
+    description: 'Running tests for'
     value: ${{ inputs.proj-name }}
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Derive appropriate SHAs for base and head for `nx affected` commands
       uses: nrwl/nx-set-shas@v2
