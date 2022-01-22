@@ -24,7 +24,6 @@ describe('UpdateByOwnerWorkerController controller', () => {
   };
   const mockReq = {
     params: { id: 1, vgId: 1 },
-    query: { by: 'owner' },
     body: {},
     headers: { authorization: 'Any token' }
   } as any;
@@ -81,10 +80,8 @@ describe('UpdateByOwnerWorkerController controller', () => {
       controller: controller,
       res: mockRes,
       token: { id: 1 },
-      by: mockReq.query.by,
       dto: mockDto,
       entityName: 'EntityName',
-      updatableBy: '["owner", "worker"]',
       countArgs: { id: 1 },
       workerUpdatePermission: 'workerPermission'
     });

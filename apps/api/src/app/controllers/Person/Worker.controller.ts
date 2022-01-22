@@ -73,8 +73,7 @@ class IWorkerUpdateController extends BaseController {
       ownerService: this.ownerService,
       controller: this,
       req,
-      res,
-      by: req.query.by as any
+      res
     });
   }
 }

@@ -106,10 +106,8 @@ export default class UpdateByOwnerWorkerController extends BaseController {
         controller: this,
         res,
         token,
-        by: req.query.by as any,
         dto,
         entityName: this.entityName,
-        updatableBy: '["owner", "worker"]',
         countArgs: { id: dto.id },
         workerUpdatePermission: this.workerUpdatePermission
       });

@@ -24,7 +24,6 @@ describe('CreateByOwnerWorkerController controller', () => {
   };
   const mockReq = {
     params: { id: 1, vgId: 1 },
-    query: { by: 'owner' },
     body: {},
     headers: { authorization: 'Any token' }
   } as any;
@@ -84,7 +83,6 @@ describe('CreateByOwnerWorkerController controller', () => {
       res: mockRes,
       fromClass: fromClassSpy,
       token: { id: 1 },
-      by: mockReq.query.by,
       dto: mockDto,
       entityName: 'EntityName',
       workerCreatePermission: 'workerPermission'

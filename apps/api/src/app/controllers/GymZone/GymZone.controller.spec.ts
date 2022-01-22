@@ -43,7 +43,6 @@ describe('GymZone controller', () => {
   };
   const mockReq = {
     params: { id: 1, vgId: 1 },
-    query: { by: 'owner' },
     body: {},
     headers: { authorization: 'Any token' }
   } as any;

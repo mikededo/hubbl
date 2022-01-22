@@ -12,7 +12,6 @@ describe('DeleteByOwnerWorkerController controller', () => {
 
   const mockReq = {
     params: { id: 1, vgId: 1 },
-    query: { by: 'owner' },
     body: {},
     headers: { authorization: 'Any token' }
   } as any;
@@ -63,7 +62,6 @@ describe('DeleteByOwnerWorkerController controller', () => {
       controller: controller,
       res: mockRes,
       token: { id: 1 },
-      by: mockReq.query.by,
       entityId: mockReq.params.id,
       entityName: 'EntityName',
       countArgs: { id: 1 },

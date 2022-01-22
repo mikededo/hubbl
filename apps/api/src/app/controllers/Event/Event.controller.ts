@@ -136,7 +136,6 @@ class IEventCreateController extends BaseController {
       res,
       fromClass: EventDTO.fromClass,
       token: res.locals.token as ParsedToken,
-      by: req.query.by as any,
       dto,
       entityName: 'Event',
       workerCreatePermission: 'createEvents'
@@ -218,10 +217,8 @@ class IEventUpdateController extends BaseController {
       controller: this,
       res,
       token: res.locals.token as ParsedToken,
-      by: req.query.by as any,
       dto,
       entityName: 'Event',
-      updatableBy: '["client", "owner", "worker"]',
       countArgs: { id: dto.id },
       workerUpdatePermission: 'updateEvents'
     });

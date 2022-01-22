@@ -93,7 +93,6 @@ export default class CreateByOwnerWorkerController extends BaseController {
         res,
         fromClass: this.fromClass,
         token,
-        by: req.query.by as any,
         dto: await this.fromJson(req.body, DTOGroups.CREATE),
         entityName: this.entityName,
         workerCreatePermission: this.workerCreatePermission

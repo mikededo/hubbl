@@ -2,7 +2,8 @@ import { Router } from 'express';
 
 import {
   CalendarFetchEventsController,
-  CalendarFetchEventAppointmentsController, CalendarFetchCalenAppointmentsController
+  CalendarFetchEventAppointmentsController,
+  CalendarFetchCalenAppointmentsController
 } from '../controllers';
 import middlewares from '../middlewares';
 

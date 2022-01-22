@@ -69,7 +69,7 @@ describe('Calendar controller', () => {
     const eventList = [createEvent(), createEvent(), createEvent()];
     const mockReq = {
       params: { id: 2 },
-      query: { by: 'owner', startDate: '2022-06-29' },
+      query: { startDate: '2022-06-29' },
       body: {},
       headers: { authorization: 'Any token' }
     } as any;

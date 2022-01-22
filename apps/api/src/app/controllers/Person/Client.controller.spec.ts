@@ -82,13 +82,11 @@ describe('ClientController', () => {
   describe('ClientUpdateController', () => {
     describe('execute', () => {
       it('should create the needed services if does not have any', async () => {
-        const mockReq = { query: { by: 'any' } };
-
         ClientUpdateController['service'] = undefined;
         ClientUpdateController['ownerService'] = undefined;
         ClientUpdateController['workerService'] = undefined;
 
-        await ClientUpdateController.execute(mockReq as any, {} as any);
+        await ClientUpdateController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
         expect(ClientService).toHaveBeenCalledWith(getRepository);
@@ -99,7 +97,6 @@ describe('ClientController', () => {
       });
 
       it('should call clientUpdate', async () => {
-        const mockReq = { query: { by: 'any' } } as any;
         const clientUpdateSpy = jest
           .spyOn(helpers, 'clientUpdate')
           .mockImplementation();
@@ -107,16 +104,15 @@ describe('ClientController', () => {
         ClientUpdateController['service'] = {} as any;
         ClientUpdateController['ownerService'] = {} as any;
         ClientUpdateController['workerService'] = {} as any;
-        await ClientUpdateController.execute(mockReq as any, {} as any);
+        await ClientUpdateController.execute({} as any, {} as any);
 
         expect(clientUpdateSpy).toHaveBeenCalledWith({
           service: {},
           ownerService: {},
           workerService: {},
           controller: ClientUpdateController,
-          req: mockReq,
-          res: {},
-          by: 'any'
+          req: {},
+          res: {}
         });
       });
     });

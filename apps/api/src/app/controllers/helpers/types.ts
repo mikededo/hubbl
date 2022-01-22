@@ -15,5 +15,5 @@ export type BaseFromClassCallable<J, T extends DTO<J>> = (entity: J) => T;
 export type ParsedToken = {
   id: number;
   email: string;
-  exp: number;
+  user: 'owner' | 'worker' | 'client';
 };

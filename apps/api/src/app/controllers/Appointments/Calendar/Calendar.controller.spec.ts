@@ -80,13 +80,9 @@ describe('Appointments.Calendar controller', () => {
   const mockClient = { covidPassport: true };
   const mockDto = createMockAppointment(mockAppointment);
 
-  const mockReq = {
-    query: { by: 'owner' },
-    body: mockAppointment,
-    params: { eId: 1, id: 1 }
-  } as any;
-  const mockClientReq = { ...mockReq, query: { by: 'client' } } as any;
-  const mockRes = { locals: { token: { id: 2 } } } as any;
+  const mockReq = { body: mockAppointment, params: { eId: 1, id: 1 } } as any;
+  const mockRes = { locals: { token: { id: 2, user: 'owner' } } } as any;
+  const mockClientRes = { locals: { token: { id: 2, user: 'client' } } } as any;
 
   // Services
   const mockAppointmentService = {
@@ -121,7 +117,8 @@ describe('Appointments.Calendar controller', () => {
   const failAsserts = (
     controller: TypesOfControllers,
     failSpy: any,
-    operation: Operations
+    operation: Operations,
+    res: any
   ) => {
     expect(logSpy).toHaveBeenCalledTimes(1);
     expect(logSpy).toHaveBeenCalledWith(
@@ -131,7 +128,7 @@ describe('Appointments.Calendar controller', () => {
     );
     expect(failSpy).toHaveBeenCalledTimes(1);
     expect(failSpy).toHaveBeenCalledWith(
-      mockRes,
+      res,
       'Internal server error. If the error persists, contact our team'
     );
   };
@@ -149,7 +146,7 @@ describe('Appointments.Calendar controller', () => {
 
   const validTimeAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any
+    mockRes: any
   ) => {
     const forbiddenSpy = jest
       .spyOn(controller, 'forbidden')
@@ -174,8 +171,8 @@ describe('Appointments.Calendar controller', () => {
 
   const pastEventAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any,
-    operation: Operations
+    operation: Operations,
+    mockRes: any
   ) => {
     const forbiddenSpy = jest
       .spyOn(controller, 'forbidden')
@@ -200,8 +197,8 @@ describe('Appointments.Calendar controller', () => {
 
   const findGymZoneErrorAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any,
-    operation: Operations
+    operation: Operations,
+    mockRes: any
   ) => {
     const failSpy = jest.spyOn(controller, 'fail').mockReturnValue({} as any);
 
@@ -214,13 +211,13 @@ describe('Appointments.Calendar controller', () => {
 
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
-    failAsserts(controller, failSpy, operation);
+    failAsserts(controller, failSpy, operation, mockRes);
   };
 
   const outsideGymScheduleAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any,
-    operation: Operations
+    operation: Operations,
+    mockReq: any
   ) => {
     const forbiddenSpy = jest
       .spyOn(controller, 'forbidden')
@@ -248,7 +245,7 @@ describe('Appointments.Calendar controller', () => {
 
   const gymZoneCapacityAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any
+    mockRes: any
   ) => {
     const forbiddenSpy = jest
       .spyOn(controller, 'forbidden')
@@ -276,7 +273,7 @@ describe('Appointments.Calendar controller', () => {
 
   const maxConcurrencyErrorAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any
+    mockRes: any
   ) => {
     const failSpy = jest.spyOn(controller, 'fail').mockReturnValue({} as any);
 
@@ -291,12 +288,12 @@ describe('Appointments.Calendar controller', () => {
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-    failAsserts(controller, failSpy, 'create');
+    failAsserts(controller, failSpy, 'create', mockRes);
   };
 
   const personDoesNotExistAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any
+    mockRes: any
   ) => {
     const forbiddenSpy = jest
       .spyOn(controller, 'forbidden')
@@ -324,7 +321,7 @@ describe('Appointments.Calendar controller', () => {
 
   const covidPassportCheckAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any
+    mockRes: any
   ) => {
     const forbiddenSpy = jest
       .spyOn(controller, 'forbidden')
@@ -354,8 +351,8 @@ describe('Appointments.Calendar controller', () => {
 
   const clientServiceFindOneFailAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any,
-    operation: Operations
+    operation: Operations,
+    mockRes: any
   ) => {
     const failSpy = jest.spyOn(controller, 'fail').mockReturnValue({} as any);
 
@@ -372,12 +369,12 @@ describe('Appointments.Calendar controller', () => {
     expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
     expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
-    failAsserts(controller, failSpy, operation);
+    failAsserts(controller, failSpy, operation, mockRes);
   };
 
   const appointmentOverlapAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any
+    mockRes: any
   ) => {
     const forbiddenSpy = jest
       .spyOn(controller, 'forbidden')
@@ -407,8 +404,8 @@ describe('Appointments.Calendar controller', () => {
 
   const serviceCountFailAsserts = async (
     controller: TypesOfControllers,
-    mockReq: any,
-    operation: Operations
+    operation: Operations,
+    mockRes: any
   ) => {
     const failSpy = jest.spyOn(controller, 'fail').mockReturnValue({} as any);
 
@@ -427,7 +424,7 @@ describe('Appointments.Calendar controller', () => {
     expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
     expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
-    failAsserts(controller, failSpy, operation);
+    failAsserts(controller, failSpy, operation, mockRes);
   };
 
   describe('CalendarFetchController', () => {
@@ -591,7 +588,7 @@ describe('Appointments.Calendar controller', () => {
       expect(calendarAccessSpy).toHaveBeenCalledTimes(1);
       expect(bodyValidation).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-      failAsserts(CalendarFetchController, failSpy, 'fetch');
+      failAsserts(CalendarFetchController, failSpy, 'fetch', mockRes);
     });
   });
 
@@ -636,7 +633,7 @@ describe('Appointments.Calendar controller', () => {
       });
     };
 
-    const fromJsonErrorAsserts = async (mockReq: any) => {
+    const fromJsonErrorAsserts = async (mockRes: any) => {
       fromJsonSpy.mockRejectedValue({});
 
       setupServices(CalendarCreateController);
@@ -679,12 +676,12 @@ describe('Appointments.Calendar controller', () => {
         .mockImplementation();
       setupSucessfullTests();
 
-      await CalendarCreateController.execute(mockClientReq, mockRes);
+      await CalendarCreateController.execute(mockReq, mockClientRes);
 
       validationAsserts();
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(fromJsonSpy).toHaveBeenCalledWith(
-        { ...mockAppointment, client: mockRes.locals.token.id },
+        { ...mockAppointment, client: mockClientRes.locals.token.id },
         DTOGroups.CREATE
       );
       expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
@@ -692,7 +689,7 @@ describe('Appointments.Calendar controller', () => {
       expect(fromClassSpy).toHaveBeenCalledTimes(1);
       expect(fromClassSpy).toHaveBeenCalledWith(mockAppointment);
       expect(createdSpy).toHaveBeenCalledTimes(1);
-      expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
+      expect(createdSpy).toHaveBeenCalledWith(mockClientRes, mockDto);
     });
 
     it('should create a CalendarAppointment by an owner or a worker', async () => {
@@ -719,7 +716,6 @@ describe('Appointments.Calendar controller', () => {
         res: mockRes,
         fromClass: CalendarAppointmentDTO.fromClass,
         token: mockRes.locals.token,
-        by: mockReq.query.by,
         dto: mockDto,
         entityName: 'CalendarAppointment',
         workerCreatePermission: 'createCalendarAppointments'
@@ -729,77 +725,77 @@ describe('Appointments.Calendar controller', () => {
     /**
      * Common tests shared by the creation of a calendar appointment
      */
-    const baseTests = (mockReq: any) => () => {
+    const baseTests = (mockRes: any) => () => {
       it('should send clientError on fromJson error', async () => {
-        await fromJsonErrorAsserts(mockReq);
+        await fromJsonErrorAsserts(mockRes);
       });
 
       it('should send forbidden if startTime is after endTime', async () => {
-        await validTimeAsserts(CalendarCreateController, mockReq);
+        await validTimeAsserts(CalendarCreateController, mockRes);
       });
 
       it('should send forbidden if appointment is past', async () => {
-        await pastEventAsserts(CalendarCreateController, mockReq, 'create');
+        await pastEventAsserts(CalendarCreateController, 'create', mockRes);
       });
 
       it('should send fail on gymZoneService.findOne error', async () => {
         await findGymZoneErrorAsserts(
           CalendarCreateController,
-          mockReq,
-          'create'
+          'create',
+          mockRes
         );
       });
 
       it('should send forbidden if appointment is outside gymZone schedule', async () => {
         await outsideGymScheduleAsserts(
           CalendarCreateController,
-          mockReq,
-          'create'
+          'create',
+          mockRes
         );
       });
 
       it('should send forbidden if gymZone is full schedule', async () => {
-        await gymZoneCapacityAsserts(CalendarCreateController, mockReq);
+        await gymZoneCapacityAsserts(CalendarCreateController, mockRes);
       });
 
       it('should send fail on manager.query error', async () => {
-        await maxConcurrencyErrorAsserts(CalendarCreateController, mockReq);
+        await maxConcurrencyErrorAsserts(CalendarCreateController, mockRes);
       });
 
       it('should send forbidden if client does not exist', async () => {
-        await personDoesNotExistAsserts(CalendarCreateController, mockReq);
+        await personDoesNotExistAsserts(CalendarCreateController, mockRes);
       });
 
       it('should send forbidden if covidPassport check does not pass', async () => {
-        await covidPassportCheckAsserts(CalendarCreateController, mockReq);
+        await covidPassportCheckAsserts(CalendarCreateController, mockRes);
       });
 
       it('should send fail on clientService.findOne error', async () => {
         await clientServiceFindOneFailAsserts(
           CalendarCreateController,
-          mockReq,
-          'create'
+          'create',
+          mockRes
         );
       });
 
       it('should send forbidden if client appointments overlap', async () => {
-        await appointmentOverlapAsserts(CalendarCreateController, mockReq);
+        await appointmentOverlapAsserts(CalendarCreateController, mockRes);
       });
 
       it('should send fail on service.count error', async () => {
         await serviceCountFailAsserts(
           CalendarCreateController,
-          mockReq,
-          'create'
+          'create',
+          mockRes
         );
       });
     };
 
-    describe('owner/worker', baseTests(mockReq));
+    describe('owner/worker', baseTests(mockRes));
 
     describe('client', () => {
       // Run common tests
-      baseTests(mockClientReq)();
+      baseTests(mockClientRes)();
 
       // Run specific tests
       it('should send fail on service.save error', async () => {
@@ -813,7 +809,7 @@ describe('Appointments.Calendar controller', () => {
 
         setupServices(CalendarCreateController);
 
-        await CalendarCreateController.execute(mockClientReq, mockRes);
+        await CalendarCreateController.execute(mockReq, mockClientRes);
 
         expect(fromJsonSpy).toHaveBeenCalledTimes(1);
         expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
@@ -822,7 +818,7 @@ describe('Appointments.Calendar controller', () => {
         expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
         expect(fromClassSpy).toHaveBeenCalledTimes(0);
-        failAsserts(CalendarCreateController, failSpy, 'create');
+        failAsserts(CalendarCreateController, failSpy, 'create', mockClientRes);
       });
 
       it('should send fail on created error', async () => {
@@ -830,11 +826,7 @@ describe('Appointments.Calendar controller', () => {
         fromClassSpy.mockReturnValue(mockDto);
 
         mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
-        mockAppointmentService.manager.query.mockResolvedValue([
-          {
-            max: 0
-          }
-        ]);
+        mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
         mockClientService.findOne.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockImplementation();
@@ -847,7 +839,7 @@ describe('Appointments.Calendar controller', () => {
 
         setupServices(CalendarCreateController);
 
-        await CalendarCreateController.execute(mockClientReq, mockRes);
+        await CalendarCreateController.execute(mockReq, mockClientRes);
 
         expect(fromJsonSpy).toHaveBeenCalledTimes(1);
         expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
@@ -857,8 +849,8 @@ describe('Appointments.Calendar controller', () => {
         expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
         expect(fromClassSpy).toHaveBeenCalledTimes(1);
         expect(createdSpy).toHaveBeenCalledTimes(1);
-        expect(createdSpy).toHaveBeenCalledWith(mockRes, mockDto);
-        failAsserts(CalendarCreateController, failSpy, 'create');
+        expect(createdSpy).toHaveBeenCalledWith(mockClientRes, mockDto);
+        failAsserts(CalendarCreateController, failSpy, 'create', mockClientRes);
       });
     });
   });
@@ -872,7 +864,7 @@ describe('Appointments.Calendar controller', () => {
       jest.clearAllMocks();
     });
 
-    const appointmentDoesNotExistAsserts = async (mockReq: any) => {
+    const appointmentDoesNotExistAsserts = async (mockRes: any) => {
       mockAppointmentService.findOne.mockResolvedValue(undefined);
 
       setupServices(CalendarCancelController);
@@ -887,7 +879,7 @@ describe('Appointments.Calendar controller', () => {
       );
     };
 
-    const appointmentCancelledAsserts = async (mockReq: any) => {
+    const appointmentCancelledAsserts = async (mockRes: any) => {
       mockAppointmentService.findOne.mockResolvedValue({
         ...mockAppointment,
         cancelled: true
@@ -905,7 +897,7 @@ describe('Appointments.Calendar controller', () => {
       );
     };
 
-    const serviceFindOneFailAsserts = async (mockReq: any) => {
+    const serviceFindOneFailAsserts = async (mockRes: any) => {
       const failSpy = jest
         .spyOn(CalendarCancelController, 'fail')
         .mockImplementation();
@@ -916,7 +908,7 @@ describe('Appointments.Calendar controller', () => {
       await CalendarCancelController.execute(mockReq, mockRes);
 
       expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
-      failAsserts(CalendarCancelController, failSpy, 'cancel');
+      failAsserts(CalendarCancelController, failSpy, 'cancel', mockRes);
     };
 
     it('should call updatedByOwnerOrWorker by any owner or worker', async () => {
@@ -950,10 +942,8 @@ describe('Appointments.Calendar controller', () => {
         controller: CalendarCancelController,
         res: mockRes,
         token: mockRes.locals.token,
-        by: mockReq.query.by,
         dto: { ...mockDto, cancelled: true },
         entityName: 'CalendarAppointment',
-        updatableBy: '["client", "owner", "worker"]',
         countArgs: { id: mockReq.params.id },
         workerUpdatePermission: 'updateCalendarAppointments'
       });
@@ -968,17 +958,17 @@ describe('Appointments.Calendar controller', () => {
         .mockImplementation();
       setupServices(CalendarCancelController);
 
-      await CalendarCancelController.execute(mockClientReq, mockRes);
+      await CalendarCancelController.execute(mockReq, mockClientRes);
 
       expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
       expect(mockClientService.findOne).toHaveBeenCalledWith({
-        id: mockRes.locals.token.id
+        id: mockClientRes.locals.token.id
       });
       expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
         id: mockReq.params.id,
         options: {
-          where: { client: mockRes.locals.token.id },
+          where: { client: mockClientRes.locals.token.id },
           loadRelationIds: true
         }
       });
@@ -988,20 +978,20 @@ describe('Appointments.Calendar controller', () => {
         { ...mockAppointment, cancelled: true }
       );
       expect(okSpy).toHaveBeenCalledTimes(1);
-      expect(okSpy).toHaveBeenCalledWith(mockRes);
+      expect(okSpy).toHaveBeenCalledWith(mockClientRes);
     });
 
     describe('owner/worker', () => {
       it('should send forbidden if the appointment does not exist', async () => {
-        await appointmentDoesNotExistAsserts(mockReq);
+        await appointmentDoesNotExistAsserts(mockRes);
       });
 
       it('should send forbidden if the appointment is already cacnelled', async () => {
-        await appointmentCancelledAsserts(mockReq);
+        await appointmentCancelledAsserts(mockRes);
       });
 
       it('should send fail on service.findOne error', async () => {
-        await serviceFindOneFailAsserts(mockReq);
+        await serviceFindOneFailAsserts(mockRes);
       });
     });
 
@@ -1010,12 +1000,12 @@ describe('Appointments.Calendar controller', () => {
         mockClientService.findOne.mockResolvedValue(undefined);
         setupServices(CalendarCancelController);
 
-        await CalendarCancelController.execute(mockClientReq, mockRes);
+        await CalendarCancelController.execute(mockReq, mockClientRes);
 
         expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
         expect(forbiddenSpy).toHaveBeenCalledTimes(1);
         expect(forbiddenSpy).toHaveBeenCalledWith(
-          mockRes,
+          mockClientRes,
           'Person does not exist.'
         );
       });
@@ -1028,28 +1018,28 @@ describe('Appointments.Calendar controller', () => {
 
         setupServices(CalendarCancelController);
 
-        await CalendarCancelController.execute(mockClientReq, mockRes);
+        await CalendarCancelController.execute(mockReq, mockClientRes);
 
         expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
-        failAsserts(CalendarCancelController, failSpy, 'cancel');
+        failAsserts(CalendarCancelController, failSpy, 'cancel', mockClientRes);
       });
 
       it('should send forbidden if the appointment does not exist', async () => {
         mockClientService.findOne.mockResolvedValue(mockClient);
 
-        await appointmentDoesNotExistAsserts(mockClientReq);
+        await appointmentDoesNotExistAsserts(mockClientRes);
       });
 
       it('should send forbidden if the appointment is already cacnelled', async () => {
         mockClientService.findOne.mockResolvedValue(mockClient);
 
-        await appointmentCancelledAsserts(mockClientReq);
+        await appointmentCancelledAsserts(mockClientRes);
       });
 
       it('should send fail on service.findOne error', async () => {
         mockClientService.findOne.mockResolvedValue(mockClient);
 
-        await serviceFindOneFailAsserts(mockClientReq);
+        await serviceFindOneFailAsserts(mockClientRes);
       });
 
       it('should send fail on service.update error', async () => {
@@ -1062,12 +1052,12 @@ describe('Appointments.Calendar controller', () => {
           .mockImplementation();
         setupServices(CalendarCancelController);
 
-        await CalendarCancelController.execute(mockClientReq, mockRes);
+        await CalendarCancelController.execute(mockReq, mockClientRes);
 
         expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
-        failAsserts(CalendarCancelController, failSpy, 'cancel');
+        failAsserts(CalendarCancelController, failSpy, 'cancel', mockClientRes);
       });
     });
   });
@@ -1114,7 +1104,6 @@ describe('Appointments.Calendar controller', () => {
           controller: CalendarDeleteController,
           res: mockRes,
           token: mockRes.locals.token,
-          by: mockReq.query.by,
           entityId: mockReq.params.id,
           entityName: 'CalendarAppointment',
           countArgs: { id: mockReq.params.id },
@@ -1123,7 +1112,7 @@ describe('Appointments.Calendar controller', () => {
       });
     });
 
-    describe('owner/worker', () => {
+    describe('client', () => {
       it('should call deletedByClient with params id', async () => {
         const dbc = jest
           .spyOn(deleteHelpers, 'deletedByClient')
@@ -1131,18 +1120,21 @@ describe('Appointments.Calendar controller', () => {
 
         setupServices(CalendarDeleteController);
 
-        await CalendarDeleteController.execute(mockClientReq, mockRes);
+        await CalendarDeleteController.execute(mockReq, mockClientRes);
 
         expect(dbc).toHaveBeenCalledTimes(1);
         expect(dbc).toHaveBeenCalledWith({
           service: mockAppointmentService,
           clientService: mockClientService,
           controller: CalendarDeleteController,
-          res: mockRes,
+          res: mockClientRes,
           entityId: mockReq.params.id,
-          clientId: mockRes.locals.token.id,
+          clientId: mockClientRes.locals.token.id,
           entityName: 'CalendarAppointment',
-          countArgs: { id: mockReq.params.id, client: mockRes.locals.token.id }
+          countArgs: {
+            id: mockReq.params.id,
+            client: mockClientRes.locals.token.id
+          }
         });
       });
     });

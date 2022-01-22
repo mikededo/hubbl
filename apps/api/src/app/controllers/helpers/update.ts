@@ -128,10 +128,6 @@ type CommonUpdateByEntities =
   | 'VirtualGym'
   | 'GymZone';
 
-type CommonUpdateByValues =
-  | '["client", "owner", "worker"]'
-  | '["owner", "worker"]';
-
 type WorkerUpdatePermissions =
   | 'updateCalendarAppointments'
   | 'updateClients'
@@ -150,10 +146,8 @@ type UpdateByOwnerOrWorkerProps = {
   controller: BaseController;
   token: ParsedToken;
   res: Response;
-  by: 'worker' | 'owner';
   dto: CommonUpdateByDTOs;
   entityName: CommonUpdateByEntities;
-  updatableBy: CommonUpdateByValues;
   countArgs: any;
   workerUpdatePermission?: WorkerUpdatePermissions;
 };
@@ -165,15 +159,13 @@ export const updatedByOwnerOrWorker = async ({
   controller,
   res,
   token,
-  by,
   dto,
   entityName,
-  updatableBy,
   countArgs,
   workerUpdatePermission
 }: UpdateByOwnerOrWorkerProps): Promise<Response> => {
   // Validate who is updating
-  if (by === 'worker') {
+  if (token.user === 'worker') {
     if (!workerUpdatePermission) {
       log.error(
         `Controller[${controller.constructor.name}]`,
@@ -200,7 +192,7 @@ export const updatedByOwnerOrWorker = async ({
         'Worker does not have enough permissions.'
       );
     }
-  } else if (by === 'owner') {
+  } else if (token.user === 'owner') {
     const count = await ownerService.count({ person: { id: token.id } });
 
     if (!count) {
@@ -212,7 +204,7 @@ export const updatedByOwnerOrWorker = async ({
   } else {
     return controller.unauthorized(
       res,
-      `Ensure to pass the [by] parameter. Valid values are ${updatableBy}.`
+      'Client can not perform such operation.'
     );
   }
 
@@ -272,7 +264,6 @@ type WorkerUpdateProps = {
   controller: BaseController;
   req: Request;
   res: Response;
-  by: 'owner' | 'worker';
 };
 
 export const workerUpdate = async ({
@@ -280,8 +271,7 @@ export const workerUpdate = async ({
   ownerService,
   controller,
   req,
-  res,
-  by
+  res
 }: WorkerUpdateProps): Promise<Response> => {
   try {
     // Get the entity and validate it
@@ -290,11 +280,11 @@ export const workerUpdate = async ({
     const { token } = res.locals;
 
     // Validate who is updating
-    if (by === 'worker') {
+    if (token.user === 'worker') {
       if (dto.id !== token.id) {
         return controller.unauthorized(res);
       }
-    } else if (by === 'owner') {
+    } else if (token.user === 'owner') {
       const count = await ownerService.count({ person: { id: token.id } });
 
       if (!count) {
@@ -306,7 +296,7 @@ export const workerUpdate = async ({
     } else {
       return controller.unauthorized(
         res,
-        'Ensure to pass the [by] parameter. Valid values are ["owner", "worker"].'
+        'Client can not perform such operation.'
       );
     }
 
@@ -330,7 +320,6 @@ type TrainerUpdateProps = {
   controller: BaseController;
   req: Request;
   res: Response;
-  by: 'worker' | 'owner';
 };
 
 export const trainerUpdate = async ({
@@ -339,8 +328,7 @@ export const trainerUpdate = async ({
   workerService,
   controller,
   req,
-  res,
-  by
+  res
 }: TrainerUpdateProps): Promise<Response> => {
   try {
     // Get the entity and validate it
@@ -357,9 +345,7 @@ export const trainerUpdate = async ({
       res,
       token,
       dto,
-      by,
       entityName: 'Trainer',
-      updatableBy: '["owner", "worker"]',
       workerUpdatePermission: 'updateTrainers',
       countArgs: { person: { id: dto.id } }
     });
@@ -375,7 +361,6 @@ type CliendUpdateProps = {
   controller: BaseController;
   req: Request;
   res: Response;
-  by: 'client' | 'worker' | 'owner';
 };
 
 export const clientUpdate = async ({
@@ -384,8 +369,7 @@ export const clientUpdate = async ({
   ownerService,
   workerService,
   req,
-  res,
-  by
+  res
 }: CliendUpdateProps): Promise<Response> => {
   try {
     // Get the entity and validate it
@@ -394,7 +378,7 @@ export const clientUpdate = async ({
     const { token } = res.locals;
 
     // Validate who is updating
-    if (by === 'client') {
+    if (token.user === 'client') {
       if (dto.id !== token.id) {
         return controller.unauthorized(res);
       }
@@ -416,9 +400,7 @@ export const clientUpdate = async ({
         res,
         token,
         dto,
-        by,
         entityName: 'Client',
-        updatableBy: '["client", "owner", "worker"]',
         workerUpdatePermission: 'updateClients',
         countArgs: { person: { id: dto.id } }
       });

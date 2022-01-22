@@ -82,29 +82,26 @@ describe('OwnerControllerController', () => {
   describe('OwnerUpdateController', () => {
     describe('execute', () => {
       it('should create the needed services if does not have any', async () => {
-        const mockReq = { query: { by: 'any' } };
-
         OwnerUpdateController['service'] = undefined;
 
-        await OwnerUpdateController.execute(mockReq as any, {} as any);
+        await OwnerUpdateController.execute({} as any, {} as any);
 
         expect(OwnerService).toHaveBeenCalledTimes(1);
         expect(OwnerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call ownerUpdate', async () => {
-        const mockReq = { query: { by: 'any' } } as any;
         const ownerUpdateSpy = jest
           .spyOn(helpers, 'ownerUpdate')
           .mockImplementation();
 
         OwnerUpdateController['service'] = {} as any;
-        await OwnerUpdateController.execute(mockReq as any, {} as any);
+        await OwnerUpdateController.execute({} as any, {} as any);
 
         expect(ownerUpdateSpy).toHaveBeenCalledWith({
           service: {},
           controller: OwnerUpdateController,
-          req: mockReq,
+          req: {},
           res: {}
         });
       });

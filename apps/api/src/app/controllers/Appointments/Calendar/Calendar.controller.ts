@@ -362,7 +362,6 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
       res,
       fromClass: CalendarAppointmentDTO.fromClass,
       token: res.locals.token as ParsedToken,
-      by: req.query.by as any,
       dto: maybeValidDto,
       entityName: 'CalendarAppointment',
       workerCreatePermission: 'createCalendarAppointments'
@@ -394,7 +393,9 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
   protected run(req: Request, res: Response): Promise<any> {
     this.checkServices();
 
-    if (req.query.by === 'client') {
+    const { token } = res.locals;
+
+    if (token.user === 'client') {
       return this.createByClient(req, res);
     }
 
@@ -437,13 +438,11 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
       controller: this,
       res,
       token: res.locals.token as ParsedToken,
-      by: req.query.by as any,
       dto: CalendarAppointmentDTO.fromClass({
         ...appointment,
         cancelled: true
       }),
       entityName: 'CalendarAppointment',
-      updatableBy: '["client", "owner", "worker"]',
       countArgs: { id: appointmentId },
       workerUpdatePermission: 'updateCalendarAppointments'
     });
@@ -497,7 +496,9 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
   protected async run(req: Request, res: Response): Promise<Response> {
     this.checkServices();
 
-    if (req.query.by === 'client') {
+    const { token } = res.locals;
+
+    if (token.user === 'client') {
       return this.cancelByClient(req, res);
     }
 
@@ -527,7 +528,6 @@ class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentContro
       controller: this,
       res,
       token: res.locals.token as ParsedToken,
-      by: req.query.by as any,
       entityId: id,
       entityName: 'CalendarAppointment',
       countArgs: { id },
@@ -554,7 +554,9 @@ class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentContro
   protected run(req: Request, res: Response): Promise<any> {
     this.checkServices();
 
-    if (req.query.by === 'client') {
+    const { token } = res.locals;
+
+    if (token.user === 'client') {
       return this.deleteByClient(req, res);
     }
 

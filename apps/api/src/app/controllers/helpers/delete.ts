@@ -68,7 +68,6 @@ type DeletedByOwnerOrWorkerProps = {
   controller: BaseController;
   res: Response;
   token: ParsedToken;
-  by: 'worker' | 'owner';
   entityId: string | number;
   entityName: CommonDeleteByEntities;
   countArgs: any;
@@ -82,14 +81,13 @@ export const deletedByOwnerOrWorker = async ({
   controller,
   res,
   token,
-  by,
   entityId,
   entityName,
   countArgs,
   workerDeletePermission
 }: DeletedByOwnerOrWorkerProps): Promise<Response> => {
   // Validate who is updating
-  if (by === 'worker') {
+  if (token.user === 'worker') {
     if (!workerDeletePermission) {
       log.error(
         `Controller[${controller.constructor.name}]`,
@@ -116,7 +114,7 @@ export const deletedByOwnerOrWorker = async ({
         'Worker does not have enough permissions.'
       );
     }
-  } else if (by === 'owner') {
+  } else if (token.user === 'owner') {
     const count = await ownerService.count({ person: { id: token.id } });
 
     if (!count) {
@@ -128,7 +126,7 @@ export const deletedByOwnerOrWorker = async ({
   } else {
     return controller.unauthorized(
       res,
-      'Ensure to pass the [by] parameter. Valid values are ["owner", "worker"].'
+      'Client can not perform such operation.'
     );
   }
 
@@ -180,7 +178,6 @@ export const deletedByOwner = ({
     controller,
     res,
     token,
-    by: 'owner',
     entityId,
     entityName,
     countArgs

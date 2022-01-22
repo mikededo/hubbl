@@ -88,7 +88,6 @@ type CreatedByOwnerOrWorkerProps = {
   res: Response;
   fromClass: FromClassCallables;
   token: ParsedToken;
-  by: 'worker' | 'owner';
   dto: CommonCreateByDTOs;
   entityName: CommonCreateByEntities;
   workerCreatePermission?: WorkerCreatePermissions;
@@ -102,13 +101,12 @@ export const createdByOwnerOrWorker = async ({
   res,
   fromClass,
   token,
-  by,
   dto,
   entityName,
   workerCreatePermission
 }: CreatedByOwnerOrWorkerProps): Promise<Response> => {
   // Validate who is updating
-  if (by === 'worker') {
+  if (token.user === 'worker') {
     if (!workerCreatePermission) {
       log.error(
         `Controller[${controller.constructor.name}]`,
@@ -135,7 +133,7 @@ export const createdByOwnerOrWorker = async ({
         'Worker does not have enough permissions.'
       );
     }
-  } else if (by === 'owner') {
+  } else if (token.user === 'owner') {
     const count = await ownerService.count({ person: { id: token.id } });
 
     if (!count) {
@@ -147,7 +145,7 @@ export const createdByOwnerOrWorker = async ({
   } else {
     return controller.unauthorized(
       res,
-      'Ensure to pass the [by] parameter. Valid values are ["owner", "worker"].'
+      'Client can not perform such operation.'
     );
   }
 
@@ -206,6 +204,5 @@ export const createdByOwner = ({
     fromClass,
     dto,
     token,
-    by: 'owner',
     entityName
   });
