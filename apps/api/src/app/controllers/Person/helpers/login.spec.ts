@@ -50,7 +50,7 @@ describe('login', () => {
     } as any;
 
     const mockFromJson = jest.fn().mockResolvedValue(mockDTO);
-    const mockFromClass = jest.fn().mockResolvedValue(mockDTO);
+    const mockFromClass = jest.fn().mockReturnValue(mockDTO);
 
     const token = jwt.sign(
       { id: 1, email: 'test@user.com' },
@@ -135,8 +135,9 @@ describe('login', () => {
       // Token creation
       expect(signSpy).toHaveBeenCalledTimes(1);
       expect(signSpy).toHaveBeenCalledWith(
-        { id: 1, email: 'test@user.com' },
-        process.env.NX_JWT_TOKEN
+        { id: 1, email: 'test@user.com', user: entityAlias },
+        process.env.NX_JWT_TOKEN,
+        { expiresIn: '15m' }
       );
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(

@@ -75,8 +75,13 @@ export const login = async ({
 
       // Create token
       const token = sign(
-        { id: entityFound.person.id, email: entityFound.person.email },
-        process.env.NX_JWT_TOKEN
+        {
+          id: entityFound.person.id,
+          email: entityFound.person.email,
+          user: alias
+        },
+        process.env.NX_JWT_TOKEN,
+        { expiresIn: '15m' }
       );
 
       res.setHeader('Set-Cookie', `__hubbl-refresh__=${token}; HttpOnly`);
@@ -84,7 +89,7 @@ export const login = async ({
       // Join with the entity data
       return controller.ok(res, {
         token,
-        entity: await fromClass(entityFound)
+        entity: fromClass(entityFound)
       });
     } catch (_) {
       log.error(

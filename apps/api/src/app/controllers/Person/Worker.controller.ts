@@ -23,7 +23,7 @@ class IWorkerRegisterController extends BaseController {
       fromClass: WorkerDTO.fromClass,
       req,
       res,
-      returnName: 'worker'
+      alias: 'worker'
     });
   }
 }

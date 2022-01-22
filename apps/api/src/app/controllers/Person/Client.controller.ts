@@ -23,7 +23,7 @@ class IClientRegisterController extends BaseController {
       fromClass: ClientDTO.fromClass,
       req,
       res,
-      returnName: 'client'
+      alias: 'client'
     });
   }
 }

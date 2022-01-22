@@ -44,7 +44,7 @@ describe('ClientController', () => {
           fromClass: ClientDTO.fromClass,
           req: {},
           res: {},
-          returnName: 'client'
+          alias: 'client'
         });
       });
     });

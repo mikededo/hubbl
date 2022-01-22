@@ -44,7 +44,7 @@ describe('OwnerControllerController', () => {
           fromClass: OwnerDTO.fromClass,
           req: {},
           res: {},
-          returnName: 'owner'
+          alias: 'owner'
         });
       });
     });

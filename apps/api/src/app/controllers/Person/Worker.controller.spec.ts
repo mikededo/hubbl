@@ -44,7 +44,7 @@ describe('WorkerController', () => {
           fromClass: WorkerDTO.fromClass,
           req: {},
           res: {},
-          returnName: 'worker'
+          alias: 'worker'
         });
       });
     });
