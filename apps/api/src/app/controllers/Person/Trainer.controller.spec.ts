@@ -51,13 +51,11 @@ describe('TrainerController', () => {
   describe('TrainerUpdateController', () => {
     describe('execute', () => {
       it('should create the needed services if does not have any', async () => {
-        const mockReq = { query: { by: 'any' } };
-
         TrainerUpdateController['service'] = undefined;
         TrainerUpdateController['ownerService'] = undefined;
         TrainerUpdateController['workerService'] = undefined;
 
-        await TrainerUpdateController.execute(mockReq as any, {} as any);
+        await TrainerUpdateController.execute({} as any, {} as any);
 
         expect(TrainerService).toHaveBeenCalledTimes(1);
         expect(TrainerService).toHaveBeenCalledWith(getRepository);
@@ -68,7 +66,6 @@ describe('TrainerController', () => {
       });
 
       it('should call trainerUpdate', async () => {
-        const mockReq = { query: { by: 'any' } } as any;
         const trainerUpdate = jest
           .spyOn(helpers, 'trainerUpdate')
           .mockImplementation();
@@ -76,16 +73,15 @@ describe('TrainerController', () => {
         TrainerUpdateController['service'] = {} as any;
         TrainerUpdateController['ownerService'] = {} as any;
         TrainerUpdateController['workerService'] = {} as any;
-        await TrainerUpdateController.execute(mockReq as any, {} as any);
+        await TrainerUpdateController.execute({} as any, {} as any);
 
         expect(trainerUpdate).toHaveBeenCalledWith({
           service: {},
           ownerService: {},
           workerService: {},
           controller: TrainerUpdateController,
-          req: mockReq,
-          res: {},
-          by: 'any'
+          req: {},
+          res: {}
         });
       });
     });

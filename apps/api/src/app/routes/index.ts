@@ -7,6 +7,7 @@ import EventRouter from './Events.routes';
 import EventTemplateRouter from './EventTemplates.routes';
 import EventTypeRouter from './EventTypes.routes';
 import PersonRouter from './Persons.routes';
+import TokenRouter from './Token.routes';
 import VirtualGymRouter from './VirtualGym.routes';
 
 const Routes = {
@@ -16,6 +17,7 @@ const Routes = {
   'event-templates': EventTemplateRouter,
   'event-types': EventTypeRouter,
   persons: PersonRouter,
+  'tokens': TokenRouter,
   'virtual-gyms': VirtualGymRouter
 };
 

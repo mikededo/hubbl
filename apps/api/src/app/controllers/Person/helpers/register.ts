@@ -26,6 +26,8 @@ import {
 
 type RegisterableEntities = Owner | Worker | Client;
 
+type RegisterableAliases = 'owner' | 'worker' | 'client';
+
 type RegisterableDTOs =
   | OwnerDTO<Gym | number>
   | WorkerDTO<Gym | number>
@@ -41,7 +43,7 @@ type BaseRegisterProps<
   fromClass: BaseFromClassCallable<RegisterableEntities, J>;
   req: Request;
   res: Response;
-  returnName: string;
+  alias: RegisterableAliases;
 };
 
 export const register = async <
@@ -54,7 +56,7 @@ export const register = async <
   fromClass,
   req,
   res,
-  returnName
+  alias
 }: BaseRegisterProps<T, J>): Promise<any> => {
   try {
     // Get the person and validate it
@@ -66,15 +68,15 @@ export const register = async <
 
       // Create the token
       const token = sign(
-        { id: result.person.id, email: result.person.email },
+        { id: result.person.id, email: result.person.email, user: alias },
         process.env.NX_JWT_TOKEN,
-        { expiresIn: '10m' }
+        { expiresIn: '15m' }
       );
 
       res.setHeader('Set-Cookie', `__hubbl-refresh__=${token}; HttpOnly`);
       return controller.created(res, {
         token,
-        [returnName]: await fromClass(result)
+        [alias]: fromClass(result)
       });
     } catch (_) {
       log.error(
@@ -119,7 +121,7 @@ export const trainerRegister = async ({
       const result = await service.save(await person.toClass());
 
       return controller.created(res, {
-        trainer: await fromClass(result)
+        trainer: fromClass(result)
       });
     } catch (_) {
       log.error(

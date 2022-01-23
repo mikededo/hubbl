@@ -176,7 +176,7 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
   }
 
   /**
-   * When the `by` param is either worker or owner, the body will include the id
+   * When the `token.user` is either worker or owner, the body will include the id
    * of the client, since whoever has made the request, will have had to select
    * the client.
    */
@@ -222,7 +222,6 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
       res,
       fromClass: EventAppointmentDTO.fromClass,
       token: res.locals.token as ParsedToken,
-      by: req.query.by as any,
       dto,
       entityName: 'EventAppointment',
       workerCreatePermission: 'createEventAppointments'
@@ -230,7 +229,7 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
   }
 
   /**
-   * When the `by` param is a client, it will mean that the client is making the
+   * When the `token.user` is client, it will mean that the client is making the
    * request, and the body will not have the client id set. Therefore, the id
    * has to be obtanied from the client token, in the auth headers.
    */
@@ -285,7 +284,9 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
   protected async run(req: Request, res: Response): Promise<Response> {
     this.checkServices();
 
-    if (req.query.by === 'client') {
+    const { token } = res.locals;
+
+    if (token.user === 'client') {
       return this.createByClient(req, res);
     }
 
@@ -340,13 +341,11 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
       controller: this,
       res,
       token: res.locals.token as ParsedToken,
-      by: req.query.by as any,
       dto: EventAppointmentDTO.fromClass({
         ...appointment,
         cancelled: true
       }),
       entityName: 'EventAppointment',
-      updatableBy: '["client", "owner", "worker"]',
       countArgs: { id: appointmentId },
       workerUpdatePermission: 'updateEventAppointments'
     });
@@ -403,7 +402,9 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
   protected run(req: Request, res: Response): Promise<Response> {
     this.checkServices();
 
-    if (req.query.by === 'client') {
+    const { token } = res.locals;
+
+    if (token.user === 'client') {
       return this.cancelByClient(req, res);
     }
 
@@ -438,7 +439,6 @@ class IEventAppointmentDeleteController extends BaseEventAppointmentController {
       controller: this,
       res,
       token: res.locals.token as ParsedToken,
-      by: req.query.by as any,
       entityId: id,
       entityName: 'EventAppointment',
       countArgs: { id },
@@ -473,7 +473,9 @@ class IEventAppointmentDeleteController extends BaseEventAppointmentController {
   protected run(req: Request, res: Response): Promise<Response> {
     this.checkServices();
 
-    if (req.query.by === 'client') {
+    const { token } = res.locals;
+
+    if (token.user === 'client') {
       return this.deleteByClient(req, res);
     }
 

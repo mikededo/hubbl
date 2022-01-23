@@ -24,7 +24,7 @@ describe('register', () => {
   } as any;
 
   const mockFromJson = jest.fn().mockResolvedValue(mockDTO);
-  const mockFromClass = jest.fn().mockResolvedValue(mockDTO);
+  const mockFromClass = jest.fn().mockReturnValue(mockDTO);
   const mockController = {
     clientError: jest.fn(),
     created: jest.fn(),
@@ -134,9 +134,9 @@ describe('register', () => {
         expect(mockFromClass).toHaveBeenCalledTimes(1);
         expect(jwtSpy).toHaveBeenCalledTimes(1);
         expect(jwtSpy).toHaveBeenCalledWith(
-          { id: 1, email: 'test@user.com' },
+          { id: 1, email: 'test@user.com', user: 'any' },
           process.env.NX_JWT_TOKEN,
-          { expiresIn: '10m' }
+          { expiresIn: '15m' }
         );
         // Ensure cookie is set
         expect(mockRes.setHeader).toBeCalledWith(
@@ -160,7 +160,7 @@ describe('register', () => {
           fromClass: mockFromClass,
           req: mockReq,
           res: mockRes,
-          returnName: 'any'
+          alias: 'any' as any
         });
 
         commonChecks();
@@ -176,7 +176,7 @@ describe('register', () => {
           fromClass: mockFromClass,
           req: mockReq,
           res: mockRes,
-          returnName: 'any'
+          alias: 'any' as any
         });
 
         commonChecks();
@@ -200,7 +200,7 @@ describe('register', () => {
           fromClass: mockFromClass,
           req: mockReq,
           res: {} as any,
-          returnName: 'any'
+          alias: 'any' as any
         });
       });
     });
@@ -218,7 +218,7 @@ describe('register', () => {
           fromClass: mockFromClass,
           req: mockReq,
           res: {} as any,
-          returnName: 'any'
+          alias: 'any' as any
         });
       });
     });
@@ -237,7 +237,7 @@ describe('register', () => {
         fromClass: mockFromClass,
         req: mockReq,
         res: {} as any,
-        returnName: 'any'
+        alias: 'any' as any
       });
 
       expect(mockFromJson).toHaveBeenCalledTimes(1);
@@ -269,7 +269,7 @@ describe('register', () => {
           fromClass: mockFromClass,
           req: mockReq,
           res: mockRes,
-          returnName: 'any'
+          alias: 'any' as any
         });
       });
 

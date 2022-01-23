@@ -85,31 +85,21 @@ UpdateRouter.put('/owner', middlewares.auth, (req, res) => {
 });
 
 /**
- * @description Updates a worker. A queryParam (by) is required
- * in order to know if a worker or an owner
- * Owners can update any worker, yet workers can only update
- * themselves
+ * @description Updates a worker. Owners can update any worker, yet workers can only update themselves.
  */
 UpdateRouter.put('/worker', middlewares.auth, (req, res) => {
   WorkerUpdateController.execute(req, res);
 });
 
 /**
- * @description Updates a trainers. A queryParam (by) is required
- * in order to know if a trainers or an owner
- * Owners can update any trainers, yet owners can only update trainers
- * if they have the permission.
+ * @description Updates a trainers.Owners can update any trainers, yet owners can only update trainers if they have the permission.
  */
 UpdateRouter.put('/trainer', middlewares.auth, (req, res) => {
   TrainerUpdateController.execute(req, res);
 });
 
 /**
- * @description Updates a client. A queryParam (by) is required
- * in order to know if a worker, owner or the client themself is
- * updating the entity.
- * Owners and workers can update any client, yet clients can only
- * update themselves.
+ * @description Updates a client. Owners and workers can update any client, yet clients can only update themselves.
  */
 UpdateRouter.put('/client', middlewares.auth, (req, res) =>
   ClientUpdateController.execute(req, res)

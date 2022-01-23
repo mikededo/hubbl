@@ -17,14 +17,14 @@ import * as update from './update';
 type WorkerShouldUpdateByProps = {
   ownerService: any;
   workerService?: any;
-  by: 'owner' | 'worker';
+  user: 'owner' | 'worker';
 };
 
 type CommonShouldUpdateByProps = {
   service: BaseService<any>;
   ownerService?: BaseService<Owner>;
   workerService?: BaseService<Worker>;
-  by: 'owner' | 'worker';
+  user: 'owner' | 'worker';
 };
 
 describe('update', () => {
@@ -56,14 +56,36 @@ describe('update', () => {
   const jsonResSpy = jest.spyOn(BaseController, 'jsonResponse');
   const logSpy = jest.spyOn(log, 'error').mockImplementation();
   const mockRes = {
-    locals: { token: { id: 1 } },
     json: jest.fn().mockReturnThis(),
     status: jest.fn().mockReturnThis()
   } as any;
-  const mockDiffIdRes = { ...mockRes, locals: { token: { id: 2 } } } as any;
+  const mockOwnerRes = {
+    ...mockRes,
+    locals: { token: { id: 1, user: 'owner' } }
+  };
+  const mockWorkerRes = {
+    ...mockRes,
+    locals: { token: { id: 1, user: 'worker' } }
+  };
+  const mockClientRes = {
+    ...mockRes,
+    locals: { token: { id: 1, user: 'client' } }
+  };
+  const mockOwnerDiffIdRes = {
+    ...mockRes,
+    locals: { token: { id: 2, user: 'owner' } }
+  } as any;
+  const mockWorkerDiffIdRes = {
+    ...mockRes,
+    locals: { token: { id: 2, user: 'worker' } }
+  } as any;
+  const mockClientDiffIdRes = {
+    ...mockRes,
+    locals: { token: { id: 2, user: 'client' } }
+  } as any;
 
   const token = jwt.sign(
-    { id: 1, email: 'test@user.com', exp: Date.now() + 1000 },
+    { id: 1, email: 'test@user.com' },
     process.env.NX_JWT_TOKEN || 'test-secret-token'
   );
 
@@ -97,6 +119,7 @@ describe('update', () => {
   const updatedByDifferentId = async (
     fromJsonSpy: any,
     controller: BaseController,
+    response: any,
     updater: () => Promise<void>
   ) => {
     fromJsonSpy.mockResolvedValue(mockDTO);
@@ -106,7 +129,7 @@ describe('update', () => {
 
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(controller.unauthorized).toHaveReturnedTimes(1);
-    expect(controller.unauthorized).toHaveBeenCalledWith(mockDiffIdRes);
+    expect(controller.unauthorized).toHaveBeenCalledWith(response);
   };
 
   const updatingOwnerDoesNotExist = async (
@@ -128,15 +151,14 @@ describe('update', () => {
     });
     expect(controller.unauthorized).toHaveReturnedTimes(1);
     expect(controller.unauthorized).toHaveBeenCalledWith(
-      mockRes,
+      mockOwnerRes,
       `Owner does not exist. Can not update the ${entity}.`
     );
   };
 
-  const invalidByParam = async (
+  const clientCanNotUpdate = async (
     fromJsonSpy: any,
     controller: BaseController,
-    params: '["client", "owner", "worker"]' | '["owner", "worker"]',
     updater: () => Promise<void>
   ) => {
     fromJsonSpy.mockResolvedValue(mockDTO);
@@ -147,8 +169,8 @@ describe('update', () => {
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(controller.unauthorized).toHaveReturnedTimes(1);
     expect(controller.unauthorized).toHaveBeenCalledWith(
-      mockRes,
-      `Ensure to pass the [by] parameter. Valid values are ${params}.`
+      mockClientRes,
+      'Client can not perform such operation.'
     );
   };
 
@@ -237,7 +259,7 @@ describe('update', () => {
           service,
           ownerService = {} as any,
           workerService = {} as any,
-          by
+          user
         }: CommonShouldUpdateByProps) => {
           const findAndUpdateSpy = jest
             .spyOn(update, 'findAndUpdateEntity')
@@ -248,13 +270,11 @@ describe('update', () => {
             service: service,
             ownerService,
             workerService,
-            res: mockRes,
-            by,
+            res: user === 'worker' ? mockWorkerRes : mockOwnerRes,
             dto: mockDTO,
-            token: { id: 1, email: 'test@user.com', exp: Date.now() },
+            token: { id: 1, email: 'test@user.com', user },
             entityName: 'Client',
             countArgs: {},
-            updatableBy: '["owner", "worker"]',
             workerUpdatePermission: 'any' as any
           });
 
@@ -274,7 +294,7 @@ describe('update', () => {
           await shouldUpdateBy({
             service: mockService,
             ownerService: mockOwnerService,
-            by: 'owner'
+            user: 'owner'
           });
 
           expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
@@ -292,7 +312,7 @@ describe('update', () => {
           await shouldUpdateBy({
             service: mockService,
             workerService: mockWorkerService,
-            by: 'worker'
+            user: 'worker'
           });
 
           expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
@@ -307,19 +327,17 @@ describe('update', () => {
           service: {} as any,
           workerService: mockWorkerService as any,
           ownerService: {} as any,
-          res: mockRes,
-          token: {} as any,
-          by: 'worker',
+          res: mockWorkerRes,
+          token: mockWorkerRes.locals.token,
           dto: {} as any,
           entityName: 'any' as any,
-          updatableBy: 'any' as any,
           countArgs: {}
         });
 
         logAsserts();
         expect(mockController.fail).toHaveBeenCalledTimes(1);
         expect(mockController.fail).toHaveBeenCalledWith(
-          mockRes,
+          mockWorkerRes,
           'Internal server error. If the error persists, contact our team'
         );
         expect(mockWorkerService.findOne).not.toHaveBeenCalled();
@@ -335,12 +353,10 @@ describe('update', () => {
           service: {} as any,
           workerService: mockWorkerService as any,
           ownerService: {} as any,
-          res: mockRes,
-          token: { id: 1 } as any,
-          by: 'worker',
+          res: mockWorkerRes,
+          token: mockWorkerRes.locals.token,
           dto: {} as any,
           entityName: 'any' as any,
-          updatableBy: 'any' as any,
           countArgs: {},
           workerUpdatePermission: 'any' as any
         });
@@ -349,7 +365,7 @@ describe('update', () => {
         expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
-          mockRes,
+          mockWorkerRes,
           'Worker does not exist. Can not update the any.'
         );
       });
@@ -364,12 +380,10 @@ describe('update', () => {
           service: {} as any,
           ownerService: {} as any,
           workerService: mockWorkerService,
-          res: mockRes,
-          token: { id: 1 } as any,
-          by: 'worker',
+          res: mockWorkerRes,
+          token: mockWorkerRes.locals.token,
           dto: {} as any,
           entityName: 'Client',
-          updatableBy: 'any' as any,
           countArgs: {},
           workerUpdatePermission: 'update' as any
         });
@@ -378,7 +392,7 @@ describe('update', () => {
         expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
-          mockRes,
+          mockWorkerRes,
           'Worker does not have enough permissions.'
         );
       });
@@ -393,12 +407,10 @@ describe('update', () => {
           service: {} as any,
           ownerService: mockOwnerService,
           workerService: {} as any,
-          res: mockRes,
-          token: { id: 1 } as any,
-          by: 'owner',
+          res: mockOwnerRes,
+          token: mockOwnerRes.locals.token,
           dto: {} as any,
           entityName: 'any' as any,
-          updatableBy: 'any' as any,
           countArgs: {}
         });
 
@@ -408,30 +420,28 @@ describe('update', () => {
         });
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
-          mockRes,
+          mockOwnerRes,
           'Owner does not exist. Can not update the any.'
         );
       });
 
-      it('should send unauthorized if by param is not valid', async () => {
+      it('should send unauthorized if user is not owner nor worker', async () => {
         await update.updatedByOwnerOrWorker({
           controller: mockController,
           service: {} as any,
           ownerService: {} as any,
           workerService: {} as any,
-          res: mockRes,
+          res: mockClientRes,
           token: {} as any,
-          by: 'any' as any,
           dto: {} as any,
           entityName: 'any' as any,
-          updatableBy: 'any' as any,
           countArgs: {}
         });
 
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
-          mockRes,
-          'Ensure to pass the [by] parameter. Valid values are any.'
+          mockClientRes,
+          'Client can not perform such operation.'
         );
       });
     });
@@ -464,7 +474,7 @@ describe('update', () => {
           controller: mockController,
           service: mockService,
           req: mockReq,
-          res: mockRes
+          res: mockOwnerRes
         });
 
         expect(ownerFromJsonSpy).toHaveBeenCalledWith(
@@ -475,7 +485,7 @@ describe('update', () => {
         expect(findAndUpdateSpy).toHaveBeenCalledWith({
           controller: mockController,
           service: mockService,
-          res: mockRes,
+          res: mockOwnerRes,
           dto: mockDTO,
           entityName: 'Owner',
           countArgs: { person: { id: mockDTO.id } }
@@ -501,12 +511,13 @@ describe('update', () => {
         await updatedByDifferentId(
           ownerFromJsonSpy,
           mockController,
+          mockOwnerDiffIdRes,
           async () => {
             await update.ownerUpdate({
               controller: mockController,
               service: {} as any,
               req: mockReq,
-              res: mockDiffIdRes
+              res: mockOwnerDiffIdRes
             });
           }
         );
@@ -526,7 +537,7 @@ describe('update', () => {
         const shouldUpdateBy = async ({
           workerService,
           ownerService = {},
-          by
+          user
         }: WorkerShouldUpdateByProps) => {
           mockReq.headers.authorization = `Bearer ${token}`;
           const findAndUpdateSpy = jest
@@ -540,8 +551,7 @@ describe('update', () => {
             service: workerService,
             ownerService,
             req: mockReq,
-            res: mockRes,
-            by: by
+            res: user === 'worker' ? mockWorkerRes : mockOwnerRes
           });
 
           // Common checks
@@ -553,7 +563,7 @@ describe('update', () => {
           expect(findAndUpdateSpy).toHaveBeenCalledWith({
             controller: mockController,
             service: workerService,
-            res: mockRes,
+            res: user === 'worker' ? mockWorkerRes : mockOwnerRes,
             dto: mockDTO,
             entityName: 'Worker',
             countArgs: { person: { id: mockDTO.id } }
@@ -569,7 +579,7 @@ describe('update', () => {
           await shouldUpdateBy({
             workerService: mockWorkerService,
             ownerService: undefined,
-            by: 'worker'
+            user: 'worker'
           });
         });
 
@@ -583,7 +593,7 @@ describe('update', () => {
           await shouldUpdateBy({
             workerService: mockWorkerService,
             ownerService: mockOwnerService,
-            by: 'owner'
+            user: 'owner'
           });
 
           expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
@@ -603,8 +613,7 @@ describe('update', () => {
               service: {} as any,
               ownerService: {} as any,
               req: {} as any,
-              res: mockRes,
-              by: 'worker'
+              res: mockRes
             });
           }
         );
@@ -614,14 +623,14 @@ describe('update', () => {
         await updatedByDifferentId(
           workerFromJsonSpy,
           mockController,
+          mockWorkerDiffIdRes,
           async () => {
             await update.workerUpdate({
               controller: mockController,
               service: {} as any,
               ownerService: {} as any,
               req: mockReq,
-              res: mockDiffIdRes,
-              by: 'worker'
+              res: mockWorkerDiffIdRes
             });
           }
         );
@@ -643,28 +652,25 @@ describe('update', () => {
               service: {} as any,
               ownerService: mockOwnerService,
               req: mockReq,
-              res: mockRes,
-              by: 'owner'
+              res: mockOwnerRes
             });
           }
         );
       });
 
-      it('should send unauthorized if by param is not valid', async () => {
+      it('should send unauthorized if user is not owner nor worker', async () => {
         mockReq.headers = { authorization: `Bearer ${token}` };
 
-        await invalidByParam(
+        await clientCanNotUpdate(
           workerFromJsonSpy,
           mockController,
-          '["owner", "worker"]',
           async () => {
             await update.workerUpdate({
-              controller: mockController,
               service: {} as any,
+              controller: mockController,
               ownerService: {} as any,
               req: mockReq,
-              res: mockRes,
-              by: undefined as any
+              res: mockClientRes
             });
           }
         );
@@ -681,7 +687,7 @@ describe('update', () => {
       });
 
       describe('Succesfull updates', () => {
-        it('should call updatedByOwnerOrWorker if by parm is Owner', async () => {
+        it('should call updatedByOwnerOrWorker by Owner', async () => {
           trainerFromJsonSpy.mockResolvedValue(mockDTO);
           const updateBySpy = jest
             .spyOn(update, 'updatedByOwnerOrWorker')
@@ -692,8 +698,7 @@ describe('update', () => {
             service: {} as any,
             ownerService: {} as any,
             req: mockReq,
-            res: mockRes,
-            by: 'owner'
+            res: mockOwnerRes
           });
 
           expect(trainerFromJsonSpy).toHaveBeenCalledTimes(1);
@@ -703,18 +708,16 @@ describe('update', () => {
             controller: mockController,
             service: {},
             ownerService: {} as any,
-            token: { id: mockDTO.id },
-            res: mockRes,
+            token: mockOwnerRes.locals.token,
+            res: mockOwnerRes,
             dto: mockDTO,
-            by: 'owner',
             countArgs: { person: { id: mockDTO.id } },
             entityName: 'Trainer',
-            workerUpdatePermission: 'updateTrainers',
-            updatableBy: '["owner", "worker"]'
+            workerUpdatePermission: 'updateTrainers'
           });
         });
 
-        it('should call updatedByOwnerOrWorker if by param is Worker', async () => {
+        it('should call updatedByOwnerOrWorker if updated by worker', async () => {
           trainerFromJsonSpy.mockResolvedValue(mockDTO);
           const updateBySpy = jest
             .spyOn(update, 'updatedByOwnerOrWorker')
@@ -725,8 +728,7 @@ describe('update', () => {
             service: {} as any,
             workerService: {} as any,
             req: mockReq,
-            res: mockRes,
-            by: 'worker'
+            res: mockWorkerRes
           });
 
           expect(trainerFromJsonSpy).toHaveBeenCalledTimes(1);
@@ -736,15 +738,13 @@ describe('update', () => {
             controller: mockController,
             service: {},
             ownerService: undefined,
-            token: { id: mockDTO.id },
+            token: mockWorkerRes.locals.token,
             workerService: {} as any,
-            res: mockRes,
+            res: mockWorkerRes,
             dto: mockDTO,
-            by: 'worker',
             countArgs: { person: { id: mockDTO.id } },
             entityName: 'Trainer',
-            workerUpdatePermission: 'updateTrainers',
-            updatableBy: '["owner", "worker"]'
+            workerUpdatePermission: 'updateTrainers'
           });
         });
       });
@@ -760,8 +760,7 @@ describe('update', () => {
               ownerService: {} as any,
               workerService: {} as any,
               req: {} as any,
-              res: mockRes,
-              by: 'worker'
+              res: mockRes
             });
           }
         );
@@ -788,8 +787,7 @@ describe('update', () => {
             controller: mockController,
             service: {} as any,
             req: mockReq,
-            res: mockRes,
-            by: 'client'
+            res: mockClientRes
           });
 
           expect(clientFromJsonSpy).toHaveBeenCalledTimes(1);
@@ -798,14 +796,14 @@ describe('update', () => {
           expect(findAndUpdateSpy).toHaveBeenCalledWith({
             controller: mockController,
             service: {},
-            res: mockRes,
+            res: mockClientRes,
             dto: mockDTO,
             countArgs: { person: { id: mockDTO.id } },
             entityName: 'Client'
           });
         });
 
-        it('should call updatedByOwnerOrWorker if by parm is Owner', async () => {
+        it('should call updatedByOwnerOrWorker if updated by owner', async () => {
           clientFromJsonSpy.mockResolvedValue(mockDTO);
           const updateBySpy = jest
             .spyOn(update, 'updatedByOwnerOrWorker')
@@ -816,8 +814,7 @@ describe('update', () => {
             service: {} as any,
             ownerService: {} as any,
             req: mockReq,
-            res: mockRes,
-            by: 'owner'
+            res: mockOwnerRes
           });
 
           expect(clientFromJsonSpy).toHaveBeenCalledTimes(1);
@@ -828,18 +825,16 @@ describe('update', () => {
             service: {},
             ownerService: {} as any,
             workerService: undefined,
-            token: { id: mockDTO.id },
-            res: mockRes,
+            token: mockOwnerRes.locals.token,
+            res: mockOwnerRes,
             dto: mockDTO,
-            by: 'owner',
             countArgs: { person: { id: mockDTO.id } },
             entityName: 'Client',
-            workerUpdatePermission: expect.anything(),
-            updatableBy: '["client", "owner", "worker"]'
+            workerUpdatePermission: expect.anything()
           });
         });
 
-        it('should call updatedByOwnerOrWorker if by parm is Worker', async () => {
+        it('should call updatedByOwnerOrWorker if updated by worker', async () => {
           clientFromJsonSpy.mockResolvedValue(mockDTO);
           const updateBySpy = jest
             .spyOn(update, 'updatedByOwnerOrWorker')
@@ -850,8 +845,7 @@ describe('update', () => {
             service: {} as any,
             workerService: {} as any,
             req: mockReq,
-            res: mockRes,
-            by: 'worker'
+            res: mockWorkerRes
           });
 
           expect(clientFromJsonSpy).toHaveBeenCalledTimes(1);
@@ -861,15 +855,13 @@ describe('update', () => {
             controller: mockController,
             service: {},
             ownerService: undefined,
-            token: { id: mockDTO.id },
+            token: mockWorkerRes.locals.token,
             workerService: {} as any,
-            res: mockRes,
+            res: mockWorkerRes,
             dto: mockDTO,
-            by: 'worker',
             countArgs: { person: { id: mockDTO.id } },
             entityName: 'Client',
-            workerUpdatePermission: 'updateClients',
-            updatableBy: '["client", "owner", "worker"]'
+            workerUpdatePermission: 'updateClients'
           });
         });
       });
@@ -885,8 +877,7 @@ describe('update', () => {
               ownerService: {} as any,
               workerService: {} as any,
               req: {} as any,
-              res: mockRes,
-              by: 'client'
+              res: mockRes
             });
           }
         );
@@ -896,6 +887,7 @@ describe('update', () => {
         await updatedByDifferentId(
           clientFromJsonSpy,
           mockController,
+          mockClientDiffIdRes,
           async () => {
             await update.clientUpdate({
               controller: mockController,
@@ -903,8 +895,7 @@ describe('update', () => {
               ownerService: {} as any,
               workerService: {} as any,
               req: mockReq,
-              res: mockDiffIdRes,
-              by: 'client'
+              res: mockClientDiffIdRes
             });
           }
         );

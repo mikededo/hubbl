@@ -9,7 +9,7 @@ type CommonShouldCreateByProps = {
   service: BaseService<any>;
   ownerService?: BaseService<Owner>;
   workerService?: BaseService<Worker>;
-  by: 'owner' | 'worker';
+  user: 'owner' | 'worker';
 };
 
 describe('create', () => {
@@ -60,7 +60,7 @@ describe('create', () => {
         service,
         ownerService = {} as any,
         workerService = {} as any,
-        by
+        user
       }: CommonShouldCreateByProps) => {
         fromClassSpy.mockReturnValue(mockEntityDto);
         const saveSpy = jest
@@ -78,9 +78,8 @@ describe('create', () => {
           workerService,
           res: mockRes,
           fromClass: fromClassSpy,
-          by,
           dto: mockEntityDto,
-          token: { id: 1, email: 'test@user.com', exp: Date.now() },
+          token: { id: 1, email: 'test@user.com', user },
           entityName: 'VirtualGym',
           workerCreatePermission: 'any' as any
         });
@@ -110,7 +109,7 @@ describe('create', () => {
         await shouldCreateBy({
           service: mockService,
           ownerService: mockOwnerService,
-          by: 'owner'
+          user: 'owner'
         });
 
         expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
@@ -128,7 +127,7 @@ describe('create', () => {
         await shouldCreateBy({
           service: mockService,
           workerService: mockWorkerService,
-          by: 'worker'
+          user: 'worker'
         });
 
         expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
@@ -145,8 +144,7 @@ describe('create', () => {
         ownerService: {} as any,
         res: {} as any,
         fromClass: fromClassSpy,
-        token: {} as any,
-        by: 'worker',
+        token: { id: 1, email: 'test@user.com', user: 'worker' },
         dto: {} as any,
         entityName: 'any' as any
       });
@@ -172,8 +170,7 @@ describe('create', () => {
         ownerService: {} as any,
         res: {} as any,
         fromClass: fromClassSpy,
-        token: { id: 1 } as any,
-        by: 'worker',
+        token: { id: 1, email: 'test@user.com', user: 'worker' },
         dto: {} as any,
         entityName: 'any' as any,
         workerCreatePermission: 'any' as any
@@ -200,8 +197,7 @@ describe('create', () => {
         workerService: mockWorkerService,
         res: {} as any,
         fromClass: fromClassSpy,
-        token: { id: 1 } as any,
-        by: 'worker',
+        token: { id: 1, email: 'test@user.com', user: 'worker' },
         dto: {} as any,
         entityName: 'VirtualGym',
         workerCreatePermission: 'create' as any
@@ -228,8 +224,7 @@ describe('create', () => {
         workerService: {} as any,
         res: {} as any,
         fromClass: fromClassSpy,
-        token: { id: 1 } as any,
-        by: 'owner',
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         dto: {} as any,
         entityName: 'any' as any
       });
@@ -245,7 +240,7 @@ describe('create', () => {
       );
     });
 
-    it('should send unauthorized if by param is not valid', async () => {
+    it('should send unauthorized if user is not owner nor worker', async () => {
       await create.createdByOwnerOrWorker({
         controller: mockController,
         service: {} as any,
@@ -253,8 +248,7 @@ describe('create', () => {
         workerService: {} as any,
         res: {} as any,
         fromClass: fromClassSpy,
-        token: {} as any,
-        by: 'any' as any,
+        token: { id: 1, email: 'test@user.com', user: 'client' },
         dto: {} as any,
         entityName: 'any' as any
       });
@@ -262,7 +256,7 @@ describe('create', () => {
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
-        'Ensure to pass the [by] parameter. Valid values are ["owner", "worker"].'
+        'Client can not perform such operation.'
       );
     });
 
@@ -277,8 +271,7 @@ describe('create', () => {
         workerService: {} as any,
         res: {} as any,
         fromClass: fromClassSpy,
-        token: { id: 1 } as any,
-        by: 'owner',
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         dto: mockEntityDto,
         entityName: 'any' as any
       });
@@ -307,7 +300,7 @@ describe('create', () => {
         res: {} as any,
         fromClass: {} as any,
         dto: mockEntityDto,
-        token: {} as any,
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         entityName: 'Any' as any
       });
 
@@ -320,8 +313,7 @@ describe('create', () => {
         res: {},
         fromClass: {},
         dto: mockEntityDto,
-        token: {},
-        by: 'owner',
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         entityName: 'Any'
       });
     });

@@ -23,7 +23,7 @@ class IClientRegisterController extends BaseController {
       fromClass: ClientDTO.fromClass,
       req,
       res,
-      returnName: 'client'
+      alias: 'client'
     });
   }
 }
@@ -79,8 +79,7 @@ class IClientUpdateController extends BaseController {
       workerService: this.workerService,
       controller: this,
       req,
-      res,
-      by: req.query.by as any
+      res
     });
   }
 }

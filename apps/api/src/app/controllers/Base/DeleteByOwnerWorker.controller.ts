@@ -73,7 +73,6 @@ export default class DeleteByOwnerWorkerController extends BaseController {
       controller: this,
       res,
       token,
-      by: req.query.by as any,
       entityId: req.params.id,
       entityName: this.entityName,
       countArgs: { id: req.params.id },

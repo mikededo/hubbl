@@ -49,8 +49,8 @@ describe('Event controller', () => {
   };
   const fromJsonSpy = jest.spyOn(EventDTO, 'fromJson');
 
-  const mockReq = { query: { by: 'owner' }, body: {} };
-  const mockRes = { locals: { token: { id: 1 } } };
+  const mockReq = { body: {} };
+  const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
 
   const logSpy = jest.spyOn(log, 'error').mockImplementation();
 
@@ -325,7 +325,6 @@ describe('Event controller', () => {
         res: mockRes,
         fromClass: EventDTO.fromClass,
         token: mockRes.locals.token,
-        by: mockReq.query.by,
         dto: mockDto,
         entityName: 'Event',
         workerCreatePermission: 'createEvents'
@@ -535,10 +534,8 @@ describe('Event controller', () => {
         controller: EventUpdateController,
         res: mockRes,
         token: mockRes.locals.token,
-        by: mockReq.query.by,
         dto: mockDto,
         entityName: 'Event',
-        updatableBy: '["client", "owner", "worker"]',
         countArgs: { id: mockDto.id },
         workerUpdatePermission: 'updateEvents'
       });

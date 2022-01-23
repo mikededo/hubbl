@@ -9,7 +9,7 @@ type CommonShouldDeleteByProps = {
   service: BaseService<any>;
   ownerService?: BaseService<Owner>;
   workerService?: BaseService<Worker>;
-  by: 'owner' | 'worker';
+  user: 'owner' | 'worker';
 };
 
 describe('delete', () => {
@@ -66,7 +66,7 @@ describe('delete', () => {
         service,
         ownerService = {} as any,
         workerService = {} as any,
-        by
+        user
       }: CommonShouldDeleteByProps) => {
         fromClassSpy.mockResolvedValue(mockEntityDto);
         const countSpy = jest.spyOn(service, 'count').mockResolvedValue(1);
@@ -84,8 +84,7 @@ describe('delete', () => {
           ownerService,
           workerService,
           res: mockRes,
-          by,
-          token: { id: 1, email: 'test@user.com', exp: Date.now() },
+          token: { id: 1, email: 'test@user.com', user },
           entityId: 1,
           entityName: 'Entity' as any,
           countArgs: { any: 'any' },
@@ -113,7 +112,7 @@ describe('delete', () => {
         await shouldDeleteBy({
           service: mockService,
           ownerService: mockOwnerService,
-          by: 'owner'
+          user: 'owner'
         });
 
         expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
@@ -131,7 +130,7 @@ describe('delete', () => {
         await shouldDeleteBy({
           service: mockService,
           workerService: mockWorkerService,
-          by: 'worker'
+          user: 'worker'
         });
 
         expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
@@ -147,8 +146,7 @@ describe('delete', () => {
         workerService: mockWorkerService as any,
         ownerService: {} as any,
         res: {} as any,
-        token: {} as any,
-        by: 'worker',
+        token: { id: 1, email: 'test@user.com', user: 'worker' },
         entityId: 1,
         entityName: 'any' as any,
         countArgs: {}
@@ -179,8 +177,7 @@ describe('delete', () => {
         workerService: mockWorkerService as any,
         ownerService: {} as any,
         res: {} as any,
-        token: { id: 1 } as any,
-        by: 'worker',
+        token: { id: 1, email: 'test@user.com', user: 'worker' },
         entityId: 1,
         entityName: 'any' as any,
         countArgs: {},
@@ -207,8 +204,7 @@ describe('delete', () => {
         ownerService: {} as any,
         workerService: mockWorkerService,
         res: {} as any,
-        token: { id: 1 } as any,
-        by: 'worker',
+        token: { id: 1, email: 'test@user.com', user: 'worker' },
         entityId: 1,
         entityName: 'Any' as any,
         countArgs: {},
@@ -235,8 +231,7 @@ describe('delete', () => {
         ownerService: mockOwnerService,
         workerService: {} as any,
         res: {} as any,
-        token: { id: 1 } as any,
-        by: 'owner',
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         entityId: 1,
         entityName: 'Any' as any,
         countArgs: {}
@@ -253,15 +248,14 @@ describe('delete', () => {
       );
     });
 
-    it('should send unauthorized if by param is not valid', async () => {
+    it('should send unauthorized if user is not owner nor worker', async () => {
       await deleteHelpers.deletedByOwnerOrWorker({
         controller: mockController,
         service: {} as any,
         ownerService: {} as any,
         workerService: {} as any,
         res: {} as any,
-        token: {} as any,
-        by: 'any' as any,
+        token: { id: 1, email: 'test@user.com', user: 'client' },
         entityId: 1,
         entityName: 'Any' as any,
         countArgs: {}
@@ -270,7 +264,7 @@ describe('delete', () => {
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
-        'Ensure to pass the [by] parameter. Valid values are ["owner", "worker"].'
+        'Client can not perform such operation.'
       );
     });
 
@@ -293,8 +287,7 @@ describe('delete', () => {
         ownerService: mockOwnerService,
         workerService: undefined,
         res: mockRes,
-        by: 'owner',
-        token: { id: 1, email: 'test@user.com', exp: Date.now() },
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         entityId: 1,
         entityName: 'Any' as any,
         countArgs: { id: 1 },
@@ -326,8 +319,7 @@ describe('delete', () => {
         ownerService: mockOwnerService,
         workerService: undefined,
         res: {} as any,
-        by: 'owner',
-        token: { id: 1, email: 'test@user.com', exp: Date.now() },
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         entityId: 1,
         entityName: 'Any' as any,
         countArgs: { id: 1 },
@@ -353,7 +345,7 @@ describe('delete', () => {
         ownerService: {} as any,
         controller: mockController,
         res: {} as any,
-        token: {} as any,
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         entityId: 1,
         entityName: 'Any' as any,
         countArgs: {}
@@ -366,8 +358,7 @@ describe('delete', () => {
         workerService: undefined,
         controller: mockController,
         res: {},
-        token: {},
-        by: 'owner',
+        token: { id: 1, email: 'test@user.com', user: 'owner' },
         entityId: 1,
         entityName: 'Any',
         countArgs: {}

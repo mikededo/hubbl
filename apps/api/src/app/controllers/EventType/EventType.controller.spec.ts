@@ -38,7 +38,6 @@ describe('EventType controller', () => {
   };
   const mockReq = {
     params: { id: 1 },
-    query: { by: 'owner' },
     body: {},
     headers: { authorization: 'Any token' }
   } as any;
