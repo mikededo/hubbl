@@ -14,7 +14,6 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
       .status(401)
       .send({ message: 'Unauthorized. Invalid token type.' });
   }
-
   const token = decode(tokenValues[1]) as any;
 
   // Check token expiration time

@@ -17,7 +17,7 @@ const Routes = {
   'event-templates': EventTemplateRouter,
   'event-types': EventTypeRouter,
   persons: PersonRouter,
-  'tokens': TokenRouter,
+  tokens: TokenRouter,
   'virtual-gyms': VirtualGymRouter
 };
 
@@ -25,6 +25,10 @@ export default (app: Application) => {
   Object.entries(Routes).forEach(([path, router]) => {
     log.info('App[Router]', `Attached router [${path}]`);
 
-    app.use(`/api/${path}`, router);
+    if (process.env.NODE_ENV === 'test') {
+      app.use(`/${path}`, router);
+    } else {
+      app.use(`/api/${path}`, router);
+    }
   });
 };
