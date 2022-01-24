@@ -1,12 +1,8 @@
 import 'reflect-metadata';
 
-import * as cookieParser from 'cookie-parser';
-import * as cors from 'cors';
-import { json } from 'express';
 import * as log from 'npmlog';
 import { createConnection } from 'typeorm';
 
-import initApp from './app';
 import { databaseConfig } from './config';
 import app from './main';
 
@@ -19,12 +15,6 @@ createConnection(databaseConfig)
     await cnt.synchronize(true);
 
     const port = process.env.port || 3333;
-
-    app.use(cors());
-    app.use(json());
-    app.use(cookieParser());
-
-    initApp(app);
 
     log.info('App', 'App initialised');
 

@@ -8,9 +8,9 @@ const EventAppointmentRouter: Router = Router();
 const CalendarAppointmentRouter: Router = Router();
 
 /* EVENTS */
-EventAppointmentRouter.post('', middlewares.auth, (req, res) => {
-  Appointments.EventCreateController.execute(req, res);
-});
+  EventAppointmentRouter.post('', middlewares.auth, (req, res) => {
+    Appointments.EventCreateController.execute(req, res);
+  });
 
 EventAppointmentRouter.put('/:eId/cancel/:id', middlewares.auth, (req, res) => {
   Appointments.EventCancelController.execute(req, res);

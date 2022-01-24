@@ -2,6 +2,18 @@ version: '2.4'
 
 services:
   # Backend
+  test-db:
+    container_name: test-db
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_TEST_USER:-test}
+      POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD:-test}
+      POSTGRES_DB: ${POSTGRES_TEST_ATABASE:-test-hubbl-db}
+      PGDATA: /data/postgres
+    ports:
+      - '5433:5432'
+    restart: always
+
   postgres:
     container_name: postgresql
     image: postgres
