@@ -20,6 +20,7 @@ import {
   Worker
 } from '@hubbl/shared/models/entities';
 import { AppPalette, Gender, ThemeColor } from '@hubbl/shared/types';
+import { ENTITY_IDENTIFIES } from './util';
 
 const createTestDatabase = async (): Promise<Connection> => {
   try {
@@ -62,52 +63,50 @@ const createTestDatabase = async (): Promise<Connection> => {
 const seedDatabase = async (cnt: Connection): Promise<void> => {
   await cnt.synchronize(true);
 
-  console.log({ connected: cnt.isConnected });
-
   await cnt.getRepository(Owner).save({
     person: {
-      id: 1,
+      id: ENTITY_IDENTIFIES.OWNER,
       firstName: 'Owner',
       lastName: 'Test',
       email: 'test@owner.com',
       password: await hash('owner-password', await genSalt(10)),
       gender: Gender.OTHER,
       gym: {
-        id: 1,
+        id: ENTITY_IDENTIFIES.GYM,
         name: 'TestGym',
         email: 'test@gym.com',
         phone: '000 000 000',
         color: ThemeColor.BLUE,
         eventTypes: [
           {
-            id: 1,
+            id: ENTITY_IDENTIFIES.EVENT_TYPE_ONE,
             name: 'EventType One',
             labelColor: AppPalette.BLUE,
             eventTemplates: [
               {
-                id: 1,
+                id: ENTITY_IDENTIFIES.EVENT_TPL_ONE,
                 name: 'Event Template One',
                 description: 'Event template one of event type one'
               },
               {
-                id: 2,
+                id: ENTITY_IDENTIFIES.EVENT_TPL_TWO,
                 name: 'Event Template Two',
                 description: 'Event template two of event type two'
               },
               {
-                id: 3,
+                id: ENTITY_IDENTIFIES.EVENT_TPL_THREE,
                 name: 'Event Template Three',
                 description: 'Event template three of event type three'
               }
             ]
           },
           {
-            id: 2,
+            id: ENTITY_IDENTIFIES.EVENT_TYPE_TWO,
             name: 'EventType Two',
             labelColor: AppPalette.BLUE,
             eventTemplates: [
               {
-                id: 4,
+                id: ENTITY_IDENTIFIES.EVENT_TPL_FOUR,
                 name: 'Event Template One',
                 description: 'Event template one of event type one'
               }
@@ -116,7 +115,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         ],
         virtualGyms: [
           {
-            id: 1,
+            id: ENTITY_IDENTIFIES.VIRTUAL_GYM,
             name: 'VirtualGym One',
             description: 'Virtual gym one description',
             capacity: 10,
@@ -125,7 +124,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
             closeTime: '23:00:00',
             gymZones: [
               {
-                id: 1,
+                id: ENTITY_IDENTIFIES.GYM_ZONE_ONE,
                 name: 'GymZone One',
                 description: 'Gym zone one of virtual gym one',
                 capacity: 10,
@@ -134,10 +133,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
                 maskRequired: true,
                 covidPassport: true,
                 isClassType: false,
-                calendar: { id: 1 }
+                calendar: { id: ENTITY_IDENTIFIES.CALENDAR_ONE }
               },
               {
-                id: 2,
+                id: ENTITY_IDENTIFIES.GYM_ZONE_TWO,
                 name: 'GymZone Two',
                 description: 'Gym zone two of virtual gym one',
                 capacity: 10,
@@ -146,10 +145,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
                 maskRequired: true,
                 covidPassport: true,
                 isClassType: false,
-                calendar: { id: 2 }
+                calendar: { id: ENTITY_IDENTIFIES.CALENDAR_TWO }
               },
               {
-                id: 1,
+                id: ENTITY_IDENTIFIES.GYM_ZONE_THREE,
                 name: 'GymZone Three',
                 description: 'Gym zone two of virtual gym one',
                 capacity: 10,
@@ -158,7 +157,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
                 maskRequired: true,
                 covidPassport: true,
                 isClassType: false,
-                calendar: { id: 3 }
+                calendar: { id: ENTITY_IDENTIFIES.CALENDAR_THREE }
               }
             ]
           }
@@ -168,16 +167,22 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
   });
 };
 
-// SUUUUUUUUUUUUUUUUUUUUUU # no vull saber ni quant temps - 18:30 mirar last commit
+let cnt: Connection;
 
-export default async () => {
-  const cnt: Connection = await createTestDatabase();
+export const setup = async () => {
+  cnt = await createTestDatabase();
 
   if (!cnt) {
     return;
   }
 
   await seedDatabase(cnt);
+};
 
-  await cnt.close();
+export const teardown = async () => {
+  if (!cnt) {
+    return;
+  }
+
+  cnt.close();
 };

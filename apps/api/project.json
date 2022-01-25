@@ -51,7 +51,7 @@
       "executor": "@nrwl/jest:jest",
       "options": {
         "jestConfig": "apps/api/jest.config.js",
-        "testPathPattern": ["apps/api/src/test"]
+        "testPathPattern": ["apps/api/src/test/index.spec.ts"]
       }
     }
   },
