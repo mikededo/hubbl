@@ -46,6 +46,13 @@
         "jestConfig": "apps/api/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "test-e2e": {
+      "executor": "@nrwl/jest:jest",
+      "options": {
+        "jestConfig": "apps/api/jest.config.js",
+        "testPathPattern": ["apps/api/src/test"]
+      }
     }
   },
   "tags": []
