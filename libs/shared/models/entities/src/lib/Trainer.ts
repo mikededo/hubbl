@@ -6,12 +6,14 @@ import {
   Generated,
   Index,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   UpdateDateColumn
 } from 'typeorm';
 
 import Event from './Event';
+import Owner from './Owner';
 import Person from './Person';
 
 /**
@@ -33,7 +35,7 @@ export default class Trainer {
   /**
    * References to the manager of this employee
    */
-  @OneToOne(() => Person, { nullable: false })
+  @ManyToOne(() => Owner, (o) => o.workers, { nullable: false })
   @JoinColumn({ name: 'manager_id_fk' })
   managerId!: number;
 
