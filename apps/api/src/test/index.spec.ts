@@ -15,7 +15,7 @@ describe('Integration tests', () => {
   afterAll((done) => {
     teardown().then(() => {
       done();
-    });
+    }).catch(console.log);
   });
 
   describe('Person', () => {
@@ -52,6 +52,40 @@ describe('Integration tests', () => {
 
       it('should login a client', async () => {
         await client.login();
+      });
+    });
+
+    describe('update', () => {
+      it('should update an owner', async () => {
+        await owner.update();
+      });
+
+      it('should update a worker by an owner', async () => {
+        await worker.update('owner');
+      });
+
+      it('should update a worker by a worker', async () => {
+        await worker.update('worker');
+      });
+
+      it('should update a trainer by an owner', async () => {
+        await trainer.update('owner');
+      });
+
+      it('should update a trainer by an worker', async () => {
+        await trainer.update('worker');
+      });
+
+      it('should update a client by themself', async () => {
+        await client.update('client');
+      });
+
+      it('should update a client by an owner', async () => {
+        await client.update('owner');
+      });
+
+      it('should update a client by a worker', async () => {
+        await client.update('worker');
       });
     });
   });

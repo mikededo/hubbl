@@ -1,11 +1,13 @@
 import { compare } from 'bcrypt';
 import supertest = require('supertest');
 
-import { Gender } from '@hubbl/shared/types';
+import { AppTheme, Gender } from '@hubbl/shared/types';
 
 import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
+import { sign } from 'jsonwebtoken';
+import { ParsedToken } from '../../app/controllers/helpers';
 
 const checkWorkerProps = (worker: any) => {
   util.toBeNumber(worker.id);
@@ -73,7 +75,7 @@ export const register = async () => {
 export const login = async () => {
   // Use database data
   const response = await supertest(app).post('/persons/login/worker').send({
-    email: 'test@worker.com',
+    email: ENTITY_IDENTIFIERS.WORKER_EMAIL,
     password: 'worker-password'
   });
 
@@ -94,4 +96,55 @@ export const login = async () => {
   util.toBeString(body.worker.gym.color);
   expect(Array.isArray(body.worker.gym.virtualGyms)).toBeTruthy();
   checkWorkerProps(body.worker);
+};
+
+export const update = async (by: 'owner' | 'worker') => {
+  // Create the token
+  const token = sign(
+    {
+      id: by === 'owner' ? ENTITY_IDENTIFIERS.OWNER : ENTITY_IDENTIFIERS.WORKER,
+      email: `test@${by}.com`,
+      user: by
+    } as ParsedToken,
+    'test-key'
+  );
+
+  const response = await supertest(app)
+    .put('/persons/worker')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      id: ENTITY_IDENTIFIERS.WORKER,
+      email: ENTITY_IDENTIFIERS.WORKER_EMAIL,
+      password: 'registered-password',
+      firstName: 'Registerd',
+      lastName: 'Worker',
+      gender: 'OTHER',
+      theme: AppTheme.DARK,
+      createGymZones: true,
+      updateGymZones: true,
+      deleteGymZones: true,
+      createTrainers: true,
+      updateTrainers: true,
+      deleteTrainers: true,
+      createClients: true,
+      updateClients: true,
+      deleteClients: true,
+      createEvents: true,
+      updateEvents: true,
+      deleteEvents: true,
+      createEventTypes: true,
+      updateEventTypes: true,
+      deleteEventTypes: true,
+      createEventTemplates: true,
+      updateEventTemplates: true,
+      deleteEventTemplates: true,
+      createEventAppointments: true,
+      updateEventAppointments: true,
+      deleteEventAppointments: true,
+      createCalendarAppointments: true,
+      updateCalendarAppointments: true,
+      deleteCalendarAppointments: true
+    });
+
+  expect(response.statusCode).toBe(200);
 };

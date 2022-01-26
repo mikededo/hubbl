@@ -56,7 +56,6 @@ const createTestDatabase = async (): Promise<Connection> => {
     return cnt;
   } catch (e) {
     console.error('Error on initialising the database.');
-    console.log(e);
   }
 };
 
@@ -69,7 +68,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.OWNER,
         firstName: 'Owner',
         lastName: 'Test',
-        email: 'test@owner.com',
+        email: ENTITY_IDENTIFIERS.OWNER_EMAIL,
         password: await hash('owner-password', await genSalt(10)),
         gender: Gender.OTHER,
         gym: {
@@ -170,20 +169,44 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
     await em.getRepository(Worker).save({
       person: {
         id: ENTITY_IDENTIFIERS.WORKER,
-        email: 'test@worker.com',
+        email: ENTITY_IDENTIFIERS.WORKER_EMAIL,
         password: await hash('worker-password', await genSalt(10)),
         firstName: 'Worker',
         lastName: 'Test',
         gender: Gender.OTHER,
         gym: ENTITY_IDENTIFIERS.GYM
       },
-      managerId: ENTITY_IDENTIFIERS.OWNER
+      managerId: ENTITY_IDENTIFIERS.OWNER,
+      createGymZones: true,
+      updateGymZones: true,
+      deleteGymZones: true,
+      createTrainers: true,
+      updateTrainers: true,
+      deleteTrainers: true,
+      createClients: true,
+      updateClients: true,
+      deleteClients: true,
+      createEvents: true,
+      updateEvents: true,
+      deleteEvents: true,
+      createEventTypes: true,
+      updateEventTypes: true,
+      deleteEventTypes: true,
+      createEventTemplates: true,
+      updateEventTemplates: true,
+      deleteEventTemplates: true,
+      createEventAppointments: true,
+      updateEventAppointments: true,
+      deleteEventAppointments: true,
+      createCalendarAppointments: true,
+      updateCalendarAppointments: true,
+      deleteCalendarAppointments: true
     } as Worker);
 
     await em.getRepository(Client).save({
       person: {
         id: ENTITY_IDENTIFIERS.CLIENT,
-        email: 'test@client.com',
+        email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
         password: await hash('client-password', await genSalt(10)),
         firstName: 'Client',
         lastName: 'Test',
@@ -195,10 +218,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
 
     await em.getRepository(Trainer).save({
       person: {
-        id: ENTITY_IDENTIFIERS.CLIENT,
-        email: 'test@client.com',
-        password: await hash('client-password', await genSalt(10)),
-        firstName: 'Client',
+        id: ENTITY_IDENTIFIERS.TRAINER,
+        email: ENTITY_IDENTIFIERS.TRAINER_EMAIL,
+        password: await hash('trainer-password', await genSalt(10)),
+        firstName: 'Trainer',
         lastName: 'Test',
         gender: Gender.OTHER,
         gym: ENTITY_IDENTIFIERS.GYM

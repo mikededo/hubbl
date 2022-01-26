@@ -1,8 +1,10 @@
 import { compare } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 import supertest = require('supertest');
 
-import { Gender } from '@hubbl/shared/types';
+import { AppTheme, Gender } from '@hubbl/shared/types';
 
+import { ParsedToken } from '../../app/controllers/helpers';
 import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
@@ -45,7 +47,7 @@ export const register = async () => {
 export const login = async () => {
   // Use database data
   const response = await supertest(app).post('/persons/login/client').send({
-    email: 'test@client.com',
+    email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
     password: 'client-password'
   });
 
@@ -73,4 +75,38 @@ export const login = async () => {
   util.toBeString(body.client.gym.phone);
   util.toBeString(body.client.gym.color);
   expect(Array.isArray(body.client.gym.virtualGyms)).toBeTruthy();
+};
+
+export const update = async (by: 'client' | 'owner' | 'worker') => {
+  // Create the token
+  const token = sign(
+    {
+      id:
+        by === 'client'
+          ? ENTITY_IDENTIFIERS.CLIENT
+          : by === 'owner'
+          ? ENTITY_IDENTIFIERS.OWNER
+          : ENTITY_IDENTIFIERS.WORKER,
+      email: `test@${by}.com`,
+      user: by
+    } as ParsedToken,
+    'test-key'
+  );
+
+  const response = await supertest(app)
+    .put('/persons/client')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      id: ENTITY_IDENTIFIERS.CLIENT,
+      email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
+      password: 'registered-password',
+      firstName: 'Registerd',
+      lastName: 'Client',
+      gender: Gender.OTHER,
+      theme: AppTheme.DARK,
+      covidPassport: true,
+      gym: ENTITY_IDENTIFIERS.GYM
+    });
+
+  expect(response.statusCode).toBe(200);
 };

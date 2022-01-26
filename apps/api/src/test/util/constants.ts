@@ -1,7 +1,12 @@
 export const ENTITY_IDENTIFIERS = {
   OWNER: 1,
+  OWNER_EMAIL: 'test@owner.com',
   WORKER: 2,
+  WORKER_EMAIL: 'test@worker.com',
   CLIENT: 3,
+  CLIENT_EMAIL: 'test@client.com',
+  TRAINER: 4,
+  TRAINER_EMAIL: 'test@trainer.com',
   GYM: 1,
   EVENT_TYPE_ONE: 1,
   EVENT_TYPE_TWO: 2,

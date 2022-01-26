@@ -1,11 +1,13 @@
 import { compare } from 'bcrypt';
 import supertest = require('supertest');
 
-import { Gender } from '@hubbl/shared/types';
+import { AppTheme, Gender } from '@hubbl/shared/types';
 
 import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
+import { ParsedToken } from '../../app/controllers/helpers';
+import { sign } from 'jsonwebtoken';
 
 export const register = async () => {
   const response = await supertest(app).post('/persons/register/trainer').send({
@@ -43,9 +45,36 @@ export const register = async () => {
 export const login = async () => {
   // Use database data
   const response = await supertest(app).post('/persons/login/trainer').send({
-    email: 'test@trainer.com',
+    email: ENTITY_IDENTIFIERS.TRAINER_EMAIL,
     password: 'trainer-password'
   });
 
   expect(response.statusCode).toBe(404);
+};
+
+export const update = async (by: 'owner' | 'worker') => {
+  // Create the token
+  const token = sign(
+    {
+      id: by === 'owner' ? ENTITY_IDENTIFIERS.OWNER : ENTITY_IDENTIFIERS.WORKER,
+      email: `test@${by}.com`,
+      user: by
+    } as ParsedToken,
+    'test-key'
+  );
+
+  const response = await supertest(app)
+    .put('/persons/trainer')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      id: ENTITY_IDENTIFIERS.TRAINER,
+      email: ENTITY_IDENTIFIERS.TRAINER_EMAIL,
+      password: 'registered-password',
+      firstName: 'Trainer',
+      lastName: 'Worker',
+      gender: 'OTHER',
+      theme: AppTheme.DARK
+    });
+
+  expect(response.statusCode).toBe(200);
 };
