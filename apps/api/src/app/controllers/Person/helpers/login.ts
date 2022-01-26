@@ -89,7 +89,7 @@ export const login = async ({
       // Join with the entity data
       return controller.ok(res, {
         token,
-        entity: fromClass(entityFound)
+        [alias]: fromClass(entityFound)
       });
     } catch (_) {
       log.error(

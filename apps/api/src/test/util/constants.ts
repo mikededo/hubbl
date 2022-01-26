@@ -1,5 +1,7 @@
-export const ENTITY_IDENTIFIES = {
+export const ENTITY_IDENTIFIERS = {
   OWNER: 1,
+  WORKER: 2,
+  CLIENT: 3,
   GYM: 1,
   EVENT_TYPE_ONE: 1,
   EVENT_TYPE_TWO: 2,
