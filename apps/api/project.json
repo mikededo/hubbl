@@ -44,14 +44,16 @@
       "outputs": ["coverage/apps/api"],
       "options": {
         "jestConfig": "apps/api/jest.config.js",
-        "passWithNoTests": true
+        "passWithNoTests": true,
+        "testPathIgnorePatterns": ["apps/api/src/test/*"]
       }
     },
     "test-e2e": {
       "executor": "@nrwl/jest:jest",
       "options": {
         "jestConfig": "apps/api/jest.config.js",
-        "testPathPattern": ["apps/api/src/test/index.spec.ts"]
+        "testPathPattern": ["apps/api/src/test/index.spec.ts"],
+        "setupFiles": ["dotenv/config"]
       }
     }
   },
