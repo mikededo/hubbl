@@ -55,6 +55,7 @@ services:
       - /bin/sh
       - -c
       - |
+        apk add git
         cd /app
         npm install
         npx nx serve api
