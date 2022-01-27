@@ -1,4 +1,4 @@
-version: '2.4'
+version: '3.9'
 
 services:
   # Backend
@@ -10,10 +10,13 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD:-test}
       POSTGRES_DB: ${POSTGRES_TEST_ATABASE:-test-hubbl-db}
       PGDATA: /data/postgres
+    # Volume should not be persisted
     ports:
-      - '5433:5432'
-    restart: always
+      - 5433:5432
+    restart: unless-stopped
+    profiles: ["all", "dev", "test"]
 
+  # Has no profiles since it is always required
   postgres:
     container_name: postgresql
     image: postgres
@@ -25,29 +28,14 @@ services:
     volumes:
       - postgres:/data/postgres
     ports:
-      - '5432:5432'
-    networks:
-      - postgres
-    restart: unless-stopped
-
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@hubbl.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/var/lib/pgadmin
-    ports:
-      - '${PG_ADMIN_PORT:-5050}:80'
+      - 5432:5432
     networks:
       - postgres
     restart: unless-stopped
 
   # Api
-  api:
-    container_name: hubbl-api
+  api-dev:
+    container_name: hubbl-api-dev
     image: node:lts-alpine
     volumes:
       - .:/app
@@ -65,6 +53,8 @@ services:
       - postgres
     mem_limit: 1G
     restart: unless-stopped
+    profiles: ["all", "dev"]
+
 
 networks:
   postgres:
