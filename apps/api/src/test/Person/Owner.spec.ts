@@ -9,20 +9,20 @@ import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
 
 export const register = async () => {
-  const response = await supertest(app)
-    .post('/persons/register/owner')
-    .send({
-      email: 'registered@owner.com',
-      password: 'registered-password',
-      firstName: 'Registerd',
-      lastName: 'Owner',
-      gender: 'OTHER',
-      gym: {
-        name: 'RegisteredGym',
-        email: 'info@registered.com',
-        phone: '000 000 000'
-      }
-    });
+  const testApp = supertest(app);
+
+  const response = await testApp.post('/persons/register/owner').send({
+    email: 'registered@owner.com',
+    password: 'registered-password',
+    firstName: 'Registerd',
+    lastName: 'Owner',
+    gender: 'OTHER',
+    gym: {
+      name: 'RegisteredGym',
+      email: 'info@registered.com',
+      phone: '000 000 000'
+    }
+  });
 
   expect(response.statusCode).toBe(201);
   util.expectTokenCookie(response);
@@ -49,6 +49,16 @@ export const register = async () => {
   util.toBeString(body.owner.gym.email);
   util.toBeString(body.owner.gym.phone);
   util.toBeString(body.owner.gym.color);
+
+  // Check if the person exists in the database, by logging in
+  const loginResponse = await testApp.post('/persons/login/owner').send({
+    email: 'registered@owner.com',
+    password: 'registered-password'
+  });
+
+  // Basic checks
+  expect(loginResponse.body.owner).toBeDefined();
+  expect(loginResponse.body.owner.id).toBe(body.owner.id);
 };
 
 export const login = async () => {
@@ -84,6 +94,7 @@ export const login = async () => {
 };
 
 export const update = async () => {
+  const testApp = supertest(app);
   // Create the token
   const token = sign(
     {
@@ -94,7 +105,7 @@ export const update = async () => {
     'test-key'
   );
 
-  const response = await supertest(app)
+  const response = await testApp
     .put('/persons/owner')
     .set('Authorization', `Bearer ${token}`)
     .send({
@@ -109,4 +120,15 @@ export const update = async () => {
     });
 
   expect(response.statusCode).toBe(200);
+
+  // Check if the person exists in the database, by logging in
+  const loginResponse = await testApp.post('/persons/login/owner').send({
+    email: ENTITY_IDENTIFIERS.OWNER_EMAIL,
+    password: 'test-password'
+  });
+
+  // Check the prop changed, has actually be changed
+  expect(loginResponse.body.owner).toBeDefined();
+  expect(loginResponse.body.owner.id).toBe(ENTITY_IDENTIFIERS.OWNER);
+  expect(loginResponse.body.owner.theme).toBe(AppTheme.DARK);
 };

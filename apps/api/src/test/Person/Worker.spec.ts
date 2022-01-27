@@ -45,7 +45,9 @@ const checkWorkerProps = (worker: any) => {
 };
 
 export const register = async () => {
-  const response = await supertest(app).post('/persons/register/worker').send({
+  const testApp = supertest(app);
+
+  const response = await testApp.post('/persons/register/worker').send({
     email: 'registered@worker.com',
     password: 'registered-password',
     firstName: 'Test',
@@ -70,6 +72,16 @@ export const register = async () => {
   util.toBeNumber(body.worker.managerId);
   util.toBeNumber(body.worker.gym);
   checkWorkerProps(body.worker);
+
+  // Check if the person exists in the database, by logging in
+  const loginResponse = await testApp.post('/persons/login/worker').send({
+    email: 'registered@worker.com',
+    password: 'registered-password'
+  });
+
+  // Basic checks
+  expect(loginResponse.body.worker).toBeDefined();
+  expect(loginResponse.body.worker.id).toBe(body.worker.id);
 };
 
 export const login = async () => {
@@ -99,6 +111,8 @@ export const login = async () => {
 };
 
 export const update = async (by: 'owner' | 'worker') => {
+  const testApp = supertest(app);
+
   // Create the token
   const token = sign(
     {
@@ -109,13 +123,13 @@ export const update = async (by: 'owner' | 'worker') => {
     'test-key'
   );
 
-  const response = await supertest(app)
+  const response = await testApp
     .put('/persons/worker')
     .set('Authorization', `Bearer ${token}`)
     .send({
       id: ENTITY_IDENTIFIERS.WORKER,
       email: ENTITY_IDENTIFIERS.WORKER_EMAIL,
-      password: 'registered-password',
+      password: 'test-password',
       firstName: 'Registerd',
       lastName: 'Worker',
       gender: 'OTHER',
@@ -147,4 +161,15 @@ export const update = async (by: 'owner' | 'worker') => {
     });
 
   expect(response.statusCode).toBe(200);
+
+  // Check if the person exists in the database, by logging in
+  const loginResponse = await testApp.post('/persons/login/worker').send({
+    email: ENTITY_IDENTIFIERS.WORKER_EMAIL,
+    password: 'test-password'
+  });
+
+  // Check the prop changed, has actually be changed
+  expect(loginResponse.body.worker).toBeDefined();
+  expect(loginResponse.body.worker.id).toBe(ENTITY_IDENTIFIERS.WORKER);
+  expect(loginResponse.body.worker.theme).toBe(AppTheme.DARK);
 };

@@ -10,7 +10,9 @@ import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
 
 export const register = async () => {
-  const response = await supertest(app).post('/persons/register/client').send({
+  const testApp = supertest(app);
+
+  const response = await testApp.post('/persons/register/client').send({
     email: 'registered@client.com',
     password: 'registered-password',
     firstName: 'Registerd',
@@ -42,6 +44,16 @@ export const register = async () => {
     await compare('registered-password', body.client.password)
   ).toBeTruthy();
   util.toBeNumber(body.client.gym);
+
+  // Check if the person exists in the database, by logging in
+  const loginResponse = await testApp.post('/persons/login/client').send({
+    email: 'registered@client.com',
+    password: 'registered-password'
+  });
+
+  // Basic checks
+  expect(loginResponse.body.client).toBeDefined();
+  expect(loginResponse.body.client.id).toBe(body.client.id);
 };
 
 export const login = async () => {
@@ -78,6 +90,8 @@ export const login = async () => {
 };
 
 export const update = async (by: 'client' | 'owner' | 'worker') => {
+  const testApp = supertest(app);
+
   // Create the token
   const token = sign(
     {
@@ -93,7 +107,7 @@ export const update = async (by: 'client' | 'owner' | 'worker') => {
     'test-key'
   );
 
-  const response = await supertest(app)
+  const response = await testApp
     .put('/persons/client')
     .set('Authorization', `Bearer ${token}`)
     .send({
@@ -109,4 +123,15 @@ export const update = async (by: 'client' | 'owner' | 'worker') => {
     });
 
   expect(response.statusCode).toBe(200);
+
+  // Check if the person exists in the database, by logging in
+  const loginResponse = await testApp.post('/persons/login/client').send({
+    email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
+    password: 'registered-password'
+  });
+
+  // Check the prop that has been changed
+  expect(loginResponse.body.client).toBeDefined();
+  expect(loginResponse.body.client.id).toBe(ENTITY_IDENTIFIERS.CLIENT);
+  expect(loginResponse.body.client.theme).toBe(AppTheme.DARK);
 };

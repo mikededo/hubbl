@@ -1,7 +1,7 @@
 import { setup, teardown } from './e2e-setup';
 import { client, owner, trainer, worker } from './Person';
 
-// jest.mock('npmlog');
+jest.mock('npmlog');
 
 describe('Integration tests', () => {
   beforeAll((done) => {
