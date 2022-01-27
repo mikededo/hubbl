@@ -15,7 +15,7 @@ This application hosts the API of the Hubbl application, from the client's appli
 
 ## Project
 
-The application is built using the `@nrlw/express` generator. It is build in TypeScript and uses a controller-serice-model approach to handle the requests.
+The application is built using the `@nrlw/express` generator. It is build in TypeScript and uses a controller-service-model approach to handle the requests.
 
 ## Development
 
@@ -27,8 +27,6 @@ Once the repository has been cloned, install the dependencies of the project.
 # with npm 
 npm install 
 ```
-
-> To do: Add docker-compose info
 
 ### Execution
 
@@ -49,12 +47,26 @@ If the package is not installed globally, run:
 npm start api
 ```
 
-Nonetheless, there's a specific container (`hubbl-api`) which runs the application in a dev environment, rebuilding on any change (as it also uses the `nx serve` command).
+Nonetheless, there's a specific container (`hubbl-api-dev`) which runs the application in a dev environment, rebuilding on any change (as it also uses the `nx serve` command).  
+In order to run the `hubbl-api-dev` can be run with:
 
-> To do: rename hubbl-api to hubbl-api-dev (or even create a dev.docker-compose file)
+```sh
+docker-compose --profile test up -d
+```
+
+It will create the container, install the dependencies in the container and will run the api. The container runs on the `localhost:3333` url.
 
 ## Testing
 
-The application has two test types: unit and end-to-end (e2e).
+The application has two test types: unit and end-to-end (e2e). The unit tests are required in any class or function that is used.  
+In order to run the tests:
 
-> To do: explain types and how to run
+```sh
+# unit tests
+nx test api
+# e2e tests
+nx run api:test-e2e
+```
+### Coverage
+
+The project flag inside codecov is `api`.
