@@ -69,7 +69,7 @@ export const update = async (by: 'owner' | 'worker') => {
     .send({
       id: ENTITY_IDENTIFIERS.TRAINER,
       email: ENTITY_IDENTIFIERS.TRAINER_EMAIL,
-      password: 'registered-password',
+      password: 'trainer-password',
       firstName: 'Trainer',
       lastName: 'Worker',
       gender: 'OTHER',

@@ -1,6 +1,8 @@
 import { setup, teardown } from './e2e-setup';
+import { eventType } from './EventType';
 import { client, owner, trainer, worker } from './Person';
 import { token } from './Token';
+import { common } from './util';
 
 jest.mock('npmlog');
 
@@ -10,7 +12,10 @@ describe('Integration tests', () => {
       .then(() => {
         done();
       })
-      .catch(console.log);
+      .catch((e) => {
+        console.log(e);
+        process.exit(-1);
+      });
   });
 
   afterAll((done) => {
@@ -100,6 +105,49 @@ describe('Integration tests', () => {
 
     it('should refresh a token', async () => {
       await token.refresh();
+    });
+  });
+
+  describe('Event type', () => {
+    describe('unauthorized', () => {
+      it('should block unauthorized POST calls', async () => {
+        await common.unauthorized('/event-types', 'post');
+      });
+
+      it('should block unauthorized PUT calls', async () => {
+        await common.unauthorized('/event-types', 'put');
+      });
+      it('should block unauthorized GET calls', async () => {
+        await common.unauthorized('/event-types', 'get');
+      });
+
+      it('should block unauthorized DELETE calls', async () => {
+        await common.unauthorized('/event-types/1', 'delete');
+      });
+    });
+
+    describe('fetch', () => {
+      it('should fetch event types by owner', async () => {
+        await eventType.fetch('owner');
+      });
+
+      it('should fetch event types by worker', async () => {
+        await eventType.fetch('worker');
+      });
+
+      it('should fetch event types by client', async () => {
+        await eventType.fetch('client');
+      });
+    });
+
+    describe('create, update & delete', () => {
+      it('should create, update and delete an event type by an owner', async () => {
+        await eventType.createUpdateAndDelete('owner');
+      });
+
+      it('should create, update and delete an event type by an worker', async () => {
+        await eventType.createUpdateAndDelete('worker');
+      });
     });
   });
 });

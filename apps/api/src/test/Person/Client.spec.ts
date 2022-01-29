@@ -113,7 +113,7 @@ export const update = async (by: 'client' | 'owner' | 'worker') => {
     .send({
       id: ENTITY_IDENTIFIERS.CLIENT,
       email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
-      password: 'registered-password',
+      password: 'client-password',
       firstName: 'Registerd',
       lastName: 'Client',
       gender: Gender.OTHER,
@@ -127,7 +127,7 @@ export const update = async (by: 'client' | 'owner' | 'worker') => {
   // Check if the person exists in the database, by logging in
   const loginResponse = await testApp.post('/persons/login/client').send({
     email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
-    password: 'registered-password'
+    password: 'client-password'
   });
 
   // Check the prop that has been changed

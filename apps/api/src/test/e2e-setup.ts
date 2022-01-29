@@ -77,42 +77,6 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           email: 'test@gym.com',
           phone: '000 000 000',
           color: ThemeColor.BLUE,
-          eventTypes: [
-            {
-              id: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE,
-              name: 'EventType One',
-              labelColor: AppPalette.BLUE,
-              eventTemplates: [
-                {
-                  id: ENTITY_IDENTIFIERS.EVENT_TPL_ONE,
-                  name: 'Event Template One',
-                  description: 'Event template one of event type one'
-                },
-                {
-                  id: ENTITY_IDENTIFIERS.EVENT_TPL_TWO,
-                  name: 'Event Template Two',
-                  description: 'Event template two of event type two'
-                },
-                {
-                  id: ENTITY_IDENTIFIERS.EVENT_TPL_THREE,
-                  name: 'Event Template Three',
-                  description: 'Event template three of event type three'
-                }
-              ]
-            },
-            {
-              id: ENTITY_IDENTIFIERS.EVENT_TYPE_TWO,
-              name: 'EventType Two',
-              labelColor: AppPalette.BLUE,
-              eventTemplates: [
-                {
-                  id: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
-                  name: 'Event Template One',
-                  description: 'Event template one of event type one'
-                }
-              ]
-            }
-          ],
           virtualGyms: [
             {
               id: ENTITY_IDENTIFIERS.VIRTUAL_GYM,
@@ -165,6 +129,54 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         }
       }
     });
+
+    await em.getRepository(EventType).save([
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE,
+        name: 'EventType One',
+        description: 'EventType One description',
+        labelColor: AppPalette.BLUE,
+        gym: ENTITY_IDENTIFIERS.GYM
+      },
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_TYPE_TWO,
+        name: 'EventType Two',
+        description: 'EventType Two description',
+        labelColor: AppPalette.BLUE,
+        gym: ENTITY_IDENTIFIERS.GYM
+      }
+    ]);
+
+    await em.getRepository(EventTemplate).save([
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_TPL_ONE,
+        name: 'Event Template One',
+        description: 'Event template one of event type one',
+        gym: ENTITY_IDENTIFIERS.GYM,
+        type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
+      },
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_TPL_TWO,
+        name: 'Event Template Two',
+        description: 'Event template two of event type two',
+        gym: ENTITY_IDENTIFIERS.GYM,
+        type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
+      },
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_TPL_THREE,
+        name: 'Event Template Three',
+        description: 'Event template three of event type three',
+        gym: ENTITY_IDENTIFIERS.GYM,
+        type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
+      },
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
+        name: 'Event Template One',
+        description: 'Event template one of event type two',
+        gym: ENTITY_IDENTIFIERS.GYM,
+        type: ENTITY_IDENTIFIERS.EVENT_TYPE_TWO
+      }
+    ]);
 
     await em.getRepository(Worker).save({
       person: {
