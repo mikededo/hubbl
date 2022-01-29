@@ -1,5 +1,6 @@
 import { setup, teardown } from './e2e-setup';
 import { client, owner, trainer, worker } from './Person';
+import { token } from './Token';
 
 jest.mock('npmlog');
 
@@ -13,9 +14,11 @@ describe('Integration tests', () => {
   });
 
   afterAll((done) => {
-    teardown().then(() => {
-      done();
-    }).catch(console.log);
+    teardown()
+      .then(() => {
+        done();
+      })
+      .catch(console.log);
   });
 
   describe('Person', () => {
@@ -87,6 +90,16 @@ describe('Integration tests', () => {
       it('should update a client by a worker', async () => {
         await client.update('worker');
       });
+    });
+  });
+
+  describe('Token', () => {
+    it('should validate a token', async () => {
+      await token.validate();
+    });
+
+    it('should refresh a token', async () => {
+      await token.refresh();
     });
   });
 });
