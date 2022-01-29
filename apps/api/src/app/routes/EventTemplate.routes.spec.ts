@@ -19,7 +19,7 @@ describe('EventTemplate routes', () => {
       'execute'
     );
 
-    await supertest(app).get('/event-templates/1');
+    await supertest(app).get('/event-templates');
 
     expect(executeSpy).toHaveBeenCalledTimes(1);
   });

@@ -1,3 +1,1 @@
-import * as eventType from './EventType.spec';
-
-export { eventType };
+export * as eventType from './EventType.spec';
