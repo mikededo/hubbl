@@ -1,5 +1,6 @@
 import { setup, teardown } from './e2e-setup';
 import { eventType } from './EventType';
+import { eventTemplate } from './EventTemplate';
 import { client, owner, trainer, worker } from './Person';
 import { token } from './Token';
 import { common } from './util';
@@ -147,6 +148,49 @@ describe('Integration tests', () => {
 
       it('should create, update and delete an event type by an worker', async () => {
         await eventType.createUpdateAndDelete('worker');
+      });
+    });
+  });
+
+  describe('Event template', () => {
+    describe('unauthorized', () => {
+      it('should block unauthorized POST calls', async () => {
+        await common.unauthorized('/event-templates', 'post');
+      });
+
+      it('should block unauthorized PUT calls', async () => {
+        await common.unauthorized('/event-templates', 'put');
+      });
+      it('should block unauthorized GET calls', async () => {
+        await common.unauthorized('/event-templates', 'get');
+      });
+
+      it('should block unauthorized DELETE calls', async () => {
+        await common.unauthorized('/event-templates/1', 'delete');
+      });
+    });
+
+    describe('fetch', () => {
+      it('should fetch event templates by owner', async () => {
+        await eventTemplate.fetch('owner');
+      });
+
+      it('should fetch event templates by worker', async () => {
+        await eventTemplate.fetch('worker');
+      });
+
+      it('should fetch event templates by client', async () => {
+        await eventTemplate.fetch('client');
+      });
+    });
+
+    describe('create, update & delete', () => {
+      it('should create, update and delete an event template by an owner', async () => {
+        await eventTemplate.createUpdateAndDelete('owner');
+      });
+
+      it('should create, update and delete an event template by an worker', async () => {
+        await eventTemplate.createUpdateAndDelete('worker');
       });
     });
   });
