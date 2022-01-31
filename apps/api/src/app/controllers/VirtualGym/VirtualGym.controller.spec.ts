@@ -38,7 +38,7 @@ describe('VirtualGym Controller', () => {
     toClass: jest.fn()
   };
   const mockReq = { body: {}, headers: { authorization: 'Any token' } } as any;
-  const mockRes = { locals: { token: { id: 1 } } } as any;
+  const mockRes = { locals: { token: { id: 1, user: 'owner' } } } as any;
 
   const mockService = {
     findOne: jest.fn(),
@@ -207,10 +207,31 @@ describe('VirtualGym Controller', () => {
         controller: VirtualGymCreateController,
         res: mockRes,
         fromClass: VirtualGymDTO.fromClass,
-        token: { id: 1 },
+        token: mockRes.locals.token,
         dto: mockDto,
         entityName: 'VirtualGym'
       });
+    });
+
+    it('should call forbidden if user is not an owner', async () => {
+      const cboSpy = jest.spyOn(create, 'createdByOwner').mockImplementation();
+      const forbiddenSpy = jest
+        .spyOn(VirtualGymCreateController, 'forbidden')
+        .mockImplementation();
+
+      VirtualGymCreateController['service'] = {} as any;
+      VirtualGymCreateController['ownerService'] = {} as any;
+
+      await VirtualGymCreateController.execute(mockReq, {
+        locals: { token: { id: 1, user: 'worker' } }
+      } as any);
+
+      expect(cboSpy).not.toHaveBeenCalled();
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        { locals: { token: { id: 1, user: 'worker' } } },
+        'User can not create Virtual Gyms.'
+      );
     });
 
     it('should call clientError on fromJson error', async () => {
@@ -287,11 +308,32 @@ describe('VirtualGym Controller', () => {
         ownerService: {},
         controller: VirtualGymDeleteController,
         res: mockRes,
-        token: { id: 1 },
+        token: mockRes.locals.token,
         entityId: 1,
         entityName: 'VirtualGym',
         countArgs: { id: 1 }
       });
+    });
+
+    it('should call forbidden if user is not an owner', async () => {
+      const cboSpy = jest.spyOn(deleteHelpers, 'deletedByOwner').mockImplementation();
+      const forbiddenSpy = jest
+        .spyOn(VirtualGymDeleteController, 'forbidden')
+        .mockImplementation();
+
+      VirtualGymDeleteController['service'] = {} as any;
+      VirtualGymDeleteController['ownerService'] = {} as any;
+
+      await VirtualGymDeleteController.execute(mockReq, {
+        locals: { token: { id: 1, user: 'worker' } }
+      } as any);
+
+      expect(cboSpy).not.toHaveBeenCalled();
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        { locals: { token: { id: 1, user: 'worker' } } },
+        'User can not delete Virtual Gyms.'
+      );
     });
   });
 });

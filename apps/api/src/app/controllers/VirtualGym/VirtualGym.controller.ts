@@ -88,6 +88,10 @@ class IVirtualGymCreateController extends BaseController {
 
     const { token } = res.locals;
 
+    if (token.user !== 'owner') {
+      return this.forbidden(res, 'User can not create Virtual Gyms.');
+    }
+
     try {
       return createdByOwner({
         service: this.service,
@@ -132,6 +136,10 @@ class IVirtualGymDeleteController extends BaseController {
     }
 
     const { token } = res.locals;
+
+    if (token.user !== 'owner') {
+      return this.forbidden(res, 'User can not delete Virtual Gyms.');
+    }
 
     return deletedByOwner({
       service: this.service,

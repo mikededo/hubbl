@@ -1,6 +1,7 @@
 import { setup, teardown } from './e2e-setup';
 import { eventType } from './EventType';
 import { eventTemplate } from './EventTemplate';
+import { virtualGym } from './VirtualGym';
 import { client, owner, trainer, worker } from './Person';
 import { token } from './Token';
 import { common } from './util';
@@ -191,6 +192,51 @@ describe('Integration tests', () => {
 
       it('should create, update and delete an event template by an worker', async () => {
         await eventTemplate.createUpdateAndDelete('worker');
+      });
+    });
+  });
+
+  // TODO: add events
+
+  describe('Virtual Gym', () => {
+    describe('unauthorized', () => {
+      it('should block unauthorized POST calls', async () => {
+        await common.unauthorized('/virtual-gyms', 'post');
+      });
+
+      it('should block unauthorized PUT calls', async () => {
+        await common.unauthorized('/virtual-gyms', 'put');
+      });
+      it('should block unauthorized GET calls', async () => {
+        await common.unauthorized('/virtual-gyms', 'get');
+      });
+
+      it('should block unauthorized DELETE calls', async () => {
+        await common.unauthorized('/virtual-gyms/1', 'delete');
+      });
+    });
+
+    describe('fetch', () => {
+      it('should fetch event templates by owner', async () => {
+        await virtualGym.fetch('owner');
+      });
+
+      it('should fetch event templates by worker', async () => {
+        await virtualGym.fetch('worker');
+      });
+
+      it('should fetch event templates by client', async () => {
+        await virtualGym.fetch('client');
+      });
+    });
+
+    describe('create, update & delete', () => {
+      it('should create, update and delete a virtual gym by an owner', async () => {
+        await virtualGym.createUpdateAndDeleteByOwner();
+      });
+
+      it('should not allow to create a virtual gym by a worker', async () => {
+        await virtualGym.createUpdateAndDeleteNotByOwner();
       });
     });
   });
