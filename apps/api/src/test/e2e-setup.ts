@@ -96,7 +96,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
                   closeTime: '23:00:00',
                   maskRequired: true,
                   covidPassport: true,
-                  isClassType: false,
+                  isClassType: true,
                   calendar: { id: ENTITY_IDENTIFIERS.CALENDAR_ONE }
                 },
                 {
@@ -108,7 +108,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
                   closeTime: '23:00:00',
                   maskRequired: true,
                   covidPassport: true,
-                  isClassType: false,
+                  isClassType: true,
                   calendar: { id: ENTITY_IDENTIFIERS.CALENDAR_TWO }
                 },
                 {
@@ -240,6 +240,99 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
       },
       managerId: ENTITY_IDENTIFIERS.OWNER
     } as Trainer);
+
+    const date = new Date();
+    await em.getRepository(Event).save([
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_ONE,
+        capacity: 10,
+        name: 'Event One',
+        description: 'Event One description',
+        startTime: '10:00:00',
+        endTime: '11:00:00',
+        template: ENTITY_IDENTIFIERS.EVENT_TPL_ONE,
+        trainer: ENTITY_IDENTIFIERS.TRAINER,
+        maskRequired: true,
+        covidPassport: true,
+        date: {
+          year: date.getFullYear(),
+          month: date.getMonth(),
+          day: date.getDate()
+        },
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+      },
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_TWO,
+        capacity: 5,
+        name: 'Event Two',
+        description: 'Event Two description',
+        startTime: '10:00:00',
+        endTime: '11:00:00',
+        template: ENTITY_IDENTIFIERS.EVENT_TPL_ONE,
+        trainer: ENTITY_IDENTIFIERS.TRAINER,
+        maskRequired: true,
+        covidPassport: true,
+        date: {
+          year: date.getFullYear(),
+          month: date.getMonth(),
+          day: date.getDate()
+        },
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
+      },
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_THREE,
+        capacity: 10,
+        name: 'Event Three',
+        description: 'Event Three description',
+        startTime: '11:00:00',
+        endTime: '12:00:00',
+        template: ENTITY_IDENTIFIERS.EVENT_TPL_TWO,
+        trainer: ENTITY_IDENTIFIERS.TRAINER,
+        maskRequired: true,
+        covidPassport: true,
+        date: {
+          year: date.getFullYear(),
+          month: date.getMonth(),
+          day: date.getDate()
+        },
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+      },
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_FOUR,
+        capacity: 10,
+        name: 'Event Four',
+        description: 'Event Four description',
+        startTime: '12:00:00',
+        endTime: '13:00:00',
+        template: ENTITY_IDENTIFIERS.EVENT_TPL_THREE,
+        trainer: ENTITY_IDENTIFIERS.TRAINER,
+        maskRequired: true,
+        covidPassport: true,
+        date: {
+          year: date.getFullYear(),
+          month: date.getMonth(),
+          day: date.getDate()
+        },
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+      },
+      {
+        id: ENTITY_IDENTIFIERS.EVENT_FIVE,
+        capacity: 10,
+        name: 'Event Five',
+        description: 'Event Five description',
+        startTime: '12:00:00',
+        endTime: '13:00:00',
+        trainer: ENTITY_IDENTIFIERS.TRAINER,
+        maskRequired: true,
+        covidPassport: true,
+        date: {
+          year: date.getFullYear(),
+          month: date.getMonth(),
+          day: date.getDate()
+        },
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
+      }
+    ]);
   });
 };
 

@@ -1,11 +1,12 @@
 import { setup, teardown } from './e2e-setup';
-import { eventType } from './EventType';
 import { eventTemplate } from './EventTemplate';
-import { virtualGym } from './VirtualGym';
+import { eventType } from './EventType';
+import { event } from './Event';
 import { gymZone } from './GymZone';
 import { client, owner, trainer, worker } from './Person';
 import { token } from './Token';
 import { common } from './util';
+import { virtualGym } from './VirtualGym';
 
 jest.mock('npmlog');
 
@@ -281,6 +282,18 @@ describe('Integration tests', () => {
 
       it('should not allow to create a virtual gym by a worker', async () => {
         await gymZone.createUpdateAndDelete('worker');
+      });
+    });
+  });
+
+  describe('Event', () => {
+    describe('Create, update & delete', () => {
+      it('should create, update and delete an event by an owner', async () => {
+        await event.createUpdateAndDelete('owner');
+      });
+
+      it('should create, update and delete an event by an worker', async () => {
+        await event.createUpdateAndDelete('worker');
       });
     });
   });
