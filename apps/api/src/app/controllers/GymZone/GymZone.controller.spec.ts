@@ -42,7 +42,7 @@ describe('GymZone controller', () => {
     toClass: jest.fn()
   };
   const mockReq = {
-    params: { id: 1, vgId: 1 },
+    params: { vgId: 1 },
     body: {},
     headers: { authorization: 'Any token' }
   } as any;
