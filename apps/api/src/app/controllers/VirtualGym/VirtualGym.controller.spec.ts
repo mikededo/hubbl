@@ -316,7 +316,9 @@ describe('VirtualGym Controller', () => {
     });
 
     it('should call forbidden if user is not an owner', async () => {
-      const cboSpy = jest.spyOn(deleteHelpers, 'deletedByOwner').mockImplementation();
+      const cboSpy = jest
+        .spyOn(deleteHelpers, 'deletedByOwner')
+        .mockImplementation();
       const forbiddenSpy = jest
         .spyOn(VirtualGymDeleteController, 'forbidden')
         .mockImplementation();
