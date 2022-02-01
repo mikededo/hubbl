@@ -1,4 +1,5 @@
 import supertest = require('supertest');
+
 import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
@@ -28,9 +29,7 @@ export const fetchEvents = async (by: 'owner' | 'worker' | 'client') => {
   ]);
 };
 
-export const fetchEventAppointments = async (
-  by: 'owner' | 'worker'
-) => {
+export const fetchEventAppointments = async (by: 'owner' | 'worker') => {
   const testApp = supertest(app);
   const loginRes = await util.common.loginByAny(testApp, by);
 
@@ -40,7 +39,6 @@ export const fetchEventAppointments = async (
     )
     .set('Authorization', `Bearer ${loginRes.body.token}`);
 
-  
   expect(fetchRes.statusCode).toBe(200);
   expect(fetchRes.body).toBeDefined();
   expect(fetchRes.body.length).toBe(3);
@@ -49,4 +47,19 @@ export const fetchEventAppointments = async (
     ENTITY_IDENTIFIERS.CLIENT_EMAIL_TWO,
     ENTITY_IDENTIFIERS.CLIENT_EMAIL_THREE
   ]);
+};
+
+export const fetchCalendarAppointments = async (by: 'owner' | 'worker') => {
+  const testApp = supertest(app);
+  const loginRes = await util.common.loginByOwnerOrWorker(testApp, by);
+
+  const fetchRes = await testApp
+    .get(
+      `/calendars/${ENTITY_IDENTIFIERS.CALENDAR_THREE}/calendars?date=${startDateParam}`
+    )
+    .set('Authorization', `Bearer ${loginRes.body.token}`);
+
+  expect(fetchRes.statusCode).toBe(200);
+  expect(fetchRes.body).toBeDefined();
+  expect(fetchRes.body.length).toBe(3);
 };

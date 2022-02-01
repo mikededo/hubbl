@@ -20,7 +20,18 @@ import {
   Worker
 } from '@hubbl/shared/models/entities';
 import { AppPalette, Gender, ThemeColor } from '@hubbl/shared/types';
+
 import { ENTITY_IDENTIFIERS } from './util';
+
+const getDate = (): Partial<CalendarDate> => {
+  const date = new Date();
+
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    day: date.getDate()
+  };
+};
 
 const createTestDatabase = async (): Promise<Connection> => {
   try {
@@ -267,7 +278,6 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
       managerId: ENTITY_IDENTIFIERS.OWNER
     } as Trainer);
 
-    const date = new Date();
     await em.getRepository(Event).save([
       {
         id: ENTITY_IDENTIFIERS.EVENT_ONE,
@@ -280,11 +290,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
-        date: {
-          year: date.getFullYear(),
-          month: date.getMonth() + 1,
-          day: date.getDate()
-        },
+        date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
       },
       {
@@ -298,11 +304,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
-        date: {
-          year: date.getFullYear(),
-          month: date.getMonth() + 1,
-          day: date.getDate()
-        },
+        date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
       },
       {
@@ -316,11 +318,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
-        date: {
-          year: date.getFullYear(),
-          month: date.getMonth() + 1,
-          day: date.getDate()
-        },
+        date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
       },
       {
@@ -334,11 +332,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
-        date: {
-          year: date.getFullYear(),
-          month: date.getMonth() + 1,
-          day: date.getDate()
-        },
+        date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
       },
       {
@@ -351,11 +345,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
-        date: {
-          year: date.getFullYear(),
-          month: date.getMonth() + 1,
-          day: date.getDate()
-        },
+        date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
       }
     ]);
@@ -381,6 +371,33 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         startTime: '10:00:00',
         endTime: '11:00:00',
         cancelled: false
+      }
+    ]);
+
+    await em.getRepository(CalendarAppointment).save([
+      {
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_THREE,
+        client: ENTITY_IDENTIFIERS.CLIENT_THREE,
+        cancelled: false,
+        startTime: '13:00:00',
+        endTime: '14:00:00',
+        date: getDate()
+      },
+      {
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_THREE,
+        client: ENTITY_IDENTIFIERS.CLIENT_TWO,
+        cancelled: false,
+        startTime: '13:00:00',
+        endTime: '14:00:00',
+        date: getDate()
+      },
+      {
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
+        client: ENTITY_IDENTIFIERS.CLIENT_THREE,
+        cancelled: false,
+        startTime: '14:00:00',
+        endTime: '15:30:00',
+        date: getDate()
       }
     ]);
   });

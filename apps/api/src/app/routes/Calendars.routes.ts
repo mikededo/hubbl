@@ -10,7 +10,7 @@ import middlewares from '../middlewares';
 const CalendarRouter: Router = Router();
 
 /**
- * @descirption Returns the list of events that exist within a
+ * @description Returns the list of events that exist within a
  * week for the selected calendar
  */
 CalendarRouter.get('/:id/events', middlewares.auth, (req, res) => {
@@ -18,7 +18,7 @@ CalendarRouter.get('/:id/events', middlewares.auth, (req, res) => {
 });
 
 /**
- * @descirption Returns the list of appointments with the client
+ * @description Returns the list of appointments with the client
  * informations for a selected event
  */
 CalendarRouter.get('/:id/events/:eId', middlewares.auth, (req, res) => {
@@ -26,7 +26,7 @@ CalendarRouter.get('/:id/events/:eId', middlewares.auth, (req, res) => {
 });
 
 /**
- * @descirption Returns the list of appointments with the client
+ * @description Returns the list of appointments with the client
  * informations for a date of a calendar
  */
 CalendarRouter.get('/:id/calendars', middlewares.auth, (req, res) => {

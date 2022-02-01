@@ -321,5 +321,15 @@ describe('Integration tests', () => {
         await calendar.fetchEventAppointments('worker');
       });
     });
+
+    describe('calendar appointments', () => {
+      it('should fetch the appointments of an event by an owner', async () => {
+        await calendar.fetchCalendarAppointments('owner');
+      });
+
+      it('should fetch the appointments of an event by an worker', async () => {
+        await calendar.fetchCalendarAppointments('worker');
+      });
+    });
   });
 });
