@@ -4,7 +4,6 @@ import { AppPalette } from '@hubbl/shared/types';
 
 import app from '../../main';
 import * as util from '../util';
-import { ENTITY_IDENTIFIERS } from '../util';
 
 export const fetch = async (by: 'owner' | 'worker' | 'client') => {
   const testApp = supertest(app);

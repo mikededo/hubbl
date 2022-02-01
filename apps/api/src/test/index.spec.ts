@@ -1,4 +1,5 @@
 import { setup, teardown } from './e2e-setup';
+import { calendar } from './Calendar';
 import { eventTemplate } from './EventTemplate';
 import { eventType } from './EventType';
 import { event } from './Event';
@@ -198,7 +199,17 @@ describe('Integration tests', () => {
     });
   });
 
-  // TODO: add events
+  describe('Event', () => {
+    describe('Create, update & delete', () => {
+      it('should create, update and delete an event by an owner', async () => {
+        await event.createUpdateAndDelete('owner');
+      });
+
+      it('should create, update and delete an event by an worker', async () => {
+        await event.createUpdateAndDelete('worker');
+      });
+    });
+  });
 
   describe('Virtual Gym', () => {
     describe('unauthorized', () => {
@@ -286,14 +297,28 @@ describe('Integration tests', () => {
     });
   });
 
-  describe('Event', () => {
-    describe('Create, update & delete', () => {
-      it('should create, update and delete an event by an owner', async () => {
-        await event.createUpdateAndDelete('owner');
+  describe('Calendars', () => {
+    describe('calendar events', () => {
+      it('should fetch the events of a calendar by an owner', async () => {
+        await calendar.fetchEvents('owner');
       });
 
-      it('should create, update and delete an event by an worker', async () => {
-        await event.createUpdateAndDelete('worker');
+      it('should fetch the events of a calendar by a worker', async () => {
+        await calendar.fetchEvents('worker');
+      });
+
+      it('should fetch the events of a calendar by a client', async () => {
+        await calendar.fetchEvents('client');
+      });
+    });
+
+    describe('event appointments', () => {
+      it('should fetch the appointments of an event by an owner', async () => {
+        await calendar.fetchEventAppointments('owner');
+      });
+
+      it('should fetch the appointments of an event by a worker', async () => {
+        await calendar.fetchEventAppointments('worker');
       });
     });
   });

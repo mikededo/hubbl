@@ -215,18 +215,44 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
       deleteCalendarAppointments: true
     } as Worker);
 
-    await em.getRepository(Client).save({
-      person: {
-        id: ENTITY_IDENTIFIERS.CLIENT,
-        email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
-        password: await hash('client-password', await genSalt(10)),
-        firstName: 'Client',
-        lastName: 'Test',
-        gender: Gender.OTHER,
-        gym: ENTITY_IDENTIFIERS.GYM
+    await em.getRepository(Client).save([
+      {
+        person: {
+          id: ENTITY_IDENTIFIERS.CLIENT,
+          email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
+          password: await hash('client-password', await genSalt(10)),
+          firstName: 'Client',
+          lastName: 'Test One',
+          gender: Gender.OTHER,
+          gym: ENTITY_IDENTIFIERS.GYM
+        },
+        covidPassport: true
       },
-      covidPassport: true
-    } as Client);
+      {
+        person: {
+          id: ENTITY_IDENTIFIERS.CLIENT_TWO,
+          email: ENTITY_IDENTIFIERS.CLIENT_EMAIL_TWO,
+          password: await hash('client-password', await genSalt(10)),
+          firstName: 'Client',
+          lastName: 'Test Two',
+          gender: Gender.OTHER,
+          gym: ENTITY_IDENTIFIERS.GYM
+        },
+        covidPassport: true
+      },
+      {
+        person: {
+          id: ENTITY_IDENTIFIERS.CLIENT_THREE,
+          email: ENTITY_IDENTIFIERS.CLIENT_EMAIL_THREE,
+          password: await hash('client-password', await genSalt(10)),
+          firstName: 'Client',
+          lastName: 'Test Three',
+          gender: Gender.OTHER,
+          gym: ENTITY_IDENTIFIERS.GYM
+        },
+        covidPassport: true
+      }
+    ]);
 
     await em.getRepository(Trainer).save({
       person: {
@@ -256,7 +282,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         date: {
           year: date.getFullYear(),
-          month: date.getMonth(),
+          month: date.getMonth() + 1,
           day: date.getDate()
         },
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
@@ -274,7 +300,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         date: {
           year: date.getFullYear(),
-          month: date.getMonth(),
+          month: date.getMonth() + 1,
           day: date.getDate()
         },
         calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
@@ -292,7 +318,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         date: {
           year: date.getFullYear(),
-          month: date.getMonth(),
+          month: date.getMonth() + 1,
           day: date.getDate()
         },
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
@@ -310,7 +336,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         date: {
           year: date.getFullYear(),
-          month: date.getMonth(),
+          month: date.getMonth() + 1,
           day: date.getDate()
         },
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
@@ -327,10 +353,34 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         date: {
           year: date.getFullYear(),
-          month: date.getMonth(),
+          month: date.getMonth() + 1,
           day: date.getDate()
         },
         calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
+      }
+    ]);
+
+    await em.getRepository(EventAppointment).save([
+      {
+        event: ENTITY_IDENTIFIERS.EVENT_TWO,
+        client: ENTITY_IDENTIFIERS.CLIENT,
+        startTime: '10:00:00',
+        endTime: '11:00:00',
+        cancelled: false
+      },
+      {
+        event: ENTITY_IDENTIFIERS.EVENT_TWO,
+        client: ENTITY_IDENTIFIERS.CLIENT_TWO,
+        startTime: '10:00:00',
+        endTime: '11:00:00',
+        cancelled: false
+      },
+      {
+        event: ENTITY_IDENTIFIERS.EVENT_TWO,
+        client: ENTITY_IDENTIFIERS.CLIENT_THREE,
+        startTime: '10:00:00',
+        endTime: '11:00:00',
+        cancelled: false
       }
     ]);
   });
