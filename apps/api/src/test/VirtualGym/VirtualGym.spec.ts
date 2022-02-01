@@ -3,6 +3,7 @@ import supertest = require('supertest');
 import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
+import { loginByOwner } from '../util/Common.spec';
 
 const createVirtualGym = (
   app: supertest.SuperTest<supertest.Test>,
@@ -20,13 +21,7 @@ const createVirtualGym = (
 
 export const fetch = async (by: 'owner' | 'worker' | 'client') => {
   const testApp = supertest(app);
-
-  const loginRes = await testApp.post(`/persons/login/${by}`).send({
-    email: ENTITY_IDENTIFIERS[`${by.toUpperCase()}_EMAIL`],
-    password: `${by}-password`
-  });
-
-  expect(loginRes.statusCode).toBe(200);
+  const loginRes = await util.common.loginByAny(testApp, by);
 
   const fetchRes = await testApp
     .get('/virtual-gyms')
@@ -39,13 +34,7 @@ export const fetch = async (by: 'owner' | 'worker' | 'client') => {
 
 export const createUpdateAndDeleteByOwner = async () => {
   const testApp = supertest(app);
-
-  const loginRes = await testApp.post('/persons/login/owner').send({
-    email: ENTITY_IDENTIFIERS.OWNER_EMAIL,
-    password: 'owner-password'
-  });
-
-  expect(loginRes.statusCode).toBe(200);
+  const loginRes = await loginByOwner(testApp);
 
   const createRes = await createVirtualGym(testApp, loginRes.body.token);
 
@@ -86,11 +75,7 @@ export const createUpdateAndDeleteByOwner = async () => {
 export const createUpdateAndDeleteNotByOwner = async () => {
   const testApp = supertest(app);
 
-  const loginRes = await testApp.post('/persons/login/worker').send({
-    email: ENTITY_IDENTIFIERS.WORKER_EMAIL,
-    password: 'worker-password'
-  });
-  expect(loginRes.statusCode).toBe(200);
+  const loginRes = await util.common.loginByWorker(testApp);
 
   const createRes = await createVirtualGym(testApp, loginRes.body.token);
   expect(createRes.statusCode).toBe(403);

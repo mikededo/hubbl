@@ -6,13 +6,7 @@ import * as util from '../util';
 
 export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
   const testApp = supertest(app);
-
-  const loginRes = await testApp.post(`/persons/login/${by}`).send({
-    email: ENTITY_IDENTIFIERS[`${by.toUpperCase()}_EMAIL`],
-    password: `${by}-password`
-  });
-
-  expect(loginRes.statusCode).toBe(200);
+  const loginRes = await util.common.loginByOwnerOrWorker(testApp, by);
 
   const createRes = await testApp
     .post('/events')

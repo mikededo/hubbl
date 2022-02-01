@@ -7,13 +7,7 @@ import { ENTITY_IDENTIFIERS } from '../util';
 
 export const fetch = async (by: 'owner' | 'worker' | 'client') => {
   const testApp = supertest(app);
-
-  const loginRes = await testApp.post(`/persons/login/${by}`).send({
-    email: ENTITY_IDENTIFIERS[`${by.toUpperCase()}_EMAIL`],
-    password: `${by}-password`
-  });
-
-  expect(loginRes.statusCode).toBe(200);
+  const loginRes = await util.common.loginByAny(testApp, by);
 
   const fetchRes = await testApp
     .get('/event-templates')
@@ -33,10 +27,7 @@ export const fetch = async (by: 'owner' | 'worker' | 'client') => {
 export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
   const testApp = supertest(app);
 
-  const loginRes = await testApp.post(`/persons/login/${by}`).send({
-    email: ENTITY_IDENTIFIERS[`${by.toUpperCase()}_EMAIL`],
-    password: `${by}-password`
-  });
+  const loginRes = await util.common.loginByOwnerOrWorker(testApp, by);
 
   expect(loginRes.statusCode).toBe(200);
 
