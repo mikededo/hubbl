@@ -25,7 +25,10 @@ export default class BaseService<T> {
   protected repository: Repository<T>;
 
   constructor(type: new () => T, accessor: RepositoryAccessor<T>) {
-    this.repository = accessor(type, 'postgres');
+    this.repository = accessor(
+      type,
+      process.env.NODE_ENV === 'test' ? 'postgres-test' : 'postgres'
+    );
   }
 
   public get manager() {

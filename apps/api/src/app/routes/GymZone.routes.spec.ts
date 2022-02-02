@@ -19,7 +19,7 @@ describe('GymZone routes', () => {
       'execute'
     );
 
-    await supertest(app).get('/virtual-gyms/1/gym-zones/1');
+    await supertest(app).get('/virtual-gyms/1/gym-zones');
 
     expect(executeSpy).toHaveBeenCalledTimes(1);
   });

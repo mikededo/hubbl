@@ -13,7 +13,7 @@ const EventTemplateRouter: Router = Router();
 /**
  * @description Fetchs the event templates
  */
-EventTemplateRouter.get('/:id', middlewares.auth, (req, res) => {
+EventTemplateRouter.get('', middlewares.auth, (req, res) => {
   EventTemplateFetchController.execute(req, res);
 });
 

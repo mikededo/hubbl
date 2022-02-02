@@ -20,7 +20,7 @@ VirtualGymRouter.get('', middlewares.auth, (req, res) => {
 });
 
 /**
- * @description Creates a new virtual gym iff the user making 
+ * @description Creates a new virtual gym iff the user making
  * the request is a gym owner.
  */
 VirtualGymRouter.post('', middlewares.auth, (req, res) => {

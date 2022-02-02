@@ -67,7 +67,7 @@ describe('Token controller', () => {
         .mockImplementation();
 
       verifySpy.mockImplementation(() => {
-        throw 'Token expired';
+        throw 'Session expired.';
       });
 
       await TokenValidateCookie.execute(mockReq as any, {} as any);

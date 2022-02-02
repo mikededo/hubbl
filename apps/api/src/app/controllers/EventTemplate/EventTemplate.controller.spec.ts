@@ -15,9 +15,19 @@ import {
   EventTemplateFetchController,
   EventTemplateUpdateController
 } from './EventTemplate.controller';
+import { EventType } from '@hubbl/shared/models/entities';
 
 jest.mock('../../services');
 jest.mock('@hubbl/shared/models/dto');
+
+const createEventType = (id: number): EventType => {
+  const type = new EventType();
+
+  type.id = id;
+  type.name = 'Event Type';
+
+  return type;
+};
 
 describe('EventTemplate controller', () => {
   const mockPerson = {
@@ -28,7 +38,7 @@ describe('EventTemplate controller', () => {
     id: 1,
     name: 'Test',
     description: '',
-    type: 1,
+    type: createEventType(1),
     gym: 1
   };
   const mockDto = {
@@ -104,23 +114,11 @@ describe('EventTemplate controller', () => {
       mockPersonService.findOne.mockResolvedValue(mockPerson);
       mockEventTemplateService.getMany.mockResolvedValue(resultList);
       mockEventTemplateService.loadRelationCountAndMap.mockImplementation(
-        (argOne, argTwo, argThree, cb) => {
-          const mockQueryBuilder = { where: jest.fn().mockImplementation() };
-
-          expect(cb).toBeDefined();
-          // Capture the callback
-          cb(mockQueryBuilder);
-
+        (argOne, argTwo, argThree) => {
           // Check the arguments passed to the callback
           expect(argOne).toBe('evTpl.eventCount');
           expect(argTwo).toBe('evTpl.events');
           expect(argThree).toBe('event');
-
-          expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
-          expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-            'event.template = :tpl',
-            { tpl: mockReq.params.id }
-          );
 
           return mockEventTemplateService;
         }

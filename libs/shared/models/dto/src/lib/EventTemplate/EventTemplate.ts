@@ -13,6 +13,7 @@ import {
 } from '@hubbl/shared/models/helpers';
 
 import DTO from '../Base';
+import EventTypeDTO from '../EventType';
 import { DTOGroups } from '../util';
 
 export default class EventTemplateDTO implements DTO<EventTemplate> {
@@ -56,7 +57,10 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
     result.id = from.id;
     result.name = from.name;
     result.description = from.description;
-    result.type = from.type instanceof EventType ? from.type.id : from.type;
+    result.type =
+      from.type instanceof EventType
+        ? EventTypeDTO.fromClass(from.type)
+        : from.type;
     result.gym = from.gym;
 
     result.eventCount = from.eventCount;

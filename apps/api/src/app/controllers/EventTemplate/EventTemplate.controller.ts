@@ -38,12 +38,7 @@ class IEventTemplateFetchController extends BaseController {
 
       const result = await this.service
         .createQueryBuilder({ alias: 'evTpl' })
-        .loadRelationCountAndMap(
-          'evTpl.eventCount',
-          'evTpl.events',
-          'event',
-          (qb) => qb.where('event.template = :tpl', { tpl: req.params.id })
-        )
+        .loadRelationCountAndMap('evTpl.eventCount', 'evTpl.events', 'event')
         // Join the type
         .leftJoinAndSelect('evTpl.type', 'event_type')
         .where('evTpl.gym = :gym', { gym: gymId })

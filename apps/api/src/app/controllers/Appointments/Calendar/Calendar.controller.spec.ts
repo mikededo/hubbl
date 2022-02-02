@@ -80,7 +80,10 @@ describe('Appointments.Calendar controller', () => {
   const mockClient = { covidPassport: true };
   const mockDto = createMockAppointment(mockAppointment);
 
-  const mockReq = { body: mockAppointment, params: { eId: 1, id: 1 } } as any;
+  const mockReq = {
+    body: mockAppointment,
+    params: { eId: 1, cId: 1, id: 1 }
+  } as any;
   const mockRes = { locals: { token: { id: 2, user: 'owner' } } } as any;
   const mockClientRes = { locals: { token: { id: 2, user: 'client' } } } as any;
 
@@ -927,7 +930,10 @@ describe('Appointments.Calendar controller', () => {
       expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
         id: mockReq.params.id,
-        options: { loadRelationIds: true }
+        options: {
+          where: { calendar: mockReq.params.cId },
+          loadRelationIds: true
+        }
       });
       expect(fromClassSpy).toHaveBeenCalledTimes(1);
       expect(fromClassSpy).toHaveBeenCalledWith({
@@ -968,7 +974,10 @@ describe('Appointments.Calendar controller', () => {
       expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
         id: mockReq.params.id,
         options: {
-          where: { client: mockClientRes.locals.token.id },
+          where: {
+            calendar: mockReq.params.cId,
+            client: mockClientRes.locals.token.id
+          },
           loadRelationIds: true
         }
       });
@@ -1106,7 +1115,7 @@ describe('Appointments.Calendar controller', () => {
           token: mockRes.locals.token,
           entityId: mockReq.params.id,
           entityName: 'CalendarAppointment',
-          countArgs: { id: mockReq.params.id },
+          countArgs: { id: mockReq.params.id, calendar: mockReq.params.cId },
           workerDeletePermission: 'deleteCalendarAppointments'
         });
       });
@@ -1133,6 +1142,7 @@ describe('Appointments.Calendar controller', () => {
           entityName: 'CalendarAppointment',
           countArgs: {
             id: mockReq.params.id,
+            calendar: mockReq.params.cId,
             client: mockClientRes.locals.token.id
           }
         });

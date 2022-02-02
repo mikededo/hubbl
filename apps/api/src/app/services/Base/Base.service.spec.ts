@@ -13,7 +13,7 @@ describe('BaseService', () => {
       new BaseService(Mock, mockRepoAccessor);
 
       expect(mockRepoAccessor).toHaveBeenCalledTimes(1);
-      expect(mockRepoAccessor).toHaveBeenCalledWith(Mock, 'postgres');
+      expect(mockRepoAccessor).toHaveBeenCalledWith(Mock, 'postgres-test');
     });
   });
 

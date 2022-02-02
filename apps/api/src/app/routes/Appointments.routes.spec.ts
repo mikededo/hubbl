@@ -78,7 +78,7 @@ describe('Appointment routes', () => {
         'execute'
       );
 
-      await supertest(app).put('/appointments/calendars/cancel/1');
+      await supertest(app).put('/appointments/calendars/1/cancel/1');
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
@@ -89,7 +89,7 @@ describe('Appointment routes', () => {
         'execute'
       );
 
-      await supertest(app).delete('/appointments/calendars/1');
+      await supertest(app).delete('/appointments/calendars/1/1');
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });

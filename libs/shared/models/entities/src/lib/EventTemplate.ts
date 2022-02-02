@@ -35,6 +35,7 @@ export default class EventTemplate {
    * `EventType` of the `EventTemplate`
    */
   @ManyToOne(() => EventType, (ev) => ev.eventTemplates, {
+    eager: true,
     cascade: true,
     onDelete: 'SET NULL'
   })

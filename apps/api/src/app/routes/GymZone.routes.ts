@@ -11,9 +11,10 @@ import middlewares from '../middlewares';
 const GymZoneRouter: Router = Router();
 
 /**
- * @description Creates a gym zone in the database
+ * @description Fetches the list of gym zones from the virtual
+ * gym
  */
-GymZoneRouter.get('/:id', middlewares.auth, (req, res) => {
+GymZoneRouter.get('', middlewares.auth, (req, res) => {
   GymZoneFetchController.execute(req, res);
 });
 

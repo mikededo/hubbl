@@ -4,6 +4,7 @@ import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
 import * as helpers from '@hubbl/shared/models/helpers';
 
 import EventTemplateDTO from './EventTemplate';
+import EventTypeDTO from '../EventType';
 
 jest.mock('@hubbl/shared/models/entities');
 jest.mock('@hubbl/shared/models/helpers');
@@ -15,8 +16,10 @@ const propCompare = (
   expect(got.id).toBe(want.id);
   expect(got.name).toBe(want.name);
   expect(got.description).toBe(want.description);
-  expect(got.type).toBe(
-    want.type instanceof EventType ? want.type.id : want.type
+  expect(got.type).toStrictEqual(
+    want.type instanceof EventType
+      ? EventTypeDTO.fromClass(want.type)
+      : want.type
   );
   expect(got.gym).toBe(want.gym);
 };
@@ -77,6 +80,7 @@ describe('EventTemplate', () => {
       const eventType = new EventType();
 
       eventType.id = 1;
+      eventType.name = 'EventType name';
 
       eventTemplate.id = 1;
       eventTemplate.name = 'Test';

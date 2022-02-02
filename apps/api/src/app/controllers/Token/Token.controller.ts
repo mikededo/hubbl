@@ -24,7 +24,7 @@ class ITokenValidateCookie extends BaseController {
       );
       return this.ok(res, { token: newToken });
     } catch (e) {
-      return this.forbidden(res, 'Session expired.');
+      return this.forbidden(res, e);
     }
   }
 }

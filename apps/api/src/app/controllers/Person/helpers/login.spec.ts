@@ -148,7 +148,7 @@ describe('login', () => {
       expect(mockController.ok).toHaveBeenCalledTimes(1);
       expect(mockController.ok).toHaveBeenCalledWith(mockRes, {
         token,
-        entity: mockDTO
+        [entityAlias]: mockDTO
       });
     });
 
