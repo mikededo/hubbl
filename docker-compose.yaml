@@ -17,8 +17,8 @@ services:
     profiles: ["all", "dev", "test"]
 
   # Has no profiles since it is always required
-  postgres:
-    container_name: postgresql
+  dev-db:
+    container_name: dev-db
     image: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
