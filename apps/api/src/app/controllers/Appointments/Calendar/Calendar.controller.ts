@@ -413,13 +413,14 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
     res: Response
   ): Promise<Response> {
     const appointmentId = +req.params.id;
+    const calendarId = +req.params.cId;
 
     // Check if the appointment exists
     let appointment: CalendarAppointment;
     try {
       appointment = await this.service.findOne({
         id: appointmentId,
-        options: { loadRelationIds: true }
+        options: { where: { calendar: calendarId }, loadRelationIds: true }
       });
 
       if (!appointment) {
@@ -450,6 +451,7 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
 
   private async cancelByClient(req: Request, res: Response): Promise<Response> {
     const appointmentId = +req.params.id;
+    const calendarId = +req.params.cId;
     const { token } = res.locals;
 
     try {
@@ -469,7 +471,10 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
     try {
       appointment = await this.service.findOne({
         id: appointmentId,
-        options: { where: { client: token.id }, loadRelationIds: true }
+        options: {
+          where: { calendar: calendarId, client: token.id },
+          loadRelationIds: true
+        }
       });
 
       if (!appointment) {
@@ -520,6 +525,8 @@ class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentContro
     res: Response
   ): Promise<Response> {
     const id = +req.params.id;
+    const calendarId = +req.params.cId;
+
     return deletedByOwnerOrWorker({
       // Use any to skip same prop names issues
       service: this.service as any,
@@ -530,13 +537,14 @@ class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentContro
       token: res.locals.token as ParsedToken,
       entityId: id,
       entityName: 'CalendarAppointment',
-      countArgs: { id },
+      countArgs: { id, calendar: calendarId },
       workerDeletePermission: 'deleteCalendarAppointments'
     });
   }
 
   private async deleteByClient(req: Request, res: Response): Promise<Response> {
     const appointmentId = +req.params.id;
+    const calendarId = +req.params.cId;
     const { token } = res.locals;
 
     return deletedByClient({
@@ -546,7 +554,7 @@ class ICalendarAppointmentDeleteController extends BaseCalendarAppointmentContro
       res,
       entityId: appointmentId,
       clientId: token.id,
-      countArgs: { client: token.id, id: appointmentId },
+      countArgs: { calendar: calendarId, client: token.id, id: appointmentId },
       entityName: 'CalendarAppointment'
     });
   }

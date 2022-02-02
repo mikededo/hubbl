@@ -5,6 +5,7 @@ import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
 
 const date = new Date();
+date.setDate(date.getDate() + 1);
 const startDateParam = `${date.getFullYear()}-${`${
   date.getMonth() + 1
 }`.padStart(2, '0')}-${`${date.getDate()}`.padStart(2, '0')}`;

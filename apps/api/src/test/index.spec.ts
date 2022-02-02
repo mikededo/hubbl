@@ -2,6 +2,7 @@ import { setup, teardown } from './e2e-setup';
 import { calendar } from './Calendar';
 import { eventTemplate } from './EventTemplate';
 import { eventType } from './EventType';
+import * as appointments from './Appointments';
 import { event } from './Event';
 import { gymZone } from './GymZone';
 import { client, owner, trainer, worker } from './Person';
@@ -329,6 +330,82 @@ describe('Integration tests', () => {
 
       it('should fetch the appointments of an event by an worker', async () => {
         await calendar.fetchCalendarAppointments('worker');
+      });
+    });
+  });
+
+  describe('Appointments', () => {
+    describe('events', () => {
+      describe('create & cancel', () => {
+        it('should create and cancel an event for a client by an owner', async () => {
+          await appointments.events.createAndCancel('owner');
+        });
+
+        it('should create and cancel an event for a client by a client', async () => {
+          await appointments.events.createAndCancel('client');
+        });
+
+        it('should create and cancel an event for a client by a client', async () => {
+          await appointments.events.createAndCancel('client');
+        });
+      });
+
+      describe('create, cancel & delete', () => {
+        it('should create and cancel an event for a client by an owner', async () => {
+          await appointments.events.createCancelAndDelete('owner');
+        });
+
+        it('should create and cancel an event for a client by an worker', async () => {
+          await appointments.events.createCancelAndDelete('worker');
+        });
+
+        it('should create and cancel an event for a client by a client', async () => {
+          await appointments.events.createCancelAndDelete('client');
+        });
+      });
+    });
+
+    describe('calendars', () => {
+      describe('fetch', () => {
+        it('should fetch the available intervals by an owner', async () => {
+          await appointments.calendars.fetch('owner');
+        });
+
+        it('should fetch the available intervals by a worker', async () => {
+          await appointments.calendars.fetch('worker');
+        });
+
+        it('should fetch the available intervals by a client', async () => {
+          await appointments.calendars.fetch('client');
+        });
+      });
+
+      describe('create & cancel', () => {
+        it('should create and cancel an event for a client by an owner', async () => {
+          await appointments.calendars.createAndCancel('owner');
+        });
+
+        it('should create and cancel an event for a client by a client', async () => {
+          await appointments.calendars.createAndCancel('client');
+        });
+
+        it('should create and cancel an event for a client by a client', async () => {
+          await appointments.calendars.createAndCancel('client');
+        });
+      });
+
+      describe('create, cancel & delete', () => {
+        it('should create and cancel an event for a client by an owner', async () => {
+          await appointments.calendars.createCancelAndDelete('owner');
+        });
+
+        it('should create and cancel an event for a client by an worker', async () => {
+          await appointments.calendars.createCancelAndDelete('worker');
+        });
+
+        it('should create and cancel an event for a client by a client', async () => {
+          await appointments.calendars.createCancelAndDelete('client');
+        });
       });
     });
   });

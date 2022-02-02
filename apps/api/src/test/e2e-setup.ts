@@ -25,6 +25,7 @@ import { ENTITY_IDENTIFIERS } from './util';
 
 const getDate = (): Partial<CalendarDate> => {
   const date = new Date();
+  date.setDate(date.getDate() + 1);
 
   return {
     year: date.getFullYear(),
