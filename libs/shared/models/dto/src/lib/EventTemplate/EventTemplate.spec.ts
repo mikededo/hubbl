@@ -16,7 +16,7 @@ const propCompare = (
   expect(got.id).toBe(want.id);
   expect(got.name).toBe(want.name);
   expect(got.description).toBe(want.description);
-  expect(got.type).toBe(
+  expect(got.type).toStrictEqual(
     want.type instanceof EventType
       ? EventTypeDTO.fromClass(want.type)
       : want.type
