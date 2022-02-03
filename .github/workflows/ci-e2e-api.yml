@@ -29,9 +29,9 @@ jobs:
         name: Checkout [develop]
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '16.10.0'
+            # - uses: actions/setup-node@v1
+            #   with:
+            #     node-version: '16.10.0'
       - name: Install dependencies
         shell: bash
         run: npm ci
