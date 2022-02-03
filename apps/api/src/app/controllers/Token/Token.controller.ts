@@ -42,7 +42,7 @@ class ITokenRefresh extends BaseController {
 
     try {
       // Parse the token
-      const token = verify(oldToken, process.env.NX_JWT_TOKEN);
+      const token = verify(oldToken, process.env.NX_JWT_TOKEN) as any;
 
       const newToken = sign(
         { id: token.id, email: token.email, user: token.user },
