@@ -94,6 +94,25 @@ services:
     restart: unless-stopped
     profiles: ["all", "dev"]
 
+  ## Core application
+  core-dev:
+    container_name: hubbl-core-dev
+    image: node:lts-alpine
+    volumes:
+      - .:/app
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add git
+        cd /app
+        npm install
+        npx nx serve core
+    ports:
+      - 4202:4200
+    restart: unless-stopped
+    profiles: ["all", "dev"]
+
 networks:
   postgres:
     driver: bridge
