@@ -33,7 +33,6 @@ jobs:
             #   with:
             #     node-version: '16.10.0'
       - name: Install dependencies
-        shell: bash
         run: npm ci
       - uses: SpicyPizza/create-envfile@v1
         name: Create github env file
