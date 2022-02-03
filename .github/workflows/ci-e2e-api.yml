@@ -29,13 +29,15 @@ jobs:
         name: Checkout [develop]
         with:
           fetch-depth: 0
+      - name: Create .env file
+        run: |
+          touch .env
+          echo POSTGRES_TEST_USER=github >> .env
+          echo POSTGRES_TEST_PORT=${{ job.services.postgres.ports['5432'] }} >> .env
+          echo POSTGRES_TEST_PASSWORD=github >> .env
+          echo POSTGRES_TEST_DATABASE=test-hubbl-db >> .env
       - name: Install dependencies
         run: npm ci
       - name: Run tests
         run: npx nx run api:test-e2e
-        env: 
-          POSTGRES_TEST_USER: github
-          POSTGRES_TEST_PORT: ${{ job.services.postgres.ports['5432'] }} 
-          POSTGRES_TEST_PASSWORD: github
-          POSTGRES_TEST_DATABASE: test-hubbl-db
 
