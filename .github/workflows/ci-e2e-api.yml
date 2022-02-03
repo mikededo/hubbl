@@ -37,6 +37,7 @@ jobs:
           echo POSTGRES_TEST_PASSWORD=github >> .env
           echo POSTGRES_TEST_DATABASE=test-hubbl-db >> .env
           echo POSTGRES_TEST_HOST=postgres >> .env
+          echo NX_JWT_TOKEN=test-token-key >> .env
       - name: Install dependencies
         run: npm ci
       - name: Run tests
