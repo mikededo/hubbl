@@ -68,6 +68,7 @@ const createTestDatabase = async (): Promise<Connection> => {
     return cnt;
   } catch (e) {
     console.error(e);
+    console.log(process.env)
     console.error('Error on initialising the database.');
   }
 };

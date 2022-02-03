@@ -37,7 +37,7 @@ jobs:
         run: npx nx run api:test-e2e
         env: 
           POSTGRES_TEST_USER: github
-          POSTGRES_TEST_PORT: 5432
+          POSTGRES_TEST_PORT: ${{ job.services.postgres.ports['5432'] }} 
           POSTGRES_TEST_PASSWORD: github
           POSTGRES_TEST_DATABASE: test-hubbl-db
 
