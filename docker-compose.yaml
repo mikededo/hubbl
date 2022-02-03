@@ -56,6 +56,7 @@ services:
     profiles: ["all", "dev"]
 
   # Frontend
+  ## Landing application
   landing-dev:
     container_name: hubbl-landing-dev
     image: node:lts-alpine
@@ -71,6 +72,25 @@ services:
         npx nx serve landing
     ports:
       - 4200:4200
+    restart: unless-stopped
+    profiles: ["all", "dev"]
+
+  ## Client application
+  client-dev:
+    container_name: hubbl-client-dev
+    image: node:lts-alpine
+    volumes:
+      - .:/app
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add git
+        cd /app
+        npm install
+        npx nx serve client
+    ports:
+      - 4201:4200
     restart: unless-stopped
     profiles: ["all", "dev"]
 
