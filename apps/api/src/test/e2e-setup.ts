@@ -39,11 +39,11 @@ const createTestDatabase = async (): Promise<Connection> => {
     const cnt = await createConnection({
       type: 'postgres',
       name: 'postgres-test',
-      host: 'localhost',
-      port: 5433,
-      username: 'test',
-      password: 'test',
-      database: 'test-hubbl-db',
+      host: process.env.POSTGRES_TEST_HOST,
+      port: +process.env.POSTGRES_TEST_PORT,
+      username: process.env.POSTGRES_TEST_USER,
+      password: process.env.POSTGRES_TEST_PASSWORD,
+      database: process.env.POSTGRES_TEST_DATABASE,
       entities: [
         CalendarAppointment,
         EventAppointment,
@@ -67,7 +67,7 @@ const createTestDatabase = async (): Promise<Connection> => {
 
     return cnt;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     console.error('Error on initialising the database.');
   }
 };
