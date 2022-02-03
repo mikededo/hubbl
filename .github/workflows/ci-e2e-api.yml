@@ -1,0 +1,47 @@
+name: CI e2e API
+on:
+  workflow_dispatch:
+
+
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    container: node:alpine3.14
+
+    services:
+      postgres:
+        image: postgres
+        env: 
+          POSTGRES_USER: github
+          POSTGRES_PASSWORD: github 
+          POSTGRES_DB: test-hubbl-db
+          PGDATA: /data/postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [develop]
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16.10.0'
+      - name: Install dependencies
+        shell: bash
+        run: npm ci
+      - uses: SpicyPizza/create-envfile@v1
+        name: Create github env file
+        with:
+          envkey_POSTGRES_TEST_USER: github
+          envkey_POSTGRES_TEST_PORT: 5432
+          envkey_POSTGRES_TEST_PASSWORD: github
+          envkey_POSTGRES_TEST_DATABASE: test-hubbl-db
+      - name: Run tests
+        run: npx nx run api:test-e2e
+
