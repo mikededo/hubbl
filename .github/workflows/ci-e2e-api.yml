@@ -1,7 +1,8 @@
 name: CI e2e API
 on:
-  workflow_dispatch:
-
+  push:
+    branches:
+      - 'main'
 
 jobs:
   container-job:
