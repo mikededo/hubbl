@@ -29,18 +29,13 @@ jobs:
         name: Checkout [develop]
         with:
           fetch-depth: 0
-            # - uses: actions/setup-node@v1
-            #   with:
-            #     node-version: '16.10.0'
       - name: Install dependencies
         run: npm ci
-      - uses: SpicyPizza/create-envfile@v1
-        name: Create github env file
-        with:
-          envkey_POSTGRES_TEST_USER: github
-          envkey_POSTGRES_TEST_PORT: 5432
-          envkey_POSTGRES_TEST_PASSWORD: github
-          envkey_POSTGRES_TEST_DATABASE: test-hubbl-db
       - name: Run tests
         run: npx nx run api:test-e2e
+        env: 
+          POSTGRES_TEST_USER: github
+          POSTGRES_TEST_PORT: 5432
+          POSTGRES_TEST_PASSWORD: github
+          POSTGRES_TEST_DATABASE: test-hubbl-db
 
