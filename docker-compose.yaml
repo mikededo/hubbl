@@ -18,7 +18,7 @@ services:
 
   # Has no profiles since it is always required
   postgres:
-    container_name: postgresql
+    container_name: dev-db
     image: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -55,6 +55,24 @@ services:
     restart: unless-stopped
     profiles: ["all", "dev"]
 
+  # Frontend
+  landing-dev:
+    container_name: hubbl-landing-dev
+    image: node:lts-alpine
+    volumes:
+      - .:/app
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add git
+        cd /app
+        npm install
+        npx nx serve landing
+    ports:
+      - 4200:4200
+    restart: unless-stopped
+    profiles: ["all", "dev"]
 
 networks:
   postgres:
