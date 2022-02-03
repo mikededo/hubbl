@@ -36,6 +36,7 @@ jobs:
           echo POSTGRES_TEST_PORT=${{ job.services.postgres.ports['5432'] }} >> .env
           echo POSTGRES_TEST_PASSWORD=github >> .env
           echo POSTGRES_TEST_DATABASE=test-hubbl-db >> .env
+          echo POSTGRES_TEST_HOST=postgres >> .env
       - name: Install dependencies
         run: npm ci
       - name: Run tests
