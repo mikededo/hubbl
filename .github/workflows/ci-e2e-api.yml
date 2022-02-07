@@ -1,0 +1,46 @@
+name: CI e2e API
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    container: node:alpine3.14
+
+    services:
+      postgres:
+        image: postgres
+        env: 
+          POSTGRES_USER: github
+          POSTGRES_PASSWORD: github 
+          POSTGRES_DB: test-hubbl-db
+          PGDATA: /data/postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [develop]
+        with:
+          fetch-depth: 0
+      - name: Create .env file
+        run: |
+          touch .env
+          echo POSTGRES_TEST_USER=github >> .env
+          echo POSTGRES_TEST_PORT=${{ job.services.postgres.ports['5432'] }} >> .env
+          echo POSTGRES_TEST_PASSWORD=github >> .env
+          echo POSTGRES_TEST_DATABASE=test-hubbl-db >> .env
+          echo POSTGRES_TEST_HOST=postgres >> .env
+          echo NX_JWT_TOKEN=test-token-key >> .env
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npx nx run api:test-e2e
+
