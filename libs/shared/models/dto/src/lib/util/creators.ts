@@ -9,6 +9,7 @@ export const createPersonJson = (otherProps: any = {}): any => ({
   password: 'testpwd00',
   firstName: 'Test',
   lastName: 'User',
+  phone: '000 000 000',
   theme: AppTheme.LIGHT,
   gym: { id: 1, name: 'Test Gym', email: 'test@gym.com' },
   gender: Gender.OTHER,
@@ -42,6 +43,7 @@ export const createPerson = (password = 'changeme00'): Person => {
   person.password = password;
   person.firstName = 'Test';
   person.lastName = 'User';
+  person.phone = '000 000 000';
   person.gender = Gender.OTHER;
   person.theme = AppTheme.LIGHT;
   person.gym = createGym();
@@ -63,6 +65,7 @@ export const createPersonDTO = <T extends PersonDTO<Gym | number>>(
   dto.password = 'testpwd00';
   dto.firstName = 'Test';
   dto.lastName = 'User';
+  dto.phone = '000 000 000';
   dto.gym = 1;
   dto.gender = Gender.OTHER;
   dto.theme = AppTheme.LIGHT;

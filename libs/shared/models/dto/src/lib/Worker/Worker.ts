@@ -166,6 +166,7 @@ export default class WorkerDTO<T extends Gym | number>
     result.password = json.password;
     result.firstName = json.firstName;
     result.lastName = json.lastName;
+    result.phone = json.phone;
     result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
@@ -201,6 +202,7 @@ export default class WorkerDTO<T extends Gym | number>
     result.password = worker.person.password;
     result.firstName = worker.person.firstName;
     result.lastName = worker.person.lastName;
+    result.phone = worker.person.phone;
     result.gym = worker.person.gym as T;
     result.theme = worker.person.theme;
     result.gender = worker.person.gender as Gender;
@@ -230,6 +232,7 @@ export default class WorkerDTO<T extends Gym | number>
     person.firstName = this.firstName;
     person.lastName = this.lastName;
     person.email = this.email;
+    person.phone = this.phone;
 
     // Encrypt password
     const salt = await genSalt(10);

@@ -32,6 +32,7 @@ describe('OwnerDTO', () => {
       expect(result.password).toBe(json.password);
       expect(result.firstName).toBe(json.firstName);
       expect(result.lastName).toBe(json.lastName);
+      expect(result.phone).toBe(json.phone);
       expect(result.theme).toBe(json.theme);
       expect(result.gym).toBe(json.gym);
       expect(result.gender).toBe(json.gender);
@@ -121,6 +122,7 @@ describe('OwnerDTO', () => {
       expect(result.password).toBe(password);
       expect(result.firstName).toBe('Test');
       expect(result.lastName).toBe('User');
+      expect(result.phone).toBe('000 000 000');
       expect(result.theme).toBe(AppTheme.LIGHT);
       expect(result.gender).toBe(Gender.OTHER);
       expect(result.gym).toBeInstanceOf(Gym);
@@ -138,6 +140,7 @@ describe('OwnerDTO', () => {
       expect(result.person.email).toBe(dto.email);
       expect(result.person.firstName).toBe(dto.firstName);
       expect(result.person.lastName).toBe(dto.lastName);
+      expect(result.person.phone).toBe(dto.phone);
       expect(result.person.theme).toBe(dto.theme);
       expect(result.person.gym).toBe(dto.gym);
       expect(result.person.gender).toBe(dto.gender);

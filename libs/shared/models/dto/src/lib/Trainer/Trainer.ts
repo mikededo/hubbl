@@ -56,6 +56,7 @@ export default class TrainerDTO<T extends Gym | number>
     result.password = json.password;
     result.firstName = json.firstName;
     result.lastName = json.lastName;
+    result.phone = json.phone;
     result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
@@ -95,6 +96,7 @@ export default class TrainerDTO<T extends Gym | number>
     if (variant === 'all') {
       result.email = trainer.person.email;
       result.password = trainer.person.password;
+      result.phone = trainer.person.phone;
       result.theme = trainer.person.theme;
       result.gym = trainer.person.gym as Gym;
       result.gender = trainer.person.gender as Gender;
@@ -121,6 +123,7 @@ export default class TrainerDTO<T extends Gym | number>
     person.firstName = this.firstName;
     person.lastName = this.lastName;
     person.email = this.email;
+    person.phone = this.phone;
 
     // Encrypt password
     const salt = await genSalt(10);

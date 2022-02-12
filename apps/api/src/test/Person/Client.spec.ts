@@ -17,6 +17,7 @@ export const register = async () => {
     password: 'registered-password',
     firstName: 'Registerd',
     lastName: 'Client',
+    phone: '000 000 000',
     gender: Gender.OTHER,
     covidPassport: true,
     gym: ENTITY_IDENTIFIERS.GYM
@@ -36,6 +37,8 @@ export const register = async () => {
   util.toBeString(body.client.password);
   util.toBeString(body.client.firstName);
   util.toBeString(body.client.lastName);
+  console.log(body.client.phone)
+  util.toBeString(body.client.phone);
   util.toBeString(body.client.theme);
   util.toBeString(body.client.gender);
   util.toBeBoolean(body.client.covidPassport);
@@ -77,6 +80,7 @@ export const login = async () => {
   util.toBeString(body.client.password);
   util.toBeString(body.client.firstName);
   util.toBeString(body.client.lastName);
+  util.toBeString(body.client.phone);
   util.toBeString(body.client.theme);
   util.toBeString(body.client.gender);
   util.toBeBoolean(body.client.covidPassport);
@@ -116,6 +120,7 @@ export const update = async (by: 'client' | 'owner' | 'worker') => {
       password: 'client-password',
       firstName: 'Registerd',
       lastName: 'Client',
+      phone: '000 000 000',
       gender: Gender.OTHER,
       theme: AppTheme.DARK,
       covidPassport: true,

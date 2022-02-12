@@ -46,6 +46,12 @@ export default class Person {
   lastName!: string;
 
   /**
+   * `Person`'s phone
+   */
+  @Column('varchar', { length: 45, nullable: true })
+  phone!: string;
+
+  /**
    * `Gym` to which the `Person` belongs
    */
   @ManyToOne(() => Gym, (g) => g.persons, { cascade: true, eager: true })

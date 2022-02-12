@@ -84,6 +84,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         lastName: 'Test',
         email: ENTITY_IDENTIFIERS.OWNER_EMAIL,
         password: await hash('owner-password', await genSalt(10)),
+        phone: '000 000 000',
         gender: Gender.OTHER,
         gym: {
           id: ENTITY_IDENTIFIERS.GYM,
@@ -199,6 +200,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         password: await hash('worker-password', await genSalt(10)),
         firstName: 'Worker',
         lastName: 'Test',
+        phone: '000 000 000',
         gender: Gender.OTHER,
         gym: ENTITY_IDENTIFIERS.GYM
       },
@@ -237,6 +239,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           password: await hash('client-password', await genSalt(10)),
           firstName: 'Client',
           lastName: 'Test One',
+          phone: '000 000 000',
           gender: Gender.OTHER,
           gym: ENTITY_IDENTIFIERS.GYM
         },
@@ -249,6 +252,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           password: await hash('client-password', await genSalt(10)),
           firstName: 'Client',
           lastName: 'Test Two',
+          phone: '000 000 000',
           gender: Gender.OTHER,
           gym: ENTITY_IDENTIFIERS.GYM
         },
@@ -261,6 +265,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           password: await hash('client-password', await genSalt(10)),
           firstName: 'Client',
           lastName: 'Test Three',
+          phone: '000 000 000',
           gender: Gender.OTHER,
           gym: ENTITY_IDENTIFIERS.GYM
         },
@@ -275,6 +280,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         password: await hash('trainer-password', await genSalt(10)),
         firstName: 'Trainer',
         lastName: 'Test',
+        phone: '000 000 000',
         gender: Gender.OTHER,
         gym: ENTITY_IDENTIFIERS.GYM
       },
