@@ -29,6 +29,7 @@ describe('TrainerDTO', () => {
       expect(result.password).toBe(json.password);
       expect(result.firstName).toBe(json.firstName);
       expect(result.lastName).toBe(json.lastName);
+      expect(result.phone).toBe(json.phone);
       expect(result.theme).toBe(json.theme);
       expect(result.gender).toBe(json.gender);
       expect(result.gym).toBe(json.gym);
@@ -82,6 +83,7 @@ describe('TrainerDTO', () => {
       expect(result.password).toBe(trainer.person.password);
       expect(result.firstName).toBe(trainer.person.firstName);
       expect(result.lastName).toBe(trainer.person.lastName);
+      expect(result.phone).toBe(trainer.person.phone);
       expect(result.theme).toBe(trainer.person.theme);
       expect(result.gender).toBe(trainer.person.gender);
       expect(result.gym).toStrictEqual(trainer.person.gym);
@@ -134,6 +136,7 @@ describe('TrainerDTO', () => {
       expect(result.person.email).toBe(dto.email);
       expect(result.person.firstName).toBe(dto.firstName);
       expect(result.person.lastName).toBe(dto.lastName);
+      expect(result.person.phone).toBe(dto.phone);
       expect(result.person.gym).toBe(dto.gym);
       expect(result.person.gender).toBe(dto.gender);
       expect(result.person.theme).toBe(dto.theme);

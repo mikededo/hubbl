@@ -35,6 +35,7 @@ export default class OwnerDTO<T extends Gym | number>
     result.password = json.password;
     result.firstName = json.firstName;
     result.lastName = json.lastName;
+    result.phone = json.phone;
     result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
@@ -68,6 +69,7 @@ export default class OwnerDTO<T extends Gym | number>
     result.password = owner.person.password;
     result.firstName = owner.person.firstName;
     result.lastName = owner.person.lastName;
+    result.phone = owner.person.phone;
     result.theme = owner.person.theme;
     result.gender = owner.person.gender as Gender;
 
@@ -91,6 +93,7 @@ export default class OwnerDTO<T extends Gym | number>
     person.firstName = this.firstName;
     person.lastName = this.lastName;
     person.email = this.email;
+    person.phone = this.phone;
 
     // Encrypt password
     const salt = await genSalt(10);

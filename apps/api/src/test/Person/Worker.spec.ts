@@ -15,6 +15,7 @@ const checkWorkerProps = (worker: any) => {
   util.toBeString(worker.password);
   util.toBeString(worker.firstName);
   util.toBeString(worker.lastName);
+  util.toBeString(worker.phone);
   util.toBeString(worker.theme);
   util.toBeString(worker.gender);
   util.toBeString(worker.workerCode);
@@ -52,6 +53,7 @@ export const register = async () => {
     password: 'registered-password',
     firstName: 'Test',
     lastName: 'Worker',
+    phone: '000 000 000',
     gender: Gender.OTHER,
     managerId: ENTITY_IDENTIFIERS.OWNER,
     gym: ENTITY_IDENTIFIERS.GYM

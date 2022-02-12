@@ -16,6 +16,7 @@ export const register = async () => {
     password: 'registered-password',
     firstName: 'Registerd',
     lastName: 'Owner',
+    phone: '000 000 000',
     gender: 'OTHER',
     gym: {
       name: 'RegisteredGym',
@@ -38,6 +39,7 @@ export const register = async () => {
   util.toBeString(body.owner.password);
   util.toBeString(body.owner.firstName);
   util.toBeString(body.owner.lastName);
+  util.toBeString(body.owner.phone);
   util.toBeString(body.owner.theme);
   util.toBeString(body.owner.gender);
   expect(

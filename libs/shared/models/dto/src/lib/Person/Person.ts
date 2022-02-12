@@ -67,6 +67,9 @@ export default abstract class PersonDTO<T extends Gym | number> {
   lastName!: string;
 
   @IsOptional()
+  phone!: string;
+
+  @IsOptional()
   gym!: T;
 
   @IsEnum(Gender, {

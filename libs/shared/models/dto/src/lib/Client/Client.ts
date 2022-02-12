@@ -38,6 +38,7 @@ export default class ClientDTO<T extends Gym | number>
     result.password = json.password;
     result.firstName = json.firstName;
     result.lastName = json.lastName;
+    result.phone = json.phone;
     result.gym = json.gym;
     result.gender = json.gender;
     result.theme = json.theme as AppTheme;
@@ -71,6 +72,7 @@ export default class ClientDTO<T extends Gym | number>
     result.password = client.person.password;
     result.firstName = client.person.firstName;
     result.lastName = client.person.lastName;
+    result.phone = client.person.phone;
     result.gym = client.person.gym as T;
     result.theme = client.person.theme;
     result.gender = client.person.gender as Gender;
@@ -100,6 +102,7 @@ export default class ClientDTO<T extends Gym | number>
     person.firstName = this.firstName;
     person.lastName = this.lastName;
     person.email = this.email;
+    person.phone = this.phone;
 
     // Encrypt password
     const salt = await genSalt(10);
