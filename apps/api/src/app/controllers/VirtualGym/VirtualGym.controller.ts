@@ -37,6 +37,11 @@ class IVirtualGymFetchController extends BaseController {
         const result = await this.service
           .createQueryBuilder({ alias: 'virtualGym' })
           .where('virtualGym.gym = :gym', { gym: (person.gym as Gym).id })
+          .leftJoinAndMapMany(
+            'virtualGym.gymZones',
+            'virtualGym.gymZones',
+            'gz'
+          )
           .getMany();
 
         return this.ok(
