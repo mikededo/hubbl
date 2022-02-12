@@ -37,7 +37,6 @@ export const register = async () => {
   util.toBeString(body.client.password);
   util.toBeString(body.client.firstName);
   util.toBeString(body.client.lastName);
-  console.log(body.client.phone)
   util.toBeString(body.client.phone);
   util.toBeString(body.client.theme);
   util.toBeString(body.client.gender);

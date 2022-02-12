@@ -4,6 +4,7 @@ import { VirtualGym } from '@hubbl/shared/models/entities';
 import * as helpers from '@hubbl/shared/models/helpers';
 
 import VirtualGymDTO from './VirtualGym';
+import { GymZoneDTO } from '..';
 
 jest.mock('@hubbl/shared/models/helpers');
 
@@ -76,8 +77,19 @@ describe('VirtualGym', () => {
   });
 
   describe('#fromClass', () => {
-    it('should create a VirtualGymDTO from a correct VirtualGym', () => {
+    const gymZone = {
+      id: 1,
+      name: 'GymZone',
+      opeTime: '09:00:00',
+      closeTime: '23:00:00'
+    };
+    const gzFromClassSpy = jest
+      .spyOn(GymZoneDTO, 'fromClass')
+      .mockReturnValue(gymZone as any);
+
+    const createVirtualGym = (): VirtualGym => {
       const virtualGym = new VirtualGym();
+
       virtualGym.id = 1;
       virtualGym.name = 'Test';
       virtualGym.description = '';
@@ -87,10 +99,30 @@ describe('VirtualGym', () => {
       virtualGym.closeTime = '21:00:00';
       virtualGym.gym = 1;
 
+      return virtualGym;
+    };
+
+    it('should create a VirtualGymDTO from a correct VirtualGym', () => {
+      const virtualGym = createVirtualGym();
+
       const result = VirtualGymDTO.fromClass(virtualGym);
 
       expect(result).toBeDefined();
       propCompare({ ...virtualGym, gymZones: [] }, result);
+    });
+
+    it('should create a VirtualGymDTO from a correct VirtualGym with GymZones', () => {
+      const virtualGym = createVirtualGym();
+      virtualGym.gymZones = [gymZone, gymZone] as any;
+
+      const result = VirtualGymDTO.fromClass(virtualGym);
+
+      expect(result).toBeDefined();
+      expect(gzFromClassSpy).toHaveBeenCalledTimes(2);
+      propCompare(
+        { ...virtualGym, gymZones: [gymZone, gymZone] as any },
+        result
+      );
     });
   });
 

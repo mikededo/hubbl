@@ -14,6 +14,7 @@ import {
 
 import DTO from '../Base';
 import { DTOGroups } from '../util';
+import GymZoneDTO from '../GymZone';
 
 export default class VirtualGymDTO implements DTO<VirtualGym> {
   @IsNumber(
@@ -69,7 +70,7 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
   gym!: number;
 
   /* Non required validation fields */
-  gymZones!: GymZone[];
+  gymZones!: Array<GymZone | GymZoneDTO>;
 
   private static propMapper(from: VirtualGym | any): VirtualGymDTO {
     const result = new VirtualGymDTO();
@@ -117,7 +118,8 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
   public static fromClass(virtualGym: VirtualGym): VirtualGymDTO {
     const result = VirtualGymDTO.propMapper(virtualGym);
 
-    result.gymZones = virtualGym.gymZones || [];
+    result.gymZones =
+      virtualGym.gymZones?.map((gz) => GymZoneDTO.fromClass(gz)) || [];
 
     return result;
   }
@@ -137,7 +139,7 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
     result.openTime = this.openTime;
     result.closeTime = this.closeTime;
     result.gym = this.gym;
-    result.gymZones = this.gymZones;
+    result.gymZones = this.gymZones as GymZone[];
 
     return result;
   }
