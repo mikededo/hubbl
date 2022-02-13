@@ -151,5 +151,16 @@ describe('Person routes', () => {
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('should call WorkerFetchController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.WorkerFetchController,
+        'execute'
+      );
+
+      await supertest(app).get('/persons/workers');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });

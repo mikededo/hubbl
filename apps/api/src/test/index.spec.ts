@@ -37,6 +37,10 @@ describe('Integration tests', () => {
       it('should fetch the trainers', async () => {
         await trainer.fetch();
       });
+
+      it('should fetch the workers', async () => {
+        await worker.fetch();
+      });
     });
 
     describe('register', () => {
