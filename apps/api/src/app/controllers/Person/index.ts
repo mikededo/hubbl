@@ -9,6 +9,7 @@ import {
   OwnerUpdateController
 } from './Owner.controller';
 import {
+  TrainerFetchController,
   TrainerRegisterController,
   TrainerUpdateController
 } from './Trainer.controller';
@@ -25,6 +26,7 @@ export {
   OwnerLoginController,
   OwnerRegisterController,
   OwnerUpdateController,
+  TrainerFetchController,
   TrainerRegisterController,
   TrainerUpdateController,
   WorkerLoginController,

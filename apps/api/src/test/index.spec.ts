@@ -33,6 +33,12 @@ describe('Integration tests', () => {
   });
 
   describe('Person', () => {
+    describe('Fetch', () => {
+      it('should fetch the trainers', async () => {
+        await trainer.fetch();
+      });
+    });
+
     describe('register', () => {
       it('should register an owner', async () => {
         await owner.register();
