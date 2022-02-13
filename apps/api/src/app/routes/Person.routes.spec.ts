@@ -139,4 +139,17 @@ describe('Person routes', () => {
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('Fetch', () => {
+    it('should call TrainerFetchController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.TrainerFetchController,
+        'execute'
+      );
+
+      await supertest(app).get('/persons/trainers');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
+  });
 });
