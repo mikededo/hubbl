@@ -10,6 +10,7 @@ import {
   TrainerFetchController,
   TrainerRegisterController,
   TrainerUpdateController,
+  WorkerFetchController,
   WorkerLoginController,
   WorkerRegisterController,
   WorkerUpdateController
@@ -109,6 +110,14 @@ UpdateRouter.put('/client', middlewares.auth, (req, res) =>
 const PersonRouter: Router = Router();
 
 /* FETCH */
+/**
+ * @description Fetches the list of the trainers of the gym if the user making the
+ * requests has persmissions to do so
+ */
+PersonRouter.get('/workers', middlewares.auth, (req, res) => {
+  WorkerFetchController.execute(req, res);
+});
+
 /**
  * @description Fetches the list of the trainers of the gym if the user making the
  * requests has persmissions to do so

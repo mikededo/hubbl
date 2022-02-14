@@ -14,6 +14,7 @@ import {
   TrainerUpdateController
 } from './Trainer.controller';
 import {
+  WorkerFetchController,
   WorkerLoginController,
   WorkerRegisterController,
   WorkerUpdateController
@@ -29,6 +30,7 @@ export {
   TrainerFetchController,
   TrainerRegisterController,
   TrainerUpdateController,
+  WorkerFetchController,
   WorkerLoginController,
   WorkerRegisterController,
   WorkerUpdateController
