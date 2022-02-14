@@ -486,7 +486,7 @@ describe('Event controller', () => {
       await EventUpdateController.execute(mockReq as any, mockRes as any);
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith({}, DTOGroups.CREATE);
+      expect(fromJsonSpy).toHaveBeenCalledWith({}, DTOGroups.UPDATE);
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'e'

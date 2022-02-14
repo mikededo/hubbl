@@ -1,3 +1,4 @@
+import { Max, Min } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -51,6 +52,14 @@ export default class Event {
    */
   @Column('boolean', { default: false })
   maskRequired!: boolean;
+
+  /**
+   * `Event`'s difficulty
+   */
+  @Column('integer', { default: 3 })
+  @Min(1)
+  @Max(5)
+  difficulty!: number;
 
   /**
    * Time at which the `Event` starts

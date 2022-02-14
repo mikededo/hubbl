@@ -39,6 +39,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
   util.toBeBoolean(createRes.body.maskRequired);
   util.toBeString(createRes.body.startTime);
   util.toBeString(createRes.body.endTime);
+  util.toBeNumber(createRes.body.difficulty);
   util.toBeNumber(createRes.body.trainer);
   util.toBeNumber(createRes.body.calendar);
   util.toBeNumber(createRes.body.template);
@@ -60,6 +61,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
       startTime: '18:00:00',
       endTime: '20:00:00',
       trainer: ENTITY_IDENTIFIERS.TRAINER,
+      difficulty: 1,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
       template: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
       date: {

@@ -298,6 +298,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 1,
         date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
       },
@@ -312,6 +313,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 2,
         date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
       },
@@ -326,6 +328,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 3,
         date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
       },
@@ -340,6 +343,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 4,
         date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
       },
@@ -353,6 +357,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 5,
         date: getDate(),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
       }

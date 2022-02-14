@@ -18,6 +18,7 @@ const propCompare = (want: Event | EventDTO, got: Event | EventDTO) => {
   expect(got.capacity).toBe(want.capacity);
   expect(got.covidPassport).toBe(want.covidPassport);
   expect(got.maskRequired).toBe(want.maskRequired);
+  expect(got.difficulty).toBe(want.difficulty);
   expect(got.startTime).toBe(want.startTime);
   expect(got.endTime).toBe(want.endTime);
   expect(got.trainer).toBe(want.trainer);
@@ -42,6 +43,7 @@ const createEvent = (): Event => {
   event.capacity = 1000;
   event.covidPassport = true;
   event.maskRequired = true;
+  event.difficulty = 3;
   event.startTime = '09:00:00';
   event.endTime = '10:00:00';
   event.trainer = 1;
@@ -69,6 +71,7 @@ describe('Event', () => {
         capacity: 1000,
         covidPassport: true,
         maskRequired: true,
+        difficulty: 3,
         startTime: '09:00:00',
         endTime: '10:00:00',
         trainer: 1,
@@ -186,6 +189,7 @@ describe('Event', () => {
       dto.capacity = 1000;
       dto.covidPassport = true;
       dto.maskRequired = true;
+      dto.difficulty = 3;
       dto.startTime = '09:00:00';
       dto.endTime = '10:00:00';
       dto.trainer = 1;
