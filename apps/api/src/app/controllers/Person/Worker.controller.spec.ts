@@ -17,6 +17,8 @@ jest.mock('../../services');
 jest.mock('./helpers');
 jest.mock('../helpers');
 
+jest.mock('npmlog');
+
 describe('WorkerController', () => {
   beforeEach(() => {
     jest.clearAllMocks();

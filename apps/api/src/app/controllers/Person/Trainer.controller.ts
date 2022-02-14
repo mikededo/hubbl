@@ -13,16 +13,11 @@ import {
 } from '../../services';
 import BaseController from '../Base';
 import { trainerUpdate } from '../helpers';
-import { trainerRegister } from './helpers';
-import camelcaseKeys = require('camelcase-keys');
+import { fetch, trainerRegister } from './helpers';
 
 class ITrainerFetchController extends BaseController {
   protected service: TrainerService = undefined;
   protected personService: PersonService = undefined;
-
-  private parseFk(key: string): string {
-    return /_fk$/.test(key) ? key.split(/_fk$/)[0] : key;
-  }
 
   private onFail(res: Response, error: any): Response {
     log.error(
@@ -62,44 +57,16 @@ class ITrainerFetchController extends BaseController {
         return this.unauthorized(res, 'Person does not exist');
       }
 
-      try {
-        /**
-         * Due to a typeorm limitation, the leftJoinAndSelect skips the person
-         * from the Trainer and it has to be obtained using the getRawMany, in
-         * order to parse them afterwards
-         */
-        const result = await this.service
-          .createQueryBuilder({ alias: 't' })
-          .leftJoinAndSelect('person', 'p')
-          .where('p.gym = :gymId', { gymId: (person.gym as Gym).id })
-          .andWhere('t.trainer_person_fk = p.id')
-          .skip(+(skip ?? 0))
-          .limit(25)
-          .getRawMany();
-
-        return this.ok(
-          res,
-          result.map((t) => {
-            const parsed = { person: {} };
-
-            Object.entries(t).forEach(([k, v]) => {
-              if (/^t_/.test(k)) {
-                const [, prop] = k.split(/^t_/);
-                parsed[this.parseFk(prop)] = v;
-              } else if (/^p_/.test(k)) {
-                const [, prop] = k.split(/^p_/);
-                parsed.person[this.parseFk(prop)] = v;
-              }
-            });
-
-            return TrainerDTO.fromClass(
-              camelcaseKeys(parsed, { deep: true }) as any
-            );
-          })
-        );
-      } catch (e) {
-        return this.onFail(res, e);
-      }
+      return fetch({
+        service: this.service,
+        controller: this,
+        res,
+        fromClass: TrainerDTO.fromClass,
+        gymId: (person.gym as Gym).id,
+        alias: 't',
+        personFk: 'trainer_person_fk',
+        skip: +(skip ?? 0)
+      });
     } catch (e) {
       return this.onFail(res, e);
     }

@@ -64,7 +64,6 @@ class IWorkerFetchController extends BaseController {
         skip: +(skip ?? 0)
       });
     } catch (e) {
-      console.log(e);
       return this.onFail(res, e);
     }
   }
