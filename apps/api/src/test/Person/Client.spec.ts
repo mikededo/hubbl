@@ -9,6 +9,25 @@ import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
 
+export const fetch = async () => {
+  // Login as owner
+  const loginResponse = await supertest(app).post('/persons/login/owner').send({
+    email: ENTITY_IDENTIFIERS.OWNER_EMAIL,
+    password: 'owner-password'
+  });
+
+  expect(loginResponse.statusCode).toBe(200);
+  util.expectTokenCookie(loginResponse);
+
+  const fetchResponse = await supertest(app)
+    .get('/persons/clients')
+    .set('Authorization', `Bearer ${loginResponse.body.token}`)
+    .send();
+
+  expect(fetchResponse.statusCode).toBe(200);
+  expect(fetchResponse.body.length).toBe(3);
+};
+
 export const register = async () => {
   const testApp = supertest(app);
 

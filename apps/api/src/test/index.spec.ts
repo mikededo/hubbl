@@ -351,8 +351,8 @@ describe('Integration tests', () => {
           await appointments.events.createAndCancel('owner');
         });
 
-        it('should create and cancel an event for a client by a client', async () => {
-          await appointments.events.createAndCancel('client');
+        it('should create and cancel an event for a client by a worker', async () => {
+          await appointments.events.createAndCancel('worker');
         });
 
         it('should create and cancel an event for a client by a client', async () => {
@@ -365,7 +365,7 @@ describe('Integration tests', () => {
           await appointments.events.createCancelAndDelete('owner');
         });
 
-        it('should create and cancel an event for a client by an worker', async () => {
+        it('should create and cancel an event for a client by a worker', async () => {
           await appointments.events.createCancelAndDelete('worker');
         });
 
@@ -395,8 +395,8 @@ describe('Integration tests', () => {
           await appointments.calendars.createAndCancel('owner');
         });
 
-        it('should create and cancel an event for a client by a client', async () => {
-          await appointments.calendars.createAndCancel('client');
+        it('should create and cancel an event for a client by a worker', async () => {
+          await appointments.calendars.createAndCancel('worker');
         });
 
         it('should create and cancel an event for a client by a client', async () => {

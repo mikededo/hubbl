@@ -1,12 +1,81 @@
 import { Request, Response } from 'express';
+import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { ClientDTO } from '@hubbl/shared/models/dto';
+import { Gym } from '@hubbl/shared/models/entities';
 
-import { ClientService, OwnerService, WorkerService } from '../../services';
+import {
+  ClientService,
+  OwnerService,
+  PersonService,
+  WorkerService
+} from '../../services';
 import BaseController from '../Base';
 import { clientUpdate } from '../helpers';
-import { clientLogin, register } from './helpers';
+import { clientLogin, fetch, register } from './helpers';
+
+class IClientFetchController extends BaseController {
+  protected service: ClientService = undefined;
+  protected personService: PersonService = undefined;
+
+  private onFail(res: Response, error: any): Response {
+    log.error(
+      `Controller [${this.constructor.name}]`,
+      '"fetch" handler',
+      error.toString()
+    );
+
+    return this.fail(
+      res,
+      'Internal server error. If the problem persists, contact our team.'
+    );
+  }
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.service) {
+      this.service = new ClientService(getRepository);
+    }
+
+    if (!this.personService) {
+      this.personService = new PersonService(getRepository);
+    }
+
+    const { token } = res.locals;
+    const { skip } = req.query;
+
+    if (token.user !== 'owner' && token.user !== 'worker') {
+      return this.forbidden(res, 'User can not fetch the clients.');
+    }
+
+    try {
+      // Check if the person exists
+      // Get the person, if any
+      const person = await this.personService.findOne({ id: token.id });
+
+      if (!person) {
+        return this.unauthorized(res, 'Person does not exist');
+      }
+
+      return fetch({
+        service: this.service,
+        controller: this,
+        res,
+        fromClass: ClientDTO.fromClass,
+        gymId: (person.gym as Gym).id,
+        alias: 'c',
+        personFk: 'client_person_fk',
+        skip: +(skip ?? 0)
+      });
+    } catch (e) {
+      return this.onFail(res, e);
+    }
+  }
+}
+
+const fetchInstance = new IClientFetchController();
+
+export const ClientFetchController = fetchInstance;
 
 class IClientRegisterController extends BaseController {
   protected service: ClientService = undefined;
