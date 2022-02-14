@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import {
+  ClientFetchController,
   ClientLoginController,
   ClientRegisterController,
   ClientUpdateController,
@@ -111,16 +112,24 @@ const PersonRouter: Router = Router();
 
 /* FETCH */
 /**
- * @description Fetches the list of the trainers of the gym if the user making the
- * requests has persmissions to do so
+ * @description Fetches the list of the workers of the gym if the user making the
+ * request has permissions to do so
  */
 PersonRouter.get('/workers', middlewares.auth, (req, res) => {
   WorkerFetchController.execute(req, res);
 });
 
 /**
+ * @description Fetches the list of the clients of the gym if the user making the
+ * request has permissions to do so
+ */
+PersonRouter.get('/clients', middlewares.auth, (req, res) => {
+  ClientFetchController.execute(req, res);
+});
+
+/**
  * @description Fetches the list of the trainers of the gym if the user making the
- * requests has persmissions to do so
+ * request has permissions to do so
  */
 PersonRouter.get('/trainers', middlewares.auth, (req, res) => {
   TrainerFetchController.execute(req, res);

@@ -1,20 +1,24 @@
 import camelcaseKeys = require('camelcase-keys');
 import { Response } from 'express';
 
-import { OwnerDTO, TrainerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
-import { Gym, Owner, Trainer, Worker } from '@hubbl/shared/models/entities';
+import { ClientDTO, TrainerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
+import { Client, Gym, Trainer, Worker } from '@hubbl/shared/models/entities';
 
-import { OwnerService, TrainerService, WorkerService } from '../../../services';
+import {
+  ClientService,
+  TrainerService,
+  WorkerService
+} from '../../../services';
 import BaseController from '../../Base';
 import { BaseFromClassCallable } from '../../helpers';
 
 type FetchFromClass =
-  | BaseFromClassCallable<Owner, OwnerDTO<Gym | number>>
   | BaseFromClassCallable<Worker, WorkerDTO<Gym | number>>
+  | BaseFromClassCallable<Client, ClientDTO<Gym | number>>
   | BaseFromClassCallable<Trainer, TrainerDTO<Gym | number>>;
 
 type FetchProps = {
-  service: OwnerService | WorkerService | TrainerService;
+  service: WorkerService | ClientService | TrainerService;
   controller: BaseController;
   res: Response;
   fromClass: FetchFromClass;
@@ -55,7 +59,7 @@ export const fetch = async ({
     res,
     result.map((e) => {
       const parsed = { person: {} };
-      
+
       Object.entries(e).forEach(([k, v]) => {
         if (new RegExp(`^${alias}_`).test(k)) {
           const [, prop] = k.split(new RegExp(`^${alias}_`));

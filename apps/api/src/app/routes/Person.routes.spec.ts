@@ -141,17 +141,6 @@ describe('Person routes', () => {
   });
 
   describe('Fetch', () => {
-    it('should call TrainerFetchController.execute', async () => {
-      const executeSpy = jest.spyOn(
-        controllers.TrainerFetchController,
-        'execute'
-      );
-
-      await supertest(app).get('/persons/trainers');
-
-      expect(executeSpy).toHaveBeenCalledTimes(1);
-    });
-
     it('should call WorkerFetchController.execute', async () => {
       const executeSpy = jest.spyOn(
         controllers.WorkerFetchController,
@@ -159,6 +148,28 @@ describe('Person routes', () => {
       );
 
       await supertest(app).get('/persons/workers');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call ClientFetchController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.ClientFetchController,
+        'execute'
+      );
+
+      await supertest(app).get('/persons/clients');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call TrainerFetchController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.TrainerFetchController,
+        'execute'
+      );
+
+      await supertest(app).get('/persons/trainers');
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });

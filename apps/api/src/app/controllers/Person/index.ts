@@ -1,4 +1,5 @@
 import {
+  ClientFetchController,
   ClientLoginController,
   ClientRegisterController,
   ClientUpdateController
@@ -21,6 +22,7 @@ import {
 } from './Worker.controller';
 
 export {
+  ClientFetchController,
   ClientLoginController,
   ClientRegisterController,
   ClientUpdateController,
