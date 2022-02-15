@@ -4,6 +4,7 @@ import EventService from './Event';
 import EventAppointmentService from './EventAppointment';
 import EventTemplateService from './EventTemplate';
 import EventTypeService from './EventType';
+import GymService from './Gym';
 import GymZoneService from './GymZone';
 import {
   ClientService,
@@ -23,6 +24,7 @@ export {
   EventService,
   EventTemplateService,
   EventTypeService,
+  GymService,
   GymZoneService,
   OwnerService,
   PersonService,

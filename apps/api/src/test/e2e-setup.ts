@@ -22,7 +22,6 @@ import {
 import { AppPalette, Gender, ThemeColor } from '@hubbl/shared/types';
 
 import { ENTITY_IDENTIFIERS } from './util';
-import { nanoid } from 'nanoid';
 
 const getDate = (): Partial<CalendarDate> => {
   const date = new Date();
@@ -91,7 +90,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           name: 'TestGym',
           email: 'test@gym.com',
           phone: '000 000 000',
-          code: nanoid(8),
+          code: ENTITY_IDENTIFIERS.GYM_CODE,
           color: ThemeColor.BLUE,
           virtualGyms: [
             {

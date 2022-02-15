@@ -1,3 +1,5 @@
+import { nanoid } from "nanoid";
+
 export const ENTITY_IDENTIFIERS = {
   OWNER: 1,
   OWNER_EMAIL: 'test@owner.com',
@@ -12,6 +14,7 @@ export const ENTITY_IDENTIFIERS = {
   TRAINER: 6,
   TRAINER_EMAIL: 'test@trainer.com',
   GYM: 1,
+  GYM_CODE: nanoid(8),
   EVENT_TYPE_ONE: 1,
   EVENT_TYPE_TWO: 2,
   EVENT_TPL_ONE: 1,
