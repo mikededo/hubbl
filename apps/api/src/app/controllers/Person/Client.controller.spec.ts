@@ -5,6 +5,7 @@ import { ClientDTO } from '@hubbl/shared/models/dto';
 
 import {
   ClientService,
+  GymService,
   OwnerService,
   PersonService,
   WorkerService
@@ -17,6 +18,7 @@ import {
 } from './Client.controller';
 import * as personHelpers from './helpers';
 import { ClientFetchController } from '.';
+import { nanoid } from 'nanoid';
 
 jest.mock('../../services');
 jest.mock('./helpers');
@@ -28,7 +30,7 @@ describe('ClientController', () => {
     jest.clearAllMocks();
   });
 
-  describe('WorkerFetch', () => {
+  describe('ClientFetch', () => {
     const mockReq = { query: { skip: 0 } };
     const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
 
@@ -190,31 +192,126 @@ describe('ClientController', () => {
   });
 
   describe('ClientRegisterController', () => {
+    const mockEmptyReq = { query: {} } as any;
+    const mockReq = { query: { code: nanoid(8) }, body: {} } as any;
+    const mockGymService = { findOne: jest.fn() };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const setupServices = () => {
+      ClientRegisterController['service'] = {} as any;
+      ClientRegisterController['gymService'] = mockGymService as any;
+    };
+
     describe('execute', () => {
       it('should create a service if does not have any', async () => {
+        ClientRegisterController['service'] = undefined;
+        ClientRegisterController['gymService'] = undefined;
+
+        jest.spyOn(ClientRegisterController, 'fail').mockImplementation();
+
         await ClientRegisterController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
         expect(ClientService).toHaveBeenCalledWith(getRepository);
+        expect(GymService).toHaveBeenCalledTimes(1);
+        expect(GymService).toHaveBeenCalledWith(getRepository);
       });
 
-      it('should call register', async () => {
+      it('should call register if no code given', async () => {
         const registerSpy = jest
           .spyOn(personHelpers, 'register')
           .mockImplementation();
 
-        ClientRegisterController['service'] = {} as any;
-        await ClientRegisterController.execute({} as any, {} as any);
+        mockGymService.findOne.mockResolvedValue({ id: 1 });
+
+        setupServices();
+        await ClientRegisterController.execute(mockEmptyReq, {} as any);
+
+        expect(mockGymService.findOne).not.toHaveBeenCalled();
 
         expect(registerSpy).toHaveBeenCalledWith({
           service: {},
           controller: ClientRegisterController,
           fromJson: ClientDTO.fromJson,
           fromClass: ClientDTO.fromClass,
-          req: {},
+          req: mockEmptyReq,
           res: {},
           alias: 'client'
         });
+      });
+
+      it('should call register after fetching the gym with the given code', async () => {
+        const registerSpy = jest
+          .spyOn(personHelpers, 'register')
+          .mockImplementation();
+
+        mockGymService.findOne.mockResolvedValue({ id: 1 });
+
+        setupServices();
+        await ClientRegisterController.execute(mockReq, {} as any);
+
+        expect(mockGymService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockGymService.findOne).toHaveBeenCalledWith({
+          options: {
+            where: { code: mockReq.query.code },
+            select: ['id'],
+            loadEagerRelations: false
+          }
+        });
+        expect(registerSpy).toHaveBeenCalledWith({
+          service: {},
+          controller: ClientRegisterController,
+          fromJson: ClientDTO.fromJson,
+          fromClass: ClientDTO.fromClass,
+          req: { ...mockReq, body: { gym: 1 } },
+          res: {},
+          alias: 'client'
+        });
+      });
+
+      it('should call unauthorized if gym does not exist', async () => {
+        const unauthorizedSpy = jest
+          .spyOn(ClientRegisterController, 'unauthorized')
+          .mockImplementation();
+        mockGymService.findOne.mockResolvedValue(undefined);
+
+        setupServices();
+        await ClientRegisterController.execute(mockReq, {} as any);
+
+        expect(mockGymService.findOne).toHaveBeenCalledTimes(1);
+        expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+        expect(unauthorizedSpy).toHaveBeenCalledWith(
+          {},
+          'Gym code does not belong to any gym.'
+        );
+      });
+
+      it('should send fail on gymService error', async () => {
+        const failSpy = jest
+          .spyOn(ClientRegisterController, 'fail')
+          .mockImplementation();
+        const logSpy = jest.spyOn(log, 'error').mockImplementation();
+
+        mockGymService.findOne.mockRejectedValue('error-thrown');
+
+        setupServices();
+        await ClientRegisterController.execute(mockReq, {} as any);
+
+        expect(mockGymService.findOne).toHaveBeenCalledTimes(1);
+        expect(logSpy).toHaveBeenCalledTimes(1);
+        expect(logSpy).toHaveBeenCalledWith(
+          `Controller[${ClientRegisterController.constructor.name}]`,
+          '"register" handler',
+          'error-thrown'
+        );
+        expect(failSpy).toHaveBeenCalledTimes(1);
+        expect(failSpy).toHaveBeenCalledWith(
+          {},
+          'Internal server error. If the error persists, contact our team'
+        );
       });
     });
   });

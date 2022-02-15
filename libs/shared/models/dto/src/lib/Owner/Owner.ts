@@ -1,5 +1,6 @@
 import { genSalt, hash } from 'bcrypt';
 import { IsNotEmpty, validateOrReject } from 'class-validator';
+import { nanoid } from 'nanoid';
 
 import { Gym, Owner, Person } from '@hubbl/shared/models/entities';
 import { validationParser } from '@hubbl/shared/models/helpers';
@@ -43,6 +44,9 @@ export default class OwnerDTO<T extends Gym | number>
     if (variant === PersonDTOGroups.REGISTER) {
       // Validate the gym
       await GymDTO.fromJson(json.gym || {}, variant);
+
+      // Add the gym short code
+      (result.gym as Gym).code = nanoid(8);
     }
 
     await validateOrReject(result, {

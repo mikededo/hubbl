@@ -13,6 +13,7 @@ const propCompare = (want: Gym | GymDTO, got: Gym | GymDTO) => {
   expect(got.name).toBe(want.name);
   expect(got.email).toBe(want.email);
   expect(got.phone).toBe(want.phone);
+  expect(got.code).toBe(want.code);
   expect(got.color).toBe(want.color);
 };
 
@@ -29,6 +30,7 @@ describe('Gym', () => {
         name: 'Test',
         email: 'test@gym.com',
         phone: '000 000 000',
+        code: '8X4rZNmu',
         color: ThemeColor.BLUE
       };
 
@@ -74,6 +76,7 @@ describe('Gym', () => {
       gym.name = 'Test';
       gym.email = 'test@gym.com';
       gym.phone = '000 000 000';
+      gym.code = '8X4rZNmu';
       gym.color = ThemeColor.BLUE;
       gym.virtualGyms = [];
 
@@ -91,6 +94,7 @@ describe('Gym', () => {
       dto.name = 'Test';
       dto.email = 'test@gym.com';
       dto.phone = '000 000 000';
+      dto.code = '8X4rZNmu';
       dto.color = ThemeColor.BLUE;
       dto.virtualGyms = [];
 
@@ -105,6 +109,7 @@ describe('Gym', () => {
       dto.name = 'Test';
       dto.email = 'test@gym.com';
       dto.phone = '000 000 000';
+      dto.code = '8X4rZNmu';
       dto.color = ThemeColor.BLUE;
 
       const result = dto.toClass();

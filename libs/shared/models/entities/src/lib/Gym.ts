@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -33,10 +34,17 @@ export default class Gym {
   email!: string;
 
   /**
-   * Optionall contact phone of the gym
+   * Optional contact phone of the gym
    */
   @Column('varchar', { length: 45, default: null })
   phone!: string;
+
+  /**
+   * Unique gym code used to register clients
+   */
+  @Index('gym_code', { unique: true })
+  @Column('varchar', { length: 8, nullable: false })
+  code!: string;
 
   /**
    * `EventType`'s that belong to the gym, and will be common

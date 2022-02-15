@@ -74,8 +74,10 @@ describe('OwnerDTO', () => {
         catch: jest.fn().mockImplementation()
       } as any);
 
-      await OwnerDTO.fromJson(json, PersonDTOGroups.REGISTER);
+      const result = await OwnerDTO.fromJson(json, PersonDTOGroups.REGISTER);
 
+      // Should have added a code
+      expect((result.gym as Gym)?.code).toBeDefined();
       expect(gymFromJsonSpy).toHaveBeenCalledTimes(1);
       expect(gymFromJsonSpy).toHaveBeenCalledWith(
         json.gym,
@@ -86,18 +88,23 @@ describe('OwnerDTO', () => {
     it('should call GymDTO.fromJson on register with empty object if json.gym is undefined', async () => {
       const gymFromJsonSpy = jest
         .spyOn(GymDTO, 'fromJson')
-        .mockResolvedValue({} as any);
+        .mockRejectedValue('error-thrown');
       const json = Util.createPersonJson();
       json.gym = undefined;
 
-      jest.spyOn(ClassValidator, 'validateOrReject').mockResolvedValue({
-        catch: jest.fn().mockImplementation()
-      } as any);
+      const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
 
-      await OwnerDTO.fromJson(json, PersonDTOGroups.REGISTER);
+      expect.assertions(4);
+
+      try {
+        await OwnerDTO.fromJson(json, PersonDTOGroups.REGISTER);
+      } catch (e) {
+        expect(e).toBe('error-thrown');
+      }
 
       expect(gymFromJsonSpy).toHaveBeenCalledTimes(1);
       expect(gymFromJsonSpy).toHaveBeenCalledWith({}, PersonDTOGroups.REGISTER);
+      expect(vorSpy).not.toHaveBeenCalled();
     });
   });
 

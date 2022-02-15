@@ -90,6 +90,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           name: 'TestGym',
           email: 'test@gym.com',
           phone: '000 000 000',
+          code: ENTITY_IDENTIFIERS.GYM_CODE,
           color: ThemeColor.BLUE,
           virtualGyms: [
             {

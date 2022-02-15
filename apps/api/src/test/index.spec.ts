@@ -10,7 +10,7 @@ import { token } from './Token';
 import { common } from './util';
 import { virtualGym } from './VirtualGym';
 
-jest.mock('npmlog');
+// jest.mock('npmlog');
 
 describe('Integration tests', () => {
   beforeAll((done) => {
@@ -56,8 +56,12 @@ describe('Integration tests', () => {
         await trainer.register();
       });
 
-      it('should register a client', async () => {
-        await client.register();
+      it('should register a client with a gym id', async () => {
+        await client.baseRegister();
+      });
+
+      it('should register a client with a gym code', async () => {
+        await client.codeRegister();
       });
     });
 

@@ -7,6 +7,7 @@ import { Gym } from '@hubbl/shared/models/entities';
 
 import {
   ClientService,
+  GymService,
   OwnerService,
   PersonService,
   WorkerService
@@ -79,10 +80,52 @@ export const ClientFetchController = fetchInstance;
 
 class IClientRegisterController extends BaseController {
   protected service: ClientService = undefined;
+  protected gymService: GymService = undefined;
+
+  private async onFail(res: Response, error: any): Promise<Response> {
+    log.error(
+      `Controller[${this.constructor.name}]`,
+      `"register" handler`,
+      error.toString()
+    );
+
+    return this.fail(
+      res,
+      'Internal server error. If the error persists, contact our team'
+    );
+  }
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new ClientService(getRepository);
+    }
+
+    if (!this.gymService) {
+      this.gymService = new GymService(getRepository);
+    }
+
+    const { code } = req.query;
+
+    if (code) {
+      try {
+        // Find the gym if the call has the gym code
+        const gym = await this.gymService.findOne({
+          options: {
+            where: { code },
+            select: ['id'],
+            loadEagerRelations: false
+          }
+        });
+
+        if (!gym) {
+          return this.unauthorized(res, 'Gym code does not belong to any gym.');
+        }
+
+        // Set the gym
+        req.body.gym = gym.id;
+      } catch (e) {
+        return this.onFail(res, e);
+      }
     }
 
     return register({
