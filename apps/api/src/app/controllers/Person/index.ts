@@ -11,13 +11,13 @@ import {
 } from './Owner.controller';
 import {
   TrainerFetchController,
-  TrainerRegisterController,
+  TrainerCreateController,
   TrainerUpdateController
 } from './Trainer.controller';
 import {
   WorkerFetchController,
   WorkerLoginController,
-  WorkerRegisterController,
+  WorkerCreateController,
   WorkerUpdateController
 } from './Worker.controller';
 
@@ -30,10 +30,10 @@ export {
   OwnerRegisterController,
   OwnerUpdateController,
   TrainerFetchController,
-  TrainerRegisterController,
+  TrainerCreateController,
   TrainerUpdateController,
   WorkerFetchController,
   WorkerLoginController,
-  WorkerRegisterController,
+  WorkerCreateController,
   WorkerUpdateController
 };

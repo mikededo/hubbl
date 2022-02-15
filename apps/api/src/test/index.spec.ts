@@ -10,7 +10,7 @@ import { token } from './Token';
 import { common } from './util';
 import { virtualGym } from './VirtualGym';
 
-// jest.mock('npmlog');
+jest.mock('npmlog');
 
 describe('Integration tests', () => {
   beforeAll((done) => {

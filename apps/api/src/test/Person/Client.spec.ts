@@ -31,7 +31,7 @@ export const fetch = async () => {
 export const baseRegister = async () => {
   const testApp = supertest(app);
 
-  const response = await testApp.post('/persons/register/client').send({
+  const response = await testApp.post('/persons/client').send({
     email: 'registered@client.com',
     password: 'registered-password',
     firstName: 'Registerd',

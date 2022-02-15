@@ -8,12 +8,12 @@ import {
   OwnerLoginController,
   OwnerRegisterController,
   OwnerUpdateController,
+  TrainerCreateController,
   TrainerFetchController,
-  TrainerRegisterController,
   TrainerUpdateController,
+  WorkerCreateController,
   WorkerFetchController,
   WorkerLoginController,
-  WorkerRegisterController,
   WorkerUpdateController
 } from '../controllers';
 import middlewares from '../middlewares';
@@ -27,20 +27,6 @@ const RegisterRouter: Router = Router();
  */
 RegisterRouter.post('/owner', (req, res) =>
   OwnerRegisterController.execute(req, res)
-);
-
-/**
- * @description Registers a worker to the database
- */
-RegisterRouter.post('/worker', (req, res) =>
-  WorkerRegisterController.execute(req, res)
-);
-
-/**
- * @description Registers a trainer to the database
- */
-RegisterRouter.post('/trainer', (req, res) =>
-  TrainerRegisterController.execute(req, res)
 );
 
 /**
@@ -73,6 +59,33 @@ LoginRouter.post('/worker', (req, res) =>
  */
 LoginRouter.post('/client', (req, res) =>
   ClientLoginController.execute(req, res)
+);
+
+/* CREATE */
+
+const CreateRouter: Router = Router();
+
+/**
+ * @description Creates a worker to the database
+ */
+CreateRouter.post('/worker', (req, res) =>
+  WorkerCreateController.execute(req, res)
+);
+
+/**
+ * @description Creates a client to the database
+ */
+CreateRouter.post('/client', (req, res) =>
+  // The register controller is reused since it can handle both types of
+  // registration
+  ClientRegisterController.execute(req, res)
+);
+
+/**
+ * @description Creates a trainer to the database
+ */
+CreateRouter.post('/trainer', (req, res) =>
+  TrainerCreateController.execute(req, res)
 );
 
 /* UPDATE */
@@ -137,6 +150,7 @@ PersonRouter.get('/trainers', middlewares.auth, (req, res) => {
 
 PersonRouter.use('/register', RegisterRouter);
 PersonRouter.use('/login', LoginRouter);
+PersonRouter.use('', CreateRouter);
 PersonRouter.use('', UpdateRouter);
 
 export default PersonRouter;

@@ -29,7 +29,7 @@ export const fetch = async () => {
 };
 
 export const register = async () => {
-  const response = await supertest(app).post('/persons/register/trainer').send({
+  const response = await supertest(app).post('/persons/trainer').send({
     email: 'registered@trainer.com',
     password: 'registered-password',
     firstName: 'Registerd',

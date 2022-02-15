@@ -77,7 +77,7 @@ const fetchInstance = new ITrainerFetchController();
 
 export const TrainerFetchController = fetchInstance;
 
-class ITrainerRegisterController extends BaseController {
+class ITrainerCreateController extends BaseController {
   protected service: TrainerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<Response> {
@@ -96,9 +96,9 @@ class ITrainerRegisterController extends BaseController {
   }
 }
 
-const registerInstance = new ITrainerRegisterController();
+const registerInstance = new ITrainerCreateController();
 
-export const TrainerRegisterController = registerInstance;
+export const TrainerCreateController = registerInstance;
 
 class ITrainerUpdateController extends BaseController {
   protected service: TrainerService = undefined;

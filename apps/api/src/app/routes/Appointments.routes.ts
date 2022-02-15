@@ -48,9 +48,13 @@ CalendarAppointmentRouter.post('', middlewares.auth, (req, res) => {
 /**
  * @description Cancels an appointment made for a calendar
  */
-CalendarAppointmentRouter.put('/:cId/cancel/:id', middlewares.auth, (req, res) => {
-  Appointments.CalendarCancelController.execute(req, res);
-});
+CalendarAppointmentRouter.put(
+  '/:cId/cancel/:id',
+  middlewares.auth,
+  (req, res) => {
+    Appointments.CalendarCancelController.execute(req, res);
+  }
+);
 
 /**
  * @description Deletes an appointment made for a calendar
