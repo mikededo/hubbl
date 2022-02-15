@@ -73,7 +73,7 @@ const fetchInstance = new IWorkerFetchController();
 
 export const WorkerFetchController = fetchInstance;
 
-class IWorkerRegisterController extends BaseController {
+class IWorkerCreateController extends BaseController {
   protected service: WorkerService = undefined;
 
   protected async run(req: Request, res: Response): Promise<Response> {
@@ -93,9 +93,9 @@ class IWorkerRegisterController extends BaseController {
   }
 }
 
-const registerInstance = new IWorkerRegisterController();
+const registerInstance = new IWorkerCreateController();
 
-export const WorkerRegisterController = registerInstance;
+export const WorkerCreateController = registerInstance;
 
 class IWorkerLoginController extends BaseController {
   protected service: WorkerService = undefined;

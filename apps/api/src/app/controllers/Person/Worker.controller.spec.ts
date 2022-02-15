@@ -8,7 +8,7 @@ import * as personHelpers from './helpers';
 import * as helpers from '../helpers';
 import {
   WorkerLoginController,
-  WorkerRegisterController,
+  WorkerCreateController,
   WorkerUpdateController,
   WorkerFetchController
 } from './Worker.controller';
@@ -185,10 +185,10 @@ describe('WorkerController', () => {
     });
   });
 
-  describe('WorkerRegisterController', () => {
+  describe('WorkerCreateController', () => {
     describe('run', () => {
       it('should create a service if does not have any', async () => {
-        await WorkerRegisterController.execute({} as any, {} as any);
+        await WorkerCreateController.execute({} as any, {} as any);
 
         expect(WorkerService).toHaveBeenCalledTimes(1);
         expect(WorkerService).toHaveBeenCalledWith(getRepository);
@@ -199,12 +199,12 @@ describe('WorkerController', () => {
           .spyOn(personHelpers, 'register')
           .mockImplementation();
 
-        WorkerRegisterController['service'] = {} as any;
-        await WorkerRegisterController.execute({} as any, {} as any);
+        WorkerCreateController['service'] = {} as any;
+        await WorkerCreateController.execute({} as any, {} as any);
 
         expect(registerSpy).toHaveBeenCalledWith({
           service: {},
-          controller: WorkerRegisterController,
+          controller: WorkerCreateController,
           fromJson: WorkerDTO.fromJson,
           fromClass: WorkerDTO.fromClass,
           req: {},

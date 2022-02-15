@@ -13,6 +13,10 @@ jest.mock('../middlewares/auth.middleware', () => {
 });
 
 describe('Person routes', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('Register', () => {
     it('should call OwnerRegisterController.execute', async () => {
       const executeSpy = jest.spyOn(
@@ -25,24 +29,24 @@ describe('Person routes', () => {
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should call WorkerRegisterController.execute', async () => {
+    it('should call WorkerCreateController.execute', async () => {
       const executeSpy = jest.spyOn(
-        controllers.WorkerRegisterController,
+        controllers.WorkerCreateController,
         'execute'
       );
 
-      await supertest(app).post('/persons/register/worker');
+      await supertest(app).post('/persons/worker');
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should call TrainerRegisterController.execute', async () => {
+    it('should call TrainerCreateController.execute', async () => {
       const executeSpy = jest.spyOn(
-        controllers.TrainerRegisterController,
+        controllers.TrainerCreateController,
         'execute'
       );
 
-      await supertest(app).post('/persons/register/trainer');
+      await supertest(app).post('/persons/trainer');
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
@@ -53,7 +57,18 @@ describe('Person routes', () => {
         'execute'
       );
 
-      await supertest(app).post('/persons/register/client');
+      await supertest(app).post('/persons/client');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call ClientRegisterController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.ClientRegisterController,
+        'execute'
+      );
+
+      await supertest(app).post('/persons/register/client?code=SomECoDe');
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
