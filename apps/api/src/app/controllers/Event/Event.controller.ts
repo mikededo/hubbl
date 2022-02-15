@@ -168,7 +168,7 @@ class IEventUpdateController extends BaseController {
     let dto: EventDTO;
 
     try {
-      dto = await EventDTO.fromJson(req.body, DTOGroups.CREATE);
+      dto = await EventDTO.fromJson(req.body, DTOGroups.UPDATE);
     } catch (e) {
       return this.clientError(res, e);
     }
