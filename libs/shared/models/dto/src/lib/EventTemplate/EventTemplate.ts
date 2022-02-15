@@ -1,12 +1,18 @@
 import {
+  IsBoolean,
   IsNumber,
   IsOptional,
   IsString,
+  Max,
+  Min,
   validateOrReject
 } from 'class-validator';
 
 import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
 import {
+  booleanError,
+  maxError,
+  minError,
   numberError,
   stringError,
   validationParser
@@ -29,6 +35,38 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
   @IsOptional()
   @IsString({ message: stringError('description') })
   description!: string;
+
+  @IsNumber(
+    {},
+    {
+      message: numberError('capacity'),
+      groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+    }
+  )
+  capacity!: number;
+
+  @IsBoolean({
+    message: booleanError('covidPassport'),
+    groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+  })
+  covidPassport!: boolean;
+
+  @IsBoolean({
+    message: booleanError('maskRequired'),
+    groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+  })
+  maskRequired!: boolean;
+
+  @IsNumber(
+    {},
+    {
+      message: numberError('difficulty'),
+      groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+    }
+  )
+  @Min(1, { message: minError('difficulty', 1) })
+  @Max(5, { message: maxError('difficulty', 5) })
+  difficulty!: number;
 
   @IsNumber(
     {},
@@ -57,6 +95,10 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
     result.id = from.id;
     result.name = from.name;
     result.description = from.description;
+    result.capacity = from.capacity;
+    result.covidPassport = from.covidPassport;
+    result.maskRequired = from.maskRequired;
+    result.difficulty = from.difficulty;
     result.type =
       from.type instanceof EventType
         ? EventTypeDTO.fromClass(from.type)
@@ -113,6 +155,10 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
     result.id = this.id;
     result.name = this.name;
     result.description = this.description;
+    result.capacity = this.capacity;
+    result.covidPassport = this.covidPassport;
+    result.maskRequired = this.maskRequired;
+    result.difficulty = this.difficulty;
     result.type = this.type;
     result.gym = this.gym;
 
