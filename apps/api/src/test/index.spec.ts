@@ -224,6 +224,16 @@ describe('Integration tests', () => {
         await event.createUpdateAndDelete('worker');
       });
     });
+
+    describe('Create without template', () => {
+      it('should create, update and delete an event by an owner', async () => {
+        await event.createNoTemplate('owner');
+      });
+
+      it('should create, update and delete an event by an worker', async () => {
+        await event.createNoTemplate('worker');
+      });
+    });
   });
 
   describe('Virtual Gym', () => {

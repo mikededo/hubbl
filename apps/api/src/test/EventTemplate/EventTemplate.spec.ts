@@ -38,6 +38,10 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
     .send({
       name: 'created-event-template',
       description: 'Event Template description',
+      capacity: 10,
+      covidPassport: true,
+      maskRequired: true,
+      difficulty: 3,
       type: ENTITY_IDENTIFIERS.EVENT_TYPE_TWO,
       gym: loginRes.body[by].gym.id
     });
@@ -58,6 +62,10 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
       id: createRes.body.id,
       name: 'updated-event-template',
       description: 'Event Template description',
+      capacity: 10,
+      covidPassport: true,
+      maskRequired: true,
+      difficulty: 5,
       type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE,
       gym: loginRes.body[by].gym.id
     });

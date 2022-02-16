@@ -167,6 +167,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.EVENT_TPL_ONE,
         name: 'Event Template One',
         description: 'Event template one of event type one',
+        capacity: 5,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 1,
         gym: ENTITY_IDENTIFIERS.GYM,
         type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
       },
@@ -174,6 +178,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.EVENT_TPL_TWO,
         name: 'Event Template Two',
         description: 'Event template two of event type two',
+        capacity: 5,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 2,
         gym: ENTITY_IDENTIFIERS.GYM,
         type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
       },
@@ -181,6 +189,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.EVENT_TPL_THREE,
         name: 'Event Template Three',
         description: 'Event template three of event type three',
+        capacity: 5,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 3,
         gym: ENTITY_IDENTIFIERS.GYM,
         type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
       },
@@ -188,6 +200,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
         name: 'Event Template One',
         description: 'Event template one of event type two',
+        capacity: 5,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 4,
         gym: ENTITY_IDENTIFIERS.GYM,
         type: ENTITY_IDENTIFIERS.EVENT_TYPE_TWO
       }
