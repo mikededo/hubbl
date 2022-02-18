@@ -2,6 +2,7 @@ import { Application } from 'express';
 import * as log from 'npmlog';
 import AppointmentsRouter from './Appointments.routes';
 import CalendarRouter from './Calendars.routes';
+import DashboardRouter from './Dashboard.routes';
 import EventRouter from './Events.routes';
 
 import EventTemplateRouter from './EventTemplates.routes';
@@ -13,6 +14,7 @@ import VirtualGymRouter from './VirtualGym.routes';
 const Routes = {
   appointments: AppointmentsRouter,
   calendars: CalendarRouter,
+  dashboards: DashboardRouter,
   events: EventRouter,
   'event-templates': EventTemplateRouter,
   'event-types': EventTypeRouter,

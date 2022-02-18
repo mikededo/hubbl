@@ -2,6 +2,7 @@ import DTO from './Base';
 import CalendarAppointmentDTO from './CalendarAppointment';
 import CalendarDateDTO from './CalendarDate';
 import ClientDTO from './Client';
+import DashboardDTO from './Dashboard';
 import EventDTO from './Event';
 import EventAppointmentDTO from './EventAppointment';
 import EventTemplateDTO from './EventTemplate';
@@ -18,6 +19,7 @@ export {
   CalendarAppointmentDTO,
   CalendarDateDTO,
   ClientDTO,
+  DashboardDTO,
   DTO,
   DTOGroups,
   EventAppointmentDTO,

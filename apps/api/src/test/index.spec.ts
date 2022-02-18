@@ -9,6 +9,7 @@ import { client, owner, trainer, worker } from './Person';
 import { token } from './Token';
 import { common } from './util';
 import { virtualGym } from './VirtualGym';
+import { dashboard } from './Dashboard';
 
 jest.mock('npmlog');
 
@@ -125,6 +126,20 @@ describe('Integration tests', () => {
 
     it('should refresh a token', async () => {
       await token.refresh();
+    });
+  });
+
+  describe('Dashboard', () => {
+    it('should fetch the dashboard by an owner', async () => {
+      await dashboard.fetch('owner');
+    });
+
+    it('should fetch the dashboard by a worker', async () => {
+      await dashboard.fetch('worker');
+    });
+
+    it('should fetch the dashboard by a client', async () => {
+      await dashboard.fetch('client');
     });
   });
 

@@ -110,6 +110,15 @@ export default class EventDTO implements DTO<Event> {
   )
   calendar!: number;
 
+  @IsNumber(
+    {},
+    {
+      message: numberError('gym'),
+      groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+    }
+  )
+  gym!: number | Gym;
+
   @IsOptional()
   template!: number;
 
@@ -135,6 +144,7 @@ export default class EventDTO implements DTO<Event> {
     result.endTime = from.endTime;
     result.trainer = from.trainer;
     result.calendar = from.calendar;
+    result.gym = from.gym;
     result.template = from.template;
 
     result.date = new CalendarDate();
@@ -211,8 +221,9 @@ export default class EventDTO implements DTO<Event> {
     result.difficulty = this.difficulty;
     result.startTime = this.startTime;
     result.endTime = this.endTime;
-    result.trainer = this.trainer as number;
     result.calendar = this.calendar;
+    result.gym = this.gym as number;
+    result.trainer = this.trainer as number;
     result.template = this.template;
     result.date = this.date;
 
