@@ -43,7 +43,7 @@ export const fetch = async ({
 }: FetchProps) => {
   /**
    * Due to a typeorm limitation, the leftJoinAndSelect skips the person
-   * from the Worker and it has to be obtained using the getRawMany, in
+   * from the entity and it has to be obtained using the getRawMany, in
    * order to parse them afterwards
    */
   const result = await service

@@ -38,7 +38,7 @@ class IEventCreateController extends BaseController {
         // Find the template, and override the json data
         template = await this.templateService.findOne({
           id: json.template,
-          options: { loadEagerRelations: false }
+          options: { loadEagerRelations: false, loadRelationIds: true }
         });
 
         if (!template) {
@@ -57,6 +57,7 @@ class IEventCreateController extends BaseController {
       result.startTime = json.startTime;
       result.endTime = json.endTime;
       result.date = json.date;
+      result.gym = template.gym;
       result.trainer = json.trainer;
       result.calendar = json.calendar;
 
