@@ -6,6 +6,8 @@ import {
   Generated,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -15,6 +17,7 @@ import {
 import Event from './Event';
 import Owner from './Owner';
 import Person from './Person';
+import TrainerTag from './TrainerTag';
 
 /**
  * `Trainer` is an entity that defines a worker with no access
@@ -57,6 +60,17 @@ export default class Trainer {
     onUpdate: 'CASCADE'
   })
   events!: Event[];
+
+  /**
+   * `Tag`'s of the `Trainer`
+   */
+  @ManyToMany(() => TrainerTag, {
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  @JoinTable({ name: 'trainer_tags' })
+  tags!: TrainerTag[];
 
   @CreateDateColumn()
   createdAt!: Date;

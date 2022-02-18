@@ -15,9 +15,11 @@ import {
   Owner,
   Person,
   Trainer,
+  TrainerTag,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
+
 import { DatabaseLogger } from './db.logger';
 
 const config: ConnectionOptions = {
@@ -42,6 +44,7 @@ const config: ConnectionOptions = {
     Owner,
     Person,
     Trainer,
+    TrainerTag,
     VirtualGym,
     Worker
   ],

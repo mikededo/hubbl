@@ -14,6 +14,7 @@ import {
   Owner,
   Person,
   Trainer,
+  TrainerTag,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
@@ -50,6 +51,7 @@ describe('Database connection config', () => {
       Owner,
       Person,
       Trainer,
+      TrainerTag,
       VirtualGym,
       Worker
     ]);
