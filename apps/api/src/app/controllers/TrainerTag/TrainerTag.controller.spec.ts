@@ -1,11 +1,20 @@
+import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
-import { TrainerTagDTO } from '@hubbl/shared/models/dto';
+import { DTOGroups, TrainerTagDTO } from '@hubbl/shared/models/dto';
+import { AppPalette } from '@hubbl/shared/types';
 
-import { PersonService, TrainerTagService } from '../../services';
-import { TrainerTagFetchController } from './TrainerTag.controller';
-
-import * as log from 'npmlog';
+import {
+  OwnerService,
+  PersonService,
+  TrainerTagService,
+  WorkerService
+} from '../../services';
+import * as create from '../helpers/create';
+import {
+  TrainerTagCreateController,
+  TrainerTagFetchController
+} from './TrainerTag.controller';
 
 jest.mock('npmlog');
 jest.mock('@hubbl/shared/models/dto');
@@ -152,6 +161,84 @@ describe('TrainerTag controller', () => {
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
       expect(mockTagService.find).toHaveBeenCalledTimes(1);
       failAsserts(TrainerTagFetchController, 'fetch', mockRes, failSpy);
+    });
+  });
+
+  describe('TrainerTagCreateController', () => {
+    const mockReq = { body: { name: 'Tag', color: AppPalette.BLUE } };
+    const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
+    const mockClientRes = { locals: { token: { id: 1, user: 'client' } } };
+
+    const cboowSpy = jest.spyOn(create, 'createdByOwnerOrWorker');
+    const fromJsonSpy = jest.spyOn(TrainerTagDTO, 'fromJson');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const setupServices = () => {
+      TrainerTagCreateController['service'] = {} as any;
+      TrainerTagCreateController['ownerService'] = {} as any;
+      TrainerTagCreateController['workerService'] = {} as any;
+    };
+
+    it('should create the services if does not have any', async () => {
+      jest.spyOn(TrainerTagCreateController, 'fail').mockImplementation();
+
+      TrainerTagCreateController['service'] = undefined;
+      TrainerTagCreateController['ownerService'] = undefined;
+      TrainerTagCreateController['workerService'] = undefined;
+
+      await TrainerTagCreateController.execute({} as any, {} as any);
+
+      expect(TrainerTagService).toHaveBeenCalledTimes(1);
+      expect(TrainerTagService).toHaveBeenCalledWith(getRepository);
+      expect(OwnerService).toHaveBeenCalledTimes(1);
+      expect(OwnerService).toHaveBeenCalledWith(getRepository);
+      expect(WorkerService).toHaveBeenCalledTimes(1);
+      expect(WorkerService).toHaveBeenCalledWith(getRepository);
+    });
+
+    it('should call createdByOwnerOrWorker', async () => {
+      fromJsonSpy.mockResolvedValue({} as any);
+      cboowSpy.mockImplementation();
+
+      setupServices();
+      await TrainerTagCreateController.execute(mockReq as any, mockRes as any);
+
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.CREATE);
+      expect(cboowSpy).toHaveBeenCalledTimes(1);
+      expect(cboowSpy).toHaveBeenCalledWith({
+        service: {},
+        ownerService: {},
+        workerService: {},
+        controller: TrainerTagCreateController,
+        res: mockRes,
+        fromClass: TrainerTagDTO.fromClass,
+        token: mockRes.locals.token,
+        dto: {},
+        entityName: 'TrainerTag',
+        workerCreatePermission: 'createTags'
+      });
+    });
+
+    it('should send forbidden if user is not an owner nor a worker', async () => {
+      const forbiddenSpy = jest
+        .spyOn(TrainerTagCreateController, 'forbidden')
+        .mockImplementation();
+
+      setupServices();
+      await TrainerTagCreateController.execute(
+        mockReq as any,
+        mockClientRes as any
+      );
+
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockClientRes,
+        'User does not have permissions.'
+      );
     });
   });
 });

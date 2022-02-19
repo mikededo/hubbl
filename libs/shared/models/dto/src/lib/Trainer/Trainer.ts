@@ -161,6 +161,9 @@ export default class TrainerDTO<T extends Gym | number>
     trainer.managerId = this.managerId;
     trainer.workerCode = this.workerCode;
 
+    // Set tags
+    trainer.tags = this.tags as TrainerTag[];
+
     return trainer;
   }
 }

@@ -24,5 +24,16 @@ describe('TrainerTag routes', () => {
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('should call TrainerTagCreateController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.TrainerTagCreateController,
+        'execute'
+      );
+
+      await supertest(app).post('/tags/trainer');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });

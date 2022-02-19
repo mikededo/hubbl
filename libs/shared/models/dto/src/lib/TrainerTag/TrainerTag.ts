@@ -16,7 +16,10 @@ import { DTOGroups } from '../util';
 export default class TrainerTagDTO implements DTO<TrainerTag> {
   @IsNumber(
     {},
-    { message: numberError('id'), groups: [DTOGroups.ALL, DTOGroups.UPDATE] }
+    {
+      message: numberError('id'),
+      groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+    }
   )
   id!: number;
 

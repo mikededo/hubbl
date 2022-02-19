@@ -1,3 +1,6 @@
-import { TrainerTagFetchController } from './TrainerTag.controller';
+import {
+  TrainerTagFetchController,
+  TrainerTagCreateController
+} from './TrainerTag.controller';
 
-export { TrainerTagFetchController };
+export { TrainerTagFetchController, TrainerTagCreateController };

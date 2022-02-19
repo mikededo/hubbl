@@ -210,6 +210,7 @@ describe('TrainerDTO', () => {
 
       dto.managerId = 1;
       dto.workerCode = 'some-uuid';
+      dto.tags = [];
 
       const result = await dto.toClass();
 
@@ -223,6 +224,7 @@ describe('TrainerDTO', () => {
       expect(result.person.theme).toBe(dto.theme);
       expect(result.managerId).toBe(dto.managerId);
       expect(result.workerCode).toBe(dto.workerCode);
+      expect(result.tags).toBe(dto.tags);
 
       // Password should be hashed
       expect(await compare('testpwd00', result.person.password)).toBeTruthy();

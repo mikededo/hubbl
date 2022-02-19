@@ -9,6 +9,7 @@ import {
   EventTypeDTO,
   GymZoneDTO,
   TrainerDTO,
+  TrainerTagDTO,
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import {
@@ -21,6 +22,7 @@ import {
   GymZone,
   Owner,
   Trainer,
+  TrainerTag,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
@@ -38,6 +40,7 @@ type CommonCreateByServices = BaseService<
   | VirtualGym
   | GymZone
   | Trainer
+  | TrainerTag
 >;
 
 type CommonCreateByDTOs =
@@ -48,7 +51,8 @@ type CommonCreateByDTOs =
   | EventTypeDTO
   | VirtualGymDTO
   | GymZoneDTO
-  | TrainerDTO<Gym | number>;
+  | TrainerDTO<Gym | number>
+  | TrainerTagDTO;
 
 type CommonCreateByEntities =
   | 'CalendarAppointment'
@@ -58,7 +62,8 @@ type CommonCreateByEntities =
   | 'EventType'
   | 'VirtualGym'
   | 'GymZone'
-  | 'Trainer';
+  | 'Trainer'
+  | 'TrainerTag';
 
 type WorkerCreatePermissions =
   | 'createCalendarAppointments'
@@ -69,7 +74,8 @@ type WorkerCreatePermissions =
   | 'createEventTypes'
   | 'createEvents'
   | 'createGymZones'
-  | 'createTrainers';
+  | 'createTrainers'
+  | 'createTags';
 
 type FromClassCallables =
   | BaseFromClassCallable<CalendarAppointment, CalendarAppointmentDTO>
@@ -78,7 +84,8 @@ type FromClassCallables =
   | BaseFromClassCallable<EventTemplate, EventTemplateDTO>
   | BaseFromClassCallable<EventType, EventTypeDTO>
   | BaseFromClassCallable<VirtualGym, VirtualGymDTO>
-  | BaseFromClassCallable<GymZone, GymZoneDTO>;
+  | BaseFromClassCallable<GymZone, GymZoneDTO>
+  | BaseFromClassCallable<TrainerTag, TrainerTagDTO>;
 
 type CreatedByOwnerOrWorkerProps = {
   service: CommonCreateByServices;
@@ -158,7 +165,7 @@ export const createdByOwnerOrWorker = async ({
   } catch (_) {
     log.error(
       `Controller [${controller.constructor.name}]`,
-      '"fetch" handler',
+      '"create" handler',
       _.toString()
     );
 

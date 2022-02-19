@@ -63,7 +63,7 @@ export default class Trainer {
   /**
    * `Tag`'s of the `Trainer`
    */
-  @ManyToMany(() => TrainerTag, {
+  @ManyToMany(() => TrainerTag, (tt) => tt.trainers, {
     eager: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
