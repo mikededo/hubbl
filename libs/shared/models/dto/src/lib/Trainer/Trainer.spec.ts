@@ -143,6 +143,22 @@ describe('TrainerDTO', () => {
       expect(result.tags.length).toEqual(trainer.tags.length);
     });
 
+    it('should return an array of empty tags if undefined', async () => {
+      const password = await hash('testpwd00', await genSalt(10));
+      const trainer = new Trainer();
+
+      trainer.person = Util.createPerson(password);
+      trainer.managerId = 1;
+      trainer.workerCode = 'some-uuid';
+      trainer.events = [];
+      trainer.tags = undefined as any;
+
+      const result = TrainerDTO.fromClass(trainer);
+
+      // Tags
+      expect(result.tags).toStrictEqual([]);
+    });
+
     it('should return the info only params if variant is info', async () => {
       const password = await hash('testpwd00', await genSalt(10));
 

@@ -122,7 +122,7 @@ export default class TrainerDTO<T extends Gym | number>
 
       // Tags
       result.tags =
-        trainer.tags.map((tag) => TrainerTagDTO.fromClass(tag));
+        trainer.tags?.map((tag) => TrainerTagDTO.fromClass(tag)) || [];
     }
 
     return result;
