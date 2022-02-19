@@ -17,7 +17,7 @@ export const fetch = async (by: 'owner' | 'worker' | 'client') => {
   expect(fetchResult.body.gymZones).toBeDefined();
   expect(fetchResult.body.todayEvents).toBeDefined();
   expect(fetchResult.body.events).toBeDefined();
-  
+
   if (by === 'client') {
     expect(fetchResult.body.trainers).not.toBeDefined();
     expect(fetchResult.body.templates).not.toBeDefined();
