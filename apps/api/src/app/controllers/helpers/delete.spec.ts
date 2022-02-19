@@ -40,7 +40,7 @@ describe('delete', () => {
   const failAsserts = () => {
     expect(logSpy).toHaveBeenCalledTimes(1);
     expect(logSpy).toHaveBeenCalledWith(
-      `Controller[${mockController.constructor.name}]`,
+      `Controller [${mockController.constructor.name}]`,
       `"delete" handler`,
       'error-thrown'
     );
@@ -48,7 +48,7 @@ describe('delete', () => {
     expect(mockController.fail).toHaveBeenCalledTimes(1);
     expect(mockController.fail).toHaveBeenCalledWith(
       {},
-      'Internal server error. If the error persists, contact our team'
+      'Internal server error. If the problem persists, contact our team.'
     );
   };
 
@@ -154,14 +154,14 @@ describe('delete', () => {
 
       expect(logSpy).toHaveBeenCalledTimes(1);
       expect(logSpy).toHaveBeenCalledWith(
-        `Controller[${mockController.constructor.name}]`,
+        `Controller [${mockController.constructor.name}]`,
         '"delete" handler',
         'No "workerCreatePermission" passed'
       );
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {},
-        'Internal server error. If the error persists, contact our team'
+        'Internal server error. If the problem persists, contact our team.'
       );
       expect(mockWorkerService.findOne).not.toHaveBeenCalled();
     });

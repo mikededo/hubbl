@@ -94,14 +94,14 @@ export const findAndUpdateEntity = async ({
     return controller.ok(res);
   } catch (_) {
     log.error(
-      `Controller[${controller.constructor.name}]`,
+      `Controller [${controller.constructor.name}]`,
       '"update" handler',
       _.toString()
     );
 
     return controller.fail(
       res,
-      'Internal server error. If the error persists, contact our team.'
+      'Internal server error. If the problem persists, contact our team.'
     );
   }
 };
@@ -168,14 +168,14 @@ export const updatedByOwnerOrWorker = async ({
   if (token.user === 'worker') {
     if (!workerUpdatePermission) {
       log.error(
-        `Controller[${controller.constructor.name}]`,
+        `Controller [${controller.constructor.name}]`,
         '"update" handler',
         'No "workerCreatePermission passed'
       );
 
       return controller.fail(
         res,
-        'Internal server error. If the error persists, contact our team'
+        'Internal server error. If the problem persists, contact our team.'
       );
     }
 

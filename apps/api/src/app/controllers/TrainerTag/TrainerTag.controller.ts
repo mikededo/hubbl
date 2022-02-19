@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { TrainerTagDTO } from '@hubbl/shared/models/dto';
@@ -12,19 +11,6 @@ class ITrainerTagFetchController extends BaseController {
   private service: TrainerTagService = undefined;
   private personService: PersonService = undefined;
 
-  private async onFail(res: Response, error: any): Promise<Response> {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      `"fetch" handler`,
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the error persists, contact our team.'
-    );
-  }
-
   protected async run(_: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new TrainerTagService(getRepository);
@@ -36,7 +22,7 @@ class ITrainerTagFetchController extends BaseController {
 
     const { token } = res.locals;
 
-    if (token.user === 'client') {
+    if (token.user !== 'owner' && token.user !== 'worker') {
       return this.forbidden(res, 'User does not have permissions.');
     }
 
@@ -63,7 +49,7 @@ class ITrainerTagFetchController extends BaseController {
         tags.map((tag) => TrainerTagDTO.fromClass(tag))
       );
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'fetch');
     }
   }
 }

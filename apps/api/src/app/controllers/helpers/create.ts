@@ -109,14 +109,14 @@ export const createdByOwnerOrWorker = async ({
   if (token.user === 'worker') {
     if (!workerCreatePermission) {
       log.error(
-        `Controller[${controller.constructor.name}]`,
+        `Controller [${controller.constructor.name}]`,
         '"fetch" handler',
         'No "workerCreatePermission" passed'
       );
 
       return controller.fail(
         res,
-        'Internal server error. If the error persists, contact our team'
+        'Internal server error. If the problem persists, contact our team.'
       );
     }
 
@@ -157,14 +157,14 @@ export const createdByOwnerOrWorker = async ({
     return controller.created(res, fromClass(result as any));
   } catch (_) {
     log.error(
-      `Controller[${controller.constructor.name}]`,
+      `Controller [${controller.constructor.name}]`,
       '"fetch" handler',
       _.toString()
     );
 
     return controller.fail(
       res,
-      'Internal server error. If the error persists, contact our team.'
+      'Internal server error. If the problem persists, contact our team.'
     );
   }
 };

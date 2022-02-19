@@ -63,7 +63,7 @@ class IEventCreateController extends BaseController {
 
       return result;
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
   }
 
@@ -98,19 +98,6 @@ class IEventCreateController extends BaseController {
       .andWhere('e.date.day = :day', { day: dto.date.day })
       .andWhere('e.calendar = :calendar', { calendar: dto.calendar })
       .getCount();
-  }
-
-  protected onFail(res: Response, error: any): Response {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      '"create" handler',
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the problem persists, contact our team.'
-    );
   }
 
   protected async run(req: Request, res: Response): Promise<Response> {
@@ -164,7 +151,7 @@ class IEventCreateController extends BaseController {
         );
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
 
     try {
@@ -176,7 +163,7 @@ class IEventCreateController extends BaseController {
         );
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
 
     try {
@@ -188,7 +175,7 @@ class IEventCreateController extends BaseController {
         );
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
 
     return createdByOwnerOrWorker({
@@ -262,7 +249,7 @@ class IEventUpdateController extends BaseController {
       }
     } catch (e) {
       log.error(
-        `Controller[${this.constructor.name}]`,
+        `Controller [${this.constructor.name}]`,
         '"update" handler',
         e.toString()
       );

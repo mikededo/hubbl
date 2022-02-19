@@ -26,14 +26,14 @@ describe('TrainerTag controller', () => {
   ) => {
     expect(logSpy).toHaveBeenCalledTimes(1);
     expect(logSpy).toHaveBeenCalledWith(
-      `Controller[${controller.constructor.name}]`,
+      `Controller [${controller.constructor.name}]`,
       `"${operation}" handler`,
       'error-thrown'
     );
     expect(failSpy).toHaveBeenCalledTimes(1);
     expect(failSpy).toHaveBeenCalledWith(
       res,
-      'Internal server error. If the error persists, contact our team.'
+      'Internal server error. If the problem persists, contact our team.'
     );
   };
 

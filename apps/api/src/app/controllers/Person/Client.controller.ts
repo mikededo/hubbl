@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { ClientDTO } from '@hubbl/shared/models/dto';
@@ -19,19 +18,6 @@ import { clientLogin, fetch, register } from './helpers';
 class IClientFetchController extends BaseController {
   protected service: ClientService = undefined;
   protected personService: PersonService = undefined;
-
-  private onFail(res: Response, error: any): Response {
-    log.error(
-      `Controller [${this.constructor.name}]`,
-      '"fetch" handler',
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the problem persists, contact our team.'
-    );
-  }
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
@@ -68,7 +54,7 @@ class IClientFetchController extends BaseController {
         skip: +(skip ?? 0)
       });
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'fetch');
     }
   }
 }
@@ -80,19 +66,6 @@ export const ClientFetchController = fetchInstance;
 class IClientRegisterController extends BaseController {
   protected service: ClientService = undefined;
   protected gymService: GymService = undefined;
-
-  private async onFail(res: Response, error: any): Promise<Response> {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      `"register" handler`,
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the error persists, contact our team'
-    );
-  }
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
@@ -123,7 +96,7 @@ class IClientRegisterController extends BaseController {
         // Set the gym
         req.body.gym = gym.id;
       } catch (e) {
-        return this.onFail(res, e);
+        return this.onFail(res, e, 'register');
       }
     }
 

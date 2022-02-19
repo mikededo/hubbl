@@ -71,7 +71,7 @@ describe('register', () => {
     expect(mockController.fail).toHaveBeenCalledTimes(1);
     expect(mockController.fail).toHaveBeenCalledWith(
       {} as any,
-      'Internal server error. If the error persists, contact our team.'
+      'Internal server error. If the problem persists, contact our team.'
     );
   };
 
@@ -93,7 +93,7 @@ describe('register', () => {
     expect(mockController.fail).toHaveBeenCalledTimes(1);
     expect(mockController.fail).toHaveBeenCalledWith(
       res,
-      'Internal server error. If the error persists, contact our team.'
+      'Internal server error. If the problem persists, contact our team.'
     );
   };
 
@@ -245,7 +245,7 @@ describe('register', () => {
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {} as any,
-        'Internal server error. If the error persists, contact our team.'
+        'Internal server error. If the problem persists, contact our team.'
       );
     });
 

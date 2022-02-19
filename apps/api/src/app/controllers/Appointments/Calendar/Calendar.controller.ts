@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { FetchAppointmentInterval } from '@hubbl/shared/models/body-validators';
@@ -47,6 +46,10 @@ abstract class BaseCalendarAppointmentController extends BaseController {
     super();
   }
 
+  protected async onFail(res: Response, error: any): Promise<Response> {
+    return super.onFail(res, error, this.operation);
+  }
+
   protected async maxConcurrentQuery({
     date,
     calendar,
@@ -61,19 +64,6 @@ abstract class BaseCalendarAppointmentController extends BaseController {
       endTime,
       calendar
     ]);
-  }
-
-  protected async onFail(res: Response, error: any): Promise<Response> {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      `"${this.operation}" handler`,
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the error persists, contact our team'
-    );
   }
 
   protected isPastEvent(appointment: CalendarAppointmentDTO): boolean {
@@ -159,19 +149,6 @@ class ICalendarApointmentFetchController extends BaseController {
   protected personService: PersonService = undefined;
   protected gymZoneService: GymZoneService = undefined;
 
-  private async onFail(res: Response, error: any): Promise<Response> {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      `"fetch" handler`,
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the error persists, contact our team'
-    );
-  }
-
   private isPastDate(date: CalendarDate): boolean {
     return new Date(date.year, date.month - 1, date.day) < new Date();
   }
@@ -232,7 +209,7 @@ class ICalendarApointmentFetchController extends BaseController {
         rawTimes.map(({ available }) => available)
       );
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'fetch');
     }
   }
 }

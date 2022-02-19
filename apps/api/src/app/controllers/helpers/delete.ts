@@ -21,14 +21,14 @@ import { ParsedToken } from './types';
 /* Common on fail call */
 const onFail = (controller: BaseController, res: Response, error: any) => {
   log.error(
-    `Controller[${controller.constructor.name}]`,
+    `Controller [${controller.constructor.name}]`,
     `"delete" handler`,
     error.toString()
   );
 
   return controller.fail(
     res,
-    'Internal server error. If the error persists, contact our team'
+    'Internal server error. If the problem persists, contact our team.'
   );
 };
 
@@ -90,14 +90,14 @@ export const deletedByOwnerOrWorker = async ({
   if (token.user === 'worker') {
     if (!workerDeletePermission) {
       log.error(
-        `Controller[${controller.constructor.name}]`,
+        `Controller [${controller.constructor.name}]`,
         '"delete" handler',
         'No "workerCreatePermission" passed'
       );
 
       return controller.fail(
         res,
-        'Internal server error. If the error persists, contact our team'
+        'Internal server error. If the problem persists, contact our team.'
       );
     }
 

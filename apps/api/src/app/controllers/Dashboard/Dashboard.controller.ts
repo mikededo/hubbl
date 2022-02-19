@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import * as log from 'npmlog';
 import { getRepository, SelectQueryBuilder } from 'typeorm';
 
 import { DashboardDTO } from '@hubbl/shared/models/dto';
@@ -109,19 +108,6 @@ class IFetchDashboardController extends BaseController {
       .orderBy('et.updated_at', 'DESC');
   }
 
-  protected onFail(res: Response, error: any): Response {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      '"fetch" handler',
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the error persists, contact our team.'
-    );
-  }
-
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.personService) {
       this.personService = new PersonService(getRepository);
@@ -166,7 +152,7 @@ class IFetchDashboardController extends BaseController {
         return this.forbidden(res, 'Gym does not exist.');
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'fetch');
     }
 
     const { token } = res.locals;
@@ -189,7 +175,7 @@ class IFetchDashboardController extends BaseController {
         );
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'fetch');
     }
 
     try {
@@ -217,7 +203,7 @@ class IFetchDashboardController extends BaseController {
         })
       );
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'fetch');
     }
   }
 }
