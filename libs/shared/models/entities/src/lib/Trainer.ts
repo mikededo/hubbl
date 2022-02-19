@@ -55,7 +55,6 @@ export default class Trainer {
    * `Event`'s of the `Trainer`
    */
   @OneToMany(() => Event, (e) => e.trainer, {
-    lazy: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   })

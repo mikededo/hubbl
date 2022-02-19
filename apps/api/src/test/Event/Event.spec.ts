@@ -44,6 +44,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
       trainer: ENTITY_IDENTIFIERS.TRAINER,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
       template: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
+      gym: ENTITY_IDENTIFIERS.GYM,
       date: {
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,
@@ -69,6 +70,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
       difficulty: 1,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
       template: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
+      gym: ENTITY_IDENTIFIERS.GYM,
       date: {
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,
@@ -102,6 +104,7 @@ export const createNoTemplate = async (by: 'owner' | 'worker') => {
       endTime: '16:30:00',
       trainer: ENTITY_IDENTIFIERS.TRAINER,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
+      gym: ENTITY_IDENTIFIERS.GYM,
       date: {
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,

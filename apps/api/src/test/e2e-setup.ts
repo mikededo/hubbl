@@ -317,7 +317,8 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         difficulty: 1,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
+        gym: ENTITY_IDENTIFIERS.GYM
       },
       {
         id: ENTITY_IDENTIFIERS.EVENT_TWO,
@@ -332,7 +333,8 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         difficulty: 2,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO,
+        gym: ENTITY_IDENTIFIERS.GYM
       },
       {
         id: ENTITY_IDENTIFIERS.EVENT_THREE,
@@ -347,7 +349,8 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         difficulty: 3,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
+        gym: ENTITY_IDENTIFIERS.GYM
       },
       {
         id: ENTITY_IDENTIFIERS.EVENT_FOUR,
@@ -362,7 +365,8 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         difficulty: 4,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
+        gym: ENTITY_IDENTIFIERS.GYM
       },
       {
         id: ENTITY_IDENTIFIERS.EVENT_FIVE,
@@ -376,7 +380,8 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true,
         difficulty: 5,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO,
+        gym: ENTITY_IDENTIFIERS.GYM
       }
     ]);
 

@@ -1,9 +1,8 @@
 import { genSalt, hash } from 'bcrypt';
-import { IsArray, IsNumber, IsString, validateOrReject } from 'class-validator';
+import { IsNumber, IsString, validateOrReject } from 'class-validator';
 
-import { Event, Gym, Person, Trainer } from '@hubbl/shared/models/entities';
+import { Gym, Person, Trainer } from '@hubbl/shared/models/entities';
 import {
-  arrayError,
   numberError,
   stringError,
   validationParser
@@ -34,10 +33,6 @@ export default class TrainerDTO<T extends Gym | number>
   @IsString({ message: stringError('workerCode') })
   workerCode!: string;
 
-  // As of now, it should not be validated
-  @IsArray({ message: arrayError('events'), groups: [] })
-  events!: Event[];
-
   /**
    * Parses the json passed to the DTO and it validates
    *
@@ -63,7 +58,6 @@ export default class TrainerDTO<T extends Gym | number>
     // Trainer props
     result.managerId = json.managerId;
     result.workerCode = json.workerCode;
-    result.events = json.events;
 
     await validateOrReject(result, {
       validationError: { target: false },
@@ -85,8 +79,8 @@ export default class TrainerDTO<T extends Gym | number>
   public static fromClass(
     trainer: Trainer,
     variant: 'info' | 'all' = 'all'
-  ): TrainerDTO<Gym> {
-    const result = new TrainerDTO<Gym>();
+  ): TrainerDTO<Gym | number> {
+    const result = new TrainerDTO<Gym | number>();
 
     // Person props
     result.id = trainer.person.id;
@@ -98,13 +92,12 @@ export default class TrainerDTO<T extends Gym | number>
       result.password = trainer.person.password;
       result.phone = trainer.person.phone;
       result.theme = trainer.person.theme;
-      result.gym = trainer.person.gym as Gym;
+      result.gym = trainer.person.gym;
       result.gender = trainer.person.gender as Gender;
 
       // Trainer props
       result.managerId = trainer.managerId;
       result.workerCode = trainer.workerCode;
-      result.events = trainer.events;
     }
 
     return result;
@@ -139,7 +132,6 @@ export default class TrainerDTO<T extends Gym | number>
     // Set trainer props
     trainer.managerId = this.managerId;
     trainer.workerCode = this.workerCode;
-    trainer.events = this.events;
 
     return trainer;
   }

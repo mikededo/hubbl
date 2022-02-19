@@ -11,6 +11,7 @@ import {
 
 import { ThemeColor } from '@hubbl/shared/types';
 
+import Event from './Event';
 import EventTemplate from './EventTemplate';
 import EventType from './EventType';
 import Person from './Person';
@@ -65,6 +66,16 @@ export default class Gym {
     onUpdate: 'CASCADE'
   })
   eventTemplates!: EventTemplate[];
+
+  /**
+   * `Event`'s from the gym. Used to know which belong to the gym since
+   * if they do not have a template, it could not be determined.
+   */
+  @OneToMany(() => Event, (e) => e.gym, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  events!: Event[];
 
   /**
    * Relation that allows us to know what users

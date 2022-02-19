@@ -1,5 +1,6 @@
 export * from './Appointments';
 export * from './Calendar';
+export * from './Dashboard';
 export * from './Event';
 export * from './EventTemplate';
 export * from './EventType';

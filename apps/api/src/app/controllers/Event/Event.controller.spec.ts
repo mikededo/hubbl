@@ -34,6 +34,7 @@ describe('Event controller', () => {
     difficulty: 5,
     startTime: '09:00:00',
     endTime: '10:00:00',
+    gym: 1,
     trainer: 1,
     calendar: 1,
     template: 1,
@@ -196,7 +197,8 @@ describe('Event controller', () => {
       capacity: 10,
       covidPassport: true,
       maskRequired: true,
-      difficulty: 1
+      difficulty: 1,
+      gym: 2
     };
     const mockCreatedEvent = (template = true): Event => {
       const result = new Event();
@@ -215,6 +217,7 @@ describe('Event controller', () => {
       result.endTime = mockReq.body.endTime;
       result.date = mockReq.body.date as any;
       result.trainer = mockReq.body.trainer;
+      result.gym = (template ? mockTemplate : mockReq.body).gym;
       result.calendar = mockReq.body.calendar;
 
       return result;
@@ -372,7 +375,7 @@ describe('Event controller', () => {
       expect(mockTemplateService.findOne).toHaveBeenCalledTimes(1);
       expect(mockTemplateService.findOne).toHaveBeenCalledWith({
         id: mockReq.body.template,
-        options: { loadEagerRelations: false }
+        options: { loadEagerRelations: false, loadRelationIds: true }
       });
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
