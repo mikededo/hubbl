@@ -74,7 +74,6 @@ describe('WorkerController', () => {
           fromClass: WorkerDTO.fromClass,
           gymId: 1,
           alias: 'w',
-          personFk: 'worker_person_fk',
           skip: mockReq.query.skip
         });
       });
@@ -97,7 +96,6 @@ describe('WorkerController', () => {
           fromClass: WorkerDTO.fromClass,
           gymId: 1,
           alias: 'w',
-          personFk: 'worker_person_fk',
           skip: 0
         });
       });

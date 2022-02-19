@@ -51,7 +51,10 @@ class ITrainerFetchController extends BaseController {
     try {
       // Check if the person exists
       // Get the person, if any
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOne({
+        id: token.id,
+        options: { select: ['id', 'gym'] }
+      });
 
       if (!person) {
         return this.unauthorized(res, 'Person does not exist');
@@ -64,7 +67,6 @@ class ITrainerFetchController extends BaseController {
         fromClass: TrainerDTO.fromClass,
         gymId: (person.gym as Gym).id,
         alias: 't',
-        personFk: 'trainer_person_fk',
         skip: +(skip ?? 0)
       });
     } catch (e) {

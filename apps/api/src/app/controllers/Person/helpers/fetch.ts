@@ -1,4 +1,3 @@
-import camelcaseKeys = require('camelcase-keys');
 import { Response } from 'express';
 
 import { ClientDTO, TrainerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
@@ -17,60 +16,36 @@ type FetchFromClass =
   | BaseFromClassCallable<Client, ClientDTO<Gym | number>>
   | BaseFromClassCallable<Trainer, TrainerDTO<Gym | number>>;
 
-type FetchProps = {
-  service: WorkerService | ClientService | TrainerService;
+type FetchProps<T extends WorkerService | ClientService | TrainerService> = {
+  service: T;
   controller: BaseController;
   res: Response;
   fromClass: FetchFromClass;
   alias: string;
-  personFk: string;
   gymId: number;
   skip: number;
 };
 
-const parseFk = (key: string): string =>
-  /_fk$/.test(key) ? key.split(/_fk$/)[0] : key;
-
-export const fetch = async ({
+export const fetch = async <
+  T extends WorkerService | ClientService | TrainerService
+>({
   service,
   controller,
   res,
   fromClass,
   alias,
-  personFk,
   gymId,
   skip
-}: FetchProps) => {
-  /**
-   * Due to a typeorm limitation, the leftJoinAndSelect skips the person
-   * from the entity and it has to be obtained using the getRawMany, in
-   * order to parse them afterwards
-   */
-  const result = await service
-    .createQueryBuilder({ alias })
-    .leftJoinAndSelect('person', 'p')
-    .where('p.gym = :gymId', { gymId })
-    .andWhere(`${alias}.${personFk} = p.id`)
-    .skip(skip)
-    .limit(25)
-    .getRawMany();
+}: FetchProps<T>) => {
+  const result = await service.find({
+    join: { alias, innerJoin: { person: `${alias}.person` } },
+    where: { person: { gym: gymId } },
+    take: 25,
+    skip
+  });
 
   return controller.ok(
     res,
-    result.map((e) => {
-      const parsed = { person: {} };
-
-      Object.entries(e).forEach(([k, v]) => {
-        if (new RegExp(`^${alias}_`).test(k)) {
-          const [, prop] = k.split(new RegExp(`^${alias}_`));
-          parsed[parseFk(prop)] = v;
-        } else if (/^p_/.test(k)) {
-          const [, prop] = k.split(/^p_/);
-          parsed.person[parseFk(prop)] = v;
-        }
-      });
-
-      return fromClass(camelcaseKeys(parsed, { deep: true }) as any);
-    })
+    result.map((e: Worker & Client & Trainer) => fromClass(e))
   );
 };

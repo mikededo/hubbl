@@ -113,7 +113,10 @@ export default class TrainerDTO<T extends Gym | number>
       result.password = trainer.person.password;
       result.phone = trainer.person.phone;
       result.theme = trainer.person.theme;
-      result.gym = trainer.person.gym;
+      result.gym =
+        trainer.person.gym instanceof Gym
+          ? trainer.person.gym.id
+          : trainer.person.gym;
       result.gender = trainer.person.gender as Gender;
 
       // Trainer props

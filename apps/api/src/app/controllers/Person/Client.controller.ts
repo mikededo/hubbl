@@ -65,7 +65,6 @@ class IClientFetchController extends BaseController {
         fromClass: ClientDTO.fromClass,
         gymId: (person.gym as Gym).id,
         alias: 'c',
-        personFk: 'client_person_fk',
         skip: +(skip ?? 0)
       });
     } catch (e) {

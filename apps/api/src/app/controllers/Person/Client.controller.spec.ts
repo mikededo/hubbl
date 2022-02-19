@@ -80,7 +80,6 @@ describe('ClientController', () => {
           fromClass: ClientDTO.fromClass,
           gymId: 1,
           alias: 'c',
-          personFk: 'client_person_fk',
           skip: mockReq.query.skip
         });
       });
@@ -103,7 +102,6 @@ describe('ClientController', () => {
           fromClass: ClientDTO.fromClass,
           gymId: 1,
           alias: 'c',
-          personFk: 'client_person_fk',
           skip: 0
         });
       });

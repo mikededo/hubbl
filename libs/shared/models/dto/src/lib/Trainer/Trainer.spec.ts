@@ -116,12 +116,29 @@ describe('TrainerDTO', () => {
       expect(result.phone).toBe(trainer.person.phone);
       expect(result.theme).toBe(trainer.person.theme);
       expect(result.gender).toBe(trainer.person.gender);
-      expect(result.gym).toStrictEqual(trainer.person.gym);
+      expect(result.gym).toStrictEqual((trainer.person.gym as Gym).id);
       // Trainer props
       expect(result.managerId).toBe(trainer.managerId);
       expect(result.workerCode).toBe(trainer.workerCode);
       // Tags
       expect(result.tags).toStrictEqual(trainer.tags);
+    });
+
+    it('should return a the id of the Gym if it is not a gym', async () => {
+      const password = await hash('testpwd00', await genSalt(10));
+
+      const trainer = new Trainer();
+
+      trainer.person = Util.createPerson(password);
+      trainer.person.gym = 1;
+      trainer.managerId = 1;
+      trainer.workerCode = 'some-uuid';
+      trainer.events = [];
+      trainer.tags = [];
+
+      const result = TrainerDTO.fromClass(trainer);
+
+      expect(result.gym).toStrictEqual(1);
     });
 
     it('should call TrainerTags.fromClass if has any', async () => {

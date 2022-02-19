@@ -60,7 +60,6 @@ class IWorkerFetchController extends BaseController {
         fromClass: WorkerDTO.fromClass,
         gymId: (person.gym as Gym).id,
         alias: 'w',
-        personFk: 'worker_person_fk',
         skip: +(skip ?? 0)
       });
     } catch (e) {
