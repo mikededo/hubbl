@@ -13,6 +13,7 @@ import {
   TrainerService,
   WorkerService
 } from './Person';
+import TrainerTagService from './TrainerTag';
 import { RepositoryAccessor } from './util';
 import VirtualGymService from './VirtualGym';
 
@@ -30,6 +31,7 @@ export {
   PersonService,
   RepositoryAccessor,
   TrainerService,
+  TrainerTagService,
   VirtualGymService,
   WorkerService
 };
