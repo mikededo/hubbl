@@ -15,6 +15,7 @@ const propCompare = (
   expect(got.id).toBe(want.id);
   expect(got.name).toBe(want.name);
   expect(got.color).toBe(want.color);
+  expect(got.gym).toBe(want.gym);
 };
 
 describe('TrainerTag', () => {
@@ -28,10 +29,9 @@ describe('TrainerTag', () => {
       const json = {
         id: 1,
         name: 'Test',
-        email: 'test@TrainerTag.com',
-        phone: '000 000 000',
         code: '8X4rZNmu',
-        color: AppPalette.BLUE
+        color: AppPalette.BLUE,
+        gym: 1
       };
 
       const result = await TrainerTagDTO.fromJson(json, 'any' as any);
@@ -75,6 +75,7 @@ describe('TrainerTag', () => {
       tag.id = 1;
       tag.name = 'Test';
       tag.color = AppPalette.BLUE;
+      tag.gym = 1;
 
       const result = TrainerTagDTO.fromClass(tag);
 
@@ -88,6 +89,7 @@ describe('TrainerTag', () => {
       dto.id = 1;
       dto.name = 'Test';
       dto.color = AppPalette.BLUE;
+      dto.gym = 1;
 
       const result = dto.toClass();
 

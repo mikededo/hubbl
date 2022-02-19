@@ -29,6 +29,15 @@ export default class TrainerTagDTO implements DTO<TrainerTag> {
   @IsEnum({}, { message: enumError('AppPalette', 'color') })
   color!: AppPalette;
 
+  @IsNumber(
+    {},
+    {
+      message: numberError('gym'),
+      groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+    }
+  )
+  gym!: number;
+
   /**
    * Parses the json passed to the DTO and validates it
    *
@@ -44,6 +53,7 @@ export default class TrainerTagDTO implements DTO<TrainerTag> {
     result.id = json.id;
     result.name = json.name;
     result.color = json.color;
+    result.gym = json.gym;
 
     await validateOrReject(result, {
       validationError: { target: false },
@@ -67,6 +77,7 @@ export default class TrainerTagDTO implements DTO<TrainerTag> {
     result.id = tag.id;
     result.name = tag.name;
     result.color = tag.color;
+    result.gym = tag.gym;
 
     return result;
   }
@@ -81,6 +92,7 @@ export default class TrainerTagDTO implements DTO<TrainerTag> {
     result.id = this.id;
     result.name = this.name;
     result.color = this.color;
+    result.gym = this.gym;
 
     return result;
   }

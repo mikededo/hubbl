@@ -15,6 +15,7 @@ import Event from './Event';
 import EventTemplate from './EventTemplate';
 import EventType from './EventType';
 import Person from './Person';
+import TrainerTag from './TrainerTag';
 import VirtualGym from './VirtualGym';
 
 @Entity()
@@ -93,6 +94,17 @@ export default class Gym {
     onUpdate: 'CASCADE'
   })
   virtualGyms!: VirtualGym[];
+
+  /**
+   * `TrainerTags`'s of the `Gym`
+   */
+  @OneToMany(() => TrainerTag, (vg) => vg.gym, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  trainerTags!: TrainerTag[];
 
   /**
    * Primary color of the theme chosen by the `Owner`

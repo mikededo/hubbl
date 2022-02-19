@@ -1,5 +1,14 @@
 import { AppPalette } from '@hubbl/shared/types';
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+import { Gym } from '.';
 
 @Entity()
 export default class TrainerTag {
@@ -11,6 +20,9 @@ export default class TrainerTag {
 
   @Column('enum', { enum: AppPalette, enumName: 'app_palette' })
   color!: AppPalette;
+
+  @ManyToOne(() => Gym, (g) => g.trainerTags, { nullable: false })
+  gym!: number;
 
   @CreateDateColumn()
   createdAt!: Date;
