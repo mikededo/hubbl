@@ -1,6 +1,11 @@
 import {
   TrainerTagFetchController,
-  TrainerTagCreateController
+  TrainerTagCreateController,
+  TrainerTagUpdateController
 } from './TrainerTag.controller';
 
-export { TrainerTagFetchController, TrainerTagCreateController };
+export {
+  TrainerTagFetchController,
+  TrainerTagCreateController,
+  TrainerTagUpdateController
+};

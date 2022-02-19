@@ -13,7 +13,7 @@ jest.mock('../middlewares/auth.middleware', () => {
 });
 
 describe('TrainerTag routes', () => {
-  describe('TrainerTag validation', () => {
+  describe('TrainerTag fetch', () => {
     it('should call TrainerTagFetchController.execute', async () => {
       const executeSpy = jest.spyOn(
         controllers.TrainerTagFetchController,
@@ -24,7 +24,9 @@ describe('TrainerTag routes', () => {
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
+  });
 
+  describe('TrainerTag create', () => {
     it('should call TrainerTagCreateController.execute', async () => {
       const executeSpy = jest.spyOn(
         controllers.TrainerTagCreateController,
@@ -32,6 +34,18 @@ describe('TrainerTag routes', () => {
       );
 
       await supertest(app).post('/tags/trainer');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('TrainerTag update', () => {
+    it('should call TrainerTagUpdateController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.TrainerTagUpdateController,
+        'execute'
+      );
+
+      await supertest(app).put('/tags/trainer/1');
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });

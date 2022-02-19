@@ -11,9 +11,11 @@ import {
   WorkerService
 } from '../../services';
 import * as create from '../helpers/create';
+import * as update from '../helpers/update';
 import {
   TrainerTagCreateController,
-  TrainerTagFetchController
+  TrainerTagFetchController,
+  TrainerTagUpdateController
 } from './TrainerTag.controller';
 
 jest.mock('npmlog');
@@ -238,6 +240,105 @@ describe('TrainerTag controller', () => {
       expect(forbiddenSpy).toHaveBeenCalledWith(
         mockClientRes,
         'User does not have permissions.'
+      );
+    });
+  });
+
+  describe('TrainerTagUpdateController', () => {
+    const mockReq = {
+      body: { name: 'Tag', color: AppPalette.BLUE },
+      params: { id: 1 }
+    };
+    const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
+    const mockClientRes = { locals: { token: { id: 1, user: 'client' } } };
+
+    const uboowSpy = jest.spyOn(update, 'updatedByOwnerOrWorker');
+    const fromJsonSpy = jest.spyOn(TrainerTagDTO, 'fromJson');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const setupServices = () => {
+      TrainerTagUpdateController['service'] = {} as any;
+      TrainerTagUpdateController['ownerService'] = {} as any;
+      TrainerTagUpdateController['workerService'] = {} as any;
+    };
+
+    it('should create the services if does not have any', async () => {
+      jest.spyOn(TrainerTagUpdateController, 'fail').mockImplementation();
+
+      TrainerTagUpdateController['service'] = undefined;
+      TrainerTagUpdateController['ownerService'] = undefined;
+      TrainerTagUpdateController['workerService'] = undefined;
+
+      await TrainerTagUpdateController.execute({} as any, {} as any);
+
+      expect(TrainerTagService).toHaveBeenCalledTimes(1);
+      expect(TrainerTagService).toHaveBeenCalledWith(getRepository);
+      expect(OwnerService).toHaveBeenCalledTimes(1);
+      expect(OwnerService).toHaveBeenCalledWith(getRepository);
+      expect(WorkerService).toHaveBeenCalledTimes(1);
+      expect(WorkerService).toHaveBeenCalledWith(getRepository);
+    });
+
+    it('should call updatedByOwnerOrWorker', async () => {
+      fromJsonSpy.mockResolvedValue({} as any);
+      uboowSpy.mockImplementation();
+
+      setupServices();
+      await TrainerTagUpdateController.execute(mockReq as any, mockRes as any);
+
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
+      expect(uboowSpy).toHaveBeenCalledTimes(1);
+      expect(uboowSpy).toHaveBeenCalledWith({
+        service: {},
+        ownerService: {},
+        workerService: {},
+        controller: TrainerTagUpdateController,
+        res: mockRes,
+        token: mockRes.locals.token,
+        dto: {},
+        entityName: 'TrainerTag',
+        countArgs: { id: mockReq.params.id },
+        workerUpdatePermission: 'updateTags'
+      });
+    });
+
+    it('should send forbidden if user is not an owner nor a worker', async () => {
+      const forbiddenSpy = jest
+        .spyOn(TrainerTagUpdateController, 'forbidden')
+        .mockImplementation();
+
+      setupServices();
+      await TrainerTagUpdateController.execute(
+        mockReq as any,
+        mockClientRes as any
+      );
+
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockClientRes,
+        'User does not have permissions.'
+      );
+    });
+
+    it('should send clientError if no id passed', async () => {
+      const clientErrorSpy = jest
+        .spyOn(TrainerTagUpdateController, 'clientError')
+        .mockImplementation();
+
+      setupServices();
+      await TrainerTagUpdateController.execute(
+        { ...mockReq, params: {} } as any,
+        mockRes as any
+      );
+
+      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
+      expect(clientErrorSpy).toHaveBeenCalledWith(
+        mockRes,
+        'No TrainerTag id given.'
       );
     });
   });

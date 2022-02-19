@@ -2,7 +2,8 @@ import { Router } from 'express';
 
 import {
   TrainerTagCreateController,
-  TrainerTagFetchController
+  TrainerTagFetchController,
+  TrainerTagUpdateController
 } from '../controllers';
 import middlewares from '../middlewares';
 
@@ -16,6 +17,10 @@ TrainerTagRouter.get('', middlewares.auth, (req, res) => {
 
 TrainerTagRouter.post('', middlewares.auth, (req, res) => {
   TrainerTagCreateController.execute(req, res);
+});
+
+TrainerTagRouter.put('/:id', middlewares.auth, (req, res) => {
+  TrainerTagUpdateController.execute(req, res);
 });
 
 TagRouter.use('/trainer', TrainerTagRouter);
