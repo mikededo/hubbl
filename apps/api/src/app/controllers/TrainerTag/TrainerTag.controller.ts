@@ -11,7 +11,11 @@ import {
   WorkerService
 } from '../../services';
 import BaseController from '../Base';
-import { createdByOwnerOrWorker, updatedByOwnerOrWorker } from '../helpers';
+import {
+  createdByOwnerOrWorker,
+  deletedByOwnerOrWorker,
+  updatedByOwnerOrWorker
+} from '../helpers';
 
 class ITrainerTagFetchController extends BaseController {
   private service: TrainerTagService = undefined;
@@ -150,6 +154,53 @@ class ITrainerTagUpdateController extends BaseController {
   }
 }
 
-const UpdateInstance = new ITrainerTagUpdateController();
+const updateInstance = new ITrainerTagUpdateController();
 
-export const TrainerTagUpdateController = UpdateInstance;
+export const TrainerTagUpdateController = updateInstance;
+
+class ITrainerTagDeleteController extends BaseController {
+  protected service: TrainerTagService = undefined;
+  protected ownerService: OwnerService = undefined;
+  protected workerService: WorkerService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.service) {
+      this.service = new TrainerTagService(getRepository);
+    }
+
+    if (!this.ownerService) {
+      this.ownerService = new OwnerService(getRepository);
+    }
+
+    if (!this.workerService) {
+      this.workerService = new WorkerService(getRepository);
+    }
+
+    const { token } = res.locals;
+
+    if (token.user !== 'owner' && token.user !== 'worker') {
+      return this.forbidden(res, 'User does not have permissions.');
+    }
+
+    if (!req.params.id) {
+      return this.clientError(res, 'No TrainerTag id given.');
+    }
+
+    return deletedByOwnerOrWorker({
+      service: this.service,
+      ownerService: this.ownerService,
+      workerService: this.workerService,
+      controller: this,
+      res,
+      token,
+      entityId: req.params.id,
+      entityName: 'TrainerTag',
+      countArgs: { id: req.params.id },
+      workerDeletePermission: 'deleteTags'
+    });
+  }
+}
+
+const deleteInstance = new ITrainerTagDeleteController();
+
+export const TrainerTagDeleteController = deleteInstance;

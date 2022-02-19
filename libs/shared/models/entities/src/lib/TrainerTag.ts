@@ -31,7 +31,10 @@ export default class TrainerTag {
   @ManyToOne(() => Gym, (g) => g.trainerTags, { nullable: false })
   gym!: number;
 
-  @ManyToMany(() => Trainer, (t) => t.tags)
+  @ManyToMany(() => Trainer, (t) => t.tags, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   trainers!: Trainer[];
 
   @CreateDateColumn()

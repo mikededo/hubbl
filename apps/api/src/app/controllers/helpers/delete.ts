@@ -10,6 +10,7 @@ import {
   EventType,
   GymZone,
   Owner,
+  TrainerTag,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
@@ -39,7 +40,8 @@ type CommonDeleteByServices =
   | BaseService<EventTemplate>
   | BaseService<EventType>
   | BaseService<VirtualGym>
-  | BaseService<GymZone>;
+  | BaseService<GymZone>
+  | BaseService<TrainerTag>;
 
 type CommonDeleteByEntities =
   | 'CalendarAppointment'
@@ -48,7 +50,8 @@ type CommonDeleteByEntities =
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
-  | 'GymZone';
+  | 'GymZone'
+  | 'TrainerTag';
 
 type WorkerDeletePermissions =
   | 'deleteCalendarAppointments'
@@ -59,7 +62,8 @@ type WorkerDeletePermissions =
   | 'deleteEventTypes'
   | 'deleteEvents'
   | 'deleteGymZones'
-  | 'deleteTrainers';
+  | 'deleteTrainers'
+  | 'deleteTags';
 
 type DeletedByOwnerOrWorkerProps = {
   service: CommonDeleteByServices;

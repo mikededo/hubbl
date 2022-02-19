@@ -12,8 +12,10 @@ import {
 } from '../../services';
 import * as create from '../helpers/create';
 import * as update from '../helpers/update';
+import * as deleteHelpers from '../helpers/delete';
 import {
   TrainerTagCreateController,
+  TrainerTagDeleteController,
   TrainerTagFetchController,
   TrainerTagUpdateController
 } from './TrainerTag.controller';
@@ -331,6 +333,101 @@ describe('TrainerTag controller', () => {
 
       setupServices();
       await TrainerTagUpdateController.execute(
+        { ...mockReq, params: {} } as any,
+        mockRes as any
+      );
+
+      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
+      expect(clientErrorSpy).toHaveBeenCalledWith(
+        mockRes,
+        'No TrainerTag id given.'
+      );
+    });
+  });
+
+  describe('TrainerTagUpdateController', () => {
+    const mockReq = {
+      body: { name: 'Tag', color: AppPalette.BLUE },
+      params: { id: 1 }
+    };
+    const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
+    const mockClientRes = { locals: { token: { id: 1, user: 'client' } } };
+
+    const uboowSpy = jest.spyOn(deleteHelpers, 'deletedByOwnerOrWorker');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const setupServices = () => {
+      TrainerTagDeleteController['service'] = {} as any;
+      TrainerTagDeleteController['ownerService'] = {} as any;
+      TrainerTagDeleteController['workerService'] = {} as any;
+    };
+
+    it('should create the services if does not have any', async () => {
+      jest.spyOn(TrainerTagDeleteController, 'fail').mockImplementation();
+
+      TrainerTagDeleteController['service'] = undefined;
+      TrainerTagDeleteController['ownerService'] = undefined;
+      TrainerTagDeleteController['workerService'] = undefined;
+
+      await TrainerTagDeleteController.execute({} as any, {} as any);
+
+      expect(TrainerTagService).toHaveBeenCalledTimes(1);
+      expect(TrainerTagService).toHaveBeenCalledWith(getRepository);
+      expect(OwnerService).toHaveBeenCalledTimes(1);
+      expect(OwnerService).toHaveBeenCalledWith(getRepository);
+      expect(WorkerService).toHaveBeenCalledTimes(1);
+      expect(WorkerService).toHaveBeenCalledWith(getRepository);
+    });
+
+    it('should call deletedByOwnerOrWorker', async () => {
+      uboowSpy.mockImplementation();
+
+      setupServices();
+      await TrainerTagDeleteController.execute(mockReq as any, mockRes as any);
+
+      expect(uboowSpy).toHaveBeenCalledTimes(1);
+      expect(uboowSpy).toHaveBeenCalledWith({
+        service: {},
+        ownerService: {},
+        workerService: {},
+        controller: TrainerTagDeleteController,
+        res: mockRes,
+        token: mockRes.locals.token,
+        entityId: mockReq.params.id,
+        entityName: 'TrainerTag',
+        countArgs: { id: mockReq.params.id },
+        workerDeletePermission: 'deleteTags'
+      });
+    });
+
+    it('should send forbidden if user is not an owner nor a worker', async () => {
+      const forbiddenSpy = jest
+        .spyOn(TrainerTagDeleteController, 'forbidden')
+        .mockImplementation();
+
+      setupServices();
+      await TrainerTagDeleteController.execute(
+        mockReq as any,
+        mockClientRes as any
+      );
+
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockClientRes,
+        'User does not have permissions.'
+      );
+    });
+
+    it('should send clientError if no id passed', async () => {
+      const clientErrorSpy = jest
+        .spyOn(TrainerTagDeleteController, 'clientError')
+        .mockImplementation();
+
+      setupServices();
+      await TrainerTagDeleteController.execute(
         { ...mockReq, params: {} } as any,
         mockRes as any
       );

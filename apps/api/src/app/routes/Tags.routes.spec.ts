@@ -38,6 +38,7 @@ describe('TrainerTag routes', () => {
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });
   });
+
   describe('TrainerTag update', () => {
     it('should call TrainerTagUpdateController.execute', async () => {
       const executeSpy = jest.spyOn(
@@ -46,6 +47,19 @@ describe('TrainerTag routes', () => {
       );
 
       await supertest(app).put('/tags/trainer/1');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('TrainerTag delete', () => {
+    it('should call TrainerTagDeleteController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.TrainerTagDeleteController,
+        'execute'
+      );
+
+      await supertest(app).delete('/tags/trainer/1');
 
       expect(executeSpy).toHaveBeenCalledTimes(1);
     });

@@ -1,11 +1,13 @@
 import {
-  TrainerTagFetchController,
   TrainerTagCreateController,
+  TrainerTagDeleteController,
+  TrainerTagFetchController,
   TrainerTagUpdateController
 } from './TrainerTag.controller';
 
 export {
-  TrainerTagFetchController,
   TrainerTagCreateController,
+  TrainerTagDeleteController,
+  TrainerTagFetchController,
   TrainerTagUpdateController
 };

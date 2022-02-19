@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
   TrainerTagCreateController,
+  TrainerTagDeleteController,
   TrainerTagFetchController,
   TrainerTagUpdateController
 } from '../controllers';
@@ -21,6 +22,10 @@ TrainerTagRouter.post('', middlewares.auth, (req, res) => {
 
 TrainerTagRouter.put('/:id', middlewares.auth, (req, res) => {
   TrainerTagUpdateController.execute(req, res);
+});
+
+TrainerTagRouter.delete('/:id', middlewares.auth, (req, res) => {
+  TrainerTagDeleteController.execute(req, res);
 });
 
 TagRouter.use('/trainer', TrainerTagRouter);
