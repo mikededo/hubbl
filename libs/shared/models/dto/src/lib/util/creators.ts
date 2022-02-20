@@ -1,5 +1,5 @@
 import { Gym, Person } from '@hubbl/shared/models/entities';
-import { AppTheme, Gender, ThemeColor } from '@hubbl/shared/types';
+import { AppPalette, AppTheme, Gender } from '@hubbl/shared/types';
 
 import PersonDTO from '../Person';
 
@@ -26,7 +26,7 @@ export const createGym = (): Gym => {
   gym.name = 'Test';
   gym.email = 'test@gym.com';
   gym.phone = '000 000 000';
-  gym.color = ThemeColor.BLUE;
+  gym.color = AppPalette.BLUE;
   gym.virtualGyms = [];
 
   return gym;

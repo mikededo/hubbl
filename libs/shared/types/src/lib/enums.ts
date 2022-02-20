@@ -6,6 +6,9 @@ enum AppTheme {
   LIGHT = 'LIGHT'
 }
 
+/**
+ * Defines the different colors there are that the user can choose
+ */
 enum AppPalette {
   PEARL = '#94A3B8',
   GRAY = '#4A5568',
@@ -18,18 +21,6 @@ enum AppPalette {
   INDIGO = '#818CF8',
   PURPLE = '#A78BFA',
   PINK = '#FB7185'
-}
-
-/**
- * Defines the different colors there are that the user can choose
- * as their primary color
- */
-enum ThemeColor {
-  GRAY = '#4A5568',
-  RED = '#F56565',
-  ORANGE = '#FBCF33',
-  GREEN = '#68D391',
-  BLUE = '#2196F3'
 }
 
 /**
@@ -52,4 +43,4 @@ enum Gender {
   OTHER = 'OTHER'
 }
 
-export { AppPalette, AppTheme, Gender, GymZoneIntervals, ThemeColor };
+export { AppPalette, AppTheme, Gender, GymZoneIntervals };

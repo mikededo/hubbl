@@ -14,7 +14,7 @@ import {
   stringError,
   validationParser
 } from '@hubbl/shared/models/helpers';
-import { ThemeColor } from '@hubbl/shared/types';
+import { AppPalette } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import { PersonDTOGroups } from '../Person';
@@ -45,8 +45,8 @@ export default class GymDTO implements DTO<Gym> {
   @IsString({ message: stringError('phone'), groups: [] })
   phone!: string;
 
-  @IsEnum({}, { message: enumError('ThemeColor', 'color') })
-  color!: ThemeColor;
+  @IsEnum({}, { message: enumError('AppPalette', 'color') })
+  color!: AppPalette;
 
   /* Non required validation fields */
   code!: string;
