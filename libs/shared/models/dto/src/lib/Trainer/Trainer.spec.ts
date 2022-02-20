@@ -4,6 +4,7 @@ import * as ClassValidator from 'class-validator';
 import { Gym, Trainer } from '@hubbl/shared/models/entities';
 import * as helpers from '@hubbl/shared/models/helpers';
 
+import TrainerTagDTO from '../TrainerTag';
 import * as Util from '../util';
 import TrainerDTO from './Trainer';
 
@@ -15,6 +16,12 @@ describe('TrainerDTO', () => {
   });
 
   describe('#fromJSON', () => {
+    const tagFromJsonSpy = jest.spyOn(TrainerTagDTO, 'fromJson');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('should create the DTO if fromJson is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = Util.createPersonJson();
@@ -36,13 +43,36 @@ describe('TrainerDTO', () => {
       // Trainer fields
       expect(result.managerId).toBe(json.managerId);
       expect(result.workerCode).toBe(json.workerCode);
+      // Tags
+      expect(result.tags).toStrictEqual([]);
 
       // Ensure class is validated
+      expect(tagFromJsonSpy).not.toHaveBeenCalled();
       expect(vorSpy).toHaveBeenCalledTimes(1);
       expect(vorSpy).toHaveBeenCalledWith(expect.anything(), {
         validationError: { target: false },
         groups: ['any']
       });
+    });
+
+    it('should not create the DTO if TrainerTags.fromJson is not valid', async () => {
+      tagFromJsonSpy.mockRejectedValue({});
+      const vorSpy = jest
+        .spyOn(ClassValidator, 'validateOrReject')
+        .mockRejectedValue({});
+      const vpSpy = jest.spyOn(helpers, 'validationParser').mockReturnValue({});
+
+      expect.assertions(4);
+
+      try {
+        await TrainerDTO.fromJson({ tags: [{}] }, 'any' as any);
+      } catch (e) {
+        expect(e).toBeDefined();
+      }
+
+      expect(tagFromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(vorSpy).not.toHaveBeenCalled();
+      expect(vpSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should not create the DTO if fromJson is not valid', async () => {
@@ -74,6 +104,7 @@ describe('TrainerDTO', () => {
       trainer.managerId = 1;
       trainer.workerCode = 'some-uuid';
       trainer.events = [];
+      trainer.tags = [];
 
       const result = TrainerDTO.fromClass(trainer);
 
@@ -85,10 +116,64 @@ describe('TrainerDTO', () => {
       expect(result.phone).toBe(trainer.person.phone);
       expect(result.theme).toBe(trainer.person.theme);
       expect(result.gender).toBe(trainer.person.gender);
-      expect(result.gym).toStrictEqual(trainer.person.gym);
+      expect(result.gym).toStrictEqual((trainer.person.gym as Gym).id);
       // Trainer props
       expect(result.managerId).toBe(trainer.managerId);
       expect(result.workerCode).toBe(trainer.workerCode);
+      // Tags
+      expect(result.tags).toStrictEqual(trainer.tags);
+    });
+
+    it('should return a the id of the Gym if it is not a gym', async () => {
+      const password = await hash('testpwd00', await genSalt(10));
+
+      const trainer = new Trainer();
+
+      trainer.person = Util.createPerson(password);
+      trainer.person.gym = 1;
+      trainer.managerId = 1;
+      trainer.workerCode = 'some-uuid';
+      trainer.events = [];
+      trainer.tags = [];
+
+      const result = TrainerDTO.fromClass(trainer);
+
+      expect(result.gym).toStrictEqual(1);
+    });
+
+    it('should call TrainerTags.fromClass if has any', async () => {
+      const fromClassSpy = jest.spyOn(TrainerTagDTO, 'fromClass');
+
+      const password = await hash('testpwd00', await genSalt(10));
+      const trainer = new Trainer();
+
+      trainer.person = Util.createPerson(password);
+      trainer.managerId = 1;
+      trainer.workerCode = 'some-uuid';
+      trainer.events = [];
+      trainer.tags = [{}, {}] as any;
+
+      const result = TrainerDTO.fromClass(trainer);
+
+      // Tags
+      expect(fromClassSpy).toHaveBeenCalledTimes(2);
+      expect(result.tags.length).toEqual(trainer.tags.length);
+    });
+
+    it('should return an array of empty tags if undefined', async () => {
+      const password = await hash('testpwd00', await genSalt(10));
+      const trainer = new Trainer();
+
+      trainer.person = Util.createPerson(password);
+      trainer.managerId = 1;
+      trainer.workerCode = 'some-uuid';
+      trainer.events = [];
+      trainer.tags = undefined as any;
+
+      const result = TrainerDTO.fromClass(trainer);
+
+      // Tags
+      expect(result.tags).toStrictEqual([]);
     });
 
     it('should return the info only params if variant is info', async () => {
@@ -125,6 +210,7 @@ describe('TrainerDTO', () => {
 
       dto.managerId = 1;
       dto.workerCode = 'some-uuid';
+      dto.tags = [];
 
       const result = await dto.toClass();
 
@@ -138,6 +224,7 @@ describe('TrainerDTO', () => {
       expect(result.person.theme).toBe(dto.theme);
       expect(result.managerId).toBe(dto.managerId);
       expect(result.workerCode).toBe(dto.workerCode);
+      expect(result.tags).toBe(dto.tags);
 
       // Password should be hashed
       expect(await compare('testpwd00', result.person.password)).toBeTruthy();

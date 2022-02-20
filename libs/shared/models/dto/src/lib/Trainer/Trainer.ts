@@ -1,7 +1,12 @@
 import { genSalt, hash } from 'bcrypt';
 import { IsNumber, IsString, validateOrReject } from 'class-validator';
 
-import { Gym, Person, Trainer } from '@hubbl/shared/models/entities';
+import {
+  Gym,
+  Person,
+  Trainer,
+  TrainerTag
+} from '@hubbl/shared/models/entities';
 import {
   numberError,
   stringError,
@@ -11,6 +16,7 @@ import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
+import TrainerTagDTO from '../TrainerTag';
 import { DTOGroups } from '../util';
 
 export default class TrainerDTO<T extends Gym | number>
@@ -32,6 +38,9 @@ export default class TrainerDTO<T extends Gym | number>
 
   @IsString({ message: stringError('workerCode') })
   workerCode!: string;
+
+  /* Non required validation fields */
+  tags!: Array<TrainerTag | TrainerTagDTO>;
 
   /**
    * Parses the json passed to the DTO and it validates
@@ -58,6 +67,18 @@ export default class TrainerDTO<T extends Gym | number>
     // Trainer props
     result.managerId = json.managerId;
     result.workerCode = json.workerCode;
+    // Tags
+    result.tags = json.tags || [];
+
+    await Promise.all(
+      result.tags.map((tag) =>
+        // Tags should already be created, and therefore every prop
+        // should be validated
+        TrainerTagDTO.fromJson(tag, DTOGroups.ALL)
+      )
+    ).catch((errors) => {
+      throw validationParser(errors);
+    });
 
     await validateOrReject(result, {
       validationError: { target: false },
@@ -92,12 +113,19 @@ export default class TrainerDTO<T extends Gym | number>
       result.password = trainer.person.password;
       result.phone = trainer.person.phone;
       result.theme = trainer.person.theme;
-      result.gym = trainer.person.gym;
+      result.gym =
+        trainer.person.gym instanceof Gym
+          ? trainer.person.gym.id
+          : trainer.person.gym;
       result.gender = trainer.person.gender as Gender;
 
       // Trainer props
       result.managerId = trainer.managerId;
       result.workerCode = trainer.workerCode;
+
+      // Tags
+      result.tags =
+        trainer.tags?.map((tag) => TrainerTagDTO.fromClass(tag)) || [];
     }
 
     return result;
@@ -132,6 +160,9 @@ export default class TrainerDTO<T extends Gym | number>
     // Set trainer props
     trainer.managerId = this.managerId;
     trainer.workerCode = this.workerCode;
+
+    // Set tags
+    trainer.tags = this.tags as TrainerTag[];
 
     return trainer;
   }

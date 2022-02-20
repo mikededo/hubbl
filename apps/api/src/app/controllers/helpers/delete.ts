@@ -10,6 +10,7 @@ import {
   EventType,
   GymZone,
   Owner,
+  TrainerTag,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
@@ -21,14 +22,14 @@ import { ParsedToken } from './types';
 /* Common on fail call */
 const onFail = (controller: BaseController, res: Response, error: any) => {
   log.error(
-    `Controller[${controller.constructor.name}]`,
+    `Controller [${controller.constructor.name}]`,
     `"delete" handler`,
     error.toString()
   );
 
   return controller.fail(
     res,
-    'Internal server error. If the error persists, contact our team'
+    'Internal server error. If the problem persists, contact our team.'
   );
 };
 
@@ -39,7 +40,8 @@ type CommonDeleteByServices =
   | BaseService<EventTemplate>
   | BaseService<EventType>
   | BaseService<VirtualGym>
-  | BaseService<GymZone>;
+  | BaseService<GymZone>
+  | BaseService<TrainerTag>;
 
 type CommonDeleteByEntities =
   | 'CalendarAppointment'
@@ -48,7 +50,8 @@ type CommonDeleteByEntities =
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
-  | 'GymZone';
+  | 'GymZone'
+  | 'TrainerTag';
 
 type WorkerDeletePermissions =
   | 'deleteCalendarAppointments'
@@ -59,7 +62,8 @@ type WorkerDeletePermissions =
   | 'deleteEventTypes'
   | 'deleteEvents'
   | 'deleteGymZones'
-  | 'deleteTrainers';
+  | 'deleteTrainers'
+  | 'deleteTags';
 
 type DeletedByOwnerOrWorkerProps = {
   service: CommonDeleteByServices;
@@ -90,14 +94,14 @@ export const deletedByOwnerOrWorker = async ({
   if (token.user === 'worker') {
     if (!workerDeletePermission) {
       log.error(
-        `Controller[${controller.constructor.name}]`,
+        `Controller [${controller.constructor.name}]`,
         '"delete" handler',
         'No "workerCreatePermission" passed'
       );
 
       return controller.fail(
         res,
-        'Internal server error. If the error persists, contact our team'
+        'Internal server error. If the problem persists, contact our team.'
       );
     }
 

@@ -7,7 +7,7 @@ import * as util from '../util';
 
 export const fetch = async (by: 'owner' | 'worker' | 'client') => {
   const testApp = supertest(app);
-  const loginRes = await util.common.loginByAny(testApp, by)
+  const loginRes = await util.common.loginByAny(testApp, by);
 
   const fetchRes = await testApp
     .get('/event-types')
@@ -20,7 +20,7 @@ export const fetch = async (by: 'owner' | 'worker' | 'client') => {
 
 export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
   const testApp = supertest(app);
-  const loginRes = await util.common.loginByOwnerOrWorker(testApp, by)
+  const loginRes = await util.common.loginByOwnerOrWorker(testApp, by);
 
   // Create the event type
   const createRes = await testApp

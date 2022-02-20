@@ -67,7 +67,8 @@ describe('TrainerController', () => {
 
         expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
         expect(mockPersonService.findOne).toHaveBeenCalledWith({
-          id: mockRes.locals.token.id
+          id: mockRes.locals.token.id,
+          options: { select: ['id', 'gym'] }
         });
         expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
         expect(personHelpers.fetch).toHaveBeenCalledWith({
@@ -77,7 +78,6 @@ describe('TrainerController', () => {
           fromClass: TrainerDTO.fromClass,
           gymId: 1,
           alias: 't',
-          personFk: 'trainer_person_fk',
           skip: mockReq.query.skip
         });
       });
@@ -100,7 +100,6 @@ describe('TrainerController', () => {
           fromClass: TrainerDTO.fromClass,
           gymId: 1,
           alias: 't',
-          personFk: 'trainer_person_fk',
           skip: 0
         });
       });

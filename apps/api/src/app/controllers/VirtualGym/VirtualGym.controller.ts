@@ -50,7 +50,7 @@ class IVirtualGymFetchController extends BaseController {
         );
       } catch (_) {
         log.error(
-          `Controller[${this.constructor.name}]`,
+          `Controller [${this.constructor.name}]`,
           '"fetch" handler',
           _.toString()
         );
@@ -62,7 +62,7 @@ class IVirtualGymFetchController extends BaseController {
       }
     } catch (_) {
       log.error(
-        `Controller[${this.constructor.name}]`,
+        `Controller [${this.constructor.name}]`,
         '"fetch" handler',
         _.toString()
       );

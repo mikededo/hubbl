@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
@@ -15,19 +14,6 @@ import BaseController, {
 class IGymZoneFetchController extends BaseController {
   protected service: GymZoneService = undefined;
   protected personService: PersonService = undefined;
-
-  private onFail(res: Response, error: any): Response {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      '"fetch" handler',
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the problem persists, contact our team.'
-    );
-  }
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
@@ -67,10 +53,10 @@ class IGymZoneFetchController extends BaseController {
           await Promise.all(result.map(GymZoneDTO.fromClass))
         );
       } catch (e) {
-        return this.onFail(res, e);
+        return this.onFail(res, e, 'fetch');
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'fetch');
     }
   }
 }

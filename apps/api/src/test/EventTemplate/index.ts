@@ -1,1 +1,1 @@
-export * as eventTemplate from './EventTemplate.spec'
+export * as eventTemplate from './EventTemplate.spec';

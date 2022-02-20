@@ -1,4 +1,13 @@
 import { Request, Response } from 'express';
+import * as log from 'npmlog';
+
+type FailOperations =
+  | 'fetch'
+  | 'create'
+  | 'update'
+  | 'delete'
+  | 'cancel'
+  | 'register';
 
 /**
  * Base controller to be implemented by the concrete controllers
@@ -129,5 +138,22 @@ export default abstract class BaseController {
    */
   public fail(res: Response, error: Error | string): Response {
     return res.status(500).json({ message: error.toString() });
+  }
+
+  protected async onFail(
+    res: Response,
+    error: any,
+    operation: FailOperations
+  ): Promise<Response> {
+    log.error(
+      `Controller [${this.constructor.name}]`,
+      `"${operation}" handler`,
+      error.toString()
+    );
+
+    return this.fail(
+      res,
+      'Internal server error. If the problem persists, contact our team.'
+    );
   }
 }

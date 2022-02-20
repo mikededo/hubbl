@@ -71,7 +71,7 @@ describe('Event controller', () => {
   ) => {
     expect(logSpy).toHaveBeenCalledTimes(1);
     expect(logSpy).toHaveBeenCalledWith(
-      `Controller[${controller.constructor.name}]`,
+      `Controller [${controller.constructor.name}]`,
       `"${operation}" handler`,
       'error-thrown'
     );

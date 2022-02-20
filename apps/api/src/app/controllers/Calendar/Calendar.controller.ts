@@ -47,9 +47,9 @@ abstract class CalendarFetchBase extends BaseController {
     return date;
   }
 
-  protected onFail(res: Response, error: any): Response {
+  protected async onFail(res: Response, error: any): Promise<Response> {
     log.error(
-      `Controller[${this.constructor.name}]`,
+      `Controller [${this.constructor.name}]`,
       '"fetch" handler',
       error.toString()
     );

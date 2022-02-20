@@ -80,7 +80,6 @@ describe('ClientController', () => {
           fromClass: ClientDTO.fromClass,
           gymId: 1,
           alias: 'c',
-          personFk: 'client_person_fk',
           skip: mockReq.query.skip
         });
       });
@@ -103,7 +102,6 @@ describe('ClientController', () => {
           fromClass: ClientDTO.fromClass,
           gymId: 1,
           alias: 'c',
-          personFk: 'client_person_fk',
           skip: 0
         });
       });
@@ -303,14 +301,14 @@ describe('ClientController', () => {
         expect(mockGymService.findOne).toHaveBeenCalledTimes(1);
         expect(logSpy).toHaveBeenCalledTimes(1);
         expect(logSpy).toHaveBeenCalledWith(
-          `Controller[${ClientRegisterController.constructor.name}]`,
+          `Controller [${ClientRegisterController.constructor.name}]`,
           '"register" handler',
           'error-thrown'
         );
         expect(failSpy).toHaveBeenCalledTimes(1);
         expect(failSpy).toHaveBeenCalledWith(
           {},
-          'Internal server error. If the error persists, contact our team'
+          'Internal server error. If the problem persists, contact our team.'
         );
       });
     });

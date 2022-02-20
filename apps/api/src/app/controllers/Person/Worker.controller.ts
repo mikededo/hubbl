@@ -1,32 +1,17 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-import * as log from 'npmlog';
 
 import { WorkerDTO } from '@hubbl/shared/models/dto';
+import { Gym } from '@hubbl/shared/models/entities';
 
 import { OwnerService, PersonService, WorkerService } from '../../services';
 import BaseController from '../Base';
 import { workerUpdate } from '../helpers';
-import { register, workerLogin } from './helpers';
-import { fetch } from './helpers';
-import { Gym } from '@hubbl/shared/models/entities';
+import { fetch, register, workerLogin } from './helpers';
 
 class IWorkerFetchController extends BaseController {
   protected service: WorkerService = undefined;
   protected personService: PersonService = undefined;
-
-  private onFail(res: Response, error: any): Response {
-    log.error(
-      `Controller [${this.constructor.name}]`,
-      '"fetch" handler',
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the problem persists, contact our team.'
-    );
-  }
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
@@ -60,11 +45,10 @@ class IWorkerFetchController extends BaseController {
         fromClass: WorkerDTO.fromClass,
         gymId: (person.gym as Gym).id,
         alias: 'w',
-        personFk: 'worker_person_fk',
         skip: +(skip ?? 0)
       });
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'fetch');
     }
   }
 }

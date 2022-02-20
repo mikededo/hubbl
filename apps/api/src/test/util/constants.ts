@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { nanoid } from 'nanoid';
 
 export const ENTITY_IDENTIFIERS = {
   OWNER: 1,
@@ -32,5 +32,9 @@ export const ENTITY_IDENTIFIERS = {
   GYM_ZONE_THREE: 3,
   CALENDAR_ONE: 1,
   CALENDAR_TWO: 2,
-  CALENDAR_THREE: 3
+  CALENDAR_THREE: 3,
+  TRIANER_TAG_ONE: 1,
+  TRIANER_TAG_TWO: 2,
+  TRIANER_TAG_THREE: 3,
+  TRIANER_TAG_FOUR: 4,
 };

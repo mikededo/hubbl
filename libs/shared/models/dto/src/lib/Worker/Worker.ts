@@ -70,6 +70,15 @@ export default class WorkerDTO<T extends Gym | number>
   @IsBoolean({ message: booleanError('deleteClients') })
   deleteClients!: boolean;
 
+  @IsBoolean({ message: booleanError('createTags') })
+  createTags!: boolean;
+
+  @IsBoolean({ message: booleanError('updateTags') })
+  updateTags!: boolean;
+
+  @IsBoolean({ message: booleanError('deleteTags') })
+  deleteTags!: boolean;
+
   @IsBoolean({ message: booleanError('createEvents') })
   createEvents!: boolean;
 
@@ -131,6 +140,9 @@ export default class WorkerDTO<T extends Gym | number>
     to.createClients = from.createClients;
     to.updateClients = from.updateClients;
     to.deleteClients = from.deleteClients;
+    to.createTags = from.createTags;
+    to.updateTags = from.updateTags;
+    to.deleteTags = from.deleteTags;
     to.createEvents = from.createEvents;
     to.updateEvents = from.updateEvents;
     to.deleteEvents = from.deleteEvents;
@@ -257,6 +269,9 @@ export default class WorkerDTO<T extends Gym | number>
     worker.createClients = this.createClients;
     worker.updateClients = this.updateClients;
     worker.deleteClients = this.deleteClients;
+    worker.createTags = this.createTags;
+    worker.updateTags = this.updateTags;
+    worker.deleteTags = this.deleteTags;
     worker.createEvents = this.createEvents;
     worker.updateEvents = this.updateEvents;
     worker.deleteEvents = this.deleteEvents;

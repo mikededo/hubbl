@@ -108,6 +108,24 @@ export default class Worker {
   deleteClients!: boolean;
 
   /**
+   * The `Worker` is allowed or not to CREATE `Tag`'s of any kind.
+   */
+  @Column('bool', { default: false })
+  createTags!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to UPDATE `Tag`'s of any kind.
+   */
+  @Column('bool', { default: false })
+  updateTags!: boolean;
+
+  /**
+   * The `Worker` is allowed or not to DELETE `Tag`'s of any kind.
+   */
+  @Column('bool', { default: false })
+  deleteTags!: boolean;
+
+  /**
    * The `Worker` is allowed or not to CREATE `Event`'s.
    */
   @Column('bool', { default: false })
