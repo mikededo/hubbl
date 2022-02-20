@@ -16,6 +16,7 @@ import {
   Owner,
   Person,
   Trainer,
+  TrainerTag,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
@@ -58,17 +59,18 @@ const createTestDatabase = async (): Promise<Connection> => {
         Owner,
         Person,
         Trainer,
+        TrainerTag,
         VirtualGym,
         Worker
       ],
       synchronize: true,
-      namingStrategy: new SnakeNamingStrategy()
+      namingStrategy: new SnakeNamingStrategy(),
+      dropSchema: true
     });
 
     return cnt;
   } catch (e) {
     console.error(e);
-    console.log(process.env)
     console.error('Error on initialising the database.');
   }
 };
@@ -91,6 +93,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           name: 'TestGym',
           email: 'test@gym.com',
           phone: '000 000 000',
+          code: ENTITY_IDENTIFIERS.GYM_CODE,
           color: ThemeColor.BLUE,
           virtualGyms: [
             {
@@ -167,6 +170,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.EVENT_TPL_ONE,
         name: 'Event Template One',
         description: 'Event template one of event type one',
+        capacity: 5,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 1,
         gym: ENTITY_IDENTIFIERS.GYM,
         type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
       },
@@ -174,6 +181,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.EVENT_TPL_TWO,
         name: 'Event Template Two',
         description: 'Event template two of event type two',
+        capacity: 5,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 2,
         gym: ENTITY_IDENTIFIERS.GYM,
         type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
       },
@@ -181,6 +192,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.EVENT_TPL_THREE,
         name: 'Event Template Three',
         description: 'Event template three of event type three',
+        capacity: 5,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 3,
         gym: ENTITY_IDENTIFIERS.GYM,
         type: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE
       },
@@ -188,6 +203,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         id: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
         name: 'Event Template One',
         description: 'Event template one of event type two',
+        capacity: 5,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 4,
         gym: ENTITY_IDENTIFIERS.GYM,
         type: ENTITY_IDENTIFIERS.EVENT_TYPE_TWO
       }
@@ -214,6 +233,9 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
       createClients: true,
       updateClients: true,
       deleteClients: true,
+      createTags: true,
+      updateTags: true,
+      deleteTags: true,
       createEvents: true,
       updateEvents: true,
       deleteEvents: true,
@@ -273,6 +295,33 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
       }
     ]);
 
+    await em.getRepository(TrainerTag).save([
+      {
+        id: ENTITY_IDENTIFIERS.TRIANER_TAG_ONE,
+        name: 'Tag One',
+        color: AppPalette.BLUE,
+        gym: ENTITY_IDENTIFIERS.GYM
+      },
+      {
+        id: ENTITY_IDENTIFIERS.TRIANER_TAG_TWO,
+        name: 'Tag Two',
+        color: AppPalette.EMERALD,
+        gym: ENTITY_IDENTIFIERS.GYM
+      },
+      {
+        id: ENTITY_IDENTIFIERS.TRIANER_TAG_THREE,
+        name: 'Tag Three',
+        color: AppPalette.PEARL,
+        gym: ENTITY_IDENTIFIERS.GYM
+      },
+      {
+        id: ENTITY_IDENTIFIERS.TRIANER_TAG_FOUR,
+        name: 'Tag Four',
+        color: AppPalette.PURPLE,
+        gym: ENTITY_IDENTIFIERS.GYM
+      }
+    ]);
+
     await em.getRepository(Trainer).save({
       person: {
         id: ENTITY_IDENTIFIERS.TRAINER,
@@ -284,7 +333,21 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         gender: Gender.OTHER,
         gym: ENTITY_IDENTIFIERS.GYM
       },
-      managerId: ENTITY_IDENTIFIERS.OWNER
+      managerId: ENTITY_IDENTIFIERS.OWNER,
+      tags: [
+        {
+          id: ENTITY_IDENTIFIERS.TRIANER_TAG_ONE,
+          name: 'Tag One',
+          color: AppPalette.BLUE,
+          gym: ENTITY_IDENTIFIERS.GYM
+        },
+        {
+          id: ENTITY_IDENTIFIERS.TRIANER_TAG_TWO,
+          name: 'Tag Two',
+          color: AppPalette.EMERALD,
+          gym: ENTITY_IDENTIFIERS.GYM
+        }
+      ]
     } as Trainer);
 
     await em.getRepository(Event).save([
@@ -299,8 +362,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 1,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
+        gym: ENTITY_IDENTIFIERS.GYM
       },
       {
         id: ENTITY_IDENTIFIERS.EVENT_TWO,
@@ -313,8 +378,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 2,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO,
+        gym: ENTITY_IDENTIFIERS.GYM
       },
       {
         id: ENTITY_IDENTIFIERS.EVENT_THREE,
@@ -327,8 +394,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 3,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
+        gym: ENTITY_IDENTIFIERS.GYM
       },
       {
         id: ENTITY_IDENTIFIERS.EVENT_FOUR,
@@ -341,8 +410,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 4,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
+        gym: ENTITY_IDENTIFIERS.GYM
       },
       {
         id: ENTITY_IDENTIFIERS.EVENT_FIVE,
@@ -354,8 +425,10 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         trainer: ENTITY_IDENTIFIERS.TRAINER,
         maskRequired: true,
         covidPassport: true,
+        difficulty: 5,
         date: getDate(),
-        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO
+        calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO,
+        gym: ENTITY_IDENTIFIERS.GYM
       }
     ]);
 

@@ -1,16 +1,19 @@
 import { Router } from 'express';
 
 import {
+  ClientFetchController,
   ClientLoginController,
   ClientRegisterController,
   ClientUpdateController,
   OwnerLoginController,
   OwnerRegisterController,
   OwnerUpdateController,
-  TrainerRegisterController,
+  TrainerCreateController,
+  TrainerFetchController,
   TrainerUpdateController,
+  WorkerCreateController,
+  WorkerFetchController,
   WorkerLoginController,
-  WorkerRegisterController,
   WorkerUpdateController
 } from '../controllers';
 import middlewares from '../middlewares';
@@ -24,20 +27,6 @@ const RegisterRouter: Router = Router();
  */
 RegisterRouter.post('/owner', (req, res) =>
   OwnerRegisterController.execute(req, res)
-);
-
-/**
- * @description Registers a worker to the database
- */
-RegisterRouter.post('/worker', (req, res) =>
-  WorkerRegisterController.execute(req, res)
-);
-
-/**
- * @description Registers a trainer to the database
- */
-RegisterRouter.post('/trainer', (req, res) =>
-  TrainerRegisterController.execute(req, res)
 );
 
 /**
@@ -70,6 +59,33 @@ LoginRouter.post('/worker', (req, res) =>
  */
 LoginRouter.post('/client', (req, res) =>
   ClientLoginController.execute(req, res)
+);
+
+/* CREATE */
+
+const CreateRouter: Router = Router();
+
+/**
+ * @description Creates a worker to the database
+ */
+CreateRouter.post('/worker', (req, res) =>
+  WorkerCreateController.execute(req, res)
+);
+
+/**
+ * @description Creates a client to the database
+ */
+CreateRouter.post('/client', (req, res) =>
+  // The register controller is reused since it can handle both types of
+  // registration
+  ClientRegisterController.execute(req, res)
+);
+
+/**
+ * @description Creates a trainer to the database
+ */
+CreateRouter.post('/trainer', (req, res) =>
+  TrainerCreateController.execute(req, res)
 );
 
 /* UPDATE */
@@ -107,8 +123,34 @@ UpdateRouter.put('/client', middlewares.auth, (req, res) =>
 
 const PersonRouter: Router = Router();
 
+/* FETCH */
+/**
+ * @description Fetches the list of the workers of the gym if the user making the
+ * request has permissions to do so
+ */
+PersonRouter.get('/workers', middlewares.auth, (req, res) => {
+  WorkerFetchController.execute(req, res);
+});
+
+/**
+ * @description Fetches the list of the clients of the gym if the user making the
+ * request has permissions to do so
+ */
+PersonRouter.get('/clients', middlewares.auth, (req, res) => {
+  ClientFetchController.execute(req, res);
+});
+
+/**
+ * @description Fetches the list of the trainers of the gym if the user making the
+ * request has permissions to do so
+ */
+PersonRouter.get('/trainers', middlewares.auth, (req, res) => {
+  TrainerFetchController.execute(req, res);
+});
+
 PersonRouter.use('/register', RegisterRouter);
 PersonRouter.use('/login', LoginRouter);
+PersonRouter.use('', CreateRouter);
 PersonRouter.use('', UpdateRouter);
 
 export default PersonRouter;

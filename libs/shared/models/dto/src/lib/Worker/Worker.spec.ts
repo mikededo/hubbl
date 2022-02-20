@@ -23,6 +23,9 @@ const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
   worker.createClients = false;
   worker.updateClients = false;
   worker.deleteClients = false;
+  worker.createTags = false;
+  worker.updateTags = false;
+  worker.deleteTags = false;
   worker.createEvents = false;
   worker.updateEvents = false;
   worker.deleteEvents = false;
@@ -55,6 +58,9 @@ const workerPropCompare = (
   expect(got.createClients).toBe(want.createClients);
   expect(got.updateClients).toBe(want.updateClients);
   expect(got.deleteClients).toBe(want.deleteClients);
+  expect(got.createTags).toBe(want.createClients);
+  expect(got.updateTags).toBe(want.updateClients);
+  expect(got.deleteTags).toBe(want.deleteClients);
   expect(got.createEvents).toBe(want.createEvents);
   expect(got.updateEvents).toBe(want.updateEvents);
   expect(got.deleteEvents).toBe(want.deleteEvents);
@@ -93,6 +99,9 @@ describe('WorkerDTO', () => {
         createClients: false,
         updateClients: false,
         deleteClients: false,
+        createTags: false,
+        updateTags: false,
+        deleteTags: false,
         createEvents: false,
         updateEvents: false,
         deleteEvents: false,

@@ -47,9 +47,9 @@ abstract class CalendarFetchBase extends BaseController {
     return date;
   }
 
-  protected onFail(res: Response, error: any): Response {
+  protected async onFail(res: Response, error: any): Promise<Response> {
     log.error(
-      `Controller[${this.constructor.name}]`,
+      `Controller [${this.constructor.name}]`,
       '"fetch" handler',
       error.toString()
     );
@@ -190,7 +190,12 @@ class ICalendarFetchEventAppointmentsController extends CalendarFetchBase {
     const calendarId = +req.params.id;
     const eventId = +req.params.eId;
 
-    // TODO: Give access only to owners and workers
+    if (token.user !== 'owner' && token.user !== 'worker') {
+      return this.forbidden(
+        res,
+        'User can not get the list of event appointments.'
+      );
+    }
 
     const validation = await userAccessToCalendar({
       controller: this,
@@ -269,7 +274,12 @@ class ICalendarFetchCalenAppointmentsController extends CalendarFetchBase {
     const { token } = res.locals;
     const calendarId = +req.params.id;
 
-    // TODO: Give access only to owners and workers
+    if (token.user !== 'owner' && token.user !== 'worker') {
+      return this.forbidden(
+        res,
+        'User can not get the list of calendar appointments.'
+      );
+    }
 
     const validation = await userAccessToCalendar({
       controller: this,

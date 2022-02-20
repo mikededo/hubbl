@@ -30,6 +30,8 @@ export const fetch = async (by: 'owner' | 'worker' | 'client') => {
   expect(fetchRes.statusCode).toBe(200);
   expect(fetchRes.body).toBeDefined();
   expect(fetchRes.body.length).toBe(1);
+  expect(fetchRes.body[0].gymZones).toBeDefined();
+  expect(fetchRes.body[0].gymZones.length).toBe(3);
 };
 
 export const createUpdateAndDeleteByOwner = async () => {

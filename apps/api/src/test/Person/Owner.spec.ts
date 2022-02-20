@@ -50,6 +50,7 @@ export const register = async () => {
   util.toBeString(body.owner.gym.name);
   util.toBeString(body.owner.gym.email);
   util.toBeString(body.owner.gym.phone);
+  util.toBeString(body.owner.gym.code);
   util.toBeString(body.owner.gym.color);
 
   // Check if the person exists in the database, by logging in

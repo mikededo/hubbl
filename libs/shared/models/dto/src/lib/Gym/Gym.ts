@@ -49,6 +49,8 @@ export default class GymDTO implements DTO<Gym> {
   color!: ThemeColor;
 
   /* Non required validation fields */
+  code!: string;
+
   virtualGyms!: VirtualGym[];
 
   /**
@@ -67,6 +69,7 @@ export default class GymDTO implements DTO<Gym> {
     result.name = json.name;
     result.email = json.email;
     result.phone = json.phone;
+    result.code = json.code;
     result.color = json.color;
 
     await validateOrReject(result, {
@@ -92,6 +95,7 @@ export default class GymDTO implements DTO<Gym> {
     result.name = gym.name;
     result.email = gym.email;
     result.phone = gym.phone;
+    result.code = gym.code;
     result.color = gym.color;
     result.virtualGyms = gym.virtualGyms;
 
@@ -109,6 +113,7 @@ export default class GymDTO implements DTO<Gym> {
     result.name = this.name;
     result.email = this.email;
     result.phone = this.phone;
+    result.code = this.code;
     result.color = this.color;
     result.virtualGyms = this.virtualGyms || [];
 

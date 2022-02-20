@@ -45,10 +45,29 @@ const checkWorkerProps = (worker: any) => {
   util.toBeBoolean(worker.deleteCalendarAppointments);
 };
 
+export const fetch = async () => {
+  // Login as owner
+  const loginResponse = await supertest(app).post('/persons/login/owner').send({
+    email: ENTITY_IDENTIFIERS.OWNER_EMAIL,
+    password: 'owner-password'
+  });
+
+  expect(loginResponse.statusCode).toBe(200);
+  util.expectTokenCookie(loginResponse);
+
+  const fetchResponse = await supertest(app)
+    .get('/persons/workers')
+    .set('Authorization', `Bearer ${loginResponse.body.token}`)
+    .send();
+
+  expect(fetchResponse.statusCode).toBe(200);
+  expect(fetchResponse.body.length).toBe(1);
+};
+
 export const register = async () => {
   const testApp = supertest(app);
 
-  const response = await testApp.post('/persons/register/worker').send({
+  const response = await testApp.post('/persons/worker').send({
     email: 'registered@worker.com',
     password: 'registered-password',
     firstName: 'Test',

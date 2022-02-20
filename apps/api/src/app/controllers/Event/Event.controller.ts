@@ -6,6 +6,7 @@ import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 
 import {
   EventService,
+  EventTemplateService,
   GymZoneService,
   OwnerService,
   WorkerService
@@ -16,29 +17,96 @@ import {
   ParsedToken,
   updatedByOwnerOrWorker
 } from '../helpers';
+import { Event } from '@hubbl/shared/models/entities';
 
 class IEventCreateController extends BaseController {
   protected service: EventService = undefined;
+  protected templateService: EventTemplateService = undefined;
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
   protected gymZoneService: GymZoneService = undefined;
 
-  protected onFail(res: Response, error: any): Response {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      '"create" handler',
-      error.toString()
-    );
+  private async fromTemplate(
+    res: Response,
+    json: any
+  ): Promise<Event | Response> {
+    try {
+      let template = { ...json };
 
-    return this.fail(
-      res,
-      'Internal server error. If the problem persists, contact our team.'
-    );
+      // If any template is given
+      if (json.template) {
+        // Find the template, and override the json data
+        template = await this.templateService.findOne({
+          id: json.template,
+          options: { loadEagerRelations: false, loadRelationIds: true }
+        });
+
+        if (!template) {
+          return this.forbidden(res, 'Event template does not exist.');
+        }
+      }
+
+      // Copy the template props to a new DTO
+      const result = new Event();
+      result.name = json.name;
+      result.description = json.description;
+      result.capacity = template.capacity;
+      result.covidPassport = template.covidPassport;
+      result.maskRequired = template.maskRequired;
+      result.difficulty = template.difficulty;
+      result.startTime = json.startTime;
+      result.endTime = json.endTime;
+      result.date = json.date;
+      result.gym = template.gym;
+      result.trainer = json.trainer;
+      result.calendar = json.calendar;
+
+      return result;
+    } catch (e) {
+      return this.onFail(res, e, 'create');
+    }
+  }
+
+  private async gymZoneClassType(dto: EventDTO) {
+    return await this.gymZoneService
+      .createQueryBuilder({ alias: 'gz' })
+      .select('gz.isClassType')
+      .where('gz.calendar = :calendar', { calendar: dto.calendar })
+      .getOne();
+  }
+
+  private async trainerOverlaps(dto: EventDTO): Promise<number> {
+    return await this.service
+      .createQueryBuilder({ alias: 'e' })
+      .where('e.startTime < :endTime', { endTime: dto.endTime })
+      .andWhere('e.endTime > :startTime', { startTime: dto.startTime })
+      .andWhere('e.date.year = :year', { year: dto.date.year })
+      .andWhere('e.date.month = :month', { month: dto.date.month })
+      .andWhere('e.date.day = :day', { day: dto.date.day })
+      .andWhere('e.trainer.person.id = :trainer', { trainer: dto.trainer })
+      .getCount();
+  }
+
+  private overlapsEvents(dto: EventDTO): Promise<number> {
+    // Check if there's any event that overlaps
+    return this.service
+      .createQueryBuilder({ alias: 'e' })
+      .where('e.startTime < :endTime', { endTime: dto.endTime })
+      .andWhere('e.endTime > :startTime', { startTime: dto.startTime })
+      .andWhere('e.date.year = :year', { year: dto.date.year })
+      .andWhere('e.date.month = :month', { month: dto.date.month })
+      .andWhere('e.date.day = :day', { day: dto.date.day })
+      .andWhere('e.calendar = :calendar', { calendar: dto.calendar })
+      .getCount();
   }
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
       this.service = new EventService(getRepository);
+    }
+
+    if (!this.templateService) {
+      this.templateService = new EventTemplateService(getRepository);
     }
 
     if (!this.ownerService) {
@@ -53,10 +121,14 @@ class IEventCreateController extends BaseController {
       this.gymZoneService = new GymZoneService(getRepository);
     }
 
-    let dto: EventDTO;
+    const maybeEvent = await this.fromTemplate(res, req.body);
+    if (!(maybeEvent instanceof Event)) {
+      return maybeEvent;
+    }
 
+    let dto: EventDTO;
     try {
-      dto = await EventDTO.fromJson(req.body, DTOGroups.CREATE);
+      dto = await EventDTO.fromJson(maybeEvent, DTOGroups.CREATE);
     } catch (e) {
       return this.clientError(res, e);
     }
@@ -69,55 +141,33 @@ class IEventCreateController extends BaseController {
     // Ensure event is being created in a calendar which belongs
     // to a class type gym zone
     try {
-      const { isClassType } = await this.gymZoneService
-        .createQueryBuilder({ alias: 'gz' })
-        .select('gz.isClassType')
-        .where('gz.calendar = :calendar', { calendar: dto.calendar })
-        .getOne();
-
-      if (!isClassType) {
-        return this.clientError(
+      const maybeCalendar = await this.gymZoneClassType(dto);
+      if (!maybeCalendar) {
+        return this.forbidden(res, 'Gym zone does not exist.');
+      } else if (!maybeCalendar.isClassType) {
+        return this.forbidden(
           res,
-          'Cannot create an Event to a non class GymZone'
+          'Cannot create an Event to a non class GymZone.'
         );
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
 
     try {
-      const count = await this.service
-        .createQueryBuilder({ alias: 'e' })
-        .where('e.startTime < :endTime', { endTime: dto.endTime })
-        .andWhere('e.endTime > :startTime', { startTime: dto.startTime })
-        .andWhere('e.date.year = :year', { year: dto.date.year })
-        .andWhere('e.date.month = :month', { month: dto.date.month })
-        .andWhere('e.date.day = :day', { day: dto.date.day })
-        .andWhere('e.trainer.person.id = :trainer', { trainer: dto.trainer })
-        .getCount();
-
-      if (count) {
+      const overlaps = await this.trainerOverlaps(dto);
+      if (overlaps) {
         return this.forbidden(
           res,
           'Trainer has already an event that overlaps with the given date and timestamps.'
         );
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
 
     try {
-      // Check if there's any event that overlaps
-      const overlappedEvents = await this.service
-        .createQueryBuilder({ alias: 'e' })
-        .where('e.startTime < :endTime', { endTime: dto.endTime })
-        .andWhere('e.endTime > :startTime', { startTime: dto.startTime })
-        .andWhere('e.date.year = :year', { year: dto.date.year })
-        .andWhere('e.date.month = :month', { month: dto.date.month })
-        .andWhere('e.date.day = :day', { day: dto.date.day })
-        .andWhere('e.calendar = :calendar', { calendar: dto.calendar })
-        .getCount();
-
+      const overlappedEvents = await this.overlapsEvents(dto);
       if (overlappedEvents) {
         return this.clientError(
           res,
@@ -125,7 +175,7 @@ class IEventCreateController extends BaseController {
         );
       }
     } catch (e) {
-      return this.onFail(res, e);
+      return this.onFail(res, e, 'create');
     }
 
     return createdByOwnerOrWorker({
@@ -168,7 +218,7 @@ class IEventUpdateController extends BaseController {
     let dto: EventDTO;
 
     try {
-      dto = await EventDTO.fromJson(req.body, DTOGroups.CREATE);
+      dto = await EventDTO.fromJson(req.body, DTOGroups.UPDATE);
     } catch (e) {
       return this.clientError(res, e);
     }
@@ -199,7 +249,7 @@ class IEventUpdateController extends BaseController {
       }
     } catch (e) {
       log.error(
-        `Controller[${this.constructor.name}]`,
+        `Controller [${this.constructor.name}]`,
         '"update" handler',
         e.toString()
       );

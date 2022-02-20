@@ -43,6 +43,7 @@ describe('VirtualGym Controller', () => {
   const mockService = {
     findOne: jest.fn(),
     createQueryBuilder: jest.fn().mockReturnThis(),
+    leftJoinAndMapMany: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
     getMany: jest.fn()
   };
@@ -106,6 +107,12 @@ describe('VirtualGym Controller', () => {
       expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'virtualGym'
       });
+      expect(mockService.leftJoinAndMapMany).toHaveBeenCalledTimes(1);
+      expect(mockService.leftJoinAndMapMany).toHaveBeenCalledWith(
+        'virtualGym.gymZones',
+        'virtualGym.gymZones',
+        'gz'
+      );
       expect(mockService.where).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledWith('virtualGym.gym = :gym', {
         gym: mockPerson.gym.id

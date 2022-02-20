@@ -1,29 +1,192 @@
 import { getRepository } from 'typeorm';
 
 import { WorkerDTO } from '@hubbl/shared/models/dto';
+import * as log from 'npmlog';
 
-import { WorkerService, OwnerService } from '../../services';
+import { WorkerService, OwnerService, PersonService } from '../../services';
 import * as personHelpers from './helpers';
 import * as helpers from '../helpers';
 import {
   WorkerLoginController,
-  WorkerRegisterController,
-  WorkerUpdateController
+  WorkerCreateController,
+  WorkerUpdateController,
+  WorkerFetchController
 } from './Worker.controller';
 
 jest.mock('../../services');
 jest.mock('./helpers');
 jest.mock('../helpers');
 
+jest.mock('npmlog');
+
 describe('WorkerController', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('WorkerRegisterController', () => {
+  describe('WorkerFetch', () => {
+    const mockReq = { query: { skip: 0 } };
+    const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
+
+    const mockPersonService = { findOne: jest.fn() };
+
+    const logSpy = jest.spyOn(log, 'error');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    describe('execute', () => {
+      const setupServices = () => {
+        WorkerFetchController['service'] = {} as any;
+        WorkerFetchController['personService'] = mockPersonService as any;
+      };
+
+      it('should create the needed services if does not have any', async () => {
+        WorkerFetchController['service'] = undefined;
+        WorkerFetchController['personService'] = undefined;
+
+        jest.spyOn(WorkerFetchController, 'fail').mockImplementation();
+
+        await WorkerFetchController.execute({} as any, {} as any);
+
+        expect(WorkerService).toHaveBeenCalledTimes(1);
+        expect(WorkerService).toHaveBeenCalledWith(getRepository);
+        expect(PersonService).toHaveBeenCalledTimes(1);
+        expect(PersonService).toHaveBeenCalledWith(getRepository);
+      });
+
+      it('should call fetch', async () => {
+        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+
+        setupServices();
+        await WorkerFetchController.execute(mockReq as any, mockRes as any);
+
+        expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockPersonService.findOne).toHaveBeenCalledWith({
+          id: mockRes.locals.token.id
+        });
+        expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
+        expect(personHelpers.fetch).toHaveBeenCalledWith({
+          service: {},
+          controller: WorkerFetchController,
+          res: mockRes,
+          fromClass: WorkerDTO.fromClass,
+          gymId: 1,
+          alias: 'w',
+          skip: mockReq.query.skip
+        });
+      });
+
+      it('should use skip as 0 if not given', async () => {
+        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+
+        setupServices();
+        await WorkerFetchController.execute(
+          { query: {} } as any,
+          mockRes as any
+        );
+
+        expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+        expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
+        expect(personHelpers.fetch).toHaveBeenCalledWith({
+          service: {},
+          controller: WorkerFetchController,
+          res: mockRes,
+          fromClass: WorkerDTO.fromClass,
+          gymId: 1,
+          alias: 'w',
+          skip: 0
+        });
+      });
+
+      it('should call forbidden if person is not owner nor worker', async () => {
+        const mockRes = {
+          locals: { token: { id: 1, user: 'client' } }
+        } as any;
+        const forbiddenSpy = jest
+          .spyOn(WorkerFetchController, 'forbidden')
+          .mockImplementation();
+
+        setupServices();
+        await WorkerFetchController.execute(mockReq as any, mockRes as any);
+
+        expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+        expect(forbiddenSpy).toHaveBeenCalledWith(
+          mockRes,
+          'User can not fetch the workers.'
+        );
+      });
+
+      it('should call forbidden if person does not exist', async () => {
+        mockPersonService.findOne.mockResolvedValue(undefined);
+        const unauthorizedSpy = jest
+          .spyOn(WorkerFetchController, 'unauthorized')
+          .mockImplementation();
+
+        setupServices();
+        await WorkerFetchController.execute(mockReq as any, mockRes as any);
+
+        expect(unauthorizedSpy).toHaveBeenCalledTimes(1);
+        expect(unauthorizedSpy).toHaveBeenCalledWith(
+          mockRes,
+          'Person does not exist'
+        );
+      });
+
+      it('should call fail on personService error', async () => {
+        mockPersonService.findOne.mockRejectedValue('error-thrown');
+        const failSpy = jest
+          .spyOn(WorkerFetchController, 'fail')
+          .mockImplementation();
+
+        setupServices();
+        await WorkerFetchController.execute(mockReq as any, mockRes as any);
+
+        expect(logSpy).toHaveBeenCalledTimes(1);
+        expect(logSpy).toHaveBeenCalledWith(
+          `Controller [${WorkerFetchController.constructor.name}]`,
+          '"fetch" handler',
+          'error-thrown'
+        );
+        expect(failSpy).toHaveBeenCalledTimes(1);
+        expect(failSpy).toHaveBeenCalledWith(
+          mockRes,
+          'Internal server error. If the problem persists, contact our team.'
+        );
+      });
+
+      it('should call fail on fetch error', async () => {
+        (personHelpers.fetch as any).mockImplementation(() => {
+          throw 'error-thrown';
+        });
+        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+        const failSpy = jest
+          .spyOn(WorkerFetchController, 'fail')
+          .mockImplementation();
+
+        setupServices();
+        await WorkerFetchController.execute(mockReq as any, mockRes as any);
+
+        expect(logSpy).toHaveBeenCalledTimes(1);
+        expect(logSpy).toHaveBeenCalledWith(
+          `Controller [${WorkerFetchController.constructor.name}]`,
+          '"fetch" handler',
+          'error-thrown'
+        );
+        expect(failSpy).toHaveBeenCalledTimes(1);
+        expect(failSpy).toHaveBeenCalledWith(
+          mockRes,
+          'Internal server error. If the problem persists, contact our team.'
+        );
+      });
+    });
+  });
+
+  describe('WorkerCreateController', () => {
     describe('run', () => {
       it('should create a service if does not have any', async () => {
-        await WorkerRegisterController.execute({} as any, {} as any);
+        await WorkerCreateController.execute({} as any, {} as any);
 
         expect(WorkerService).toHaveBeenCalledTimes(1);
         expect(WorkerService).toHaveBeenCalledWith(getRepository);
@@ -34,12 +197,12 @@ describe('WorkerController', () => {
           .spyOn(personHelpers, 'register')
           .mockImplementation();
 
-        WorkerRegisterController['service'] = {} as any;
-        await WorkerRegisterController.execute({} as any, {} as any);
+        WorkerCreateController['service'] = {} as any;
+        await WorkerCreateController.execute({} as any, {} as any);
 
         expect(registerSpy).toHaveBeenCalledWith({
           service: {},
-          controller: WorkerRegisterController,
+          controller: WorkerCreateController,
           fromJson: WorkerDTO.fromJson,
           fromClass: WorkerDTO.fromClass,
           req: {},

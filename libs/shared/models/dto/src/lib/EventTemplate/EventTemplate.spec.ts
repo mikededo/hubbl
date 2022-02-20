@@ -3,8 +3,8 @@ import * as ClassValidator from 'class-validator';
 import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
 import * as helpers from '@hubbl/shared/models/helpers';
 
-import EventTemplateDTO from './EventTemplate';
 import EventTypeDTO from '../EventType';
+import EventTemplateDTO from './EventTemplate';
 
 jest.mock('@hubbl/shared/models/entities');
 jest.mock('@hubbl/shared/models/helpers');
@@ -16,6 +16,10 @@ const propCompare = (
   expect(got.id).toBe(want.id);
   expect(got.name).toBe(want.name);
   expect(got.description).toBe(want.description);
+  expect(got.capacity).toBe(want.capacity);
+  expect(got.covidPassport).toBe(want.covidPassport);
+  expect(got.maskRequired).toBe(want.maskRequired);
+  expect(got.difficulty).toBe(want.difficulty);
   expect(got.type).toStrictEqual(
     want.type instanceof EventType
       ? EventTypeDTO.fromClass(want.type)
@@ -36,6 +40,10 @@ describe('EventTemplate', () => {
         id: 1,
         name: 'Virtual',
         description: 'Description',
+        capacity: 10,
+        covidPassport: true,
+        maskRequired: true,
+        difficulty: 3,
         type: 1,
         gym: 1
       };
@@ -85,6 +93,10 @@ describe('EventTemplate', () => {
       eventTemplate.id = 1;
       eventTemplate.name = 'Test';
       eventTemplate.description = '';
+      eventTemplate.capacity = 10;
+      eventTemplate.covidPassport = true;
+      eventTemplate.maskRequired = true;
+      eventTemplate.difficulty = 3;
       eventTemplate.type = eventType;
       eventTemplate.gym = 1;
 
@@ -108,6 +120,10 @@ describe('EventTemplate', () => {
       dto.id = 1;
       dto.name = 'Test';
       dto.description = '';
+      dto.capacity = 10;
+      dto.covidPassport = true;
+      dto.maskRequired = true;
+      dto.difficulty = 3;
       dto.type = 1;
       dto.gym = 1;
 

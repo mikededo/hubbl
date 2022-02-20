@@ -248,7 +248,7 @@ describe('update', () => {
         expect(mockController.fail).toHaveReturnedTimes(1);
         expect(mockController.fail).toHaveBeenCalledWith(
           mockRes,
-          'Internal server error. If the error persists, contact our team.'
+          'Internal server error. If the problem persists, contact our team.'
         );
       });
     });
@@ -338,7 +338,7 @@ describe('update', () => {
         expect(mockController.fail).toHaveBeenCalledTimes(1);
         expect(mockController.fail).toHaveBeenCalledWith(
           mockWorkerRes,
-          'Internal server error. If the error persists, contact our team'
+          'Internal server error. If the problem persists, contact our team.'
         );
         expect(mockWorkerService.findOne).not.toHaveBeenCalled();
       });

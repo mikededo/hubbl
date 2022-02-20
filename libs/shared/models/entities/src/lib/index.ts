@@ -12,6 +12,7 @@ import GymZone from './GymZone';
 import Owner from './Owner';
 import Person from './Person';
 import Trainer from './Trainer';
+import TrainerTag from './TrainerTag';
 import VirtualGym from './VirtualGym';
 import Worker from './Worker';
 
@@ -30,6 +31,7 @@ export {
   Owner,
   Person,
   Trainer,
+  TrainerTag,
   VirtualGym,
   Worker
 };

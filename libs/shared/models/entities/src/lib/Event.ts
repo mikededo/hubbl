@@ -1,3 +1,4 @@
+import { Max, Min } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -15,6 +16,7 @@ import CalendarDate from './CalendarDate';
 import EventAppointment from './EventAppointment';
 import EventTemplate from './EventTemplate';
 import Trainer from './Trainer';
+import Gym from './Gym';
 
 @Entity()
 export default class Event {
@@ -53,6 +55,14 @@ export default class Event {
   maskRequired!: boolean;
 
   /**
+   * `Event`'s difficulty
+   */
+  @Column('integer', { default: 3 })
+  @Min(1)
+  @Max(5)
+  difficulty!: number;
+
+  /**
    * Time at which the `Event` starts
    */
   @Index('event-start-time-idx')
@@ -83,6 +93,13 @@ export default class Event {
   })
   calendar!: number | Calendar;
 
+  /**
+   * `Gym` to which the `Event` belongs
+   */
+  @ManyToOne(() => Gym, (g) => g.events, {
+    nullable: false
+  })
+  gym!: number;
   /**
    * `EventTemplate` from which has been created
    */

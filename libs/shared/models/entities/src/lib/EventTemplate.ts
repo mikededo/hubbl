@@ -1,3 +1,4 @@
+import { Max, Min } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -20,16 +21,45 @@ export default class EventTemplate {
   id!: number;
 
   /**
-   * Name of the `Event`
+   * Name of the `Event`. This field will not be copied to the 
+   * `Event`
    */
   @Column('varchar', { nullable: false, length: 255 })
   name!: string;
 
   /**
-   * Optional description of the `Event`
+   * Optional description of the `Event`. This field will not be
+   * copied tot the `Event`.
    */
   @Column('text')
   description!: string;
+
+  /**
+   * Capacity of the `EventTemplate`'s which will be copied
+   * to the template
+   */
+  @Column('integer', { nullable: false })
+  capacity!: number;
+
+  /**
+   * Whether the covid passport is required in the `EventTemplate`
+   */
+  @Column('boolean', { default: false })
+  covidPassport!: boolean;
+
+  /**
+   * Whether the mask is required is required in the `EventTemplate`
+   */
+  @Column('boolean', { default: false })
+  maskRequired!: boolean;
+
+  /**
+   * The difficulty of the `EventTemplate`
+   */
+  @Column('integer', { default: 3 })
+  @Min(1)
+  @Max(5)
+  difficulty!: number;
 
   /**
    * `EventType` of the `EventTemplate`

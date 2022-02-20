@@ -44,7 +44,7 @@ const createEvent = () => {
 };
 
 describe('Calendar controller', () => {
-  const mockRes = { locals: { token: { id: 1 } } } as any;
+  const mockRes = { locals: { token: { id: 1, user: 'owner' } } } as any;
   const logSpy = jest.spyOn(log, 'error').mockImplementation();
 
   beforeEach(() => {
@@ -416,6 +416,25 @@ describe('Calendar controller', () => {
       expect(okSpy).toHaveBeenCalledWith(mockRes, camelCaseKeys(queryResult));
     });
 
+    it('should send forbidden if user is not owner nor worker', async () => {
+      const mockRes = {
+        locals: { token: { id: 1, user: 'client' } }
+      } as any;
+      const forbiddenSpy = jest.spyOn(
+        CalendarFetchEventAppointmentsController,
+        'forbidden'
+      );
+
+      setupServices();
+      await CalendarFetchEventAppointmentsController.execute(mockReq, mockRes);
+
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockRes,
+        'User can not get the list of event appointments.'
+      );
+    });
+
     it('should return if validation does not pass', async () => {
       validationSpy.mockResolvedValue('any' as any);
 
@@ -587,6 +606,25 @@ describe('Calendar controller', () => {
       // Return the results
       expect(okSpy).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledWith(mockRes, camelCaseKeys(queryResult));
+    });
+
+    it('should send forbidden if user is not owner nor worker', async () => {
+      const mockRes = {
+        locals: { token: { id: 1, user: 'client' } }
+      } as any;
+      const forbiddenSpy = jest.spyOn(
+        CalendarFetchCalenAppointmentsController,
+        'forbidden'
+      );
+
+      setupServices();
+      await CalendarFetchCalenAppointmentsController.execute(mockReq, mockRes);
+
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockRes,
+        'User can not get the list of calendar appointments.'
+      );
     });
 
     it('should return if validation does not pass', async () => {

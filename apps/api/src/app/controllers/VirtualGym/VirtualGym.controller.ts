@@ -37,6 +37,11 @@ class IVirtualGymFetchController extends BaseController {
         const result = await this.service
           .createQueryBuilder({ alias: 'virtualGym' })
           .where('virtualGym.gym = :gym', { gym: (person.gym as Gym).id })
+          .leftJoinAndMapMany(
+            'virtualGym.gymZones',
+            'virtualGym.gymZones',
+            'gz'
+          )
           .getMany();
 
         return this.ok(
@@ -45,7 +50,7 @@ class IVirtualGymFetchController extends BaseController {
         );
       } catch (_) {
         log.error(
-          `Controller[${this.constructor.name}]`,
+          `Controller [${this.constructor.name}]`,
           '"fetch" handler',
           _.toString()
         );
@@ -57,7 +62,7 @@ class IVirtualGymFetchController extends BaseController {
       }
     } catch (_) {
       log.error(
-        `Controller[${this.constructor.name}]`,
+        `Controller [${this.constructor.name}]`,
         '"fetch" handler',
         _.toString()
       );

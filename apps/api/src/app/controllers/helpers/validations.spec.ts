@@ -45,14 +45,14 @@ describe('validations', () => {
     const failAsserts = (controller: any) => {
       expect(logSpy).toHaveBeenCalledTimes(1);
       expect(logSpy).toHaveBeenCalledWith(
-        `Controller[${controller.constructor.name}]`,
+        `Controller [${controller.constructor.name}]`,
         `[Calendar access validation]`,
         'error-thrown'
       );
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {},
-        'Internal server error. If the error persists, contact our team'
+        'Internal server error. If the problem persists, contact our team.'
       );
     };
 

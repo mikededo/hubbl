@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventAppointmentDTO } from '@hubbl/shared/models/dto';
@@ -28,23 +27,6 @@ abstract class BaseEventAppointmentController extends BaseController {
   protected ownerService: OwnerService = undefined;
   protected workerService: WorkerService = undefined;
   protected clientService: ClientService = undefined;
-
-  protected async onFail(
-    res: Response,
-    error: any,
-    operation: 'create' | 'cancel' | 'delete'
-  ): Promise<Response> {
-    log.error(
-      `Controller[${this.constructor.name}]`,
-      `"${operation}" handler`,
-      error.toString()
-    );
-
-    return this.fail(
-      res,
-      'Internal server error. If the error persists, contact our team'
-    );
-  }
 
   protected async baseEventValidation(
     res: Response,

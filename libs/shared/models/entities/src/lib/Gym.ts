@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -10,9 +11,11 @@ import {
 
 import { ThemeColor } from '@hubbl/shared/types';
 
+import Event from './Event';
 import EventTemplate from './EventTemplate';
 import EventType from './EventType';
 import Person from './Person';
+import TrainerTag from './TrainerTag';
 import VirtualGym from './VirtualGym';
 
 @Entity()
@@ -33,10 +36,17 @@ export default class Gym {
   email!: string;
 
   /**
-   * Optionall contact phone of the gym
+   * Optional contact phone of the gym
    */
   @Column('varchar', { length: 45, default: null })
   phone!: string;
+
+  /**
+   * Unique gym code used to register clients
+   */
+  @Index('gym_code', { unique: true })
+  @Column('varchar', { length: 8, nullable: false })
+  code!: string;
 
   /**
    * `EventType`'s that belong to the gym, and will be common
@@ -59,6 +69,16 @@ export default class Gym {
   eventTemplates!: EventTemplate[];
 
   /**
+   * `Event`'s from the gym. Used to know which belong to the gym since
+   * if they do not have a template, it could not be determined.
+   */
+  @OneToMany(() => Event, (e) => e.gym, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  events!: Event[];
+
+  /**
    * Relation that allows us to know what users
    */
   @OneToMany(() => Person, (p) => p.gym)
@@ -74,6 +94,17 @@ export default class Gym {
     onUpdate: 'CASCADE'
   })
   virtualGyms!: VirtualGym[];
+
+  /**
+   * `TrainerTags`'s of the `Gym`
+   */
+  @OneToMany(() => TrainerTag, (vg) => vg.gym, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  trainerTags!: TrainerTag[];
 
   /**
    * Primary color of the theme chosen by the `Owner`

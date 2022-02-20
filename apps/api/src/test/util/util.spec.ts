@@ -11,7 +11,7 @@ export const expectTokenCookie = (response: request.Response) => {
 
 /**
  * Checks if the given value type is a string
- * 
+ *
  * @param value The value to check for
  */
 export const toBeString = (value: any) => {
@@ -20,7 +20,7 @@ export const toBeString = (value: any) => {
 
 /**
  * Checks if the given value type is a number
- * 
+ *
  * @param value The value to check for
  */
 export const toBeNumber = (value: any) => {
@@ -29,7 +29,7 @@ export const toBeNumber = (value: any) => {
 
 /**
  * Checks if the given value type is a boolean
- * 
+ *
  * @param value The value to check for
  */
 export const toBeBoolean = (value: any) => {

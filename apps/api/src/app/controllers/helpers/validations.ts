@@ -21,14 +21,14 @@ const onFail = async (
   error: any
 ): Promise<Response> => {
   log.error(
-    `Controller[${controller.constructor.name}]`,
+    `Controller [${controller.constructor.name}]`,
     '[Calendar access validation]',
     error.toString()
   );
 
   return controller.fail(
     res,
-    'Internal server error. If the error persists, contact our team'
+    'Internal server error. If the problem persists, contact our team.'
   );
 };
 

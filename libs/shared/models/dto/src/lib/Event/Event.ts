@@ -4,6 +4,8 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Max,
+  Min,
   validateOrReject
 } from 'class-validator';
 
@@ -17,6 +19,8 @@ import {
 import {
   booleanError,
   instanceError,
+  maxError,
+  minError,
   numberError,
   stringError,
   validationParser
@@ -65,6 +69,17 @@ export default class EventDTO implements DTO<Event> {
   })
   maskRequired!: boolean;
 
+  @IsNumber(
+    {},
+    {
+      message: numberError('difficulty'),
+      groups: [DTOGroups.ALL, DTOGroups.UPDATE]
+    }
+  )
+  @Min(1, { message: minError('difficulty', 1) })
+  @Max(5, { message: maxError('difficulty', 5) })
+  difficulty!: number;
+
   @IsString({
     message: stringError('startTime'),
     groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
@@ -95,6 +110,15 @@ export default class EventDTO implements DTO<Event> {
   )
   calendar!: number;
 
+  @IsNumber(
+    {},
+    {
+      message: numberError('gym'),
+      groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+    }
+  )
+  gym!: number | Gym;
+
   @IsOptional()
   template!: number;
 
@@ -115,10 +139,12 @@ export default class EventDTO implements DTO<Event> {
     result.capacity = from.capacity;
     result.covidPassport = from.covidPassport;
     result.maskRequired = from.maskRequired;
+    result.difficulty = from.difficulty;
     result.startTime = from.startTime;
     result.endTime = from.endTime;
     result.trainer = from.trainer;
     result.calendar = from.calendar;
+    result.gym = from.gym;
     result.template = from.template;
 
     result.date = new CalendarDate();
@@ -192,10 +218,12 @@ export default class EventDTO implements DTO<Event> {
     result.capacity = this.capacity;
     result.covidPassport = this.covidPassport;
     result.maskRequired = this.maskRequired;
+    result.difficulty = this.difficulty;
     result.startTime = this.startTime;
     result.endTime = this.endTime;
-    result.trainer = this.trainer as number;
     result.calendar = this.calendar;
+    result.gym = this.gym as number;
+    result.trainer = this.trainer as number;
     result.template = this.template;
     result.date = this.date;
 

@@ -1,10 +1,12 @@
-import { getRepository } from 'typeorm';
 import * as log from 'npmlog';
+import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
+import { Event } from '@hubbl/shared/models/entities';
 
 import {
   EventService,
+  EventTemplateService,
   GymZoneService,
   OwnerService,
   WorkerService
@@ -29,8 +31,10 @@ describe('Event controller', () => {
     capacity: 1000,
     covidPassport: true,
     maskRequired: true,
+    difficulty: 5,
     startTime: '09:00:00',
     endTime: '10:00:00',
+    gym: 1,
     trainer: 1,
     calendar: 1,
     template: 1,
@@ -49,7 +53,7 @@ describe('Event controller', () => {
   };
   const fromJsonSpy = jest.spyOn(EventDTO, 'fromJson');
 
-  const mockReq = { body: {} };
+  const mockReq = { body: mockEvent };
   const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
 
   const logSpy = jest.spyOn(log, 'error').mockImplementation();
@@ -67,7 +71,7 @@ describe('Event controller', () => {
   ) => {
     expect(logSpy).toHaveBeenCalledTimes(1);
     expect(logSpy).toHaveBeenCalledWith(
-      `Controller[${controller.constructor.name}]`,
+      `Controller [${controller.constructor.name}]`,
       `"${operation}" handler`,
       'error-thrown'
     );
@@ -189,6 +193,37 @@ describe('Event controller', () => {
   };
 
   describe('EventCreateController', () => {
+    const mockTemplate = {
+      capacity: 10,
+      covidPassport: true,
+      maskRequired: true,
+      difficulty: 1,
+      gym: 2
+    };
+    const mockCreatedEvent = (template = true): Event => {
+      const result = new Event();
+
+      result.name = mockReq.body.name;
+      result.description = mockReq.body.description;
+      result.capacity = (template ? mockTemplate : mockReq.body).capacity;
+      result.covidPassport = (
+        template ? mockTemplate : mockReq.body
+      ).covidPassport;
+      result.maskRequired = (
+        template ? mockTemplate : mockReq.body
+      ).maskRequired;
+      result.difficulty = (template ? mockTemplate : mockReq.body).difficulty;
+      result.startTime = mockReq.body.startTime;
+      result.endTime = mockReq.body.endTime;
+      result.date = mockReq.body.date as any;
+      result.trainer = mockReq.body.trainer;
+      result.gym = (template ? mockTemplate : mockReq.body).gym;
+      result.calendar = mockReq.body.calendar;
+
+      return result;
+    };
+
+    const mockTemplateService = { findOne: jest.fn() };
     const mockGymZoneService = {
       createQueryBuilder: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
@@ -196,37 +231,21 @@ describe('Event controller', () => {
       getOne: jest.fn()
     } as any;
 
+    const cboowSpy = jest.spyOn(create, 'createdByOwnerOrWorker');
+
     beforeEach(() => {
       jest.clearAllMocks();
     });
 
-    it('should create the services if does not have any', async () => {
-      EventCreateController['gymZoneService'] = undefined;
-
-      await servicesAsserts(EventCreateController);
-
-      expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
-    });
-
-    it('should call createByOwnerOrWorker', async () => {
-      mockService.getCount.mockResolvedValue(0);
-      mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
-
-      const cboowSpy = jest
-        .spyOn(create, 'createdByOwnerOrWorker')
-        .mockImplementation();
-
+    const setupServices = () => {
       EventCreateController['service'] = mockService as any;
+      EventCreateController['templateService'] = mockTemplateService as any;
       EventCreateController['ownerService'] = {} as any;
       EventCreateController['workerService'] = {} as any;
       EventCreateController['gymZoneService'] = mockGymZoneService;
+    };
 
-      await EventCreateController.execute(mockReq as any, mockRes as any);
-
-      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith({}, DTOGroups.CREATE);
-
+    const createChecks = () => {
       // Gym zone service
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledWith({
@@ -329,33 +348,108 @@ describe('Event controller', () => {
         entityName: 'Event',
         workerCreatePermission: 'createEvents'
       });
+    };
+
+    it('should create the services if does not have any', async () => {
+      EventCreateController['templateService'] = undefined;
+      EventCreateController['gymZoneService'] = undefined;
+
+      await servicesAsserts(EventCreateController);
+
+      expect(GymZoneService).toHaveBeenCalledTimes(1);
+      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
+      expect(EventTemplateService).toHaveBeenCalledTimes(1);
+      expect(EventTemplateService).toHaveBeenCalledWith(getRepository);
+    });
+
+    it('should call createByOwnerOrWorker with template data', async () => {
+      mockService.getCount.mockResolvedValue(0);
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
+      mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
+      cboowSpy.mockImplementation();
+
+      setupServices();
+      await EventCreateController.execute(mockReq as any, mockRes as any);
+
+      // Event service checks
+      expect(mockTemplateService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockTemplateService.findOne).toHaveBeenCalledWith({
+        id: mockReq.body.template,
+        options: { loadEagerRelations: false, loadRelationIds: true }
+      });
+
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(fromJsonSpy).toHaveBeenCalledWith(
+        mockCreatedEvent(),
+        DTOGroups.CREATE
+      );
+    });
+
+    it('should call createByOwnerOrWorker without template data', async () => {
+      mockService.getCount.mockResolvedValue(0);
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
+      mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
+      cboowSpy.mockImplementation();
+
+      setupServices();
+      await EventCreateController.execute(
+        { body: { ...mockReq.body, template: undefined } } as any,
+        mockRes as any
+      );
+
+      expect(mockTemplateService.findOne).not.toHaveBeenCalled();
+
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(fromJsonSpy).toHaveBeenCalledWith(
+        mockCreatedEvent(false),
+        DTOGroups.CREATE
+      );
+
+      createChecks();
+    });
+
+    it('should send forbidden if template does not exist', async () => {
+      mockTemplateService.findOne.mockResolvedValue(undefined);
+
+      const forbiddenSpy = jest
+        .spyOn(EventCreateController, 'forbidden')
+        .mockImplementation();
+
+      setupServices();
+      await EventCreateController.execute(mockReq as any, mockRes as any);
+
+      expect(mockTemplateService.findOne).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockRes,
+        'Event template does not exist.'
+      );
     });
 
     it('should send clientError on fromJson error', async () => {
-      EventCreateController['gymZoneService'] = {} as any;
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
 
+      setupServices();
       await fromJsonFailAsserts(EventCreateController);
     });
 
     it('should send clientError if times are not valid', async () => {
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
-      EventCreateController['gymZoneService'] = mockGymZoneService;
 
+      setupServices();
       await invalidTimesAsserts(EventCreateController);
     });
 
-    it('should send clientError if GymZone is not of class type', async () => {
-      mockGymZoneService.getOne.mockResolvedValue({ isClassType: false });
+    it('should send forbidden if GymZone does not exist', async () => {
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
+      mockGymZoneService.getOne.mockResolvedValue(undefined);
 
-      const clientErrorSpy = jest
-        .spyOn(EventCreateController, 'clientError')
+      const forbiddenSpy = jest
+        .spyOn(EventCreateController, 'forbidden')
         .mockImplementation();
 
-      EventCreateController['service'] = {} as any;
-      EventCreateController['ownerService'] = {} as any;
-      EventCreateController['workerService'] = {} as any;
-      EventCreateController['gymZoneService'] = mockGymZoneService;
-
+      setupServices();
       await EventCreateController.execute(mockReq as any, mockRes as any);
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
@@ -365,14 +459,40 @@ describe('Event controller', () => {
       expect(mockGymZoneService.where).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.getOne).toHaveBeenCalledTimes(1);
 
-      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
-      expect(clientErrorSpy).toHaveBeenCalledWith(
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
         mockRes,
-        'Cannot create an Event to a non class GymZone'
+        'Gym zone does not exist.'
+      );
+    });
+
+    it('should send forbidden if GymZone is not of class type', async () => {
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
+      mockGymZoneService.getOne.mockResolvedValue({ isClassType: false });
+
+      const forbiddenSpy = jest
+        .spyOn(EventCreateController, 'forbidden')
+        .mockImplementation();
+
+      setupServices();
+      await EventCreateController.execute(mockReq as any, mockRes as any);
+
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      // Gym zone service
+      expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.select).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.where).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.getOne).toHaveBeenCalledTimes(1);
+
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockRes,
+        'Cannot create an Event to a non class GymZone.'
       );
     });
 
     it('should send fail on GymZone service error', async () => {
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
       mockGymZoneService.getOne.mockImplementation(() => {
         throw 'error-thrown';
       });
@@ -381,11 +501,7 @@ describe('Event controller', () => {
         .spyOn(EventCreateController, 'fail')
         .mockImplementation();
 
-      EventCreateController['service'] = {} as any;
-      EventCreateController['ownerService'] = {} as any;
-      EventCreateController['workerService'] = {} as any;
-      EventCreateController['gymZoneService'] = mockGymZoneService;
-
+      setupServices();
       await EventCreateController.execute(mockReq as any, mockRes as any);
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
@@ -400,6 +516,7 @@ describe('Event controller', () => {
     });
 
     it('should send forbidden if trainer already has an event', async () => {
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
       mockService.getCount.mockResolvedValue(1);
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
 
@@ -407,11 +524,7 @@ describe('Event controller', () => {
         .spyOn(EventCreateController, 'forbidden')
         .mockImplementation();
 
-      EventCreateController['service'] = mockService as any;
-      EventCreateController['gymZoneService'] = mockGymZoneService;
-      EventCreateController['ownerService'] = {} as any;
-      EventCreateController['workerService'] = {} as any;
-
+      setupServices();
       await EventCreateController.execute(mockReq as any, mockRes as any);
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
@@ -428,6 +541,7 @@ describe('Event controller', () => {
     });
 
     it('should send fail on service error', async () => {
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
       mockService.getCount.mockRejectedValue('error-thrown');
 
@@ -435,11 +549,7 @@ describe('Event controller', () => {
         .spyOn(EventCreateController, 'fail')
         .mockImplementation();
 
-      EventCreateController['service'] = mockService as any;
-      EventCreateController['gymZoneService'] = mockGymZoneService;
-      EventCreateController['ownerService'] = {} as any;
-      EventCreateController['workerService'] = {} as any;
-
+      setupServices();
       await EventCreateController.execute(mockReq as any, mockRes as any);
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
@@ -448,9 +558,10 @@ describe('Event controller', () => {
     });
 
     it('should send clientError if events overlap', async () => {
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
       mockService.getCount.mockResolvedValueOnce(0);
-      EventCreateController['gymZoneService'] = mockGymZoneService;
 
+      setupServices();
       await overlappedAsserts(EventCreateController, 2);
 
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(2);
@@ -459,10 +570,11 @@ describe('Event controller', () => {
     });
 
     it('should send fail on service error', async () => {
+      mockTemplateService.findOne.mockResolvedValue(mockTemplate);
       mockService.getCount.mockResolvedValueOnce(0);
       mockGymZoneService.getOne.mockResolvedValue({ isClassType: true });
-      EventCreateController['gymZoneService'] = mockGymZoneService;
 
+      setupServices();
       await serviceFailAsserts(EventCreateController, 'create', 2);
     });
   });
@@ -486,7 +598,7 @@ describe('Event controller', () => {
       await EventUpdateController.execute(mockReq as any, mockRes as any);
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
-      expect(fromJsonSpy).toHaveBeenCalledWith({}, DTOGroups.CREATE);
+      expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'e'

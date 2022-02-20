@@ -93,14 +93,14 @@ export const login = async ({
       });
     } catch (_) {
       log.error(
-        `Controller[${controller.constructor.name}]`,
+        `Controller [${controller.constructor.name}]`,
         '"login" handler',
         _.toString()
       );
 
       return controller.fail(
         res,
-        'Internal server error. If the error persists, contact our team.'
+        'Internal server error. If the problem persists, contact our team.'
       );
     }
   } catch (e) {

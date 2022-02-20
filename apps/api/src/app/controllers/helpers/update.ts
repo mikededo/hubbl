@@ -13,6 +13,7 @@ import {
   GymZoneDTO,
   OwnerDTO,
   TrainerDTO,
+  TrainerTagDTO,
   VirtualGymDTO,
   WorkerDTO
 } from '@hubbl/shared/models/dto';
@@ -27,6 +28,7 @@ import {
   GymZone,
   Owner,
   Trainer,
+  TrainerTag,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
@@ -49,6 +51,7 @@ type UpdatableServices = BaseService<
   | EventType
   | VirtualGym
   | GymZone
+  | TrainerTag
 >;
 
 type UpdatableEntities =
@@ -62,7 +65,8 @@ type UpdatableEntities =
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
-  | 'GymZone';
+  | 'GymZone'
+  | 'TrainerTag';
 
 type FindAndUpdateProps = {
   controller: BaseController;
@@ -94,14 +98,14 @@ export const findAndUpdateEntity = async ({
     return controller.ok(res);
   } catch (_) {
     log.error(
-      `Controller[${controller.constructor.name}]`,
+      `Controller [${controller.constructor.name}]`,
       '"update" handler',
       _.toString()
     );
 
     return controller.fail(
       res,
-      'Internal server error. If the error persists, contact our team.'
+      'Internal server error. If the problem persists, contact our team.'
     );
   }
 };
@@ -115,7 +119,8 @@ type CommonUpdateByDTOs =
   | EventTemplateDTO
   | EventTypeDTO
   | VirtualGymDTO
-  | GymZoneDTO;
+  | GymZoneDTO
+  | TrainerTagDTO;
 
 type CommonUpdateByEntities =
   | 'Trainer'
@@ -126,7 +131,8 @@ type CommonUpdateByEntities =
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
-  | 'GymZone';
+  | 'GymZone'
+  | 'TrainerTag';
 
 type WorkerUpdatePermissions =
   | 'updateCalendarAppointments'
@@ -137,7 +143,8 @@ type WorkerUpdatePermissions =
   | 'updateEventTypes'
   | 'updateGymZones'
   | 'updateTrainers'
-  | 'updateVirtualGyms';
+  | 'updateVirtualGyms'
+  | 'updateTags';
 
 type UpdateByOwnerOrWorkerProps = {
   service: UpdatableServices;
@@ -168,14 +175,14 @@ export const updatedByOwnerOrWorker = async ({
   if (token.user === 'worker') {
     if (!workerUpdatePermission) {
       log.error(
-        `Controller[${controller.constructor.name}]`,
+        `Controller [${controller.constructor.name}]`,
         '"update" handler',
         'No "workerCreatePermission passed'
       );
 
       return controller.fail(
         res,
-        'Internal server error. If the error persists, contact our team'
+        'Internal server error. If the problem persists, contact our team.'
       );
     }
 

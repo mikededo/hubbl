@@ -9,10 +9,29 @@ import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
 
-export const register = async () => {
+export const fetch = async () => {
+  // Login as owner
+  const loginResponse = await supertest(app).post('/persons/login/owner').send({
+    email: ENTITY_IDENTIFIERS.OWNER_EMAIL,
+    password: 'owner-password'
+  });
+
+  expect(loginResponse.statusCode).toBe(200);
+  util.expectTokenCookie(loginResponse);
+
+  const fetchResponse = await supertest(app)
+    .get('/persons/clients')
+    .set('Authorization', `Bearer ${loginResponse.body.token}`)
+    .send();
+
+  expect(fetchResponse.statusCode).toBe(200);
+  expect(fetchResponse.body.length).toBe(3);
+};
+
+export const baseRegister = async () => {
   const testApp = supertest(app);
 
-  const response = await testApp.post('/persons/register/client').send({
+  const response = await testApp.post('/persons/client').send({
     email: 'registered@client.com',
     password: 'registered-password',
     firstName: 'Registerd',
@@ -37,7 +56,6 @@ export const register = async () => {
   util.toBeString(body.client.password);
   util.toBeString(body.client.firstName);
   util.toBeString(body.client.lastName);
-  console.log(body.client.phone)
   util.toBeString(body.client.phone);
   util.toBeString(body.client.theme);
   util.toBeString(body.client.gender);
@@ -59,6 +77,55 @@ export const register = async () => {
   expect(loginResponse.body.client.id).toBe(body.client.id);
 };
 
+export const codeRegister = async () => {
+  const testApp = supertest(app);
+
+  const response = await testApp
+    .post(`/persons/register/client?code=${ENTITY_IDENTIFIERS.GYM_CODE}`)
+    .send({
+      email: 'registered.code@client.com',
+      password: 'registered-password',
+      firstName: 'Registerd',
+      lastName: 'Client',
+      phone: '000 000 000',
+      gender: Gender.OTHER,
+      covidPassport: true
+    });
+
+  expect(response.statusCode).toBe(201);
+  util.expectTokenCookie(response);
+
+  // Body checks
+  const { body } = response;
+
+  // Check fields
+  util.toBeString(body.token);
+  expect(body.client).toBeDefined();
+  util.toBeNumber(body.client.id);
+  util.toBeString(body.client.email);
+  util.toBeString(body.client.password);
+  util.toBeString(body.client.firstName);
+  util.toBeString(body.client.lastName);
+  util.toBeString(body.client.phone);
+  util.toBeString(body.client.theme);
+  util.toBeString(body.client.gender);
+  util.toBeBoolean(body.client.covidPassport);
+  expect(
+    // Ensure password has been encripted
+    await compare('registered-password', body.client.password)
+  ).toBeTruthy();
+  util.toBeNumber(body.client.gym);
+
+  // Check if the person exists in the database, by logging in
+  const loginResponse = await testApp.post('/persons/login/client').send({
+    email: 'registered.code@client.com',
+    password: 'registered-password'
+  });
+
+  // Basic checks
+  expect(loginResponse.body.client).toBeDefined();
+  expect(loginResponse.body.client.id).toBe(body.client.id);
+};
 export const login = async () => {
   // Use database data
   const response = await supertest(app).post('/persons/login/client').send({
