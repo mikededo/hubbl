@@ -16,6 +16,7 @@ import {
   Owner,
   Person,
   Trainer,
+  TrainerTag,
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
@@ -58,11 +59,13 @@ const createTestDatabase = async (): Promise<Connection> => {
         Owner,
         Person,
         Trainer,
+        TrainerTag,
         VirtualGym,
         Worker
       ],
       synchronize: true,
-      namingStrategy: new SnakeNamingStrategy()
+      namingStrategy: new SnakeNamingStrategy(),
+      dropSchema: true
     });
 
     return cnt;
@@ -230,6 +233,9 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
       createClients: true,
       updateClients: true,
       deleteClients: true,
+      createTags: true,
+      updateTags: true,
+      deleteTags: true,
       createEvents: true,
       updateEvents: true,
       deleteEvents: true,
@@ -289,6 +295,33 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
       }
     ]);
 
+    await em.getRepository(TrainerTag).save([
+      {
+        id: ENTITY_IDENTIFIERS.TRIANER_TAG_ONE,
+        name: 'Tag One',
+        color: AppPalette.BLUE,
+        gym: ENTITY_IDENTIFIERS.GYM
+      },
+      {
+        id: ENTITY_IDENTIFIERS.TRIANER_TAG_TWO,
+        name: 'Tag Two',
+        color: AppPalette.EMERALD,
+        gym: ENTITY_IDENTIFIERS.GYM
+      },
+      {
+        id: ENTITY_IDENTIFIERS.TRIANER_TAG_THREE,
+        name: 'Tag Three',
+        color: AppPalette.PEARL,
+        gym: ENTITY_IDENTIFIERS.GYM
+      },
+      {
+        id: ENTITY_IDENTIFIERS.TRIANER_TAG_FOUR,
+        name: 'Tag Four',
+        color: AppPalette.PURPLE,
+        gym: ENTITY_IDENTIFIERS.GYM
+      }
+    ]);
+
     await em.getRepository(Trainer).save({
       person: {
         id: ENTITY_IDENTIFIERS.TRAINER,
@@ -300,7 +333,21 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         gender: Gender.OTHER,
         gym: ENTITY_IDENTIFIERS.GYM
       },
-      managerId: ENTITY_IDENTIFIERS.OWNER
+      managerId: ENTITY_IDENTIFIERS.OWNER,
+      tags: [
+        {
+          id: ENTITY_IDENTIFIERS.TRIANER_TAG_ONE,
+          name: 'Tag One',
+          color: AppPalette.BLUE,
+          gym: ENTITY_IDENTIFIERS.GYM
+        },
+        {
+          id: ENTITY_IDENTIFIERS.TRIANER_TAG_TWO,
+          name: 'Tag Two',
+          color: AppPalette.EMERALD,
+          gym: ENTITY_IDENTIFIERS.GYM
+        }
+      ]
     } as Trainer);
 
     await em.getRepository(Event).save([

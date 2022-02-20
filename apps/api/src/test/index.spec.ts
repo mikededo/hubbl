@@ -1,15 +1,16 @@
-import { setup, teardown } from './e2e-setup';
+import * as appointments from './Appointments';
 import { calendar } from './Calendar';
+import { dashboard } from './Dashboard';
+import { setup, teardown } from './e2e-setup';
+import { event } from './Event';
 import { eventTemplate } from './EventTemplate';
 import { eventType } from './EventType';
-import * as appointments from './Appointments';
-import { event } from './Event';
 import { gymZone } from './GymZone';
 import { client, owner, trainer, worker } from './Person';
+import { tags } from './Tags';
 import { token } from './Token';
 import { common } from './util';
 import { virtualGym } from './VirtualGym';
-import { dashboard } from './Dashboard';
 
 jest.mock('npmlog');
 
@@ -303,6 +304,7 @@ describe('Integration tests', () => {
       it('should block unauthorized PUT calls', async () => {
         await common.unauthorized('/virtual-gyms/1/gym-zones', 'put');
       });
+
       it('should block unauthorized GET calls', async () => {
         await common.unauthorized('/virtual-gyms/1/gym-zones', 'get');
       });
@@ -333,6 +335,52 @@ describe('Integration tests', () => {
 
       it('should not allow to create a virtual gym by a worker', async () => {
         await gymZone.createUpdateAndDelete('worker');
+      });
+    });
+  });
+
+  describe('Tags', () => {
+    describe('Trainer', () => {
+      describe('unauthorized', () => {
+        it('should block unauthorized POST calls', async () => {
+          await common.unauthorized('/tags/trainer', 'post');
+        });
+
+        it('should block unauthorized PUT calls', async () => {
+          await common.unauthorized('/tags/trainer/1', 'put');
+        });
+
+        it('should block unauthorized GET calls', async () => {
+          await common.unauthorized('/tags/trainer', 'get');
+        });
+
+        it('should block unauthorized DELETE calls', async () => {
+          await common.unauthorized('/tags/trainer/1', 'delete');
+        });
+      });
+
+      describe('fetch', () => {
+        it('should fetch trainer tags by owner', async () => {
+          await tags.trainer.fetch('owner');
+        });
+
+        it('should fetch trainer tags by worker', async () => {
+          await tags.trainer.fetch('worker');
+        });
+
+        it('should not fetch trainer tags by client', async () => {
+          await tags.trainer.fetch('client');
+        });
+      });
+
+      describe('create, update & delete', () => {
+        it('should create, update and delete a trainer tags by an owner', async () => {
+          await tags.trainer.createUpdateAndDelete('owner');
+        });
+
+        it('should create, update and delete a trainer tags by a worker', async () => {
+          await tags.trainer.createUpdateAndDelete('worker');
+        });
       });
     });
   });
