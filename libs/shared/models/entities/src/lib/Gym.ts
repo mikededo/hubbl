@@ -9,7 +9,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { ThemeColor } from '@hubbl/shared/types';
+import { AppPalette } from '@hubbl/shared/types';
 
 import Event from './Event';
 import EventTemplate from './EventTemplate';
@@ -110,11 +110,11 @@ export default class Gym {
    * Primary color of the theme chosen by the `Owner`
    */
   @Column('enum', {
-    enum: ThemeColor,
+    enum: AppPalette,
     enumName: 'theme_color',
-    default: ThemeColor.BLUE
+    default: AppPalette.BLUE
   })
-  color!: ThemeColor;
+  color!: AppPalette;
 
   @CreateDateColumn()
   createdAt!: Date;

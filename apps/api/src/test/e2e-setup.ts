@@ -20,7 +20,7 @@ import {
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
-import { AppPalette, Gender, ThemeColor } from '@hubbl/shared/types';
+import { AppPalette, Gender } from '@hubbl/shared/types';
 
 import { ENTITY_IDENTIFIERS } from './util';
 
@@ -94,7 +94,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           email: 'test@gym.com',
           phone: '000 000 000',
           code: ENTITY_IDENTIFIERS.GYM_CODE,
-          color: ThemeColor.BLUE,
+          color: AppPalette.BLUE,
           virtualGyms: [
             {
               id: ENTITY_IDENTIFIERS.VIRTUAL_GYM,

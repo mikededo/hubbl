@@ -1,4 +1,5 @@
 import {
+  DeepPartial,
   DeleteResult,
   FindCondition,
   FindManyOptions,
@@ -35,7 +36,7 @@ export default class BaseService<T> {
     return this.repository.manager;
   }
 
-  public save(value: T): Promise<T> {
+  public save(value: DeepPartial<T>): Promise<T> {
     return this.repository.save(value);
   }
 

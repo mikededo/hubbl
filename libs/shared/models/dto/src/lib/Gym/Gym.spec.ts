@@ -2,7 +2,7 @@ import * as ClassValidator from 'class-validator';
 
 import { Gym } from '@hubbl/shared/models/entities';
 import * as helpers from '@hubbl/shared/models/helpers';
-import { ThemeColor } from '@hubbl/shared/types';
+import { AppPalette } from '@hubbl/shared/types';
 
 import GymDTO from './Gym';
 
@@ -31,7 +31,7 @@ describe('Gym', () => {
         email: 'test@gym.com',
         phone: '000 000 000',
         code: '8X4rZNmu',
-        color: ThemeColor.BLUE
+        color: AppPalette.BLUE
       };
 
       const result = await GymDTO.fromJson(json, 'any' as any);
@@ -77,7 +77,7 @@ describe('Gym', () => {
       gym.email = 'test@gym.com';
       gym.phone = '000 000 000';
       gym.code = '8X4rZNmu';
-      gym.color = ThemeColor.BLUE;
+      gym.color = AppPalette.BLUE;
       gym.virtualGyms = [];
 
       const result = GymDTO.fromClass(gym);
@@ -95,7 +95,7 @@ describe('Gym', () => {
       dto.email = 'test@gym.com';
       dto.phone = '000 000 000';
       dto.code = '8X4rZNmu';
-      dto.color = ThemeColor.BLUE;
+      dto.color = AppPalette.BLUE;
       dto.virtualGyms = [];
 
       const result = dto.toClass();
@@ -110,7 +110,7 @@ describe('Gym', () => {
       dto.email = 'test@gym.com';
       dto.phone = '000 000 000';
       dto.code = '8X4rZNmu';
-      dto.color = ThemeColor.BLUE;
+      dto.color = AppPalette.BLUE;
 
       const result = dto.toClass();
 
