@@ -6,12 +6,15 @@
     "client-e2e": "apps/client-e2e",
     "core": "apps/core",
     "core-e2e": "apps/core-e2e",
+    "data-access-api": "libs/data-access/api",
+    "data-access-contexts": "libs/data-access/contexts",
     "landing": "apps/landing",
     "landing-e2e": "apps/landing-e2e",
     "shared-models-body-validators": "libs/shared/models/body-validators",
     "shared-models-dto": "libs/shared/models/dto",
     "shared-models-entities": "libs/shared/models/entities",
     "shared-models-helpers": "libs/shared/models/helpers",
-    "shared-types": "libs/shared/types"
+    "shared-types": "libs/shared/types",
+    "ui-components": "libs/ui/components"
   }
 }

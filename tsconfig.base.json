@@ -15,6 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@hubbl/data-access/api": ["libs/data-access/api/src/index.ts"],
+      "@hubbl/data-access/contexts": ["libs/data-access/contexts/src/index.ts"],
       "@hubbl/shared/models/body-validators": [
         "libs/shared/models/body-validators/src/index.ts"
       ],
@@ -25,7 +27,8 @@
       "@hubbl/shared/models/helpers": [
         "libs/shared/models/helpers/src/index.ts"
       ],
-      "@hubbl/shared/types": ["libs/shared/types/src/index.ts"]
+      "@hubbl/shared/types": ["libs/shared/types/src/index.ts"],
+      "@hubbl/ui/components": ["libs/ui/components/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

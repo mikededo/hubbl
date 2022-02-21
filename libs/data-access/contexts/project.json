@@ -1,0 +1,23 @@
+{
+  "root": "libs/data-access/contexts",
+  "sourceRoot": "libs/data-access/contexts/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/data-access/contexts/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/data-access/contexts"],
+      "options": {
+        "jestConfig": "libs/data-access/contexts/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
