@@ -44,6 +44,14 @@ flags:
       - apps/landing-e2e/src
     carryforward: true
   # Libs
+  data-access-api:
+    paths:
+      - libs/data-access/api
+    carryforward: true
+  data-access-contexts:
+    paths:
+      - libs/data-access/contexts
+    carryforward: true
   shared-models-body-validators:
     paths:
       - libs/shared/models/body-validators
@@ -59,4 +67,8 @@ flags:
   shared-types:
     paths:
       - libs/shared/types
+    carryforward: true
+  ui-components:
+    paths:
+      - libs/ui/components
     carryforward: true
