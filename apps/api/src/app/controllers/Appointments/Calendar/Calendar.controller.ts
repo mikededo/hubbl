@@ -8,6 +8,7 @@ import {
   CalendarDate,
   GymZone
 } from '@hubbl/shared/models/entities';
+import { ParsedToken } from '@hubbl/shared/types';
 
 import { queries } from '../../../constants';
 import { AvailableTimesAppointmentsResult } from '../../../constants/queries';
@@ -24,7 +25,6 @@ import {
   createdByOwnerOrWorker,
   deletedByClient,
   deletedByOwnerOrWorker,
-  ParsedToken,
   updatedByOwnerOrWorker,
   userAccessToCalendar
 } from '../../helpers';

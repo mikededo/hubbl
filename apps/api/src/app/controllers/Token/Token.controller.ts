@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
 
+import { ParsedToken } from '@hubbl/shared/types';
+
 import BaseController from '../Base';
-import { ParsedToken } from '../helpers';
 
 class ITokenValidateCookie extends BaseController {
   protected async run(req: Request, res: Response): Promise<Response> {

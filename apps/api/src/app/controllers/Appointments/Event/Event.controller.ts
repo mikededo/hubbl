@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventAppointmentDTO } from '@hubbl/shared/models/dto';
 import { Event, EventAppointment } from '@hubbl/shared/models/entities';
+import { ParsedToken } from '@hubbl/shared/types';
 
 import {
   ClientService,
@@ -16,7 +17,6 @@ import {
   createdByOwnerOrWorker,
   deletedByClient,
   deletedByOwnerOrWorker,
-  ParsedToken,
   updatedByOwnerOrWorker
 } from '../../helpers';
 

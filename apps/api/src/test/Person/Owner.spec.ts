@@ -1,9 +1,9 @@
-import { AppTheme } from '@hubbl/shared/types';
 import { compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import supertest = require('supertest');
 
-import { ParsedToken } from '../../app/controllers/helpers';
+import { AppTheme, ParsedToken } from '@hubbl/shared/types';
+
 import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
