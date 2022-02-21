@@ -15,6 +15,6 @@
     "shared-models-entities": "libs/shared/models/entities",
     "shared-models-helpers": "libs/shared/models/helpers",
     "shared-types": "libs/shared/types",
-    "ui-components": "libs/ui/components"
+    "ui-components": "libs/ui-components"
   }
 }
