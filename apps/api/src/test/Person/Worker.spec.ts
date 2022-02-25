@@ -1,13 +1,12 @@
 import { compare } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 import supertest = require('supertest');
 
-import { AppTheme, Gender } from '@hubbl/shared/types';
+import { AppTheme, Gender, ParsedToken } from '@hubbl/shared/types';
 
 import app from '../../main';
 import * as util from '../util';
 import { ENTITY_IDENTIFIERS } from '../util';
-import { sign } from 'jsonwebtoken';
-import { ParsedToken } from '../../app/controllers/helpers';
 
 const checkWorkerProps = (worker: any) => {
   util.toBeNumber(worker.id);

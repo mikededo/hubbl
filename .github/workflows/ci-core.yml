@@ -36,5 +36,4 @@
           name: Running CI on a pull request
           with:
             proj-name: 'core'
-          codecov-token: ${{ secrets.CODECOV_TOKEN }}
-
+            codecov-token: ${{ secrets.CODECOV_TOKEN }}
