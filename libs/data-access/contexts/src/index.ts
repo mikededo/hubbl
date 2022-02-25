@@ -1,1 +1,1 @@
-export * from './lib/data-access-contexts';
+export * from './lib';
