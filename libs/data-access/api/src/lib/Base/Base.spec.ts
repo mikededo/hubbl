@@ -8,7 +8,7 @@ describe('Base.api', () => {
     UnauthApiInstance('endpoint');
 
     expect(createSpy).toHaveBeenCalledWith({
-      baseURL: `localhost:3333/api/endpoint`,
+      baseURL: `http://localhost:3333/api/endpoint`,
       headers: { 'Content-Type': 'application/json' }
     });
   });
@@ -17,7 +17,7 @@ describe('Base.api', () => {
     AuthApiInstance('endpoint', 'some-jwt-token');
 
     expect(createSpy).toHaveBeenCalledWith({
-      baseURL: `localhost:3333/api/endpoint`,
+      baseURL: `http://localhost:3333/api/endpoint`,
       headers: { Authorization: 'Bearer some-jwt-token' }
     });
   });
