@@ -7,14 +7,12 @@ import { Gym } from '@hubbl/shared/models/entities';
 import { UnauthApiInstance } from '../Base';
 import { Gender } from '@hubbl/shared/types';
 
-const axios = UnauthApiInstance('persons');
-
 type SignupType = {
   (type: 'owner', data: PartialDeep<OwnerDTO<Gym>>): Promise<OwnerDTO<Gym>>;
 };
 
 export const signup: SignupType = async (type, data) => {
-  const response: AxiosResponse = await axios.post(
+  const response: AxiosResponse = await UnauthApiInstance('persons').post(
     `/register/${type}`,
     {
       ...data,
