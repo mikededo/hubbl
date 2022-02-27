@@ -8,7 +8,8 @@ describe('Base.api', () => {
     UnauthApiInstance('endpoint');
 
     expect(createSpy).toHaveBeenCalledWith({
-      baseURL: `localhost:3333/api/endpoint`
+      baseURL: `localhost:3333/api/endpoint`,
+      headers: { 'Content-Type': 'application/json' }
     });
   });
 
