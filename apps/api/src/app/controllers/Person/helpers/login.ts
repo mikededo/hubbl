@@ -74,7 +74,7 @@ export const login = async ({
       }
 
       // Create token
-      const token = sign(
+      const tempToken = sign(
         {
           id: entityFound.person.id,
           email: entityFound.person.email,
@@ -84,11 +84,25 @@ export const login = async ({
         { expiresIn: '15m' }
       );
 
-      res.setHeader('Set-Cookie', `__hubbl-refresh__=${token}; HttpOnly`);
+      if (!req.cookies['__hubbl-refresh__']) {
+        const cookieToken = sign(
+          {
+            id: entityFound.person.id,
+            email: entityFound.person.email,
+            user: alias
+          },
+          process.env.NX_JWT_TOKEN,
+          { expiresIn: '30d' }
+        );
+        res.setHeader(
+          'Set-Cookie',
+          `__hubbl-refresh__=${cookieToken}; SameSite=None; Secure; HttpOnly`
+        );
+      }
 
       // Join with the entity data
       return controller.ok(res, {
-        token,
+        token: tempToken,
         [alias]: fromClass(entityFound)
       });
     } catch (_) {

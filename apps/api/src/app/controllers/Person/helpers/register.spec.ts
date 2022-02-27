@@ -10,7 +10,7 @@ import { register, trainerRegister } from './register';
 process.env.NX_JWT_TOKEN = 'test-secret-token';
 
 describe('register', () => {
-  const mockReq = { body: {} } as any;
+  const mockReq = { body: {}, cookies: {} } as any;
   const mockPerson = {
     person: {
       id: 1,
@@ -132,16 +132,23 @@ describe('register', () => {
         });
         expect(mockFromJson).toHaveBeenCalledWith({}, 'register');
         expect(mockFromClass).toHaveBeenCalledTimes(1);
-        expect(jwtSpy).toHaveBeenCalledTimes(1);
-        expect(jwtSpy).toHaveBeenCalledWith(
+        expect(jwtSpy).toHaveBeenCalledTimes(2);
+        expect(jwtSpy).toHaveBeenNthCalledWith(
+          1,
           { id: 1, email: 'test@user.com', user: 'any' },
           process.env.NX_JWT_TOKEN,
           { expiresIn: '15m' }
         );
+        expect(jwtSpy).toHaveBeenNthCalledWith(
+          2,
+          { id: 1, email: 'test@user.com', user: 'any' },
+          process.env.NX_JWT_TOKEN,
+          { expiresIn: '30d' }
+        );
         // Ensure cookie is set
         expect(mockRes.setHeader).toBeCalledWith(
           'Set-Cookie',
-          `__hubbl-refresh__=${token}; HttpOnly`
+          `__hubbl-refresh__=${token}; SameSite=None; Secure; HttpOnly`
         );
         // Check result
         expect(mockController.created).toHaveBeenCalledTimes(1);
@@ -182,6 +189,39 @@ describe('register', () => {
         commonChecks();
         // Specific checks
         expect(mockFromClass).toHaveBeenCalledWith(mockPerson);
+      });
+
+      it('should register without setting a cookie', async () => {
+        await register({
+          service: mockService,
+          controller: mockController,
+          fromJson: mockFromJson,
+          fromClass: mockFromClass,
+          req: { ...mockReq, cookies: { '__hubbl-refresh__': 'Cookie' } },
+          res: mockRes,
+          alias: 'any' as any
+        });
+
+        // Check spies
+        expect(mockService.save).toHaveBeenCalledTimes(1);
+        expect(mockController.created).toHaveBeenCalledTimes(1);
+        expect(mockFromJson).toHaveBeenCalledWith({}, 'register');
+        expect(mockFromClass).toHaveBeenCalledTimes(1);
+        expect(jwtSpy).toHaveBeenCalledTimes(1);
+        expect(jwtSpy).toHaveBeenCalledWith(
+          { id: 1, email: 'test@user.com', user: 'any' },
+          process.env.NX_JWT_TOKEN,
+          { expiresIn: '15m' }
+        );
+        // Ensure cookie is set
+        expect(mockRes.setHeader).not.toHaveBeenCalled();
+        // Check result
+        expect(mockController.created).toHaveBeenCalledTimes(1);
+        // Should return the DTO with the token
+        expect(mockController.created).toHaveBeenCalledWith(mockRes, {
+          token,
+          any: mockDTO
+        });
       });
     });
 
@@ -273,11 +313,11 @@ describe('register', () => {
         });
       });
 
-      expect(signSpy).toHaveBeenCalledTimes(1);
+      expect(signSpy).toHaveBeenCalledTimes(2);
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(
         'Set-Cookie',
-        `__hubbl-refresh__=${token}; HttpOnly`
+        `__hubbl-refresh__=${token}; SameSite=None; Secure; HttpOnly`
       );
     });
   });
