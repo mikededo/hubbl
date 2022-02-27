@@ -4,8 +4,15 @@ import { useForm } from 'react-hook-form';
 
 import { Input } from '@hubbl/ui/components';
 import { ChevronLeft, Login } from '@mui/icons-material';
-import { Button, Stack, styled } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Stack,
+  styled,
+  Typography
+} from '@mui/material';
 import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
+import { AnimatePresence } from 'framer-motion';
 
 export type StepTwoFields = {
   name: string;
@@ -14,6 +21,7 @@ export type StepTwoFields = {
 };
 
 type StepTwoProps = {
+  disabled: boolean;
   initialFormState: StepTwoFields;
   onBack: EmptyHandler;
   onBlur: SingleHandler<StepTwoFields>;
@@ -28,7 +36,12 @@ const BackButton = styled(Button)(({ theme }) => ({
   paddingLeft: theme.spacing(1.5)
 }));
 
+const SignUpButton = styled(Button)(({ theme }) => ({
+  height: theme.spacing(5)
+}));
+
 const StepTwo = ({
+  disabled,
   initialFormState,
   onBack,
   onBlur,
@@ -57,6 +70,7 @@ const StepTwo = ({
           })}
           type="text"
           error={!!errors.name}
+          disabled={disabled}
           fullWidth
         />
 
@@ -70,6 +84,7 @@ const StepTwo = ({
             })}
             type="email"
             error={!!errors.email}
+            disabled={disabled}
             fullWidth
           />
 
@@ -82,16 +97,29 @@ const StepTwo = ({
               onBlur: () => onBlur(getValues())
             })}
             error={!!errors.phone}
+            disabled={disabled}
             fullWidth
           />
         </Stack>
 
         <Stack direction="column" gap={1.5}>
-          <Button startIcon={<Login />} type="submit">
-            Sign up
-          </Button>
+          <SignUpButton
+            startIcon={disabled ? null : <Login />}
+            type="submit"
+            title="submit"
+            disabled={disabled}
+          >
+            <AnimatePresence>
+              {disabled ? (
+                <CircularProgress size="1.5rem" thickness={4} />
+              ) : (
+                <Typography variant="button">Sign up</Typography>
+              )}
+            </AnimatePresence>
+          </SignUpButton>
 
           <BackButton
+            disabled={disabled}
             startIcon={<ChevronLeft />}
             color="secondary"
             variant="text"

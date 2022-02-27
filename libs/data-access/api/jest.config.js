@@ -10,5 +10,6 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../coverage/libs/data-access/api'
+  coverageDirectory: '../../../coverage/libs/data-access/api',
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts']
 };

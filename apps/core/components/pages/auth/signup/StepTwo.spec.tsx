@@ -43,6 +43,7 @@ const testBlurCallback = async ({
 
   render(
     <StepTwo
+      disabled={false}
       initialFormState={undefined}
       onBack={undefined}
       onBlur={onBlurSpy}
@@ -67,6 +68,7 @@ describe('<StepTwo />', () => {
   it('should render all the form content', () => {
     const utils = render(
       <StepTwo
+        disabled={false}
         initialFormState={undefined}
         onBack={jest.fn}
         onBlur={jest.fn}
@@ -97,12 +99,31 @@ describe('<StepTwo />', () => {
     });
   });
 
+  it('should disabled all fields', () => {
+    const utils = render(
+      <StepTwo
+        disabled={true}
+        initialFormState={undefined}
+        onBack={undefined}
+        onBlur={undefined}
+        onSubmit={undefined}
+      />
+    );
+
+    expect(utils.getByPlaceholderText('Fantagym')).toHaveAttribute('disabled');
+    expect(utils.getByPlaceholderText('gym.name@info.com')).toHaveAttribute('disabled');
+    expect(utils.getByPlaceholderText('000 000 000')).toHaveAttribute('disabled');
+    expect(utils.getByTitle('submit')).toHaveAttribute('disabled');
+    expect(utils.getByText('Go back')).toHaveAttribute('disabled');
+  })
+
   describe('onSubmit', () => {
     it('should not call onSubmit if fields have any errors', async () => {
       const onSubmitSpy = jest.fn();
 
       render(
         <StepTwo
+          disabled={false}
           initialFormState={undefined}
           onBack={undefined}
           onBlur={undefined}
@@ -121,6 +142,7 @@ describe('<StepTwo />', () => {
 
       render(
         <StepTwo
+          disabled={false}
           initialFormState={undefined}
           onBack={undefined}
           onBlur={undefined}
@@ -154,6 +176,7 @@ describe('<StepTwo />', () => {
 
       const utils = render(
         <StepTwo
+          disabled={false}
           initialFormState={undefined}
           onBack={onBackSpy}
           onBlur={undefined}
