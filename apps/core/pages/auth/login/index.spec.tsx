@@ -1,10 +1,11 @@
 import { render } from '@testing-library/react';
 
-import Signin from './index';
+import LogIn from './index';
 
-describe('Signin', () => {
-  it('should render successfully', () => {
-    const { baseElement } = render(<Signin />);
-    expect(baseElement).toBeTruthy();
+describe('LogIn', () => {
+  it('should render', () => {
+    const utils = render(<LogIn />);
+
+    expect(utils.container).toBeInTheDocument();
   });
 });

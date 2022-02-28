@@ -4,7 +4,7 @@ import { AuthLayout, Pages } from '../../../components';
 const { FormWrapper, FormFooter, FooterLink, SideImage } = Pages.Auth;
 const { Form } = Pages.LogIn;
 
-const Signin = () => {
+const LogIn = () => {
   const handleOnSubmit = (data: Pages.LogIn.SignInFields) => {
     console.log(data);
   };
@@ -36,4 +36,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default LogIn;
