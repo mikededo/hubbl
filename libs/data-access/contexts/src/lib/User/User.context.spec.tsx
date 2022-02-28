@@ -4,19 +4,19 @@ import { TokenApi, UserApi } from '@hubbl/data-access/api';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { ToastContext } from '../Toast';
-import { UserContext, useUserContext } from './User.context';
+import { UserProvider, useUserContext } from './User.context';
 
 jest.mock('@hubbl/data-access/api');
 
-describe('<UserContext />', () => {
+describe('<UserProvider />', () => {
   it('should call validate on mount', async () => {
     const validateSpy = jest.spyOn(TokenApi, 'validate').mockImplementation();
 
     await act(async () => {
       render(
-        <UserContext>
+        <UserProvider>
           <div />
-        </UserContext>
+        </UserProvider>
       );
     });
 
@@ -34,9 +34,9 @@ describe('<UserContext />', () => {
 
     await act(async () => {
       render(
-        <UserContext>
+        <UserProvider>
           <Component />
-        </UserContext>
+        </UserProvider>
       );
     });
 
@@ -68,9 +68,9 @@ describe('<UserContext />', () => {
 
     await act(async () => {
       render(
-        <UserContext>
+        <UserProvider>
           <Component />
-        </UserContext>
+        </UserProvider>
       );
     });
     await act(async () => {
@@ -101,9 +101,9 @@ describe('<UserContext />', () => {
     await act(async () => {
       render(
         <ToastContext>
-          <UserContext>
+          <UserProvider>
             <Component />
-          </UserContext>
+          </UserProvider>
         </ToastContext>
       );
     });

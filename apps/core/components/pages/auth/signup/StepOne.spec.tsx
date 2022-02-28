@@ -1,10 +1,11 @@
 import {
-  screen,
+  act,
   fireEvent,
   render,
-  RenderResult
+  RenderResult,
+  screen
 } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+
 import StepOne from './StepOne';
 
 const checkInputLabel = (component: RenderResult, text: string) => {

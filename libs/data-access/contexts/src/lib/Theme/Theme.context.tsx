@@ -39,4 +39,4 @@ const ThemeContext = ({ children }: ThemeContextProps): JSX.Element => (
   <ThemeProvider theme={AppTheme}>{children}</ThemeProvider>
 );
 
-export { ThemeContext };
+export { ThemeContext as ThemeProvider };

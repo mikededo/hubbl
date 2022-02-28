@@ -3,7 +3,11 @@ import '../styles/styles.css';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
-import { ThemeContext, ToastContext, UserContext } from '@hubbl/data-access/contexts';
+import {
+  ThemeProvider,
+  ToastContext,
+  UserProvider
+} from '@hubbl/data-access/contexts';
 
 const CustomApp = ({ Component, pageProps }: AppProps) => (
   <>
@@ -11,15 +15,15 @@ const CustomApp = ({ Component, pageProps }: AppProps) => (
       <title>Welcome to core!</title>
     </Head>
 
-    <ThemeContext>
+    <ThemeProvider>
       {/* TODO: Add user context */}
       <ToastContext>
-        <UserContext>
+        <UserProvider>
           {/* TODO: Add auth guard */}
           <Component {...pageProps} />
-        </UserContext>
+        </UserProvider>
       </ToastContext>
-    </ThemeContext>
+    </ThemeProvider>
   </>
 );
 

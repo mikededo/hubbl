@@ -1,4 +1,5 @@
 import React, { createContext, memo, useContext } from 'react';
+
 import { UserContextValue, useUserContextValue } from './Context';
 
 const UserContext = createContext({} as UserContextValue);
@@ -16,4 +17,4 @@ const UserProvider = ({ children }: UserContextProps): JSX.Element => {
 
 const memoizedProvider = memo(UserProvider);
 
-export { memoizedProvider as UserContext, useUserContext };
+export { memoizedProvider as UserProvider, useUserContext };
