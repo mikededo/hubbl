@@ -10,14 +10,14 @@ import { useToastContext } from '../Toast';
 
 type UserType = OwnerDTO<Gym>;
 
-type SignupType = {
+type SignUpType = {
   (type: 'owner', data: PartialDeep<OwnerDTO<Gym>>): void;
 };
 
 export type UserContextValue = {
   token: ParsedToken | null;
   user: UserType | null;
-  API: { loading: boolean; signup: SignupType };
+  API: { loading: boolean; signup: SignUpType };
 };
 
 const useUserContextValue = (): UserContextValue => {
@@ -27,7 +27,7 @@ const useUserContextValue = (): UserContextValue => {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const signup: SignupType = async (type, data) => {
+  const signup: SignUpType = async (type, data) => {
     setLoading(true);
 
     try {
