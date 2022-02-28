@@ -2,17 +2,10 @@ import React from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { Input } from '@hubbl/ui/components';
-import { ChevronLeft, Login } from '@mui/icons-material';
-import {
-  Button,
-  CircularProgress,
-  Stack,
-  styled,
-  Typography
-} from '@mui/material';
 import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
-import { AnimatePresence } from 'framer-motion';
+import { Input, LoadingButton } from '@hubbl/ui/components';
+import { ChevronLeft, Login } from '@mui/icons-material';
+import { Button, Stack, styled } from '@mui/material';
 
 export type StepTwoFields = {
   name: string;
@@ -34,10 +27,6 @@ const BackButton = styled(Button)(({ theme }) => ({
   margin: 'auto',
   paddingRight: theme.spacing(2),
   paddingLeft: theme.spacing(1.5)
-}));
-
-const SignUpButton = styled(Button)(({ theme }) => ({
-  height: theme.spacing(5)
 }));
 
 const StepTwo = ({
@@ -103,20 +92,13 @@ const StepTwo = ({
         </Stack>
 
         <Stack direction="column" gap={1.5}>
-          <SignUpButton
-            startIcon={disabled ? null : <Login />}
+          <LoadingButton
+            label="Sign up"
+            loading={disabled}
+            startIcon={<Login />}
             type="submit"
             title="submit"
-            disabled={disabled}
-          >
-            <AnimatePresence>
-              {disabled ? (
-                <CircularProgress size="1.5rem" thickness={4} />
-              ) : (
-                <Typography variant="button">Sign up</Typography>
-              )}
-            </AnimatePresence>
-          </SignUpButton>
+          />
 
           <BackButton
             disabled={disabled}

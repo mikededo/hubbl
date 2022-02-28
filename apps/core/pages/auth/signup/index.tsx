@@ -8,8 +8,8 @@ import { Divider, Stack, Typography } from '@mui/material';
 
 import { AuthLayout, Pages } from '../../../components';
 
-const { FormWrapper, FooterLink, FormFooter, SideImage, StepOne, StepTwo } =
-  Pages.Signup;
+const { StepOne, StepTwo } = Pages.Signup;
+const { FooterLink, FormFooter, FormWrapper, SideImage } = Pages.Auth;
 
 type SignupFormFields = {
   user: Pages.Signup.StepOneFields;
