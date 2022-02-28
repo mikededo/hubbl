@@ -1,10 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
+import { useUserContext } from '@hubbl/data-access/contexts';
 import { Divider, Stack, Typography } from '@mui/material';
 
-import { AuthLayout, Pages } from '../../components';
+import { AuthLayout, Pages } from '../../../components';
 
 const { FormWrapper, FooterLink, FormFooter, SideImage, StepOne, StepTwo } =
   Pages.Signup;
@@ -20,6 +22,9 @@ const InitialFormState: SignupFormFields = {
 };
 
 const SignUp = () => {
+  const { user, API } = useUserContext();
+  const router = useRouter();
+
   const [formState, setFormState] = useState(InitialFormState);
 
   const [step, setStep] = useState<number>(0);
@@ -48,8 +53,14 @@ const SignUp = () => {
   };
 
   const handleOnSubmit = (data: Pages.Signup.StepTwoFields) => {
-    console.log(data);
+    API.signup('owner', { ...formState.user, gym: { ...data } });
   };
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
 
   return (
     <AuthLayout>
@@ -90,6 +101,7 @@ const SignUp = () => {
                   ref={(ref) => setStepTwoRef(ref)}
                 >
                   <StepTwo
+                    disabled={API.loading}
                     initialFormState={formState.gym}
                     onBack={handleOnGoBack}
                     onBlur={handleOnBlurStepTwo}

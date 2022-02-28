@@ -57,7 +57,9 @@
     {
       "files": ["*.spec.ts", "*.spec.tsx"],
       "plugins": ["jest"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
     }
   ]
 }

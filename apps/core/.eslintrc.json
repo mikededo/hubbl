@@ -14,12 +14,10 @@
       }
     },
     {
-      "files": ["*.ts", "*.tsx"],
-      "rules": {}
-    },
-    {
-      "files": ["*.js", "*.jsx"],
-      "rules": {}
+      "files": ["*.spec.ts", "*.spec.tsx"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
     }
   ],
   "env": {

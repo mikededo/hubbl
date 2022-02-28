@@ -1,10 +1,13 @@
-import { alpha, createTheme, Theme, ThemeProvider } from '@mui/material';
 import React from 'react';
+
+import { alpha, createTheme, Theme, ThemeProvider } from '@mui/material';
 
 const AppTheme: Theme = createTheme({
   palette: {
     primary: { main: '#2196F3' },
     text: { primary: '#3F3F3F', secondary: '#666666', disabled: '#BBBBBB' },
+    info: { main: '#2196F3' },
+    error: { main: '#F56565' },
     divider: alpha('#94A3B8', 0.15)
   },
   typography: {
@@ -19,6 +22,11 @@ const AppTheme: Theme = createTheme({
   },
   shape: { borderRadius: 8 },
   components: {
+    MuiAlert: {
+      styleOverrides: {
+        root: { boxShadow: `0 4px 6px ${alpha('#777', 0.15)}` }
+      }
+    },
     MuiButton: {
       defaultProps: { variant: 'contained', disableElevation: true }
     }
@@ -31,4 +39,4 @@ const ThemeContext = ({ children }: ThemeContextProps): JSX.Element => (
   <ThemeProvider theme={AppTheme}>{children}</ThemeProvider>
 );
 
-export { ThemeContext };
+export { ThemeContext as ThemeProvider };

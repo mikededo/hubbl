@@ -33,7 +33,7 @@ describe('login', () => {
     let mockService: any;
     const entityAlias = 'entity';
     const personAlias = 'person';
-    const mockReq = { body: {} } as any;
+    const mockReq = { body: {}, cookies: {} } as any;
     const mockRes = {
       json: jest.fn().mockReturnThis(),
       status: jest.fn().mockReturnThis(),
@@ -133,16 +133,23 @@ describe('login', () => {
       // Finally return the instance
       expect(mockService.where).toHaveReturnedTimes(1);
       // Token creation
-      expect(signSpy).toHaveBeenCalledTimes(1);
-      expect(signSpy).toHaveBeenCalledWith(
+      expect(signSpy).toHaveBeenCalledTimes(2);
+      expect(signSpy).toHaveBeenNthCalledWith(
+        1,
         { id: 1, email: 'test@user.com', user: entityAlias },
         process.env.NX_JWT_TOKEN,
         { expiresIn: '15m' }
       );
+      expect(signSpy).toHaveBeenNthCalledWith(
+        2,
+        { id: 1, email: 'test@user.com', user: entityAlias },
+        process.env.NX_JWT_TOKEN,
+        { expiresIn: '30d' }
+      );
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(
         'Set-Cookie',
-        `__hubbl-refresh__=${token}; HttpOnly`
+        `__hubbl-refresh__=${token}; SameSite=None; Secure; HttpOnly`
       );
       // Check result
       expect(mockController.ok).toHaveBeenCalledTimes(1);
@@ -150,6 +157,42 @@ describe('login', () => {
         token,
         [entityAlias]: mockDTO
       });
+    });
+
+    it('should sucessfully login a user without setting a cookie', async () => {
+      const compareSpy = jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(true));
+      const signSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token as any);
+
+      mockService.getOne.mockReturnValue(mockEntity);
+
+      await logins.login({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: { ...mockReq, cookies: { '__hubbl-refresh__': 'Cookie' } },
+        res: mockRes,
+        alias: entityAlias as any
+      });
+
+      queryAssertions();
+      // Compare the passwords
+      expect(compareSpy).toHaveBeenCalledTimes(1);
+      // Finally return the instance
+      expect(mockService.where).toHaveReturnedTimes(1);
+      // Token creation
+      expect(signSpy).toHaveBeenCalledTimes(1);
+      expect(signSpy).toHaveBeenCalledWith(
+        { id: 1, email: 'test@user.com', user: entityAlias },
+        process.env.NX_JWT_TOKEN,
+        { expiresIn: '15m' }
+      );
+      // Ensure no cookie is set
+      expect(mockRes.setHeader).not.toHaveBeenCalled();
+      // Check result
+      expect(mockController.ok).toHaveBeenCalledTimes(1);
     });
 
     it('should fail if entity not found', async () => {
@@ -308,11 +351,11 @@ describe('login', () => {
 
       queryAssertions();
       expect(compareSpy).toHaveBeenCalledTimes(1);
-      expect(signSpy).toHaveBeenCalledTimes(1);
+      expect(signSpy).toHaveBeenCalledTimes(2);
       // Ensure cookie is set
       expect(mockRes.setHeader).toBeCalledWith(
         'Set-Cookie',
-        `__hubbl-refresh__=${token}; HttpOnly`
+        `__hubbl-refresh__=${token}; SameSite=None; Secure; HttpOnly`
       );
       // Then fail
       expect(mockController.ok).toHaveBeenCalledTimes(1);

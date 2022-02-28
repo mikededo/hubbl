@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { useTheme } from '@mui/material';
-import { ThemeContext } from './Theme.context';
+import { ThemeProvider } from './Theme.context';
 
 const ThemeAccess = () => {
   const theme = useTheme();
@@ -11,12 +11,12 @@ const ThemeAccess = () => {
   return <span />;
 };
 
-describe('ThemeContext', () => {
+describe('<ThemeProvider />', () => {
   it('should have access to the custom theme', () => {
     const utils = render(
-      <ThemeContext>
+      <ThemeProvider>
         <ThemeAccess />
-      </ThemeContext>
+      </ThemeProvider>
     );
 
     expect(utils.container.firstChild).toBeInTheDocument();
