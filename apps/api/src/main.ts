@@ -7,7 +7,13 @@ import initApp from './app';
 
 const app: express.Application = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://core.hubbl.local:4200',
+    credentials: true,
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept'
+  })
+);
 app.use(json());
 app.use(cookieParser());
 

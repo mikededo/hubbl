@@ -1,5 +1,7 @@
 import * as jwt from 'jsonwebtoken';
-import { ParsedToken } from '../helpers';
+
+import { ParsedToken } from '@hubbl/shared/types';
+
 import { TokenRefresh, TokenValidateCookie } from './Token.controller';
 
 describe('Token controller', () => {

@@ -3,6 +3,8 @@ import * as log from 'npmlog';
 import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
+import { Event } from '@hubbl/shared/models/entities';
+import { ParsedToken } from '@hubbl/shared/types';
 
 import {
   EventService,
@@ -12,12 +14,7 @@ import {
   WorkerService
 } from '../../services';
 import BaseController, { DeleteByOwnerWorkerController } from '../Base';
-import {
-  createdByOwnerOrWorker,
-  ParsedToken,
-  updatedByOwnerOrWorker
-} from '../helpers';
-import { Event } from '@hubbl/shared/models/entities';
+import { createdByOwnerOrWorker, updatedByOwnerOrWorker } from '../helpers';
 
 class IEventCreateController extends BaseController {
   protected service: EventService = undefined;

@@ -32,10 +32,10 @@ import {
   VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
+import { ParsedToken } from '@hubbl/shared/types';
 
 import { BaseService } from '../../services';
 import BaseController from '../Base';
-import { ParsedToken } from './types';
 
 /* COMMON UPDATERS */
 

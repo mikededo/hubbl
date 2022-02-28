@@ -66,16 +66,27 @@ export const register = async <
       // Save the person
       const result = await service.save(await person.toClass());
 
-      // Create the token
-      const token = sign(
+      // Create the tokens
+      const tempToken = sign(
         { id: result.person.id, email: result.person.email, user: alias },
         process.env.NX_JWT_TOKEN,
         { expiresIn: '15m' }
       );
 
-      res.setHeader('Set-Cookie', `__hubbl-refresh__=${token}; HttpOnly`);
+      if (!req.cookies['__hubbl-refresh__']) {
+        const cookieToken = sign(
+          { id: result.person.id, email: result.person.email, user: alias },
+          process.env.NX_JWT_TOKEN,
+          { expiresIn: '30d' }
+        );
+        res.setHeader(
+          'Set-Cookie',
+          `__hubbl-refresh__=${cookieToken}; SameSite=None; Secure; HttpOnly`
+        );
+      }
+
       return controller.created(res, {
-        token,
+        token: tempToken,
         [alias]: fromClass(result)
       });
     } catch (_) {

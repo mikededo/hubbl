@@ -1,7 +1,8 @@
 import { decode, sign } from 'jsonwebtoken';
 import supertest = require('supertest');
 
-import { ParsedToken } from '../../app/controllers/helpers';
+import { ParsedToken } from '@hubbl/shared/types';
+
 import app from '../../main';
 import { ENTITY_IDENTIFIERS } from '../util';
 
