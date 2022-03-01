@@ -44,9 +44,8 @@ const useUserContextValue = (): UserContextValue => {
    * in
    */
   useEffect(() => {
-    /* TODO: Check if user token is still valid */
-
     (async () => {
+      // Check if there was a valid token on the browser
       try {
         setToken(await TokenApi.validate());
       } catch (e) {
