@@ -5,6 +5,7 @@ import { ParsedToken } from '@hubbl/shared/types';
 
 import { ClientService, OwnerService, WorkerService } from '../../services';
 import { TokenRefresh, TokenValidateCookie } from './Token.controller';
+import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 
 jest.mock('../../services');
 jest.mock('npmlog');
@@ -39,6 +40,12 @@ describe('Token controller', () => {
 
     const successExecute = async (by: 'owner' | 'worker' | 'client') => {
       const mockService = { findOne: jest.fn().mockResolvedValue({ id: 1 }) };
+      const fromClassSpy = jest
+        .spyOn(
+          by === 'owner' ? OwnerDTO : by === 'worker' ? WorkerDTO : ClientDTO,
+          'fromClass'
+        )
+        .mockReturnValue({ id: 1 } as any);
       mockPayload.user = by;
 
       verifySpy.mockReturnValue(mockPayload as any);
@@ -69,6 +76,7 @@ describe('Token controller', () => {
       expect(mockService.findOne).toHaveBeenCalledWith({
         id: mockPayload.id
       });
+      expect(fromClassSpy).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledWith(
         {},

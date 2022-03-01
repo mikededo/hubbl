@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
+import { getRepository } from 'typeorm';
 
+import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { ParsedToken } from '@hubbl/shared/types';
 
-import BaseController from '../Base';
 import { ClientService, OwnerService, WorkerService } from '../../services';
-import { getRepository } from 'typeorm';
+import BaseController from '../Base';
 
 class ITokenValidateCookie extends BaseController {
   private ownerService: OwnerService = undefined;
@@ -54,7 +55,16 @@ class ITokenValidateCookie extends BaseController {
           { id: token.id, email: token.email, user: token.user } as ParsedToken,
           process.env.NX_JWT_TOKEN
         );
-        return this.ok(res, { token: newToken, user });
+        return this.ok(res, {
+          token: newToken,
+          user: (
+            (token.user === 'owner'
+              ? OwnerDTO
+              : token.user === 'worker'
+              ? WorkerDTO
+              : ClientDTO) as any
+          ).fromClass(user)
+        });
       } catch (e) {
         return this.onFail(res, e, 'update');
       }
