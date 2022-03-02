@@ -1,13 +1,26 @@
+import { useUserContext } from '@hubbl/data-access/contexts';
 import { Divider, Stack, Typography } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { AuthLayout, Pages } from '../../../components';
 
 const { FormWrapper, FormFooter, FooterLink, SideImage } = Pages.Auth;
 const { Form } = Pages.LogIn;
 
 const LogIn = () => {
+  const { user, API } = useUserContext();
+  const router = useRouter();
+
   const handleOnSubmit = (data: Pages.LogIn.SignInFields) => {
-    console.log(data);
+    API.login('owner', data);
   };
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
 
   return (
     <AuthLayout>
@@ -20,7 +33,11 @@ const LogIn = () => {
             </Typography>
           </Stack>
 
-          <Form onSubmit={handleOnSubmit} />
+          <AnimatePresence>
+            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <Form onSubmit={handleOnSubmit} />
+            </motion.section>
+          </AnimatePresence>
 
           <Divider />
 
