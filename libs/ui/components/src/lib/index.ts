@@ -1,3 +1,4 @@
 import Input from './Input';
+import LoadingButton from './LoadingButton';
 
-export { Input };
+export { Input, LoadingButton };

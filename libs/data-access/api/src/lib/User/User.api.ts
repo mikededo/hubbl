@@ -4,21 +4,36 @@ import { PartialDeep } from 'type-fest';
 import { OwnerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-import { UnauthApiInstance } from '../Base';
+import { axios } from '../Base';
 import { Gender } from '@hubbl/shared/types';
 
-type SignupType = {
+type SignUpType = {
   (type: 'owner', data: PartialDeep<OwnerDTO<Gym>>): Promise<OwnerDTO<Gym>>;
 };
 
-export const signup: SignupType = async (type, data) => {
-  const response: AxiosResponse = await UnauthApiInstance('persons').post(
-    `/register/${type}`,
-    {
-      ...data,
-      // Set gender by default
-      gender: Gender.OTHER
-    }
+export const signup: SignUpType = async (type, data) => {
+  const response: AxiosResponse = await axios.post(
+    `/persons/register/${type}`,
+    // Set gender by default
+    { ...data, gender: Gender.OTHER },
+    { withCredentials: false }
+  );
+
+  return response.data;
+};
+
+type LoginType = {
+  (
+    type: 'owner' | 'worker',
+    data: { email: string; password: string }
+  ): Promise<OwnerDTO<Gym>>;
+};
+
+export const login: LoginType = async (type, data) => {
+  const response: AxiosResponse = await axios.post(
+    `/persons/login/${type}`,
+    data,
+    { withCredentials: false }
   );
 
   return response.data;

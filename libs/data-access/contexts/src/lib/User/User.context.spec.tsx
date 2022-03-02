@@ -8,6 +8,77 @@ import { UserProvider, useUserContext } from './User.context';
 
 jest.mock('@hubbl/data-access/api');
 
+const onApiSuccess = async (method: 'signup' | 'login') => {
+  const methodSpy = jest.spyOn(UserApi, method).mockResolvedValue({
+    email: 'test@email.com'
+  } as any);
+
+  const Component = () => {
+    const { user, API } = useUserContext();
+
+    return (
+      <>
+        {user && <p>{user?.email}</p>}
+        <button
+          onClick={() => {
+            API[method]('owner', {} as any);
+          }}
+        >
+          fetch
+        </button>
+      </>
+    );
+  };
+
+  await act(async () => {
+    render(
+      <UserProvider>
+        <Component />
+      </UserProvider>
+    );
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByText('fetch'));
+  });
+
+  expect(methodSpy).toHaveBeenCalled();
+  expect(screen.getByText('test@email.com')).toBeDefined();
+};
+
+const onApiError = async (method: 'signup' | 'login') => {
+  const methodSpy = jest.spyOn(UserApi, method).mockRejectedValue({});
+
+  const Component = () => {
+    const { API } = useUserContext();
+
+    return (
+      <button
+        onClick={() => {
+          API[method]('owner', {} as any);
+        }}
+      >
+        fetch
+      </button>
+    );
+  };
+
+  await act(async () => {
+    render(
+      <ToastContext>
+        <UserProvider>
+          <Component />
+        </UserProvider>
+      </ToastContext>
+    );
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByText('fetch'));
+  });
+
+  expect(methodSpy).toHaveBeenCalled();
+  expect(screen.getByText('An error ocurred. Try again.')).toBeInTheDocument();
+};
+
 describe('<UserProvider />', () => {
   it('should call validate on mount', async () => {
     const validateSpy = jest.spyOn(TokenApi, 'validate').mockImplementation();
@@ -44,76 +115,23 @@ describe('<UserProvider />', () => {
     expect(screen.getByText('null')).toBeInTheDocument();
   });
 
-  it('should keep the user in the state on signup', async () => {
-    const signupSpy = jest.spyOn(UserApi, 'signup').mockResolvedValue({
-      email: 'test@email.com'
-    } as any);
-
-    const Component = () => {
-      const { user, API } = useUserContext();
-
-      return (
-        <>
-          {user && <p>{user?.email}</p>}
-          <button
-            onClick={() => {
-              API.signup('owner', {} as any);
-            }}
-          >
-            fetch
-          </button>
-        </>
-      );
-    };
-
-    await act(async () => {
-      render(
-        <UserProvider>
-          <Component />
-        </UserProvider>
-      );
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByText('fetch'));
+  describe('signup', () => {
+    it('should keep the user in the state on signup', async () => {
+      await onApiSuccess('signup');
     });
 
-    expect(signupSpy).toHaveBeenCalled();
-    expect(screen.getByText('test@email.com')).toBeDefined();
+    it('should appear a snackbar on an error', async () => {
+      await onApiError('signup');
+    });
   });
 
-  it('should appear a snackbar on an error', async () => {
-    const signupSpy = jest.spyOn(UserApi, 'signup').mockRejectedValue({});
-
-    const Component = () => {
-      const { API } = useUserContext();
-
-      return (
-        <button
-          onClick={() => {
-            API.signup('owner', {} as any);
-          }}
-        >
-          fetch
-        </button>
-      );
-    };
-
-    await act(async () => {
-      render(
-        <ToastContext>
-          <UserProvider>
-            <Component />
-          </UserProvider>
-        </ToastContext>
-      );
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByText('fetch'));
+  describe('login', () => {
+    it('should keep the user in the state on login', async () => {
+      await onApiSuccess('login');
     });
 
-    expect(signupSpy).toHaveBeenCalled();
-    expect(
-      screen.getByText('An error ocurred. Try again.')
-    ).toBeInTheDocument();
+    it('should appear a snackbar on an error', async () => {
+      await onApiError('login');
+    });
   });
 });

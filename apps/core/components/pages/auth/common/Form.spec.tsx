@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 
 import { FooterLink, FormFooter, FormWrapper } from './Form';
 
-describe('Signup components', () => {
+describe('SignUp components', () => {
   describe('FormWrapper', () => {
     it('should render properly', () => {
       const { container } = render(<FormWrapper />);

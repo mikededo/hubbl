@@ -94,10 +94,12 @@ export const login = async ({
           process.env.NX_JWT_TOKEN,
           { expiresIn: '30d' }
         );
-        res.setHeader(
-          'Set-Cookie',
-          `__hubbl-refresh__=${cookieToken}; SameSite=None; Secure; HttpOnly`
-        );
+        res.cookie('__hubbl-refresh__', `${cookieToken}`, {
+          sameSite: 'none',
+          secure: true,
+          httpOnly: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        });
       }
 
       // Join with the entity data

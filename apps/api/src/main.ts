@@ -11,7 +11,9 @@ app.use(
   cors({
     origin: 'http://core.hubbl.local:4200',
     credentials: true,
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept'
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+    exposedHeaders: ['set-cookie'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'
   })
 );
 app.use(json());

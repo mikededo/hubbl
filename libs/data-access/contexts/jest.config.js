@@ -8,5 +8,6 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../coverage/libs/data-access/contexts',
-  collectCoverageFrom: ['src/**/*.ts', 'src/**/*.tsx', '!src/**/index.ts']
+  collectCoverageFrom: ['src/**/*.ts', 'src/**/*.tsx', '!src/**/index.ts'],
+  coverageReporters: ['text', 'html']
 };

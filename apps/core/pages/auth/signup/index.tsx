@@ -8,15 +8,15 @@ import { Divider, Stack, Typography } from '@mui/material';
 
 import { AuthLayout, Pages } from '../../../components';
 
-const { FormWrapper, FooterLink, FormFooter, SideImage, StepOne, StepTwo } =
-  Pages.Signup;
+const { StepOne, StepTwo } = Pages.SignUp;
+const { FooterLink, FormFooter, FormWrapper, SideImage } = Pages.Auth;
 
-type SignupFormFields = {
-  user: Pages.Signup.StepOneFields;
-  gym: Pages.Signup.StepTwoFields;
+type SignUpFormFields = {
+  user: Pages.SignUp.StepOneFields;
+  gym: Pages.SignUp.StepTwoFields;
 };
 
-const InitialFormState: SignupFormFields = {
+const InitialFormState: SignUpFormFields = {
   user: { firstName: '', lastName: '', email: '', password: '' },
   gym: { name: '', email: '', phone: '' }
 };
@@ -39,12 +39,12 @@ const SignUp = () => {
     return (step ? stepTwoRef : stepOneRef).getBoundingClientRect().height;
   }, [step, stepOneRef, stepTwoRef]);
 
-  const handleOnSubmitStepOne = (data: Pages.Signup.StepOneFields) => {
+  const handleOnSubmitStepOne = (data: Pages.SignUp.StepOneFields) => {
     setFormState((prev) => ({ ...prev, user: data }));
     setStep(1);
   };
 
-  const handleOnBlurStepTwo = (data: Pages.Signup.StepTwoFields) => {
+  const handleOnBlurStepTwo = (data: Pages.SignUp.StepTwoFields) => {
     setFormState((prev) => ({ ...prev, gym: data }));
   };
 
@@ -52,7 +52,7 @@ const SignUp = () => {
     setStep(0);
   };
 
-  const handleOnSubmit = (data: Pages.Signup.StepTwoFields) => {
+  const handleOnSubmit = (data: Pages.SignUp.StepTwoFields) => {
     API.signup('owner', { ...formState.user, gym: { ...data } });
   };
 

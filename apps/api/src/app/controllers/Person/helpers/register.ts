@@ -73,17 +73,17 @@ export const register = async <
         { expiresIn: '15m' }
       );
 
-      if (!req.cookies['__hubbl-refresh__']) {
-        const cookieToken = sign(
-          { id: result.person.id, email: result.person.email, user: alias },
-          process.env.NX_JWT_TOKEN,
-          { expiresIn: '30d' }
-        );
-        res.setHeader(
-          'Set-Cookie',
-          `__hubbl-refresh__=${cookieToken}; SameSite=None; Secure; HttpOnly`
-        );
-      }
+      const cookieToken = sign(
+        { id: result.person.id, email: result.person.email, user: alias },
+        process.env.NX_JWT_TOKEN,
+        { expiresIn: '30d' }
+      );
+      res.cookie('__hubbl-refresh__', `${cookieToken}`, {
+        sameSite: 'none',
+        secure: true,
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      });
 
       return controller.created(res, {
         token: tempToken,
