@@ -21,7 +21,7 @@ flags:
     carryforward: true
   client:
     paths:
-      - apps/client/src
+      - apps/client
     carryforward: true
   client-e2e:
     paths:
@@ -29,7 +29,7 @@ flags:
     carryforward: true
   core:
     paths:
-      - apps/core/src
+      - apps/core
     carryforward: true
   core-e2e:
     paths:
@@ -37,7 +37,7 @@ flags:
     carryforward: true
   landing:
     paths:
-      - apps/landing/src
+      - apps/landing
     carryforward: true
   landing-e2e:
     paths:

@@ -5,7 +5,7 @@ import request = require('superagent');
  */
 export const expectTokenCookie = (response: request.Response) => {
   expect(response.headers['set-cookie'][0]).toMatch(
-    /^(__hubbl-refresh__=).+(; HttpOnly)$/
+    /^(__hubbl-refresh__=).+(HttpOnly; Secure; SameSite=None)$/
   );
 };
 

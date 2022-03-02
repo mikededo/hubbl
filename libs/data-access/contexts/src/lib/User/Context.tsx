@@ -14,10 +14,14 @@ type SignUpType = {
   (type: 'owner', data: PartialDeep<OwnerDTO<Gym>>): void;
 };
 
+type LogInType = {
+  (type: 'owner' | 'worker', data: { email: string; password: string }): void;
+};
+
 export type UserContextValue = {
   token: ParsedToken | null;
   user: UserType | null;
-  API: { loading: boolean; signup: SignUpType };
+  API: { loading: boolean; signup: SignUpType; login: LogInType };
 };
 
 const useUserContextValue = (): UserContextValue => {
@@ -39,14 +43,26 @@ const useUserContextValue = (): UserContextValue => {
     }
   };
 
+  const login: LogInType = async (type, data) => {
+    setLoading(true);
+
+    try {
+      setUser(await UserApi.login(type, data));
+    } catch (e) {
+      // Check different errors
+      onError('An error ocurred. Try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   /**
    * Load the context on start, in order to check if the user has already signed
    * in
    */
   useEffect(() => {
-    /* TODO: Check if user token is still valid */
-
     (async () => {
+      // Check if there was a valid token on the browser
       try {
         setToken(await TokenApi.validate());
       } catch (e) {
@@ -56,7 +72,7 @@ const useUserContextValue = (): UserContextValue => {
     })();
   }, []);
 
-  return { token, user, API: { loading, signup } };
+  return { token, user, API: { loading, signup, login } };
 };
 
 export { useUserContextValue };

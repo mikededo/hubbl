@@ -10,7 +10,7 @@ import { register, trainerRegister } from './register';
 process.env.NX_JWT_TOKEN = 'test-secret-token';
 
 describe('register', () => {
-  const mockReq = { body: {}, cookies: {} } as any;
+  const mockReq = { body: {} } as any;
   const mockPerson = {
     person: {
       id: 1,
@@ -114,7 +114,7 @@ describe('register', () => {
         mockRes = {
           json: jest.fn().mockReturnThis(),
           status: jest.fn().mockReturnThis(),
-          setHeader: jest.fn()
+          cookie: jest.fn()
         } as any;
         mockService = {
           save: jest.fn().mockResolvedValue(mockPerson)
@@ -146,10 +146,12 @@ describe('register', () => {
           { expiresIn: '30d' }
         );
         // Ensure cookie is set
-        expect(mockRes.setHeader).toBeCalledWith(
-          'Set-Cookie',
-          `__hubbl-refresh__=${token}; SameSite=None; Secure; HttpOnly`
-        );
+        expect(mockRes.cookie).toBeCalledWith('__hubbl-refresh__', token, {
+          sameSite: 'none',
+          secure: true,
+          httpOnly: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000
+        });
         // Check result
         expect(mockController.created).toHaveBeenCalledTimes(1);
         // Should return the DTO with the token
@@ -189,39 +191,6 @@ describe('register', () => {
         commonChecks();
         // Specific checks
         expect(mockFromClass).toHaveBeenCalledWith(mockPerson);
-      });
-
-      it('should register without setting a cookie', async () => {
-        await register({
-          service: mockService,
-          controller: mockController,
-          fromJson: mockFromJson,
-          fromClass: mockFromClass,
-          req: { ...mockReq, cookies: { '__hubbl-refresh__': 'Cookie' } },
-          res: mockRes,
-          alias: 'any' as any
-        });
-
-        // Check spies
-        expect(mockService.save).toHaveBeenCalledTimes(1);
-        expect(mockController.created).toHaveBeenCalledTimes(1);
-        expect(mockFromJson).toHaveBeenCalledWith({}, 'register');
-        expect(mockFromClass).toHaveBeenCalledTimes(1);
-        expect(jwtSpy).toHaveBeenCalledTimes(1);
-        expect(jwtSpy).toHaveBeenCalledWith(
-          { id: 1, email: 'test@user.com', user: 'any' },
-          process.env.NX_JWT_TOKEN,
-          { expiresIn: '15m' }
-        );
-        // Ensure cookie is set
-        expect(mockRes.setHeader).not.toHaveBeenCalled();
-        // Check result
-        expect(mockController.created).toHaveBeenCalledTimes(1);
-        // Should return the DTO with the token
-        expect(mockController.created).toHaveBeenCalledWith(mockRes, {
-          token,
-          any: mockDTO
-        });
       });
     });
 
@@ -290,7 +259,7 @@ describe('register', () => {
     });
 
     it('should send a fail on created error', async () => {
-      const mockRes = { setHeader: jest.fn() } as any;
+      const mockRes = { cookie: jest.fn() } as any;
 
       const mockService = {
         save: jest.fn().mockResolvedValue(mockPerson)
@@ -315,10 +284,12 @@ describe('register', () => {
 
       expect(signSpy).toHaveBeenCalledTimes(2);
       // Ensure cookie is set
-      expect(mockRes.setHeader).toBeCalledWith(
-        'Set-Cookie',
-        `__hubbl-refresh__=${token}; SameSite=None; Secure; HttpOnly`
-      );
+      expect(mockRes.cookie).toBeCalledWith('__hubbl-refresh__', token, {
+        sameSite: 'none',
+        secure: true,
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000
+      });
     });
   });
 
@@ -327,7 +298,7 @@ describe('register', () => {
       const mockRes = {
         json: jest.fn().mockReturnThis(),
         status: jest.fn().mockReturnThis(),
-        setHeader: jest.fn()
+        cookie: jest.fn()
       } as any;
       const mockService = {
         save: jest.fn().mockResolvedValue(mockPerson)

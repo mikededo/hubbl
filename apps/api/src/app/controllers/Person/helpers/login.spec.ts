@@ -37,7 +37,7 @@ describe('login', () => {
     const mockRes = {
       json: jest.fn().mockReturnThis(),
       status: jest.fn().mockReturnThis(),
-      setHeader: jest.fn()
+      cookie: jest.fn()
     } as any;
     const mockEntity = {
       person: { id: 1, email: 'test@user.com', password: 'changeme00' },
@@ -147,10 +147,12 @@ describe('login', () => {
         { expiresIn: '30d' }
       );
       // Ensure cookie is set
-      expect(mockRes.setHeader).toBeCalledWith(
-        'Set-Cookie',
-        `__hubbl-refresh__=${token}; SameSite=None; Secure; HttpOnly`
-      );
+      expect(mockRes.cookie).toBeCalledWith(`__hubbl-refresh__`, token, {
+        sameSite: 'none',
+        secure: true,
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      });
       // Check result
       expect(mockController.ok).toHaveBeenCalledTimes(1);
       expect(mockController.ok).toHaveBeenCalledWith(mockRes, {
@@ -190,7 +192,7 @@ describe('login', () => {
         { expiresIn: '15m' }
       );
       // Ensure no cookie is set
-      expect(mockRes.setHeader).not.toHaveBeenCalled();
+      expect(mockRes.cookie).not.toHaveBeenCalled();
       // Check result
       expect(mockController.ok).toHaveBeenCalledTimes(1);
     });
@@ -353,10 +355,12 @@ describe('login', () => {
       expect(compareSpy).toHaveBeenCalledTimes(1);
       expect(signSpy).toHaveBeenCalledTimes(2);
       // Ensure cookie is set
-      expect(mockRes.setHeader).toBeCalledWith(
-        'Set-Cookie',
-        `__hubbl-refresh__=${token}; SameSite=None; Secure; HttpOnly`
-      );
+      expect(mockRes.cookie).toBeCalledWith('__hubbl-refresh__', token, {
+        sameSite: 'none',
+        secure: true,
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      });
       // Then fail
       expect(mockController.ok).toHaveBeenCalledTimes(1);
       expect(logSpy).toHaveBeenCalledTimes(1);

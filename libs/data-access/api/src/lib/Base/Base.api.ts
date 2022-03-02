@@ -1,15 +1,20 @@
 import axios from 'axios';
+import { CookieJar } from 'tough-cookie';
+
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    jar?: CookieJar;
+  }
+}
+
+const jar = new CookieJar();
 
 axios.defaults.withCredentials = true;
 
-export const UnauthApiInstance = (endpoint: string) =>
-  axios.create({
-    baseURL: `http://localhost:3333/api/${endpoint}`,
-    headers: { 'Content-Type': 'application/json' },
-  });
+const instance = axios.create({
+  baseURL: `http://localhost:3333/api`,
+  headers: { 'Content-Type': 'application/json' },
+  jar
+});
 
-export const AuthApiInstance = (endpoint: string, token: string) =>
-  axios.create({
-    baseURL: `http://localhost:3333/api/${endpoint}`,
-    headers: { Authorization: `Bearer ${token}` }
-  });
+export { instance as axios };
