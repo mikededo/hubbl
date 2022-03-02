@@ -13,7 +13,10 @@ const LogIn = () => {
   const router = useRouter();
 
   const handleOnSubmit = (data: Pages.LogIn.SignInFields) => {
-    API.login('owner', data);
+    API.login(data.owner ? 'owner' : 'worker', {
+      email: data.email,
+      password: data.password
+    });
   };
 
   useEffect(() => {

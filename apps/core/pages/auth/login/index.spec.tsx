@@ -50,7 +50,7 @@ describe('LogIn', () => {
     expect(utils.container).toBeInTheDocument();
   });
 
-  it('should fill the form', async () => {
+  it('should fill the form as an owner', async () => {
     const loginSpy = jest.fn();
     (useUserContext as any).mockReturnValue({
       user: undefined,
@@ -78,6 +78,40 @@ describe('LogIn', () => {
 
     expect(loginSpy).toHaveBeenCalledTimes(1);
     expect(loginSpy).toHaveBeenCalledWith('owner', {
+      email: 'test@email.com',
+      password: 'eightCharsPwd'
+    });
+  });
+
+  it('should fill the form as a worker', async () => {
+    const loginSpy = jest.fn();
+    (useUserContext as any).mockReturnValue({
+      user: undefined,
+      API: { login: loginSpy }
+    });
+
+    render(
+      <UserProvider>
+        <LogIn />
+      </UserProvider>
+    );
+
+    // Fill form
+    await act(async () => {
+      fireEvent.input(screen.getByPlaceholderText('john.doe@domain.com'), {
+        target: { name: 'email', value: 'test@email.com' }
+      });
+      fireEvent.input(screen.getByPlaceholderText('At least 8 characters!'), {
+        target: { name: 'password', value: 'eightCharsPwd' }
+      });
+      fireEvent.click(screen.getByRole('switch'));
+    });
+    await act(async () => {
+      fireEvent.submit(screen.getByTitle('submit'));
+    });
+
+    expect(loginSpy).toHaveBeenCalledTimes(1);
+    expect(loginSpy).toHaveBeenCalledWith('worker', {
       email: 'test@email.com',
       password: 'eightCharsPwd'
     });

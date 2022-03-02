@@ -23,9 +23,10 @@ export const signup: SignUpType = async (type, data) => {
 };
 
 type LoginType = {
-  (type: 'owner', data: { email: string; password: string }): Promise<
-    OwnerDTO<Gym>
-  >;
+  (
+    type: 'owner' | 'worker',
+    data: { email: string; password: string }
+  ): Promise<OwnerDTO<Gym>>;
 };
 
 export const login: LoginType = async (type, data) => {

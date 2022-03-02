@@ -15,7 +15,7 @@ type SignUpType = {
 };
 
 type LogInType = {
-  (type: 'owner', data: { email: string; password: string }): void;
+  (type: 'owner' | 'worker', data: { email: string; password: string }): void;
 };
 
 export type UserContextValue = {
@@ -50,7 +50,7 @@ const useUserContextValue = (): UserContextValue => {
       setUser(await UserApi.login(type, data));
     } catch (e) {
       // Check different errors
-      onError('An error ocurred. Try again later.');
+      onError('An error ocurred. Try again.');
     } finally {
       setLoading(false);
     }
