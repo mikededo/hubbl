@@ -1,12 +1,9 @@
-import * as jwt from 'jsonwebtoken';
-
-import { ParsedToken } from '@hubbl/shared/types';
+import { AxiosResponse } from 'axios';
 
 import { axios } from '../Base';
-import { AxiosResponse } from 'axios';
 
 export const validate = async () => {
   const response: AxiosResponse = await axios.post('/tokens/validate');
 
-  return jwt.decode(response.data) as ParsedToken;
+  return { user: response.data.user, token: response.data.token };
 };

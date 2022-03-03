@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
 
+import { AxiosResponse } from 'axios';
 import { PartialDeep } from 'type-fest';
 
-import { TokenApi, UserApi } from '@hubbl/data-access/api';
+import {
+  fetcher as ApiFetcher,
+  TokenApi,
+  UserApi
+} from '@hubbl/data-access/api';
 import { OwnerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
-import { ParsedToken } from '@hubbl/shared/types';
+
 import { useToastContext } from '../Toast';
 
 type UserType = OwnerDTO<Gym>;
@@ -18,16 +23,23 @@ type LogInType = {
   (type: 'owner' | 'worker', data: { email: string; password: string }): void;
 };
 
+type FetcherType = { (url: string): Promise<AxiosResponse> };
+
 export type UserContextValue = {
-  token: ParsedToken | null;
+  token: string | null;
   user: UserType | null;
-  API: { loading: boolean; signup: SignUpType; login: LogInType };
+  API: {
+    loading: boolean;
+    signup: SignUpType;
+    login: LogInType;
+    fetcher: FetcherType;
+  };
 };
 
-const useUserContextValue = (): UserContextValue => {
+const useAppContextValue = (): UserContextValue => {
   const { onError } = useToastContext();
 
-  const [token, setToken] = useState<ParsedToken | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -56,6 +68,12 @@ const useUserContextValue = (): UserContextValue => {
     }
   };
 
+  const fetcher = async (url: string) =>
+    ApiFetcher(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true
+    });
+
   /**
    * Load the context on start, in order to check if the user has already signed
    * in
@@ -64,15 +82,18 @@ const useUserContextValue = (): UserContextValue => {
     (async () => {
       // Check if there was a valid token on the browser
       try {
-        setToken(await TokenApi.validate());
+        const { token, user } = await TokenApi.validate();
+        setToken(token);
+        setUser(user);
       } catch (e) {
         // Token is not valid
+        setUser(null);
         setToken(null);
       }
     })();
   }, []);
 
-  return { token, user, API: { loading, signup, login } };
+  return { token, user, API: { loading, signup, login, fetcher } };
 };
 
-export { useUserContextValue };
+export { useAppContextValue };

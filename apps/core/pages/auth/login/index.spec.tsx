@@ -1,6 +1,6 @@
 import { act } from 'react-dom/test-utils';
 
-import { UserProvider, useUserContext } from '@hubbl/data-access/contexts';
+import { AppProvider, useAppContext } from '@hubbl/data-access/contexts';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import LogIn from './index';
@@ -26,7 +26,7 @@ jest.mock('next/router', () => ({
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
 
-  return { ...actual, useUserContext: jest.fn() };
+  return { ...actual, useAppContext: jest.fn() };
 });
 jest.mock('@hubbl/data-access/api', () => {
   const actual = jest.requireActual('@hubbl/data-access/api');
@@ -39,12 +39,12 @@ jest.mock('@hubbl/data-access/api', () => {
 
 describe('LogIn', () => {
   it('should render', () => {
-    (useUserContext as any).mockReturnValue({ user: {}, API: {} });
+    (useAppContext as any).mockReturnValue({ user: {}, API: {} });
 
     const utils = render(
-      <UserProvider>
+      <AppProvider>
         <LogIn />
-      </UserProvider>
+      </AppProvider>
     );
 
     expect(utils.container).toBeInTheDocument();
@@ -52,15 +52,15 @@ describe('LogIn', () => {
 
   it('should fill the form as an owner', async () => {
     const loginSpy = jest.fn();
-    (useUserContext as any).mockReturnValue({
+    (useAppContext as any).mockReturnValue({
       user: undefined,
       API: { login: loginSpy }
     });
 
     render(
-      <UserProvider>
+      <AppProvider>
         <LogIn />
-      </UserProvider>
+      </AppProvider>
     );
 
     // Fill form
@@ -85,15 +85,15 @@ describe('LogIn', () => {
 
   it('should fill the form as a worker', async () => {
     const loginSpy = jest.fn();
-    (useUserContext as any).mockReturnValue({
+    (useAppContext as any).mockReturnValue({
       user: undefined,
       API: { login: loginSpy }
     });
 
     render(
-      <UserProvider>
+      <AppProvider>
         <LogIn />
-      </UserProvider>
+      </AppProvider>
     );
 
     // Fill form

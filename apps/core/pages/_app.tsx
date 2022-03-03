@@ -6,7 +6,7 @@ import Head from 'next/head';
 import {
   ThemeProvider,
   ToastContext,
-  UserProvider
+  AppProvider
 } from '@hubbl/data-access/contexts';
 
 const CustomApp = ({ Component, pageProps }: AppProps) => (
@@ -18,10 +18,10 @@ const CustomApp = ({ Component, pageProps }: AppProps) => (
     <ThemeProvider>
       {/* TODO: Add user context */}
       <ToastContext>
-        <UserProvider>
+        <AppProvider>
           {/* TODO: Add auth guard */}
           <Component {...pageProps} />
-        </UserProvider>
+        </AppProvider>
       </ToastContext>
     </ThemeProvider>
   </>
