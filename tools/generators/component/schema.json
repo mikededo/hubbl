@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "HubblReactComponent",
+  "title": "Create a shared ui component",
+  "type": "object",
+  "examples": [
+    {
+      "command": "g component my-component",
+      "description": "Generate a component"
+    }
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the component.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What do you want for the comonent?"
+    }
+  },
+  "required": ["name"]
+}
