@@ -1,4 +1,5 @@
+import ContentCard from './ContentCard';
 import Input from './Input';
 import LoadingButton from './LoadingButton';
 
-export { Input, LoadingButton };
+export { ContentCard, Input, LoadingButton };
