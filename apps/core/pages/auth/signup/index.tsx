@@ -21,7 +21,7 @@ const InitialFormState: SignUpFormFields = {
   gym: { name: '', email: '', phone: '' }
 };
 
-const SignUp = () => {
+const SignUp = (): JSX.Element => {
   const { user, API } = useAppContext();
   const router = useRouter();
 
