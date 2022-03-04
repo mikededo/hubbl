@@ -3,7 +3,7 @@ import LoadingButton from './LoadingButton';
 
 describe('<LoadingButton />', () => {
   it('should render properly', () => {
-    const StartIcon = () => <div test-id="test-icon" />;
+    const StartIcon = () => <div data-testid="test-icon" />;
 
     const { container } = render(
       <LoadingButton label="Button Text" startIcon={<StartIcon />} />
@@ -15,15 +15,15 @@ describe('<LoadingButton />', () => {
   });
 
   it('should display the loading spinner', () => {
-    const StartIcon = () => <div test-id="test-icon" />;
+    const StartIcon = () => <div data-testid="test-icon" />;
 
     const { container } = render(
       <LoadingButton label="Button Text" startIcon={<StartIcon />} loading />
     );
 
     expect(container).toBeInTheDocument();
-    expect(screen.getByText('Button Text')).not.toBeInTheDocument();
-    expect(screen.getByTestId('test-icon')).not.toBeInTheDocument();
+    expect(screen.queryByText('Button Text')).not.toBeInTheDocument();
+    expect(screen.queryByText('test-icon')).not.toBeInTheDocument();
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 });

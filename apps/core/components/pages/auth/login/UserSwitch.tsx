@@ -40,7 +40,7 @@ type UserSwitchProps = {
   onClick: EmptyHandler;
 };
 
-const UserSwitch = ({ owner, onClick }: UserSwitchProps) => (
+const UserSwitch = ({ owner, onClick }: UserSwitchProps): JSX.Element => (
   <SwitchContainer role="switch" onClick={onClick}>
     <SwitchText>Owner</SwitchText>
     <SwitchText>Worker</SwitchText>
