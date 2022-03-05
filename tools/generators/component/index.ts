@@ -9,12 +9,12 @@ import {
 type NewComponentSchema = { name: string };
 
 export default async function (host: Tree, schema: NewComponentSchema) {
-  const name = names(schema.name).className;
+  const fileName = names(schema.name).className;
 
   generateFiles(
     host,
     joinPathFragments(__dirname, './files'),
-    `${getProjects(host).get('ui-components').sourceRoot}/${schema.name}`,
-    { name, fileName: name, tmpl: '' }
+    joinPathFragments(getProjects(host).get('ui-components').sourceRoot, 'lib', fileName),
+    { name: fileName, fileName, tmpl: '' }
   );
 }

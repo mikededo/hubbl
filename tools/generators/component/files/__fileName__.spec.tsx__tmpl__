@@ -1,12 +1,10 @@
-export type <%= name %>Props {
-}
+import { render } from '@testing-library/react';
 
-const <%= name %> = ({}: <%= name %>Props) {
-  return (
-    <div>
-		New component
-    </div>
-  );
-};
+import <%= name %> from './<%= name %>';
 
-export default <%= name %>;
+describe('<<%= name %> />', () => {
+  it('should render properly', () => {
+    const { container } = render(<<%= name %> />);
+    expect(container).toBeInTheDocument();
+  });
+});
