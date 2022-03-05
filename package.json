@@ -35,9 +35,10 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "7.27.1",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "0.1.13",
     "regenerator-runtime": "0.13.9",
-    "tough-cookie": "^4.0.0",
+    "swr": "^1.2.2",
+    "tough-cookie": "4.0.0",
     "tslib": "2.3.1",
     "type-fest": "2.12.0",
     "typeorm": "0.2.44",
@@ -48,11 +49,12 @@
     "@jest/globals": "^27.5.1",
     "@nrwl/cli": "13.8.4",
     "@nrwl/cypress": "13.8.4",
+    "@nrwl/devkit": "13.8.4",
     "@nrwl/eslint-plugin-nx": "13.8.4",
     "@nrwl/express": "13.8.4",
     "@nrwl/jest": "13.8.4",
     "@nrwl/linter": "13.8.4",
-    "@nrwl/node": "13.8.4",
+    "@nrwl/node": "^13.8.4",
     "@nrwl/react": "13.8.4",
     "@nrwl/tao": "13.8.4",
     "@nrwl/web": "13.8.4",
@@ -93,4 +95,3 @@
     "typescript": "~4.4.3"
   }
 }
-

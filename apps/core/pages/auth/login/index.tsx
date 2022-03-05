@@ -8,7 +8,7 @@ import { AuthLayout, Pages } from '../../../components';
 const { FormWrapper, FormFooter, FooterLink, SideImage } = Pages.Auth;
 const { Form } = Pages.LogIn;
 
-const LogIn = () => {
+const LogIn = (): JSX.Element => {
   const { user, API } = useAppContext();
   const router = useRouter();
 
