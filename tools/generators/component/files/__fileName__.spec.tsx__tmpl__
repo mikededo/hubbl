@@ -1,0 +1,10 @@
+import { render } from '@testing-library/react';
+
+import <%= name %> from './<%= name %>';
+
+describe('<<%= name %> />', () => {
+  it('should render properly', () => {
+    const { container } = render(<<%= name %> />);
+    expect(container).toBeInTheDocument();
+  });
+});

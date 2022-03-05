@@ -10,7 +10,7 @@ jest.mock('../Base', () => {
 describe('Token API', () => {
   describe('validate', () => {
     it('should post to /tokens/validate and return a parsed token', async () => {
-      (Base.axios.post as any).mockResolvedValue({});
+      (Base.axios.post as any).mockResolvedValue({ data: {} });
 
       await validate();
 

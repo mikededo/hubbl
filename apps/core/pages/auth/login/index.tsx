@@ -1,4 +1,4 @@
-import { useUserContext } from '@hubbl/data-access/contexts';
+import { useAppContext } from '@hubbl/data-access/contexts';
 import { Divider, Stack, Typography } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
@@ -8,8 +8,8 @@ import { AuthLayout, Pages } from '../../../components';
 const { FormWrapper, FormFooter, FooterLink, SideImage } = Pages.Auth;
 const { Form } = Pages.LogIn;
 
-const LogIn = () => {
-  const { user, API } = useUserContext();
+const LogIn = (): JSX.Element => {
+  const { user, API } = useAppContext();
   const router = useRouter();
 
   const handleOnSubmit = (data: Pages.LogIn.SignInFields) => {

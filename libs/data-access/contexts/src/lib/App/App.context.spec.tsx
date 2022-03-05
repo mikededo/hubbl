@@ -4,7 +4,7 @@ import { TokenApi, UserApi } from '@hubbl/data-access/api';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { ToastContext } from '../Toast';
-import { UserProvider, useUserContext } from './User.context';
+import { AppProvider, useAppContext } from './App.context';
 
 jest.mock('@hubbl/data-access/api');
 
@@ -14,7 +14,7 @@ const onApiSuccess = async (method: 'signup' | 'login') => {
   } as any);
 
   const Component = () => {
-    const { user, API } = useUserContext();
+    const { user, API } = useAppContext();
 
     return (
       <>
@@ -32,9 +32,9 @@ const onApiSuccess = async (method: 'signup' | 'login') => {
 
   await act(async () => {
     render(
-      <UserProvider>
+      <AppProvider>
         <Component />
-      </UserProvider>
+      </AppProvider>
     );
   });
   await act(async () => {
@@ -49,7 +49,7 @@ const onApiError = async (method: 'signup' | 'login') => {
   const methodSpy = jest.spyOn(UserApi, method).mockRejectedValue({});
 
   const Component = () => {
-    const { API } = useUserContext();
+    const { API } = useAppContext();
 
     return (
       <button
@@ -65,9 +65,9 @@ const onApiError = async (method: 'signup' | 'login') => {
   await act(async () => {
     render(
       <ToastContext>
-        <UserProvider>
+        <AppProvider>
           <Component />
-        </UserProvider>
+        </AppProvider>
       </ToastContext>
     );
   });
@@ -79,15 +79,15 @@ const onApiError = async (method: 'signup' | 'login') => {
   expect(screen.getByText('An error ocurred. Try again.')).toBeInTheDocument();
 };
 
-describe('<UserProvider />', () => {
+describe('<AppProvider />', () => {
   it('should call validate on mount', async () => {
     const validateSpy = jest.spyOn(TokenApi, 'validate').mockImplementation();
 
     await act(async () => {
       render(
-        <UserProvider>
+        <AppProvider>
           <div />
-        </UserProvider>
+        </AppProvider>
       );
     });
 
@@ -98,16 +98,16 @@ describe('<UserProvider />', () => {
     const validateSpy = jest.spyOn(TokenApi, 'validate').mockRejectedValue({});
 
     const Component = () => {
-      const { token } = useUserContext();
+      const { token } = useAppContext();
 
       return <div>{`${token}`}</div>;
     };
 
     await act(async () => {
       render(
-        <UserProvider>
+        <AppProvider>
           <Component />
-        </UserProvider>
+        </AppProvider>
       );
     });
 

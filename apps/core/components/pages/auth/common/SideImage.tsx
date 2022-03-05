@@ -85,7 +85,7 @@ export const Container = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: { display: 'none' }
 }));
 
-const SideImage = () => (
+const SideImage = (): JSX.Element => (
   <Container>
     <DecorationWrapper>
       <Navbar />

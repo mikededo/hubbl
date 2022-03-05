@@ -1,4 +1,15 @@
+import ContentCard from './ContentCard';
 import Input from './Input';
 import LoadingButton from './LoadingButton';
+import PageHeader from './PageHeader';
+import SettingsLogout from './SettingsLogout';
+import SideNav from './SideNav';
 
-export { Input, LoadingButton };
+export {
+  ContentCard,
+  Input,
+  LoadingButton,
+  PageHeader,
+  SettingsLogout,
+  SideNav
+};

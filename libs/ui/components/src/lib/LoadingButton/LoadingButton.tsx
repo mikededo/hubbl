@@ -10,7 +10,7 @@ import {
   Typography
 } from '@mui/material';
 
-const SignUpButton = styled(Button)(({ theme }) => ({
+const FixedHeightButton = styled(Button)(({ theme }) => ({
   height: theme.spacing(5)
 }));
 
@@ -24,7 +24,7 @@ const LoadingButton = ({
   loading = false,
   ...props
 }: LoadingButtonProps & ButtonProps) => (
-  <SignUpButton
+  <FixedHeightButton
     startIcon={loading ? null : props.startIcon}
     disabled={loading}
     {...props}
@@ -36,7 +36,7 @@ const LoadingButton = ({
         <Typography variant="button">{label}</Typography>
       )}
     </AnimatePresence>
-  </SignUpButton>
+  </FixedHeightButton>
 );
 
 export default LoadingButton;
