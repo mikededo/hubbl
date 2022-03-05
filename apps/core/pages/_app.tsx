@@ -9,7 +9,7 @@ import {
   AppProvider
 } from '@hubbl/data-access/contexts';
 
-const CustomApp = ({ Component, pageProps }: AppProps) => (
+const App = ({ Component, pageProps }: AppProps) => (
   <>
     <Head>
       <title>Welcome to core!</title>
@@ -27,4 +27,4 @@ const CustomApp = ({ Component, pageProps }: AppProps) => (
   </>
 );
 
-export default CustomApp;
+export default App;
