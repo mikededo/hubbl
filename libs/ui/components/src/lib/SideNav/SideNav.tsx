@@ -6,7 +6,7 @@ import SideNavGroup, { SideNavGroupItem } from '../SideNavGroup';
 const Container = styled('nav')(({ theme }) => ({
   minWidth: theme.spacing(40),
   width: theme.spacing(40),
-  margin: theme.spacing(4),
+  margin: theme.spacing(6, 4, 4),
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(4)

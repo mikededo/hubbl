@@ -1,6 +1,7 @@
 import ContentCard from './ContentCard';
-import SideNav from './SideNav';
 import Input from './Input';
 import LoadingButton from './LoadingButton';
+import PageHeader from './PageHeader';
+import SideNav from './SideNav';
 
-export { ContentCard, SideNav, Input, LoadingButton };
+export { ContentCard, Input, LoadingButton, PageHeader, SideNav };
