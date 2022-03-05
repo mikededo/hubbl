@@ -1,6 +1,12 @@
 import React from 'react';
 
-import { alpha, createTheme, Theme, ThemeProvider } from '@mui/material';
+import {
+  alpha,
+  createTheme,
+  darken,
+  Theme,
+  ThemeProvider
+} from '@mui/material';
 
 const AppTheme: Theme = createTheme({
   palette: {
@@ -59,7 +65,15 @@ const AppTheme: Theme = createTheme({
     MuiButton: {
       defaultProps: { variant: 'contained', disableElevation: true },
       styleOverrides: {
-        containedSecondary: { backgroundColor: '#4A5568' }
+        containedSecondary: {
+          backgroundColor: '#4A5568',
+          ':hover': { backgroundColor: darken('#4A5568', 0.3) }
+        }
+      }
+    },
+    MuiSkeleton: {
+      styleOverrides: {
+        rectangular: { borderRadius: 8 }
       }
     }
   }

@@ -5,8 +5,7 @@ import { Button, Stack, styled, Typography } from '@mui/material';
 import ContentCard from '../ContentCard';
 
 const Content = styled(ContentCard)(({ theme }) => ({
-  minHeight: theme.spacing(9),
-  padding: theme.spacing(1, 2),
+  padding: theme.spacing(1.5, 3),
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between'
