@@ -1,3 +1,5 @@
+import { Gender } from "@hubbl/shared/types";
+
 /**
  * Fields of the form, including non-required, used for validation
  */
@@ -7,7 +9,7 @@ export type SettingsUserInfoFields = {
   email: string;
   emailConfirmation: string;
   phone: string;
-  gender: string;
+  gender: Gender;
 };
 
 /**

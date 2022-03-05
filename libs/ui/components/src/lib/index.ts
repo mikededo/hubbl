@@ -17,3 +17,4 @@ export {
   SettingsUserInfo,
   SideNav
 };
+export type { RequiredUserInfoFields } from './SettingsUserInfo';
