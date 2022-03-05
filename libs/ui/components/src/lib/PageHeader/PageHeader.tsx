@@ -13,7 +13,9 @@ const HomeIcon = styled(Home)(({ theme }) => ({
   fontSize: theme.spacing(2.25)
 }));
 
-const PageBreadcrumbs = styled(Breadcrumbs)({ '& li:first-child': { display: 'inherit' } });
+const PageBreadcrumbs = styled(Breadcrumbs)({
+  '& li:first-of-type': { display: 'inherit' }
+});
 
 type PageHeaderBreadcrumb = {
   /**
