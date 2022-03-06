@@ -1,6 +1,7 @@
+import { createTheme, ThemeProvider } from '@mui/material';
 import { render, RenderResult } from '@testing-library/react';
-import { SideNavLinkItem } from '../SideNavLink';
 
+import { SideNavLinkItem } from '../SideNavLink';
 import SideNavGroup from './SideNavGroup';
 
 describe('<SideNavGroup />', () => {
@@ -26,7 +27,9 @@ describe('<SideNavGroup />', () => {
 
   it('should render successfully with a group', () => {
     const utils = render(
-      <SideNavGroup entries={entries} name="Group" selected="third" />
+      <ThemeProvider theme={createTheme()}>
+        <SideNavGroup entries={entries} name="Group" selected="third" />
+      </ThemeProvider>
     );
 
     expect(utils).toBeTruthy();
@@ -41,7 +44,9 @@ describe('<SideNavGroup />', () => {
 
   it('should render successfully without a group', () => {
     const utils = render(
-      <SideNavGroup entries={entries} name="Group" selected="third" hidden />
+      <ThemeProvider theme={createTheme()}>
+        <SideNavGroup entries={entries} name="Group" selected="third" hidden />
+      </ThemeProvider>
     );
 
     expect(utils).toBeTruthy();

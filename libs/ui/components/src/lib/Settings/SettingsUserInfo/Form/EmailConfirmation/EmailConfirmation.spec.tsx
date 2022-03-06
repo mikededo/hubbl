@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { FormProvider } from 'react-hook-form';
 
 import EmailConfirmation from './EmailConfirmation';
@@ -41,7 +41,7 @@ describe('<EmailConfirmation />', () => {
       // Should return false since the value is equal
       expect(options.validate('equal')).toBeTruthy();
       // Should compare with email field
-      expect(mockGetValues).toHaveBeenCalledWith('email')
+      expect(mockGetValues).toHaveBeenCalledWith('email');
     });
 
     render(
@@ -57,5 +57,28 @@ describe('<EmailConfirmation />', () => {
     );
 
     expect(registerSpy).toHaveBeenCalled();
+  });
+
+  describe('disabled', () => {
+    it('should be disabled', () => {
+      mockGetValues.mockReturnValue('equal');
+      registerSpy.mockImplementation(() => {
+        // Empty
+      });
+
+      render(
+        <FormProvider
+          {...({
+            register: registerSpy,
+            formState: mockFormState,
+            getValues: mockGetValues
+          } as any)}
+        >
+          <EmailConfirmation disabled />
+        </FormProvider>
+      );
+
+      expect(screen.getByPlaceholderText('Repeat the email')).toBeDisabled();
+    });
   });
 });

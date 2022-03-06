@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import { ThemeProvider, createTheme } from '@mui/material';
+import { render, screen } from '@testing-library/react';
 import { FormProvider } from 'react-hook-form';
 
 import Phone from './Phone';
@@ -13,14 +14,16 @@ describe('<Phone />', () => {
 
   it('should render properly', () => {
     const { container } = render(
-      <FormProvider
-        {...({
-          register: registerSpy,
-          formState: mockFormState
-        } as any)}
-      >
-        <Phone />
-      </FormProvider>
+      <ThemeProvider theme={createTheme()}>
+        <FormProvider
+          {...({
+            register: registerSpy,
+            formState: mockFormState
+          } as any)}
+        >
+          <Phone />
+        </FormProvider>
+      </ThemeProvider>
     );
 
     expect(container).toBeInTheDocument();
@@ -28,17 +31,38 @@ describe('<Phone />', () => {
 
   it('should register the field', () => {
     render(
-      <FormProvider
-        {...({
-          register: registerSpy,
-          formState: mockFormState
-        } as any)}
-      >
-        <Phone />
-      </FormProvider>
+      <ThemeProvider theme={createTheme()}>
+        <FormProvider
+          {...({
+            register: registerSpy,
+            formState: mockFormState
+          } as any)}
+        >
+          <Phone />
+        </FormProvider>
+      </ThemeProvider>
     );
 
     expect(registerSpy).toHaveBeenCalled();
     expect(registerSpy).toHaveBeenCalledWith('phone');
+  });
+
+  describe('disabled', () => {
+    it('should disable the field', () => {
+      render(
+        <ThemeProvider theme={createTheme()}>
+          <FormProvider
+            {...({
+              register: registerSpy,
+              formState: mockFormState
+            } as any)}
+          >
+            <Phone disabled />
+          </FormProvider>
+        </ThemeProvider>
+      );
+
+      expect(screen.getByPlaceholderText('000 000 000')).toBeDisabled();
+    });
   });
 });

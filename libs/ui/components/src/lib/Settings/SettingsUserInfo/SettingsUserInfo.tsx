@@ -85,24 +85,24 @@ const SettingsUserInfo = ({
             gap={{ xs: 2, sm: 2, md: 3 }}
             direction={{ xs: 'column', sm: 'column', md: 'row' }}
           >
-            <FirstName />
-            <LastName />
+            <FirstName disabled={loading} />
+            <LastName disabled={loading} />
           </Stack>
 
           <Stack
             gap={{ xs: 2, sm: 2, md: 3 }}
             direction={{ xs: 'column', sm: 'column', md: 'row' }}
           >
-            <Email />
-            <EmailConfirmation />
+            <Email disabled={loading} />
+            <EmailConfirmation disabled={loading} />
           </Stack>
 
           <Stack
             gap={{ xs: 2, sm: 2, md: 3 }}
             direction={{ xs: 'column', sm: 'column', md: 'row' }}
           >
-            <Phone />
-            <Gender />
+            <Phone disabled={loading} />
+            <Gender disabled={loading} />
           </Stack>
         </Stack>
       </FormProvider>

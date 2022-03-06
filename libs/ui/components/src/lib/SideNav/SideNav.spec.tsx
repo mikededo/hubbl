@@ -1,3 +1,4 @@
+import { createTheme, ThemeProvider } from '@mui/material';
 import { render } from '@testing-library/react';
 import { SideNavLinkItem } from '../SideNavLink';
 import SideNav from './SideNav';
@@ -18,15 +19,17 @@ describe('<SideNav />', () => {
 
   it('should render the navigation bar', () => {
     const utils = render(
-      <SideNav
-        entries={[
-          { name: 'One', entries: groupOne },
-          { name: 'Two', entries: groupTwo },
-          { name: 'Hidden', entries: groupThree, hidden: true }
-        ]}
-        header="SideNav"
-        selected="sixth"
-      />
+      <ThemeProvider theme={createTheme()}>
+        <SideNav
+          entries={[
+            { name: 'One', entries: groupOne },
+            { name: 'Two', entries: groupTwo },
+            { name: 'Hidden', entries: groupThree, hidden: true }
+          ]}
+          header="SideNav"
+          selected="sixth"
+        />
+      </ThemeProvider>
     );
 
     expect(utils.container).toBeInTheDocument();
