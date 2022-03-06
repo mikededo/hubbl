@@ -1,10 +1,19 @@
 import { useFormContext } from 'react-hook-form';
 
-import Input from '../../../Input';
+import Input from '../../../../Input';
 
 import { SettingsUserInfoFields } from '../types';
 
-const Phone = () => {
+type PhoneProps = {
+  /**
+   * Whether the input is disabled or not
+   *
+   * @default false
+   */
+  disabled?: boolean;
+};
+
+const Phone = ({disabled = false}: PhoneProps) => {
   const { register } = useFormContext<SettingsUserInfoFields>();
 
   return (
@@ -14,6 +23,7 @@ const Phone = () => {
       title="phone"
       type="tel"
       placeholder="000 000 000"
+      disabled={disabled}
       registerResult={register('phone')}
       fullWidth
     />

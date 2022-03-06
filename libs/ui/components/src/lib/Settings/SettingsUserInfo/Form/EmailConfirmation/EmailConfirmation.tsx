@@ -1,10 +1,19 @@
 import { useFormContext } from 'react-hook-form';
 
-import Input from '../../../Input';
+import Input from '../../../../Input';
 
 import { SettingsUserInfoFields } from '../types';
 
-const EmailConfirmation = () => {
+type EmailConfirmationProps = {
+  /**
+   * Whether the input is disabled or not
+   *
+   * @default false
+   */
+  disabled?: boolean;
+};
+
+const EmailConfirmation = ({ disabled = false }: EmailConfirmationProps) => {
   const {
     getValues,
     register,
@@ -19,6 +28,7 @@ const EmailConfirmation = () => {
       type="email"
       placeholder="Repeat the email"
       error={!!errors.emailConfirmation}
+      disabled={disabled}
       registerResult={register('emailConfirmation', {
         required: true,
         validate: (value) => value === getValues('email')

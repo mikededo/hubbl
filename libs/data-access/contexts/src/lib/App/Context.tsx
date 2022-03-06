@@ -11,7 +11,7 @@ import { useToastContext } from '../Toast';
 import {
   LogInType,
   SignUpType,
-  UserContextValue,
+  AppContextValue,
   UserType,
   UserUpdatableFields
 } from './types';
@@ -20,7 +20,7 @@ import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 import { AxiosRequestConfig } from 'axios';
 
-const useAppContextValue = (): UserContextValue => {
+const useAppContextValue = (): AppContextValue => {
   const { onError } = useToastContext();
 
   const [token, setToken] = useState<string | null>(null);
@@ -78,31 +78,33 @@ const useAppContextValue = (): UserContextValue => {
 
     setLoading(true);
 
+    const prevUser = { ...user };
     try {
       switch (parsedToken.user) {
         case 'owner':
+          setUser({ ...user, ...data } as OwnerDTO<Gym>);
           await UserApi.owner.update(
             { ...user, ...data } as OwnerDTO<Gym>,
             getAuthorizationConfig()
           );
-          setUser({ ...user, ...data } as OwnerDTO<Gym>);
           break;
         case 'worker':
+          setUser({ ...user, ...data } as WorkerDTO<Gym>);
           await UserApi.worker.update(
             { ...user, ...data } as WorkerDTO<Gym>,
             getAuthorizationConfig()
           );
-          setUser({ ...user, ...data } as WorkerDTO<Gym>);
           break;
         case 'client':
+          setUser({ ...user, ...data } as ClientDTO<Gym>);
           await UserApi.client.update(
             { ...user, ...data } as ClientDTO<Gym>,
             getAuthorizationConfig()
           );
-          setUser({ ...user, ...data } as ClientDTO<Gym>);
           break;
       }
     } catch (e) {
+      setUser(prevUser);
       onError(`${e}`);
     } finally {
       setLoading(false);

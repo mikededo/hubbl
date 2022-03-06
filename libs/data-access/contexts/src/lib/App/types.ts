@@ -9,7 +9,10 @@ import {
 } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-export type UserType = OwnerDTO<Gym> | WorkerDTO<Gym> | ClientDTO<Gym>;
+export type UserType =
+  | Omit<OwnerDTO<Gym>, 'toClass'>
+  | Omit<WorkerDTO<Gym>, 'toClass'>
+  | Omit<ClientDTO<Gym>, 'toClass'>;
 
 export type UserUpdatableFields = Partial<Omit<PersonDTO<Gym>, 'id' | 'gym'>>;
 
@@ -36,7 +39,7 @@ export type UserApiType = {
   update: (data: UserUpdatableFields) => void;
 };
 
-export type UserContextValue = {
+export type AppContextValue = {
   token: string | null;
   user: UserType | null;
   API: {

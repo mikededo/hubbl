@@ -1,10 +1,19 @@
 import { useFormContext } from 'react-hook-form';
 
-import Input from '../../../Input';
+import Input from '../../../../Input';
 
 import { SettingsUserInfoFields } from '../types';
 
-const LastName = () => {
+type LastNameProps = {
+  /**
+   * Whether the input is disabled or not
+   *
+   * @default false
+   */
+  disabled?: boolean;
+};
+
+const LastName = ({ disabled = false }: LastNameProps) => {
   const {
     register,
     formState: { errors }
@@ -18,6 +27,7 @@ const LastName = () => {
       type="text"
       placeholder="Doe"
       error={!!errors.lastName}
+      disabled={disabled}
       registerResult={register('lastName', { required: true })}
       fullWidth
     />

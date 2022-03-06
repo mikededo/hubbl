@@ -1,4 +1,4 @@
-import { Typography, styled } from '@mui/material';
+import { Typography, styled, useMediaQuery, Theme } from '@mui/material';
 import SideNavLink, { SideNavLinkItem } from '../SideNavLink';
 
 const HeaderListItem = styled('li')({ listStyle: 'none' });
@@ -33,23 +33,29 @@ const SideNavGroup = ({
   hidden = false,
   name,
   selected
-}: SideNavGroupProps): JSX.Element => (
-  <>
-    {!hidden && (
-      <HeaderListItem>
-        <Typography variant="h6">{name}</Typography>
-      </HeaderListItem>
-    )}
+}: SideNavGroupProps): JSX.Element => {
+  const md = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
-    {Object.entries(entries).map(([entry, { label, href }]) => (
-      <SideNavLink
-        key={entry}
-        label={label}
-        href={href}
-        selected={entry === selected}
-      />
-    ))}
-  </>
-);
+  return (
+    <>
+      {!hidden && name && (
+        <HeaderListItem>
+          <Typography variant="h6">
+            {md ? name[0].toUpperCase() : name}
+          </Typography>
+        </HeaderListItem>
+      )}
+
+      {Object.entries(entries).map(([entry, { label, href }]) => (
+        <SideNavLink
+          key={entry}
+          label={label}
+          href={href}
+          selected={entry === selected}
+        />
+      ))}
+    </>
+  );
+};
 
 export default SideNavGroup;

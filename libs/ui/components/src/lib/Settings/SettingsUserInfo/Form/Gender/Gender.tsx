@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { Gender as GenderEnum } from '@hubbl/shared/types';
 
-import SelectInput from '../../../SelectInput';
+import SelectInput from '../../../../SelectInput';
 import { SettingsUserInfoFields } from '../types';
 
 const GenderOptions = [
@@ -14,7 +14,16 @@ const GenderOptions = [
   }
 ];
 
-const Gender = () => {
+type GenderProps = {
+  /**
+   * Whether the input is disabled or not
+   *
+   * @default false
+   */
+  disabled?: boolean;
+};
+
+const Gender = ({ disabled = false }: GenderProps) => {
   const { control } = useFormContext<SettingsUserInfoFields>();
 
   return (
@@ -24,6 +33,7 @@ const Gender = () => {
       title="gender"
       type="text"
       placeholder="Other"
+      disabled={disabled}
       control={control}
       formName="gender"
       options={GenderOptions}
