@@ -7,7 +7,7 @@ import { SettingsUserInfoFields } from '../types';
 import Gender from './Gender';
 import { createTheme, ThemeProvider } from '@mui/material';
 
-const MockComponent = ({ disabled }: { disabled: boolean }) => {
+const MockComponent = ({ disabled }: { disabled?: boolean }) => {
   const { control, ...rest } = useForm<SettingsUserInfoFields>({
     defaultValues: { gender: GenderEnum.OTHER }
   });
@@ -27,7 +27,7 @@ describe('<Gender />', () => {
   });
 
   it('should render properly', () => {
-    const { container } = render(<MockComponent disabled={false} />);
+    const { container } = render(<MockComponent />);
 
     expect(container).toBeInTheDocument();
   });
