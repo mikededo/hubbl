@@ -1,21 +1,19 @@
-import React, { createContext, memo, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 
 import { useAppContextValue } from './Context';
-import { UserContextValue } from './types';
+import { AppContextValue } from './types';
 
-const UserContext = createContext({} as UserContextValue);
-UserContext.displayName = 'UserContext';
+const AppContext = createContext({} as AppContextValue);
+AppContext.displayName = 'AppContext';
 
-const useAppContext = () => useContext(UserContext);
+const useAppContext = () => useContext(AppContext);
 
-type UserContextProps = { children: React.ReactNode };
+type AppContextProps = { children: React.ReactNode };
 
-const AppProvider = ({ children }: UserContextProps): JSX.Element => {
+const AppProvider = ({ children }: AppContextProps): JSX.Element => {
   const value = useAppContextValue();
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
-const memoizedProvider = memo(AppProvider);
-
-export { memoizedProvider as AppProvider, useAppContext };
+export { AppProvider, useAppContext };

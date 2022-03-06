@@ -4,6 +4,7 @@ import { useAppContext } from '@hubbl/data-access/contexts';
 import {
   ContentCard,
   PageHeader,
+  RequiredUserInfoFields,
   SettingsLogout,
   SettingsUserInfo,
   SideNav
