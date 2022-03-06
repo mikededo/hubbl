@@ -19,6 +19,15 @@
         "index": 0
       },
       "x-prompt": "What do you want for the comonent?"
+    },
+    "directory": {
+      "type": "string",
+      "description": "Create the component under this directory (can be nested)."
+    },
+    "flat": {
+      "type": "boolean",
+      "description": "Create the component without without a folder",
+      "default": false
     }
   },
   "required": ["name"]

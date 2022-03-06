@@ -7,5 +7,6 @@ export default styled(Card)(({ theme }) => ({
     0.15
   )}`,
   borderRadius: theme.spacing(2),
-  width: '100%'
+  width: '100%',
+  overflow: 'unset'
 }));

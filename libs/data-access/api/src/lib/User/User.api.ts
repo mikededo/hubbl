@@ -1,15 +1,11 @@
 import { AxiosResponse } from 'axios';
-import { PartialDeep } from 'type-fest';
 
-import { OwnerDTO } from '@hubbl/shared/models/dto';
-import { Gym } from '@hubbl/shared/models/entities';
-
-import { axios } from '../Base';
 import { Gender } from '@hubbl/shared/types';
 
-type SignUpType = {
-  (type: 'owner', data: PartialDeep<OwnerDTO<Gym>>): Promise<OwnerDTO<Gym>>;
-};
+import { axios } from '../Base';
+import { ClientApi, LoginType, OwnerApi, SignUpType, WorkerApi } from './types';
+
+/* GENERICS */
 
 export const signup: SignUpType = async (type, data) => {
   const response: AxiosResponse = await axios.post(
@@ -22,13 +18,6 @@ export const signup: SignUpType = async (type, data) => {
   return response.data;
 };
 
-type LoginType = {
-  (
-    type: 'owner' | 'worker',
-    data: { email: string; password: string }
-  ): Promise<OwnerDTO<Gym>>;
-};
-
 export const login: LoginType = async (type, data) => {
   const response: AxiosResponse = await axios.post(
     `/persons/login/${type}`,
@@ -37,4 +26,24 @@ export const login: LoginType = async (type, data) => {
   );
 
   return response.data;
+};
+
+/* SPECIFICS */
+
+export const owner: OwnerApi = {
+  update: async (data, config) => {
+    await axios.put('/persons/owner', data, config);
+  }
+};
+
+export const worker: WorkerApi = {
+  update: async (data, config) => {
+    await axios.put('/persons/worker', data, config);
+  }
+};
+
+export const client: ClientApi = {
+  update: async (data, config) => {
+    await axios.put('/persons/client', data, config);
+  }
 };

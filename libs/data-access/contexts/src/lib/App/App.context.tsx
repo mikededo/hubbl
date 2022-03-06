@@ -1,6 +1,7 @@
 import React, { createContext, memo, useContext } from 'react';
 
-import { UserContextValue, useAppContextValue } from './Context';
+import { useAppContextValue } from './Context';
+import { UserContextValue } from './types';
 
 const UserContext = createContext({} as UserContextValue);
 UserContext.displayName = 'UserContext';
