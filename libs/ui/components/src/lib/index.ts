@@ -3,7 +3,11 @@ import Input from './Input';
 import LoadingButton from './LoadingButton';
 import PageHeader from './PageHeader';
 import SelectInput from './SelectInput';
-import { SettingsLogout, SettingsUserInfo } from './Settings';
+import {
+  SettingsLogout,
+  SettingsUserInfo,
+  SettingsUserPassword
+} from './Settings';
 import SideNav from './SideNav';
 
 export {
@@ -14,6 +18,7 @@ export {
   SelectInput,
   SettingsLogout,
   SettingsUserInfo,
+  SettingsUserPassword,
   SideNav
 };
-export type { RequiredUserInfoFields } from './Settings';
+export type { RequiredUserInfoFields, UserPasswordFields } from './Settings';

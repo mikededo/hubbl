@@ -1,5 +1,13 @@
 import SettingsLogout from './SettingsLogout';
-import SettingsUserInfo from './SettingsUserInfo';
-import { RequiredUserInfoFields } from './SettingsUserInfo';
+import SettingsUserInfo, { RequiredUserInfoFields } from './SettingsUserInfo';
+import SettingsUserPassword, {
+  UserPasswordFields
+} from './SettingsUserPassword';
 
-export { SettingsLogout, SettingsUserInfo, RequiredUserInfoFields };
+export {
+  RequiredUserInfoFields,
+  SettingsLogout,
+  SettingsUserInfo,
+  SettingsUserPassword,
+  UserPasswordFields
+};

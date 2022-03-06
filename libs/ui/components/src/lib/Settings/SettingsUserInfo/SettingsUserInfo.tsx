@@ -32,7 +32,7 @@ type SettingsUserInfoProps = {
   defaultValues?: RequiredUserInfoFields;
 
   /**
-   * Whether the input is loading or not
+   * Whether the application is loading or not
    *
    * @default false
    */
@@ -40,7 +40,7 @@ type SettingsUserInfoProps = {
 
   /**
    * Callback to run on when the form has been submitted. Returns
-   * the values of the form.
+   * the values of the form
    *
    * @default undefined
    */
