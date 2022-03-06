@@ -1,5 +1,3 @@
-import { RequiredUserInfoFields } from '@hubbl/ui/components';
-
 import { useAppContext } from '@hubbl/data-access/contexts';
 import {
   ContentCard,
@@ -7,7 +5,9 @@ import {
   RequiredUserInfoFields,
   SettingsLogout,
   SettingsUserInfo,
-  SideNav
+  SettingsUserPassword,
+  SideNav,
+  UserPasswordFields
 } from '@hubbl/ui/components';
 import { Box, Stack } from '@mui/material';
 
@@ -38,8 +38,9 @@ const entries = [
 const Settings = () => {
   const { user, API } = useAppContext();
 
-  const handleOnSaveInfo = (data: RequiredUserInfoFields) => {
-    console.log(data)
+  const handleOnUpdateUser = (
+    data: RequiredUserInfoFields | UserPasswordFields
+  ) => {
     API.user.update(data);
   };
 
@@ -89,14 +90,12 @@ const Settings = () => {
           />
 
           <SettingsLogout header="User full name" subtitle="Gym owner" />
-
           <SettingsUserInfo
             defaultValues={mapUserToValues()}
-            onSubmit={handleOnSaveInfo}
+            onSubmit={handleOnUpdateUser}
           />
-          {/* TODO: TEst all the form components */}
+          <SettingsUserPassword onSubmit={handleOnUpdateUser} />
 
-          <ContentCard sx={{ minHeight: '206px' }} />
           <ContentCard sx={{ minHeight: '281px' }} />
         </Stack>
       </Box>
