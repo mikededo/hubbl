@@ -7,6 +7,7 @@ import {
   ListItemProps,
   styled,
   Typography,
+  useMediaQuery,
   useTheme
 } from '@mui/material';
 
@@ -63,10 +64,11 @@ const SideNavLink = ({
   selected = false
 }: SideNavLinkProps): JSX.Element => {
   const theme = useTheme();
+  const md = useMediaQuery(theme.breakpoints.down('md'));
 
   return selected ? (
     <Selected role="listitem">
-      <Typography>{label}</Typography>
+      <Typography> {md ? label[0].toUpperCase() : label}</Typography>
     </Selected>
   ) : (
     <Unselected
@@ -81,7 +83,9 @@ const SideNavLink = ({
       role="listitem"
     >
       <Link href={href} passHref>
-        <UnselectedLink as="a">{label}</UnselectedLink>
+        <UnselectedLink as="a">
+          {md ? label[0].toUpperCase() : label}
+        </UnselectedLink>
       </Link>
     </Unselected>
   );

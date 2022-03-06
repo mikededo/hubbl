@@ -121,7 +121,11 @@ const SettingsUserPassword = ({
     <SettingsCard as="form" onSubmit={handleSubmit(handleOnSubmit)}>
       <Typography variant="h6">Change password</Typography>
 
-      <Stack gap={3} direction="row" width="100%">
+      <Stack
+        gap={{ xs: 2, sm: 2, md: 3 }}
+        direction={{ xs: 'column', sm: 'column', md: 'row' }}
+        width="100%"
+      >
         <Input
           label="Password"
           labelVariant="body1"

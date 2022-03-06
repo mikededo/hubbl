@@ -81,17 +81,26 @@ const SettingsUserInfo = ({
 
       <FormProvider {...methods}>
         <Stack gap={2} width="100%">
-          <Stack gap={3} direction="row">
+          <Stack
+            gap={{ xs: 2, sm: 2, md: 3 }}
+            direction={{ xs: 'column', sm: 'column', md: 'row' }}
+          >
             <FirstName />
             <LastName />
           </Stack>
 
-          <Stack gap={3} direction="row" width="100%">
+          <Stack
+            gap={{ xs: 2, sm: 2, md: 3 }}
+            direction={{ xs: 'column', sm: 'column', md: 'row' }}
+          >
             <Email />
             <EmailConfirmation />
           </Stack>
 
-          <Stack gap={3} direction="row" width="100%">
+          <Stack
+            gap={{ xs: 2, sm: 2, md: 3 }}
+            direction={{ xs: 'column', sm: 'column', md: 'row' }}
+          >
             <Phone />
             <Gender />
           </Stack>
