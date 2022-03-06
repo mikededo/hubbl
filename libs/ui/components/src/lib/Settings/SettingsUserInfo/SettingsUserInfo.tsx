@@ -7,8 +7,8 @@ import { Save } from '@mui/icons-material';
 import { Stack, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
-import ContentCard from '../ContentCard';
-import LoadingButton from '../LoadingButton';
+import ContentCard from '../../ContentCard';
+import LoadingButton from '../../LoadingButton';
 import {
   Email,
   EmailConfirmation,

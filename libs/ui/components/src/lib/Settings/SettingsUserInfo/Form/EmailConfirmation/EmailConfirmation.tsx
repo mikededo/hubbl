@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 
-import Input from '../../../Input';
+import Input from '../../../../Input';
 
 import { SettingsUserInfoFields } from '../types';
 

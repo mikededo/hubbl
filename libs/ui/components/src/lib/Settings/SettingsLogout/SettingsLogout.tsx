@@ -2,7 +2,7 @@ import { EmptyHandler } from '@hubbl/shared/types';
 import { Logout } from '@mui/icons-material';
 import { Button, Stack, styled, Typography } from '@mui/material';
 
-import ContentCard from '../ContentCard';
+import ContentCard from '../../ContentCard';
 
 const Content = styled(ContentCard)(({ theme }) => ({
   padding: theme.spacing(1.5, 3),

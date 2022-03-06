@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { Gender as GenderEnum } from '@hubbl/shared/types';
 
-import SelectInput from '../../../SelectInput';
+import SelectInput from '../../../../SelectInput';
 import { SettingsUserInfoFields } from '../types';
 
 const GenderOptions = [
