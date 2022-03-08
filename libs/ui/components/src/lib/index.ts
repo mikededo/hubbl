@@ -4,6 +4,7 @@ import LoadingButton from './LoadingButton';
 import PageHeader from './PageHeader';
 import SelectInput from './SelectInput';
 import {
+  SettingsCard,
   SettingsLogout,
   SettingsUserInfo,
   SettingsUserPassword
@@ -16,6 +17,7 @@ export {
   LoadingButton,
   PageHeader,
   SelectInput,
+  SettingsCard,
   SettingsLogout,
   SettingsUserInfo,
   SettingsUserPassword,
