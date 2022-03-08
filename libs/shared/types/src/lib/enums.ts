@@ -17,6 +17,7 @@ enum AppPalette {
   GREEN = '#68D391',
   EMERALD = '#34D399',
   TEAL = '#2DD4BF',
+  CYAN = '#22d3ee',
   BLUE = '#2196F3',
   INDIGO = '#818CF8',
   PURPLE = '#A78BFA',
