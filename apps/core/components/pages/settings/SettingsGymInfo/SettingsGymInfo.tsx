@@ -33,7 +33,11 @@ type SettingsGymInfoProps = {
   onSubmit?: SingleHandler<RequiredGymInfoFields>;
 };
 
-const SettingsGymInfo = ({ defaultValues, loading, onSubmit }: SettingsGymInfoProps) => {
+const SettingsGymInfo = ({
+  defaultValues,
+  loading,
+  onSubmit
+}: SettingsGymInfoProps) => {
   const { control, handleSubmit, register, reset } =
     useForm<RequiredGymInfoFields>({
       defaultValues,

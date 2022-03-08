@@ -1,3 +1,3 @@
 export * from './Token';
 export * from './User';
-export * from './fetcher'
+export * from './fetcher';

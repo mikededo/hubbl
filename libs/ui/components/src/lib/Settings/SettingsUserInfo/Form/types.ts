@@ -1,4 +1,4 @@
-import { Gender } from "@hubbl/shared/types";
+import { Gender } from '@hubbl/shared/types';
 
 /**
  * Fields of the form, including non-required, used for validation

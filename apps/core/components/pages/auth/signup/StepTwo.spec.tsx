@@ -111,11 +111,15 @@ describe('<StepTwo />', () => {
     );
 
     expect(utils.getByPlaceholderText('Fantagym')).toHaveAttribute('disabled');
-    expect(utils.getByPlaceholderText('gym.name@info.com')).toHaveAttribute('disabled');
-    expect(utils.getByPlaceholderText('000 000 000')).toHaveAttribute('disabled');
+    expect(utils.getByPlaceholderText('gym.name@info.com')).toHaveAttribute(
+      'disabled'
+    );
+    expect(utils.getByPlaceholderText('000 000 000')).toHaveAttribute(
+      'disabled'
+    );
     expect(utils.getByTitle('submit')).toHaveAttribute('disabled');
     expect(utils.getByText('Go back')).toHaveAttribute('disabled');
-  })
+  });
 
   describe('onSubmit', () => {
     it('should not call onSubmit if fields have any errors', async () => {
