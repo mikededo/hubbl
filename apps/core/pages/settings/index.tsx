@@ -1,6 +1,7 @@
+import { ReactElement } from 'react';
+
 import { useAppContext } from '@hubbl/data-access/contexts';
 import {
-  ContentCard,
   PageHeader,
   RequiredUserInfoFields,
   SettingsLogout,
@@ -10,6 +11,10 @@ import {
   UserPasswordFields
 } from '@hubbl/ui/components';
 import { Box, Stack } from '@mui/material';
+
+import { Pages, SettingsPages } from '../../components';
+
+const { SettingsGymInfo } = Pages.Settings;
 
 const entries = [
   {
@@ -58,12 +63,25 @@ const Settings = () => {
     };
   };
 
+  const mapGymToValues = (): Pages.Settings.RequiredGymInfoFields => {
+    if (!user) {
+      return undefined;
+    }
+
+    return {
+      name: user.gym.name,
+      email: user.gym.email,
+      phone: user.gym.phone,
+      color: user.gym.color
+    };
+  };
+
   return (
     <Stack
       direction="row"
       justifyContent="stretch"
       gap={4}
-      sx={{ height: '100vh', width: '100wh', overflow: 'hidden' }}
+      sx={{ height: '100vh', width: '100vw', overflow: 'hidden' }}
     >
       <SideNav entries={entries} header="Gym name" selected="settings" />
 
@@ -71,19 +89,10 @@ const Settings = () => {
         sx={{
           overflow: 'auto',
           width: '100%',
-          height: '100%',
           padding: '48px 32px 32px'
         }}
       >
-        <Stack
-          direction="column"
-          spacing={3}
-          sx={{
-            height: '100%',
-            width: '100%',
-            maxWidth: '1120px'
-          }}
-        >
+        <Stack direction="column" spacing={3} sx={{ maxWidth: '1120px' }}>
           <PageHeader
             title="Settings"
             breadcrumbs={[{ href: '/', label: 'Settings' }]}
@@ -96,7 +105,10 @@ const Settings = () => {
           />
           <SettingsUserPassword onSubmit={handleOnUpdateUser} />
 
-          <ContentCard sx={{ minHeight: '281px' }} />
+          <SettingsGymInfo
+            defaultValues={mapGymToValues()}
+            onSubmit={console.log}
+          />
         </Stack>
       </Box>
     </Stack>
@@ -104,3 +116,7 @@ const Settings = () => {
 };
 
 export default Settings;
+
+Settings.getLayout = (page: ReactElement) => (
+  <SettingsPages>{page}</SettingsPages>
+);
