@@ -32,8 +32,8 @@ export default class Owner {
   /**
    * `Gym` owned by the `Owner`
    */
-  @OneToOne(() => Gym, { cascade: true, eager: true })
-  @JoinColumn()
+  @OneToOne(() => Gym)
+  @JoinColumn({ name: 'owner_id' })
   gym!: number;
 
   /**

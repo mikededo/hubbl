@@ -4,7 +4,9 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
@@ -14,6 +16,7 @@ import { AppPalette } from '@hubbl/shared/types';
 import Event from './Event';
 import EventTemplate from './EventTemplate';
 import EventType from './EventType';
+import Owner from './Owner';
 import Person from './Person';
 import TrainerTag from './TrainerTag';
 import VirtualGym from './VirtualGym';
@@ -77,6 +80,13 @@ export default class Gym {
     onUpdate: 'CASCADE'
   })
   events!: Event[];
+
+  /**
+   * To know the owner of the gym
+   */
+  @OneToOne(() => Owner, (o) => o.gym)
+  @JoinColumn()
+  owner!: number;
 
   /**
    * Relation that allows us to know what users
