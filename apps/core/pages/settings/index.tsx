@@ -49,6 +49,10 @@ const Settings = () => {
     API.user.update(data);
   };
 
+  const handleOnUpdateGym = (data: Pages.Settings.RequiredGymInfoFields) => {
+    API.gym.update(data);
+  };
+
   const mapUserToValues = (): RequiredUserInfoFields => {
     if (!user) {
       return undefined;
@@ -107,7 +111,7 @@ const Settings = () => {
 
           <SettingsGymInfo
             defaultValues={mapGymToValues()}
-            onSubmit={console.log}
+            onSubmit={handleOnUpdateGym}
           />
         </Stack>
       </Box>
