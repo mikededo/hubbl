@@ -2,10 +2,11 @@ import { AxiosResponse } from 'axios';
 import { PartialDeep } from 'type-fest';
 
 import {
+  ClientDTO,
+  GymDTO,
   OwnerDTO,
-  WorkerDTO,
   PersonDTO,
-  ClientDTO
+  WorkerDTO
 } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
@@ -15,6 +16,10 @@ export type UserType =
   | Omit<ClientDTO<Gym>, 'toClass'>;
 
 export type UserUpdatableFields = Partial<Omit<PersonDTO<Gym>, 'id' | 'gym'>>;
+
+export type GymUpdatableFields = Partial<
+  Omit<GymDTO, 'id' | 'virtualGyms' | 'code'>
+>;
 
 /**
  * Function type to signup an Owner
@@ -39,6 +44,14 @@ export type UserApiType = {
   update: (data: UserUpdatableFields) => void;
 };
 
+/**
+ * Api functions to work with the gym. Should only be used when the
+ * user type is an owner
+ */
+export type GymApiType = {
+  update: (data: GymUpdatableFields) => void;
+};
+
 export type AppContextValue = {
   token: string | null;
   user: UserType | null;
@@ -48,5 +61,6 @@ export type AppContextValue = {
     login: LogInType;
     fetcher: FetcherType;
     user: UserApiType;
+    gym: GymApiType;
   };
 };

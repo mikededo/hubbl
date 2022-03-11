@@ -1,31 +1,41 @@
 import { useEffect, useState } from 'react';
+
+import { AxiosRequestConfig } from 'axios';
 import { decode } from 'jsonwebtoken';
 
 import {
   fetcher as ApiFetcher,
+  GymApi,
   TokenApi,
   UserApi
 } from '@hubbl/data-access/api';
+import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
+import { Gym } from '@hubbl/shared/models/entities';
+import { ParsedToken } from '@hubbl/shared/types';
 
 import { useToastContext } from '../Toast';
 import {
+  AppContextValue,
+  GymUpdatableFields,
   LogInType,
   SignUpType,
-  AppContextValue,
   UserType,
   UserUpdatableFields
 } from './types';
-import { ParsedToken } from '@hubbl/shared/types';
-import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
-import { Gym } from '@hubbl/shared/models/entities';
-import { AxiosRequestConfig } from 'axios';
 
 const useAppContextValue = (): AppContextValue => {
   const { onError } = useToastContext();
 
+  // User token to be sent on each request
   const [token, setToken] = useState<string | null>(null);
+
+  // Parsed value of the revieved token
   const [parsedToken, setParsedToken] = useState<ParsedToken | null>(null);
+
+  // Current active user
   const [user, setUser] = useState<UserType | null>(null);
+
+  // Loading state of the application on user/gym calls
   const [loading, setLoading] = useState(false);
 
   const getAuthorizationConfig = (): AxiosRequestConfig => ({
@@ -112,6 +122,28 @@ const useAppContextValue = (): AppContextValue => {
   };
 
   /**
+   * Updates the current gym information
+   */
+  const gymUpdater = async (data: GymUpdatableFields): Promise<void> => {
+    if (!parsedToken || !user) {
+      return;
+    }
+
+    setLoading(true);
+
+    const prevUser = { ...user };
+    try {
+      setUser({ ...user, gym: { ...user.gym, ...data } });
+      await GymApi.update({ ...user.gym, ...data }, getAuthorizationConfig());
+    } catch (e) {
+      setUser(prevUser);
+      onError(`${e}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
    * Load the context on start, in order to check if the user has already signed
    * in
    */
@@ -140,7 +172,8 @@ const useAppContextValue = (): AppContextValue => {
       signup,
       login,
       fetcher,
-      user: { update: userUpdater }
+      user: { update: userUpdater },
+      gym: { update: gymUpdater }
     }
   };
 };
