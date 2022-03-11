@@ -55,7 +55,7 @@ describe('Gym controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledWith(mockReq.body, DTOGroups.UPDATE);
       expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
       expect(mockOwnerService.count).toHaveBeenCalledWith({
-        where: { id: mockRes.locals.token.id, gym: mockReq.body.id }
+        where: { person: { id: mockRes.locals.token.id }, gym: mockReq.body.id }
       });
       expect(uboow).toHaveBeenCalledTimes(1);
       expect(uboow).toHaveBeenCalledWith({

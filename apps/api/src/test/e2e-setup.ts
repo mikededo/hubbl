@@ -79,6 +79,65 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
   await cnt.synchronize(true);
 
   await cnt.transaction(async (em) => {
+    await em.getRepository(Gym).save({
+      id: ENTITY_IDENTIFIERS.GYM,
+      name: 'TestGym',
+      email: 'test@gym.com',
+      phone: '000 000 000',
+      code: ENTITY_IDENTIFIERS.GYM_CODE,
+      color: AppPalette.BLUE,
+      virtualGyms: [
+        {
+          id: ENTITY_IDENTIFIERS.VIRTUAL_GYM,
+          name: 'VirtualGym One',
+          description: 'Virtual gym one description',
+          capacity: 10,
+          location: 'Test location one, 1',
+          openTime: '09:00:00',
+          closeTime: '23:00:00',
+          gym: ENTITY_IDENTIFIERS.GYM,
+          gymZones: [
+            {
+              id: ENTITY_IDENTIFIERS.GYM_ZONE_ONE,
+              name: 'GymZone One',
+              description: 'Gym zone one of virtual gym one',
+              capacity: 10,
+              openTime: '09:00:00',
+              closeTime: '23:00:00',
+              maskRequired: true,
+              covidPassport: true,
+              isClassType: true,
+              calendar: { id: ENTITY_IDENTIFIERS.CALENDAR_ONE }
+            },
+            {
+              id: ENTITY_IDENTIFIERS.GYM_ZONE_TWO,
+              name: 'GymZone Two',
+              description: 'Gym zone two of virtual gym one',
+              capacity: 10,
+              openTime: '09:00:00',
+              closeTime: '23:00:00',
+              maskRequired: true,
+              covidPassport: true,
+              isClassType: true,
+              calendar: { id: ENTITY_IDENTIFIERS.CALENDAR_TWO }
+            },
+            {
+              id: ENTITY_IDENTIFIERS.GYM_ZONE_THREE,
+              name: 'GymZone Three',
+              description: 'Gym zone two of virtual gym one',
+              capacity: 10,
+              openTime: '09:00:00',
+              closeTime: '23:00:00',
+              maskRequired: true,
+              covidPassport: true,
+              isClassType: false,
+              calendar: { id: ENTITY_IDENTIFIERS.CALENDAR_THREE }
+            }
+          ]
+        }
+      ]
+    });
+
     await em.getRepository(Owner).save({
       person: {
         id: ENTITY_IDENTIFIERS.OWNER,
@@ -88,64 +147,9 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         password: await hash('owner-password', await genSalt(10)),
         phone: '000 000 000',
         gender: Gender.OTHER,
-        gym: {
-          id: ENTITY_IDENTIFIERS.GYM,
-          name: 'TestGym',
-          email: 'test@gym.com',
-          phone: '000 000 000',
-          code: ENTITY_IDENTIFIERS.GYM_CODE,
-          color: AppPalette.BLUE,
-          virtualGyms: [
-            {
-              id: ENTITY_IDENTIFIERS.VIRTUAL_GYM,
-              name: 'VirtualGym One',
-              description: 'Virtual gym one description',
-              capacity: 10,
-              location: 'Test location one, 1',
-              openTime: '09:00:00',
-              closeTime: '23:00:00',
-              gymZones: [
-                {
-                  id: ENTITY_IDENTIFIERS.GYM_ZONE_ONE,
-                  name: 'GymZone One',
-                  description: 'Gym zone one of virtual gym one',
-                  capacity: 10,
-                  openTime: '09:00:00',
-                  closeTime: '23:00:00',
-                  maskRequired: true,
-                  covidPassport: true,
-                  isClassType: true,
-                  calendar: { id: ENTITY_IDENTIFIERS.CALENDAR_ONE }
-                },
-                {
-                  id: ENTITY_IDENTIFIERS.GYM_ZONE_TWO,
-                  name: 'GymZone Two',
-                  description: 'Gym zone two of virtual gym one',
-                  capacity: 10,
-                  openTime: '09:00:00',
-                  closeTime: '23:00:00',
-                  maskRequired: true,
-                  covidPassport: true,
-                  isClassType: true,
-                  calendar: { id: ENTITY_IDENTIFIERS.CALENDAR_TWO }
-                },
-                {
-                  id: ENTITY_IDENTIFIERS.GYM_ZONE_THREE,
-                  name: 'GymZone Three',
-                  description: 'Gym zone two of virtual gym one',
-                  capacity: 10,
-                  openTime: '09:00:00',
-                  closeTime: '23:00:00',
-                  maskRequired: true,
-                  covidPassport: true,
-                  isClassType: false,
-                  calendar: { id: ENTITY_IDENTIFIERS.CALENDAR_THREE }
-                }
-              ]
-            }
-          ]
-        }
-      }
+        gym: ENTITY_IDENTIFIERS.GYM
+      },
+      gym: ENTITY_IDENTIFIERS.GYM
     });
 
     await em.getRepository(EventType).save([

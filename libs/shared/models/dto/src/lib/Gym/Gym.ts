@@ -115,7 +115,6 @@ export default class GymDTO implements DTO<Gym> {
     result.phone = this.phone;
     result.code = this.code;
     result.color = this.color;
-    result.virtualGyms = this.virtualGyms || [];
 
     return result;
   }

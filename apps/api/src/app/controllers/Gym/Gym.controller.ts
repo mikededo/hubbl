@@ -27,8 +27,9 @@ class IGymUpdateController extends BaseController {
 
       // Check if owner owns the gym
       const count = await this.ownerService.count({
-        where: { id: token.id as number, gym: dto.id }
+        where: { person: { id: token.id as number }, gym: dto.id }
       });
+
       if (!count) {
         return this.forbidden(res, 'User does not own the gym.');
       }
