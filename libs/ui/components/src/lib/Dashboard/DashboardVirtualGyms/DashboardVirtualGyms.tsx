@@ -45,7 +45,7 @@ const DashboardVirtualGyms = ({
       <Grid item>
         <AddItemPlaceholder
           title="add-virtual-gym"
-          height="100%"
+          height={25}
           width={44}
           onClick={onAddGym}
         >
