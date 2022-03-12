@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import { Fetcher } from 'swr';
 import { PartialDeep } from 'type-fest';
 
 import {
@@ -44,7 +44,7 @@ export type LogInType = {
 /**
  * Function type that defines the fetcher of the application
  */
-export type FetcherType = { (url: string): Promise<AxiosResponse> };
+export type FetcherType = Fetcher<never, string>;
 
 export type UserApiType = {
   update: (data: UserUpdatableFields) => void;

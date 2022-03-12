@@ -2,19 +2,22 @@ import { ReactElement } from 'react';
 
 import useSWR from 'swr';
 
+import { DashboardResponse } from '@hubbl/data-access/api';
 import { useAppContext } from '@hubbl/data-access/contexts';
-import { PageHeader } from '@hubbl/ui/components';
+import { DashboardVirtualGyms, PageHeader } from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages } from '../../components';
 
 const Dashboard = () => {
   const {
+    token,
     user,
     API: { fetcher }
   } = useAppContext();
-  useSWR(
+
+  const { data } = useSWR<DashboardResponse>(
     // Wait for the user to be defined, before making the call
-    user ? () => `/dashboards/${user.gym.id}` : null,
+    token.parsed ? () => `/dashboards/${user.gym.id}` : null,
     fetcher
   );
 
@@ -24,6 +27,8 @@ const Dashboard = () => {
         title={`Welcome ${user?.firstName} ${user?.lastName}!`}
         breadcrumbs={[{ href: '/', label: 'Dashboard' }]}
       />
+
+      {data && <DashboardVirtualGyms items={data.virtualGyms} />}
     </>
   );
 };
