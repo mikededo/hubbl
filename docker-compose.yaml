@@ -14,7 +14,7 @@ services:
     ports:
       - 5433:5432
     restart: unless-stopped
-    profiles: ["all", "dev", "test"]
+    profiles: ['all', 'dev', 'test']
 
   # Has no profiles since it is always required
   postgres:
@@ -36,7 +36,7 @@ services:
   # Api
   api-dev:
     container_name: hubbl-api-dev
-    image: node:lts-alpine
+    image: node:16.10.0-alpine3.14
     volumes:
       - .:/app
     command:
@@ -53,7 +53,7 @@ services:
       - postgres
     mem_limit: 1G
     restart: unless-stopped
-    profiles: ["all", "dev"]
+    profiles: ['all', 'dev']
 
 networks:
   postgres:

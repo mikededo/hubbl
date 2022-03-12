@@ -2,8 +2,8 @@ import React from 'react';
 
 import {
   ThemeProvider,
-  UserProvider,
-  useUserContext
+  AppProvider,
+  useAppContext
 } from '@hubbl/data-access/contexts';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 
@@ -30,7 +30,7 @@ jest.mock('next/router', () => ({
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
 
-  return { ...actual, useUserContext: jest.fn() };
+  return { ...actual, useAppContext: jest.fn() };
 });
 jest.mock('@hubbl/data-access/api', () => {
   const actual = jest.requireActual('@hubbl/data-access/api');
@@ -43,12 +43,12 @@ jest.mock('@hubbl/data-access/api', () => {
 
 describe('<SignUp />', () => {
   it('should render', () => {
-    (useUserContext as any).mockReturnValue({ user: {}, API: {} });
+    (useAppContext as any).mockReturnValue({ user: {}, API: {} });
 
     const utils = render(
-      <UserProvider>
+      <AppProvider>
         <SignUp />
-      </UserProvider>
+      </AppProvider>
     );
 
     expect(utils.container).toBeInTheDocument();
@@ -56,16 +56,16 @@ describe('<SignUp />', () => {
 
   it('should fill the form', async () => {
     const signupSpy = jest.fn();
-    (useUserContext as any).mockReturnValue({
+    (useAppContext as any).mockReturnValue({
       user: undefined,
       API: { signup: signupSpy }
     });
 
     render(
       <ThemeProvider>
-        <UserProvider>
+        <AppProvider>
           <SignUp />
-        </UserProvider>
+        </AppProvider>
       </ThemeProvider>
     );
 
@@ -128,13 +128,13 @@ describe('<SignUp />', () => {
   });
 
   it('should display the first form if go back is pressed', async () => {
-    (useUserContext as any).mockReturnValue({ user: {}, API: {} });
+    (useAppContext as any).mockReturnValue({ user: {}, API: {} });
 
     render(
       <ThemeProvider>
-        <UserProvider>
+        <AppProvider>
           <SignUp />
-        </UserProvider>
+        </AppProvider>
       </ThemeProvider>
     );
 

@@ -10,6 +10,7 @@ import {
   EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
+  GymDTO,
   GymZoneDTO,
   OwnerDTO,
   TrainerDTO,
@@ -50,6 +51,7 @@ type UpdatableServices = BaseService<
   | EventTemplate
   | EventType
   | VirtualGym
+  | Gym
   | GymZone
   | TrainerTag
 >;
@@ -65,6 +67,7 @@ type UpdatableEntities =
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
+  | 'Gym'
   | 'GymZone'
   | 'TrainerTag';
 
@@ -119,6 +122,7 @@ type CommonUpdateByDTOs =
   | EventTemplateDTO
   | EventTypeDTO
   | VirtualGymDTO
+  | GymDTO
   | GymZoneDTO
   | TrainerTagDTO;
 
@@ -131,6 +135,7 @@ type CommonUpdateByEntities =
   | 'EventTemplate'
   | 'EventType'
   | 'VirtualGym'
+  | 'Gym'
   | 'GymZone'
   | 'TrainerTag';
 

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 
-import { useUserContext } from '@hubbl/data-access/contexts';
+import { useAppContext } from '@hubbl/data-access/contexts';
 import { Divider, Stack, Typography } from '@mui/material';
 
 import { AuthLayout, Pages } from '../../../components';
@@ -21,8 +21,8 @@ const InitialFormState: SignUpFormFields = {
   gym: { name: '', email: '', phone: '' }
 };
 
-const SignUp = () => {
-  const { user, API } = useUserContext();
+const SignUp = (): JSX.Element => {
+  const { user, API } = useAppContext();
   const router = useRouter();
 
   const [formState, setFormState] = useState(InitialFormState);

@@ -1,30 +1,46 @@
 import '../styles/styles.css';
 
-import { AppProps } from 'next/app';
+import type { ReactElement, ReactNode } from 'react';
+
+import type { NextPage } from 'next';
+import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
 import {
+  AppProvider,
   ThemeProvider,
-  ToastContext,
-  UserProvider
+  ToastContext
 } from '@hubbl/data-access/contexts';
 
-const CustomApp = ({ Component, pageProps }: AppProps) => (
-  <>
-    <Head>
-      <title>Welcome to core!</title>
-    </Head>
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
-    <ThemeProvider>
-      {/* TODO: Add user context */}
-      <ToastContext>
-        <UserProvider>
-          {/* TODO: Add auth guard */}
-          <Component {...pageProps} />
-        </UserProvider>
-      </ToastContext>
-    </ThemeProvider>
-  </>
-);
+type LayoutAppProps = AppProps & {
+  Component: NextPageWithLayout;
+};
 
-export default CustomApp;
+const App = ({ Component, pageProps }: LayoutAppProps) => {
+  // Use the layout defined at the page level, if available
+  const getLayout = Component.getLayout ?? ((page) => page);
+
+  return (
+    <>
+      <Head>
+        <title>Welcome to core!</title>
+      </Head>
+
+      <ThemeProvider>
+        {/* TODO: Add user context */}
+        <ToastContext>
+          <AppProvider>
+            {/* TODO: Add auth guard */}
+            {getLayout(<Component {...pageProps} />)}
+          </AppProvider>
+        </ToastContext>
+      </ThemeProvider>
+    </>
+  );
+};
+
+export default App;

@@ -102,20 +102,5 @@ describe('Gym', () => {
 
       propCompare(dto, result);
     });
-
-    it('should return a Gym with empty virtualGyms if the prop is undeinfed', () => {
-      const dto = new GymDTO();
-      dto.id = 1;
-      dto.name = 'Test';
-      dto.email = 'test@gym.com';
-      dto.phone = '000 000 000';
-      dto.code = '8X4rZNmu';
-      dto.color = AppPalette.BLUE;
-
-      const result = dto.toClass();
-
-      propCompare(dto, result);
-      expect(result.virtualGyms).toStrictEqual([]);
-    });
   });
 });

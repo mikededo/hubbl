@@ -33,7 +33,7 @@ export default class TrainerTag {
 
   @ManyToMany(() => Trainer, (t) => t.tags, {
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
+    onDelete: 'CASCADE'
   })
   trainers!: Trainer[];
 
