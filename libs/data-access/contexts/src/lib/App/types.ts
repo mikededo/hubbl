@@ -9,6 +9,12 @@ import {
   WorkerDTO
 } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
+import { ParsedToken } from '@hubbl/shared/types';
+
+export type TokenType = {
+  value: string | null;
+  parsed: ParsedToken | null;
+};
 
 export type UserType =
   | Omit<OwnerDTO<Gym>, 'toClass'>
@@ -53,7 +59,7 @@ export type GymApiType = {
 };
 
 export type AppContextValue = {
-  token: string | null;
+  token: TokenType | null;
   user: UserType | null;
   API: {
     loading: boolean;

@@ -90,7 +90,7 @@ describe('<SettingsGymInfo />', () => {
         });
       });
       await act(async () => {
-        fireEvent.submit(screen.getByTitle('submit'));
+        fireEvent.submit(screen.getByTitle('gym-info-submit'));
       });
 
       expect(onSubmitSpy).toHaveBeenCalledTimes(1);
@@ -109,7 +109,7 @@ describe('<SettingsGymInfo />', () => {
         render(<SettingsGymInfo onSubmit={onSubmitSpy} />);
       });
       await act(async () => {
-        fireEvent.submit(screen.getByTitle('submit'));
+        fireEvent.submit(screen.getByTitle('gym-info-submit'));
       });
 
       expect(onSubmitSpy).not.toHaveBeenCalled();

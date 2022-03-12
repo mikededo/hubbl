@@ -20,7 +20,7 @@ const Phone = ({ disabled = false }: PhoneProps) => {
     <Input
       label="Phone"
       labelVariant="body1"
-      title="phone"
+      inputProps={{ title: 'user-phone' }}
       type="tel"
       placeholder="000 000 000"
       disabled={disabled}

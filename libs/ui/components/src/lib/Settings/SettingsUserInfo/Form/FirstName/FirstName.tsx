@@ -23,7 +23,7 @@ const FirstName = ({ disabled = false }: FirstNameProps) => {
     <Input
       label="First name"
       labelVariant="body1"
-      title="firstName"
+      inputProps={{ title: 'user-first-name' }}
       type="text"
       placeholder="John"
       error={!!errors.firstName}

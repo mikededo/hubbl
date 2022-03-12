@@ -110,6 +110,7 @@ const SettingsUserInfo = ({
       <SaveButton
         label="Save"
         loading={loading}
+        title="user-info-submit"
         type="submit"
         startIcon={<Save />}
       />

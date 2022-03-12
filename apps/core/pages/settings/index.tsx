@@ -10,7 +10,7 @@ import {
   SideNav,
   UserPasswordFields
 } from '@hubbl/ui/components';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, styled } from '@mui/material';
 
 import { Pages, SettingsPages } from '../../components';
 
@@ -40,8 +40,28 @@ const entries = [
   }
 ];
 
+const Container = styled(Stack)({
+  height: '100vh',
+  width: '100vw',
+  overflow: 'hidden'
+});
+
+const SectionWrapper = styled(Box)(({ theme }) => ({
+  overflow: 'auto',
+  width: '100%',
+  padding: theme.spacing(6, 4, 4)
+}));
+
+const SectionStack = styled(Stack)(({ theme }) => ({
+  maxWidth: theme.spacing(140)
+}));
+
 const Settings = () => {
-  const { user, API } = useAppContext();
+  const {
+    token: { parsed },
+    user,
+    API
+  } = useAppContext();
 
   const handleOnUpdateUser = (
     data: RequiredUserInfoFields | UserPasswordFields
@@ -67,36 +87,24 @@ const Settings = () => {
     };
   };
 
-  const mapGymToValues = (): Pages.Settings.RequiredGymInfoFields => {
-    if (!user) {
-      return undefined;
-    }
-
-    return {
-      name: user.gym.name,
-      email: user.gym.email,
-      phone: user.gym.phone,
-      color: user.gym.color
-    };
-  };
+  /**
+   * Since we can ensure that, if the prop `parsed` is `undefined`
+   * there's no user, we do not have to return undefined as in
+   * `mapUserToValues` if such user is `undefined`
+   */
+  const mapGymToValues = (): Pages.Settings.RequiredGymInfoFields => ({
+    name: user.gym.name,
+    email: user.gym.email,
+    phone: user.gym.phone,
+    color: user.gym.color
+  });
 
   return (
-    <Stack
-      direction="row"
-      justifyContent="stretch"
-      gap={4}
-      sx={{ height: '100vh', width: '100vw', overflow: 'hidden' }}
-    >
+    <Container direction="row" justifyContent="stretch" gap={4}>
       <SideNav entries={entries} header="Gym name" selected="settings" />
 
-      <Box
-        sx={{
-          overflow: 'auto',
-          width: '100%',
-          padding: '48px 32px 32px'
-        }}
-      >
-        <Stack direction="column" spacing={3} sx={{ maxWidth: '1120px' }}>
+      <SectionWrapper>
+        <SectionStack direction="column" spacing={3}>
           <PageHeader
             title="Settings"
             breadcrumbs={[{ href: '/', label: 'Settings' }]}
@@ -109,13 +117,15 @@ const Settings = () => {
           />
           <SettingsUserPassword onSubmit={handleOnUpdateUser} />
 
-          <SettingsGymInfo
-            defaultValues={mapGymToValues()}
-            onSubmit={handleOnUpdateGym}
-          />
-        </Stack>
-      </Box>
-    </Stack>
+          {parsed?.user === 'owner' && (
+            <SettingsGymInfo
+              defaultValues={mapGymToValues()}
+              onSubmit={handleOnUpdateGym}
+            />
+          )}
+        </SectionStack>
+      </SectionWrapper>
+    </Container>
   );
 };
 

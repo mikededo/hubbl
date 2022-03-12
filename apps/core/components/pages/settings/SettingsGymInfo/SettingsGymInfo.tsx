@@ -7,7 +7,7 @@ import { Grid, Stack, Typography } from '@mui/material';
 import ColorPicker from './ColorPicker';
 import { RequiredGymInfoFields } from './types';
 import { useEffect } from 'react';
-import { SingleHandler } from '@hubbl/shared/types';
+import { AppPalette, SingleHandler } from '@hubbl/shared/types';
 
 type SettingsGymInfoProps = {
   /**
@@ -40,7 +40,7 @@ const SettingsGymInfo = ({
 }: SettingsGymInfoProps) => {
   const { control, handleSubmit, register, reset } =
     useForm<RequiredGymInfoFields>({
-      defaultValues,
+      defaultValues: { color: AppPalette.BLUE, ...defaultValues },
       shouldFocusError: false,
       shouldUnregister: false
     });
@@ -72,6 +72,7 @@ const SettingsGymInfo = ({
               <Input
                 label="Gym name"
                 labelVariant="body1"
+                inputProps={{ title: 'gym-name' }}
                 type="text"
                 placeholder="Your gym's name"
                 disabled={loading}
@@ -84,6 +85,7 @@ const SettingsGymInfo = ({
               <Input
                 label="Gym email"
                 labelVariant="body1"
+                inputProps={{ title: 'gym-email' }}
                 type="email"
                 placeholder="gym.name@info.com"
                 disabled={loading}
@@ -96,6 +98,7 @@ const SettingsGymInfo = ({
               <Input
                 label="Gym phone"
                 labelVariant="body1"
+                inputProps={{ title: 'gym-phone' }}
                 type="tel"
                 placeholder="000 000 000"
                 disabled={loading}
@@ -114,7 +117,7 @@ const SettingsGymInfo = ({
         <LoadingButton
           label="Save"
           loading={loading}
-          title="submit"
+          title="gym-info-submit"
           type="submit"
           startIcon={<Save />}
           sx={{ alignSelf: 'flex-end' }}

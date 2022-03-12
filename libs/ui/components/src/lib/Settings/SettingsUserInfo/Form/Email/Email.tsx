@@ -23,7 +23,7 @@ const Email = ({ disabled = false }: EmailProps) => {
     <Input
       label="Email"
       labelVariant="body1"
-      title="email"
+      inputProps={{ title: 'user-email' }}
       type="email"
       placeholder="john.doe@domain.com"
       error={!!errors.email}

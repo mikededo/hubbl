@@ -165,7 +165,7 @@ const useAppContextValue = (): AppContextValue => {
   }, []);
 
   return {
-    token,
+    token: { value: token, parsed: parsedToken },
     user,
     API: {
       loading,
