@@ -12,7 +12,7 @@ import {
 } from '@hubbl/ui/components';
 import { Box, Stack, styled } from '@mui/material';
 
-import { Pages, SettingsPages } from '../../components';
+import { ContentContainer, Pages, SettingsPages } from '../../components';
 
 const { SettingsGymInfo } = Pages.Settings;
 
@@ -39,12 +39,6 @@ const entries = [
     entries: { settings: { label: 'Settings', href: '/settings' } }
   }
 ];
-
-const Container = styled(Stack)({
-  height: '100vh',
-  width: '100vw',
-  overflow: 'hidden'
-});
 
 const SectionWrapper = styled(Box)(({ theme }) => ({
   overflow: 'auto',
@@ -100,7 +94,7 @@ const Settings = () => {
   });
 
   return (
-    <Container direction="row" justifyContent="stretch" gap={4}>
+    <ContentContainer>
       <SideNav entries={entries} header="Gym name" selected="settings" />
 
       <SectionWrapper>
@@ -125,7 +119,7 @@ const Settings = () => {
           )}
         </SectionStack>
       </SectionWrapper>
-    </Container>
+    </ContentContainer>
   );
 };
 
