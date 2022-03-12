@@ -2,6 +2,7 @@ import React from 'react';
 
 import { notForwardAny } from '@hubbl/utils';
 import { BoxProps, CardActionArea, styled } from '@mui/material';
+import { EmptyHandler } from '@hubbl/shared/types';
 
 export type AddItemPlaceholderProps = {
   /**
@@ -27,6 +28,13 @@ export type AddItemPlaceholderProps = {
    * @default '100%'
    */
   width?: number | string;
+
+  /**
+   * Callback passed to the actions card to run when clicked
+   *
+   * @default undefined
+   */
+  onClick?: EmptyHandler;
 };
 
 type WrapperProps = {
@@ -57,9 +65,10 @@ const AddItemPlaceholder = ({
   children,
   height,
   title,
-  width
+  width,
+  onClick
 }: AddItemPlaceholderProps): JSX.Element => (
-  <Wrapper title={title} height={height} width={width}>
+  <Wrapper title={title} height={height} width={width} onClick={onClick}>
     {children}
   </Wrapper>
 );

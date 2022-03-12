@@ -1,7 +1,7 @@
 export type <%= name %>Props = {
 }
 
-const <%= name %> = ({}: <%= name %>Props) => {
+const <%= name %> = ({}: <%= name %>Props): JSX.Element => {
   return (
     <div>
 		New component

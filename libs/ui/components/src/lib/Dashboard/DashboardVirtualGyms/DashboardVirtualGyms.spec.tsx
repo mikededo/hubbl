@@ -5,6 +5,7 @@ import DashboardVirtualGyms from './DashboardVirtualGyms';
 describe('<DashboardVirtualGyms />', () => {
   const items = [
     {
+      id: 1,
       name: 'NameOne',
       description: 'Description',
       openTime: '09:00:00',
@@ -12,6 +13,7 @@ describe('<DashboardVirtualGyms />', () => {
       location: 'Location'
     },
     {
+      id: 2,
       name: 'NameTwo',
       description: 'Description',
       openTime: '09:00:00',
@@ -19,6 +21,7 @@ describe('<DashboardVirtualGyms />', () => {
       location: 'Location'
     },
     {
+      id: 3,
       name: 'NameThree',
       description: 'Description',
       openTime: '09:00:00',
@@ -44,7 +47,14 @@ describe('<DashboardVirtualGyms />', () => {
     });
 
     it('should only render 5 items', () => {
-      render(<DashboardVirtualGyms items={[...items, ...items] as any} />);
+      render(
+        <DashboardVirtualGyms
+          items={
+            // Override the id to avoid ESLint error log
+            [...items, ...items].map((item, i) => ({ ...item, id: i })) as any
+          }
+        />
+      );
 
       expect(screen.getAllByText(items[0].name.toUpperCase()).length).toBe(2);
       expect(screen.getAllByText(items[1].name.toUpperCase()).length).toBe(2);

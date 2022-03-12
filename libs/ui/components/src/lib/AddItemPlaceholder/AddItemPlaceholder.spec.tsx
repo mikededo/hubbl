@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import AddItemPlaceholder from './AddItemPlaceholder';
 
@@ -19,5 +19,20 @@ describe('<AddItemPlaceholder />', () => {
     );
 
     expect(utils.getByTitle('placeholder')).toBeInTheDocument();
+  });
+
+  describe('onClick', () => {
+    it('should call onClick if the card has been clicked', () => {
+      const onClickSpy = jest.fn();
+
+      render(
+        <AddItemPlaceholder title="placeholder" onClick={onClickSpy}>
+          Content
+        </AddItemPlaceholder>
+      );
+      fireEvent.click(screen.getByRole('button'));
+
+      expect(onClickSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });
