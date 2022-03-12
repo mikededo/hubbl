@@ -9,26 +9,10 @@ import {
   SettingsUserPassword,
   UserPasswordFields
 } from '@hubbl/ui/components';
-import { Box, Stack, styled } from '@mui/material';
 
-import {
-  ContentContainer,
-  CoreSideNav,
-  Pages,
-  SettingsPages
-} from '../../components';
+import { BaseLayout, Pages, SettingsPages } from '../../components';
 
 const { SettingsGymInfo } = Pages.Settings;
-
-const SectionWrapper = styled(Box)(({ theme }) => ({
-  overflow: 'auto',
-  width: '100%',
-  padding: theme.spacing(6, 4, 4)
-}));
-
-const SectionStack = styled(Stack)(({ theme }) => ({
-  maxWidth: theme.spacing(140)
-}));
 
 const Settings = () => {
   const {
@@ -74,37 +58,35 @@ const Settings = () => {
   });
 
   return (
-    <ContentContainer>
-      <CoreSideNav header="Gym name" selected="settings" />
+    <>
+      <PageHeader
+        title="Settings"
+        breadcrumbs={[{ href: '/', label: 'Settings' }]}
+      />
 
-      <SectionWrapper>
-        <SectionStack direction="column" spacing={3}>
-          <PageHeader
-            title="Settings"
-            breadcrumbs={[{ href: '/', label: 'Settings' }]}
-          />
+      <SettingsLogout header="User full name" subtitle="Gym owner" />
+      <SettingsUserInfo
+        defaultValues={mapUserToValues()}
+        onSubmit={handleOnUpdateUser}
+      />
+      <SettingsUserPassword onSubmit={handleOnUpdateUser} />
 
-          <SettingsLogout header="User full name" subtitle="Gym owner" />
-          <SettingsUserInfo
-            defaultValues={mapUserToValues()}
-            onSubmit={handleOnUpdateUser}
-          />
-          <SettingsUserPassword onSubmit={handleOnUpdateUser} />
-
-          {parsed?.user === 'owner' && (
-            <SettingsGymInfo
-              defaultValues={mapGymToValues()}
-              onSubmit={handleOnUpdateGym}
-            />
-          )}
-        </SectionStack>
-      </SectionWrapper>
-    </ContentContainer>
+      {parsed?.user === 'owner' && (
+        <SettingsGymInfo
+          defaultValues={mapGymToValues()}
+          onSubmit={handleOnUpdateGym}
+        />
+      )}
+    </>
   );
 };
 
 export default Settings;
 
 Settings.getLayout = (page: ReactElement) => (
-  <SettingsPages>{page}</SettingsPages>
+  <SettingsPages>
+    <BaseLayout header="Gym name" selected="settings">
+      {page}
+    </BaseLayout>
+  </SettingsPages>
 );

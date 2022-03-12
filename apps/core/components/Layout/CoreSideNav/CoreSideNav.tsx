@@ -33,7 +33,7 @@ type CoreSideNavOptions =
   | 'clients'
   | 'settings';
 
-type CoreSideNavProps = {
+export type CoreSideNavProps = {
   /**
    * Header of the core side navigation
    */
