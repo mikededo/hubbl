@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import CoreSideNav from './CoreSideNav';
 
 describe('<CoreSideNav />', () => {
