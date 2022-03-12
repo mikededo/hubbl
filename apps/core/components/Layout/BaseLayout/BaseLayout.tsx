@@ -22,7 +22,9 @@ const BaseLayout = ({ children, header, selected }: BaseLayoutProps) => (
     <CoreSideNav header={header} selected={selected} />
 
     <MainContentContainer>
-      <ContentStack>{children}</ContentStack>
+      <ContentStack direction="column" gap={3}>
+        {children}
+      </ContentStack>
     </MainContentContainer>
   </ContentContainer>
 );

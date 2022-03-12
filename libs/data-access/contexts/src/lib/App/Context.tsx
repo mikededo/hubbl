@@ -75,7 +75,7 @@ const useAppContextValue = (): AppContextValue => {
   };
 
   const fetcher = async (url: string) =>
-    ApiFetcher(url, getAuthorizationConfig());
+    ApiFetcher(url, getAuthorizationConfig()).then((res) => res.data);
 
   /** Updaters **/
   /**

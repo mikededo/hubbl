@@ -65,10 +65,12 @@ const Settings = () => {
       />
 
       <SettingsLogout header="User full name" subtitle="Gym owner" />
+
       <SettingsUserInfo
         defaultValues={mapUserToValues()}
         onSubmit={handleOnUpdateUser}
       />
+
       <SettingsUserPassword onSubmit={handleOnUpdateUser} />
 
       {parsed?.user === 'owner' && (
