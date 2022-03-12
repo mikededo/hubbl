@@ -1,3 +1,4 @@
+import GeneralPages from './GeneralPages';
 import SettingsPages from './SettingsPages';
 
-export { SettingsPages };
+export { GeneralPages, SettingsPages };
