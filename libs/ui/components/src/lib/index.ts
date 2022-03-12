@@ -1,4 +1,5 @@
 import ContentCard from './ContentCard';
+import { DashboardVirtualGyms } from './Dashboard';
 import Input from './Input';
 import LoadingButton from './LoadingButton';
 import PageHeader from './PageHeader';
@@ -13,6 +14,7 @@ import SideNav from './SideNav';
 
 export {
   ContentCard,
+  DashboardVirtualGyms,
   Input,
   LoadingButton,
   PageHeader,

@@ -5,19 +5,19 @@ import AddItemPlaceholder from './AddItemPlaceholder';
 describe('<AddItemPlaceholder />', () => {
   it('should render properly', () => {
     const { container } = render(
-      <AddItemPlaceholder>Content</AddItemPlaceholder>
+      <AddItemPlaceholder title="placeholder">Content</AddItemPlaceholder>
     );
 
     expect(container).toBeInTheDocument();
   });
 
   it('should render properly with number height/width', () => {
-    const { container } = render(
-      <AddItemPlaceholder height={1} width={1}>
+    const utils = render(
+      <AddItemPlaceholder title="placeholder" height={1} width={1}>
         Content
       </AddItemPlaceholder>
     );
 
-    expect(container).toBeInTheDocument();
+    expect(utils.getByTitle('placeholder')).toBeInTheDocument();
   });
 });

@@ -5,6 +5,11 @@ import { BoxProps, CardActionArea, styled } from '@mui/material';
 
 export type AddItemPlaceholderProps = {
   /**
+   * Content to place inside the placeholder
+   */
+  children: React.ReactNode;
+
+  /**
    * Optional height of the placeholder item
    *
    * @default '100%'
@@ -12,9 +17,9 @@ export type AddItemPlaceholderProps = {
   height?: number | string;
 
   /**
-   * Content to place inside the placeholder
+   * Required title to distinguish the placeholder
    */
-  children: React.ReactNode;
+  title: string;
 
   /**
    * Optional height of the placeholder item
@@ -49,11 +54,12 @@ const Wrapper = styled(CardActionArea, {
 }));
 
 const AddItemPlaceholder = ({
-  height,
   children,
+  height,
+  title,
   width
 }: AddItemPlaceholderProps): JSX.Element => (
-  <Wrapper height={height} width={width}>
+  <Wrapper title={title} height={height} width={width}>
     {children}
   </Wrapper>
 );
