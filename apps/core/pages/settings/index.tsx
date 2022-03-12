@@ -7,38 +7,18 @@ import {
   SettingsLogout,
   SettingsUserInfo,
   SettingsUserPassword,
-  SideNav,
   UserPasswordFields
 } from '@hubbl/ui/components';
 import { Box, Stack, styled } from '@mui/material';
 
-import { ContentContainer, Pages, SettingsPages } from '../../components';
+import {
+  ContentContainer,
+  CoreSideNav,
+  Pages,
+  SettingsPages
+} from '../../components';
 
 const { SettingsGymInfo } = Pages.Settings;
-
-const entries = [
-  {
-    name: 'GENERAL',
-    hidden: true,
-    entries: {
-      dashboard: { label: 'Dashboard', href: '/dashboard' },
-      virtualGyms: { label: 'Virtual gyms', href: '#' },
-      events: { label: 'Events', href: '#' }
-    }
-  },
-  {
-    name: 'PERSONAL',
-    entries: {
-      trainers: { label: 'Trainers', href: '#' },
-      workers: { label: 'Workers', href: '#' },
-      clients: { label: 'Clients', href: '#' }
-    }
-  },
-  {
-    name: 'SETTINGS',
-    entries: { settings: { label: 'Settings', href: '/settings' } }
-  }
-];
 
 const SectionWrapper = styled(Box)(({ theme }) => ({
   overflow: 'auto',
@@ -95,7 +75,7 @@ const Settings = () => {
 
   return (
     <ContentContainer>
-      <SideNav entries={entries} header="Gym name" selected="settings" />
+      <CoreSideNav header="Gym name" selected="settings" />
 
       <SectionWrapper>
         <SectionStack direction="column" spacing={3}>
