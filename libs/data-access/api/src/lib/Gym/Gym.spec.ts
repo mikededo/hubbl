@@ -15,7 +15,7 @@ describe('Gym API', () => {
       await update({} as any, {});
 
       expect(Base.axios.put).toHaveBeenCalledTimes(1);
-      expect(Base.axios.put).toHaveBeenCalledWith('/gyms');
+      expect(Base.axios.put).toHaveBeenCalledWith('/gyms', {}, {});
     });
   });
 });

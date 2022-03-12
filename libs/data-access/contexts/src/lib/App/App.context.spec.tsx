@@ -109,7 +109,7 @@ describe('<AppProvider />', () => {
     const Component = () => {
       const { token } = useAppContext();
 
-      return <div>{`${token}`}</div>;
+      return <div>{`${token?.value}`}</div>;
     };
 
     await act(async () => {
