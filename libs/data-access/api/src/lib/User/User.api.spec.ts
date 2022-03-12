@@ -33,7 +33,7 @@ describe('User API', () => {
       expect(Base.axios.post).toHaveBeenCalledWith(
         '/persons/register/owner',
         { ...mockPerson, gender: Gender.OTHER },
-        { withCredentials: false }
+        { withCredentials: true }
       );
 
       expect(result.owner.id).toBe(1);
@@ -56,7 +56,7 @@ describe('User API', () => {
       expect(Base.axios.post).toHaveBeenCalledWith(
         '/persons/login/owner',
         { email: mockPerson.email, password: mockPerson.password },
-        { withCredentials: false }
+        { withCredentials: true }
       );
 
       expect(result.owner.id).toBe(1);
@@ -77,7 +77,7 @@ describe('User API', () => {
       expect(Base.axios.post).toHaveBeenCalledWith(
         '/persons/login/worker',
         { email: mockPerson.email, password: mockPerson.password },
-        { withCredentials: false }
+        { withCredentials: true }
       );
 
       expect(result.worker.id).toBe(1);
