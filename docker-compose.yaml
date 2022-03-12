@@ -14,7 +14,7 @@ services:
     ports:
       - 5433:5432
     restart: unless-stopped
-    profiles: ["all", "dev", "test"]
+    profiles: ['all', 'dev', 'test']
 
   # Has no profiles since it is always required
   postgres:
@@ -53,7 +53,7 @@ services:
       - postgres
     mem_limit: 1G
     restart: unless-stopped
-    profiles: ["all", "dev"]
+    profiles: ['all', 'dev']
 
 networks:
   postgres:

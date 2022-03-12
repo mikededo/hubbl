@@ -64,7 +64,19 @@ export const register = async <
 
     try {
       // Save the person
-      const result = await service.save(await person.toClass());
+      const result = await service.manager.transaction(async (em) => {
+        let result = await em.save(await person.toClass());
+
+        if (alias === 'owner') {
+          // The id of the gym that has been created, has to be saved in
+          // the owner's entity
+          (result as Owner).gym = (result.person.gym as Gym).id;
+
+          result = await em.save(result);
+        }
+
+        return result;
+      });
 
       // Create the tokens
       const tempToken = sign(

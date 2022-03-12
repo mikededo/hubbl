@@ -93,7 +93,6 @@ export const login = async () => {
   util.toBeString(body.owner.gym.email);
   util.toBeString(body.owner.gym.phone);
   util.toBeString(body.owner.gym.color);
-  expect(Array.isArray(body.owner.gym.virtualGyms)).toBeTruthy();
 };
 
 export const update = async () => {

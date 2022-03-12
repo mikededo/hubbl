@@ -15,13 +15,15 @@ describe('register', () => {
     person: {
       id: 1,
       email: 'test@user.com',
-      password: '123456'
+      password: '123456',
+      gym: { id: 1 }
     }
   } as any;
   const mockDTO = {
     ...mockPerson.person,
     toClass: jest.fn()
   } as any;
+  let mockManager: any;
 
   const mockFromJson = jest.fn().mockResolvedValue(mockDTO);
   const mockFromClass = jest.fn().mockReturnValue(mockDTO);
@@ -100,6 +102,7 @@ describe('register', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    mockManager = { save: jest.fn().mockResolvedValue(mockPerson) };
     jsonResSpy = jest.spyOn(BaseController, 'jsonResponse');
     logSpy = jest.spyOn(log, 'error').mockImplementation();
   });
@@ -111,37 +114,46 @@ describe('register', () => {
       let jwtSpy: any;
 
       beforeEach(() => {
+        jest.clearAllMocks();
+
         mockRes = {
           json: jest.fn().mockReturnThis(),
           status: jest.fn().mockReturnThis(),
           cookie: jest.fn()
         } as any;
         mockService = {
-          save: jest.fn().mockResolvedValue(mockPerson)
+          manager: {
+            transaction: jest.fn().mockImplementation(async (cb) => {
+              await cb(mockManager);
+
+              return mockPerson;
+            })
+          }
         } as any;
         jwtSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token as any);
       });
 
-      const commonChecks = () => {
+      const commonChecks = (savesTimes = 1, alias = 'any') => {
         // Check spies
-        expect(mockService.save).toHaveBeenCalledTimes(1);
+        expect(mockService.manager.transaction).toHaveBeenCalledTimes(1);
+        expect(mockManager.save).toHaveBeenCalledTimes(savesTimes);
         expect(mockController.created).toHaveBeenCalledTimes(1);
         expect(mockController.created).toHaveBeenCalledWith(mockRes, {
           token,
-          any: expect.anything()
+          [alias]: expect.anything()
         });
         expect(mockFromJson).toHaveBeenCalledWith({}, 'register');
         expect(mockFromClass).toHaveBeenCalledTimes(1);
         expect(jwtSpy).toHaveBeenCalledTimes(2);
         expect(jwtSpy).toHaveBeenNthCalledWith(
           1,
-          { id: 1, email: 'test@user.com', user: 'any' },
+          { id: 1, email: 'test@user.com', user: alias },
           process.env.NX_JWT_TOKEN,
           { expiresIn: '15m' }
         );
         expect(jwtSpy).toHaveBeenNthCalledWith(
           2,
-          { id: 1, email: 'test@user.com', user: 'any' },
+          { id: 1, email: 'test@user.com', user: alias },
           process.env.NX_JWT_TOKEN,
           { expiresIn: '30d' }
         );
@@ -157,7 +169,7 @@ describe('register', () => {
         // Should return the DTO with the token
         expect(mockController.created).toHaveBeenCalledWith(mockRes, {
           token,
-          any: mockDTO
+          [alias]: mockDTO
         });
       };
 
@@ -191,6 +203,20 @@ describe('register', () => {
         commonChecks();
         // Specific checks
         expect(mockFromClass).toHaveBeenCalledWith(mockPerson);
+      });
+
+      it('should call save twice when registering an owner', async () => {
+        await register({
+          service: mockService,
+          controller: mockController,
+          fromJson: mockFromJson,
+          fromClass: mockFromClass,
+          req: mockReq,
+          res: mockRes,
+          alias: 'owner'
+        });
+
+        commonChecks(2, 'owner');
       });
     });
 
@@ -236,7 +262,12 @@ describe('register', () => {
       delete process.env.NX_JWT_TOKEN;
 
       const mockService = {
-        save: jest.fn().mockResolvedValue(mockPerson)
+        manager: {
+          transaction: jest.fn().mockImplementation((cb) => {
+            cb(mockManager);
+            return mockPerson;
+          })
+        }
       } as any;
 
       await register({
@@ -250,7 +281,7 @@ describe('register', () => {
       });
 
       expect(mockFromJson).toHaveBeenCalledTimes(1);
-      expect(mockService.save).toHaveBeenCalledTimes(1);
+      expect(mockService.manager.transaction).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledTimes(1);
       expect(mockController.fail).toHaveBeenCalledWith(
         {} as any,
@@ -262,7 +293,12 @@ describe('register', () => {
       const mockRes = { cookie: jest.fn() } as any;
 
       const mockService = {
-        save: jest.fn().mockResolvedValue(mockPerson)
+        manager: {
+          transaction: jest.fn().mockImplementation((cb) => {
+            cb(mockManager);
+            return mockPerson;
+          })
+        }
       } as any;
       const signSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token as any);
 

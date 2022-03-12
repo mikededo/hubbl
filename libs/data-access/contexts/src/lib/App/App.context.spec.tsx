@@ -2,7 +2,7 @@ import { act } from 'react-dom/test-utils';
 import * as jwt from 'jsonwebtoken';
 
 import * as Api from '@hubbl/data-access/api';
-import { TokenApi, UserApi } from '@hubbl/data-access/api';
+import { GymApi, TokenApi, UserApi } from '@hubbl/data-access/api';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { ToastContext } from '../Toast';
@@ -109,7 +109,7 @@ describe('<AppProvider />', () => {
     const Component = () => {
       const { token } = useAppContext();
 
-      return <div>{`${token}`}</div>;
+      return <div>{`${token?.value}`}</div>;
     };
 
     await act(async () => {
@@ -318,6 +318,149 @@ describe('<AppProvider />', () => {
         await act(async () => {
           fireEvent.click(screen.getByText('fetch'));
         });
+
+        expect(updateSpy).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('gym', () => {
+    describe('update', () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should update a gym', async () => {
+        jest.spyOn(jwt, 'decode').mockReturnValue({ user: 'owner' });
+        jest.spyOn(TokenApi, 'validate').mockResolvedValue({
+          token: 'token',
+          user: {
+            id: 1,
+            firstName: 'Name',
+            gym: { id: 1, name: 'GymName', email: 'gym@info.com' }
+          }
+        });
+        const updateSpy = jest.spyOn(GymApi, 'update').mockResolvedValue();
+
+        const Component = () => {
+          const {
+            API: { gym }
+          } = useAppContext();
+
+          return (
+            <button
+              onClick={() => {
+                gym.update({
+                  name: 'UpdatedName',
+                  email: 'update@gym.com'
+                });
+              }}
+            >
+              fetch
+            </button>
+          );
+        };
+
+        await act(async () => {
+          render(
+            <ToastContext>
+              <AppProvider>
+                <Component />
+              </AppProvider>
+            </ToastContext>
+          );
+        });
+        await act(async () => {
+          fireEvent.click(screen.getByText('fetch'));
+        });
+
+        expect(updateSpy).toHaveBeenCalledTimes(1);
+        expect(updateSpy).toHaveBeenCalledWith(
+          { id: 1, name: 'UpdatedName', email: 'update@gym.com' },
+          { headers: { Authorization: 'Bearer token' }, withCredentials: true }
+        );
+      });
+
+      it('should call onError on failing', async () => {
+        jest.spyOn(jwt, 'decode').mockReturnValue({ user: 'owner' });
+        jest.spyOn(TokenApi, 'validate').mockResolvedValue({
+          token: 'token',
+          user: {
+            id: 1,
+            firstName: 'Name',
+            gym: { id: 1, name: 'GymName', email: 'gym@info.com' }
+          }
+        });
+        const updateSpy = jest
+          .spyOn(GymApi, 'update')
+          .mockRejectedValue('Error message');
+
+        const Component = () => {
+          const {
+            API: { gym }
+          } = useAppContext();
+
+          return (
+            <button
+              onClick={() => {
+                gym.update({});
+              }}
+            >
+              fetch
+            </button>
+          );
+        };
+
+        await act(async () => {
+          render(
+            <ToastContext>
+              <AppProvider>
+                <Component />
+              </AppProvider>
+            </ToastContext>
+          );
+        });
+        await act(async () => {
+          fireEvent.click(screen.getByText('fetch'));
+        });
+
+        expect(updateSpy).toHaveBeenCalledTimes(1);
+        expect(screen.getByText('Error message')).toBeInTheDocument();
+      });
+
+      it('should not call update if user or token not sets', async () => {
+        jest.spyOn(TokenApi, 'validate').mockRejectedValue({});
+        const updateSpy = jest.spyOn(GymApi, 'update');
+
+        const Component = () => {
+          const {
+            API: { gym }
+          } = useAppContext();
+
+          return (
+            <button
+              onClick={() => {
+                gym.update({});
+              }}
+            >
+              fetch
+            </button>
+          );
+        };
+
+        await act(async () => {
+          render(
+            <ToastContext>
+              <AppProvider>
+                <Component />
+              </AppProvider>
+            </ToastContext>
+          );
+        });
+        await act(async () => {
+          fireEvent.click(screen.getByText('fetch'));
+        });
+
         expect(updateSpy).not.toHaveBeenCalled();
       });
     });

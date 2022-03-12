@@ -1,3 +1,4 @@
+import { SettingsCard } from './Common';
 import SettingsLogout from './SettingsLogout';
 import SettingsUserInfo, { RequiredUserInfoFields } from './SettingsUserInfo';
 import SettingsUserPassword, {
@@ -6,6 +7,7 @@ import SettingsUserPassword, {
 
 export {
   RequiredUserInfoFields,
+  SettingsCard,
   SettingsLogout,
   SettingsUserInfo,
   SettingsUserPassword,

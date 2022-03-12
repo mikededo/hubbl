@@ -21,7 +21,7 @@ export default class EventTemplate {
   id!: number;
 
   /**
-   * Name of the `Event`. This field will not be copied to the 
+   * Name of the `Event`. This field will not be copied to the
    * `Event`
    */
   @Column('varchar', { nullable: false, length: 255 })

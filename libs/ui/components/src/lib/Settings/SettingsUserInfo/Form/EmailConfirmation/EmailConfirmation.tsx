@@ -24,7 +24,7 @@ const EmailConfirmation = ({ disabled = false }: EmailConfirmationProps) => {
     <Input
       label="Confirm email"
       labelVariant="body1"
-      title="confirmationEmail"
+      inputProps={{ title: 'confirmation-user-email' }}
       type="email"
       placeholder="Repeat the email"
       error={!!errors.emailConfirmation}

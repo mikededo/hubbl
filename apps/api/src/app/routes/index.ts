@@ -7,6 +7,7 @@ import DashboardRouter from './Dashboard.routes';
 import EventRouter from './Events.routes';
 import EventTemplateRouter from './EventTemplates.routes';
 import EventTypeRouter from './EventTypes.routes';
+import GymRouter from './Gym.routes';
 import PersonRouter from './Persons.routes';
 import TagRouter from './Tags.routes';
 import TokenRouter from './Token.routes';
@@ -19,6 +20,7 @@ const Routes = {
   events: EventRouter,
   'event-templates': EventTemplateRouter,
   'event-types': EventTypeRouter,
+  gyms: GymRouter,
   persons: PersonRouter,
   tags: TagRouter,
   tokens: TokenRouter,

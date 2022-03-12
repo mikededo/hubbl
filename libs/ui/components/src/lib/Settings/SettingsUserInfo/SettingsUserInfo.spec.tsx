@@ -53,7 +53,7 @@ describe('<SettingsUserInfo />', () => {
         fireEvent.click(screen.getByRole('option', { name: 'Woman' }));
       });
       await act(async () => {
-        fireEvent.submit(screen.getByText('Save'));
+        fireEvent.submit(screen.getByTitle('user-info-submit'));
       });
 
       expect(onSubmitSpy).toHaveBeenCalledTimes(1);

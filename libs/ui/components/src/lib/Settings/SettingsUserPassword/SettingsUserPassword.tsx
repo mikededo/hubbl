@@ -129,6 +129,7 @@ const SettingsUserPassword = ({
         <Input
           label="Password"
           labelVariant="body1"
+          inputProps={{ title: 'user-password' }}
           type={firstVisible ? 'text' : 'password'}
           placeholder="At least 8 characters!"
           registerResult={register('password', {
@@ -149,6 +150,7 @@ const SettingsUserPassword = ({
         <Input
           label="Password confirmation"
           labelVariant="body1"
+          inputProps={{ title: 'confirmation-user-password' }}
           type={secondVisible ? 'text' : 'password'}
           placeholder="Repeat the password"
           registerResult={register('passwordConfirmation', {
@@ -171,6 +173,7 @@ const SettingsUserPassword = ({
       <UpdateButton
         label="Update password"
         loading={loading}
+        title="user-password-submit"
         type="submit"
         startIcon={<Save />}
       />

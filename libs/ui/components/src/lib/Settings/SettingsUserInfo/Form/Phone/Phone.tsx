@@ -13,14 +13,14 @@ type PhoneProps = {
   disabled?: boolean;
 };
 
-const Phone = ({disabled = false}: PhoneProps) => {
+const Phone = ({ disabled = false }: PhoneProps) => {
   const { register } = useFormContext<SettingsUserInfoFields>();
 
   return (
     <Input
       label="Phone"
       labelVariant="body1"
-      title="phone"
+      inputProps={{ title: 'user-phone' }}
       type="tel"
       placeholder="000 000 000"
       disabled={disabled}

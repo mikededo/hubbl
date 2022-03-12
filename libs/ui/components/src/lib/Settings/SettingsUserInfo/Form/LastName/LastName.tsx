@@ -23,7 +23,7 @@ const LastName = ({ disabled = false }: LastNameProps) => {
     <Input
       label="Last name"
       labelVariant="body1"
-      title="lastName"
+      inputProps={{ title: 'user-last-name' }}
       type="text"
       placeholder="Doe"
       error={!!errors.lastName}

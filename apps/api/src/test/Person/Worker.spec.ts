@@ -126,7 +126,6 @@ export const login = async () => {
   util.toBeString(body.worker.gym.email);
   util.toBeString(body.worker.gym.phone);
   util.toBeString(body.worker.gym.color);
-  expect(Array.isArray(body.worker.gym.virtualGyms)).toBeTruthy();
   checkWorkerProps(body.worker);
 };
 

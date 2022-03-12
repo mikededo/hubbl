@@ -5,6 +5,7 @@ import { setup, teardown } from './e2e-setup';
 import { event } from './Event';
 import { eventTemplate } from './EventTemplate';
 import { eventType } from './EventType';
+import { gym } from './Gym';
 import { gymZone } from './GymZone';
 import { client, owner, trainer, worker } from './Person';
 import { tags } from './Tags';
@@ -12,7 +13,7 @@ import { token } from './Token';
 import { common } from './util';
 import { virtualGym } from './VirtualGym';
 
-jest.mock('npmlog');
+//jest.mock('npmlog');
 
 describe('Integration tests', () => {
   beforeAll((done) => {
@@ -129,6 +130,12 @@ describe('Integration tests', () => {
       await token.refresh();
     });
   });
+
+  describe('Gym', () => {
+    it('should update a gym', async () => {
+      await gym.update()
+    })
+  })
 
   describe('Dashboard', () => {
     it('should fetch the dashboard by an owner', async () => {

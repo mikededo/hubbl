@@ -1,6 +1,7 @@
+import { ReactElement } from 'react';
+
 import { useAppContext } from '@hubbl/data-access/contexts';
 import {
-  ContentCard,
   PageHeader,
   RequiredUserInfoFields,
   SettingsLogout,
@@ -9,7 +10,11 @@ import {
   SideNav,
   UserPasswordFields
 } from '@hubbl/ui/components';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, styled } from '@mui/material';
+
+import { Pages, SettingsPages } from '../../components';
+
+const { SettingsGymInfo } = Pages.Settings;
 
 const entries = [
   {
@@ -35,13 +40,37 @@ const entries = [
   }
 ];
 
+const Container = styled(Stack)({
+  height: '100vh',
+  width: '100vw',
+  overflow: 'hidden'
+});
+
+const SectionWrapper = styled(Box)(({ theme }) => ({
+  overflow: 'auto',
+  width: '100%',
+  padding: theme.spacing(6, 4, 4)
+}));
+
+const SectionStack = styled(Stack)(({ theme }) => ({
+  maxWidth: theme.spacing(140)
+}));
+
 const Settings = () => {
-  const { user, API } = useAppContext();
+  const {
+    token: { parsed },
+    user,
+    API
+  } = useAppContext();
 
   const handleOnUpdateUser = (
     data: RequiredUserInfoFields | UserPasswordFields
   ) => {
     API.user.update(data);
+  };
+
+  const handleOnUpdateGym = (data: Pages.Settings.RequiredGymInfoFields) => {
+    API.gym.update(data);
   };
 
   const mapUserToValues = (): RequiredUserInfoFields => {
@@ -58,32 +87,24 @@ const Settings = () => {
     };
   };
 
+  /**
+   * Since we can ensure that, if the prop `parsed` is `undefined`
+   * there's no user, we do not have to return undefined as in
+   * `mapUserToValues` if such user is `undefined`
+   */
+  const mapGymToValues = (): Pages.Settings.RequiredGymInfoFields => ({
+    name: user.gym.name,
+    email: user.gym.email,
+    phone: user.gym.phone,
+    color: user.gym.color
+  });
+
   return (
-    <Stack
-      direction="row"
-      justifyContent="stretch"
-      gap={4}
-      sx={{ height: '100vh', width: '100wh', overflow: 'hidden' }}
-    >
+    <Container direction="row" justifyContent="stretch" gap={4}>
       <SideNav entries={entries} header="Gym name" selected="settings" />
 
-      <Box
-        sx={{
-          overflow: 'auto',
-          width: '100%',
-          height: '100%',
-          padding: '48px 32px 32px'
-        }}
-      >
-        <Stack
-          direction="column"
-          spacing={3}
-          sx={{
-            height: '100%',
-            width: '100%',
-            maxWidth: '1120px'
-          }}
-        >
+      <SectionWrapper>
+        <SectionStack direction="column" spacing={3}>
           <PageHeader
             title="Settings"
             breadcrumbs={[{ href: '/', label: 'Settings' }]}
@@ -96,11 +117,20 @@ const Settings = () => {
           />
           <SettingsUserPassword onSubmit={handleOnUpdateUser} />
 
-          <ContentCard sx={{ minHeight: '281px' }} />
-        </Stack>
-      </Box>
-    </Stack>
+          {parsed?.user === 'owner' && (
+            <SettingsGymInfo
+              defaultValues={mapGymToValues()}
+              onSubmit={handleOnUpdateGym}
+            />
+          )}
+        </SectionStack>
+      </SectionWrapper>
+    </Container>
   );
 };
 
 export default Settings;
+
+Settings.getLayout = (page: ReactElement) => (
+  <SettingsPages>{page}</SettingsPages>
+);

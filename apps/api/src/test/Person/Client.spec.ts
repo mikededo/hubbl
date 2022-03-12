@@ -156,7 +156,6 @@ export const login = async () => {
   util.toBeString(body.client.gym.email);
   util.toBeString(body.client.gym.phone);
   util.toBeString(body.client.gym.color);
-  expect(Array.isArray(body.client.gym.virtualGyms)).toBeTruthy();
 };
 
 export const update = async (by: 'client' | 'owner' | 'worker') => {

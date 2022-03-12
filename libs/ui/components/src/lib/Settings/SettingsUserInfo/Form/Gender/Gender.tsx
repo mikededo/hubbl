@@ -30,7 +30,7 @@ const Gender = ({ disabled = false }: GenderProps) => {
     <SelectInput
       label="Gender name"
       labelVariant="body1"
-      title="gender"
+      inputProps={{ title: 'user-gender' }}
       type="text"
       placeholder="Other"
       disabled={disabled}

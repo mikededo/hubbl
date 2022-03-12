@@ -5,6 +5,7 @@ export * from './Event';
 export * from './EventTemplate';
 export * from './EventType';
 export * from './GymZone';
+export * from './Gym';
 export * from './Person';
 export * from './TrainerTag';
 export * from './Token';
