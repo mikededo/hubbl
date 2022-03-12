@@ -1,7 +1,8 @@
+import React from 'react';
+
 import { EmptyHandler } from '@hubbl/shared/types';
 import { Close } from '@mui/icons-material';
 import { IconButton, Stack, styled, Typography } from '@mui/material';
-import React from 'react';
 
 const Wrapper = styled(Stack)(({ theme }) => ({
   padding: theme.spacing(2, 3),
