@@ -14,6 +14,14 @@ jest.mock('jsonwebtoken', () => {
 
   return { ...actual, decode: jest.fn() };
 });
+jest.mock('@mui/material', () => {
+  const actual = jest.requireActual('@mui/material');
+
+  return {
+    ...actual,
+    useMediaQuery: jest.fn(() => false)
+  };
+});
 
 const renderPage = () =>
   render(
