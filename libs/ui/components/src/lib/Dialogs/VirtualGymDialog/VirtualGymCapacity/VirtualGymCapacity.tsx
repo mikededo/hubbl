@@ -15,7 +15,10 @@ const VirtualGymCapacity = (): JSX.Element => {
       title="virtual-gym-capacity"
       placeholder="200"
       type="number"
-      registerResult={register('capacity', { required: true })}
+      registerResult={register('capacity', {
+        required: true,
+        valueAsNumber: true
+      })}
       startAdornment={
         <InputAdornment position="start">
           <Person />
