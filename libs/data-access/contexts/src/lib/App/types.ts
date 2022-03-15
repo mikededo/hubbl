@@ -46,6 +46,11 @@ export type LogInType = {
  */
 export type FetcherType = Fetcher<never, string>;
 
+/**
+ * Function type that defines the poster of the application
+ */
+export type PosterType = <T>(url: string, data: unknown) => Promise<T>;
+
 export type UserApiType = {
   update: (data: UserUpdatableFields) => void;
 };
@@ -66,6 +71,7 @@ export type AppContextValue = {
     signup: SignUpType;
     login: LogInType;
     fetcher: FetcherType;
+    poster: PosterType;
     user: UserApiType;
     gym: GymApiType;
   };
