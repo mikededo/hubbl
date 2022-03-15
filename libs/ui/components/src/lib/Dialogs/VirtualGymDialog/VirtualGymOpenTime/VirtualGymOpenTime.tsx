@@ -1,10 +1,11 @@
+import { isTimeBefore } from '@hubbl/utils';
 import { useFormContext } from 'react-hook-form';
 
 import TimeInput from '../../../TimeInput';
 import { VirtualGymFormFields } from '../../types';
 
 const VirtualGymOpenTime = (): JSX.Element => {
-  const { register } = useFormContext<VirtualGymFormFields>();
+  const { getValues, register } = useFormContext<VirtualGymFormFields>();
 
   return (
     <TimeInput
@@ -12,7 +13,10 @@ const VirtualGymOpenTime = (): JSX.Element => {
       title="virtual-gym-open-time"
       placeholder="09:00"
       type="text"
-      registerResult={register('openTime', { required: true })}
+      registerResult={register('openTime', {
+        required: true,
+        validate: (value) => !isTimeBefore(value, getValues('openTime'))
+      })}
       fullWidth
     />
   );

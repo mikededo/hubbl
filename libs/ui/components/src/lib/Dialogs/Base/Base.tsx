@@ -1,4 +1,5 @@
 import React from 'react';
+import { keyframes } from '@emotion/react';
 
 import { EmptyHandler } from '@hubbl/shared/types';
 import { Dialog, Divider, styled } from '@mui/material';
@@ -29,26 +30,44 @@ export type BaseProps = {
   onClose?: EmptyHandler;
 };
 
+const ContainerAnimation = keyframes`
+  0 { transform: rotate(0deg); }
+  100% { transform: rotate(-5deg); }
+`;
+
 const DialogContainer = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
     overflow: 'visible',
-    height: theme.spacing(45),
-    transform: 'rotate(-5deg)',
     borderRadius: theme.spacing(2),
-    boxShadow: theme.shadows[22]
+    boxShadow: theme.shadows[22],
+    animation: `${ContainerAnimation} 0.5s cubic-bezier(0.25, 1, 0.5, 1)`,
+    animationFillMode: 'forwards'
   }
 }));
 
+const ContentAnimation = keyframes`
+  0 { transform: rotate(-0deg); }
+  100% { transform: rotate(5deg); }
+`;
+
 const DialogCardContent = styled(ContentCard)(({ theme }) => ({
-  height: '100%',
-  transform: 'rotate(5deg)',
-  boxShadow: theme.shadows[22]
+  boxShadow: theme.shadows[22],
+  animation: `${ContentAnimation} 0.5s cubic-bezier(0.25, 1, 0.5, 1)`,
+  animationFillMode: 'forwards',
+  display: 'flex',
+  flexDirection: 'column',
+  overflow: 'hidden'
+}));
+
+const DialogScrollable = styled('section')(({ theme }) => ({
+  maxHeight: `calc(100% - ${theme.spacing(17)})`,
+  overflowY: 'scroll'
 }));
 
 const Base = ({
   children,
-  open = true,
-  title = 'Modal title',
+  open = false,
+  title,
   onClose
 }: BaseProps): JSX.Element => (
   <DialogContainer open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -57,7 +76,8 @@ const Base = ({
 
       <Divider />
 
-      {children}
+      {/* TODO: Make children scrollable, not parent */}
+      <DialogScrollable>{children}</DialogScrollable>
     </DialogCardContent>
   </DialogContainer>
 );
