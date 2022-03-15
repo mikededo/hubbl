@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import DashboardVirtualGyms from './DashboardVirtualGyms';
 
@@ -59,6 +60,21 @@ describe('<DashboardVirtualGyms />', () => {
       expect(screen.getAllByText(items[0].name.toUpperCase()).length).toBe(2);
       expect(screen.getAllByText(items[1].name.toUpperCase()).length).toBe(2);
       expect(screen.getAllByText(items[2].name.toUpperCase()).length).toBe(1);
+    });
+  });
+
+  describe('onAddClick', () => {
+    it('should call onAddVirtualGym if placeholder clicked', () => {
+      const onAddSpy = jest.fn();
+
+      render(
+        <DashboardVirtualGyms items={items as any} onAddVirtualGym={onAddSpy} />
+      );
+      userEvent.click(
+        screen.getByText('Click me to create a new virtual gym!')
+      );
+
+      expect(onAddSpy).toHaveBeenCalledTimes(1);
     });
   });
 });

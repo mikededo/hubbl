@@ -18,7 +18,7 @@ export type DashboardVirtualGymsProps = {
    *
    * @default undefined
    */
-  onAddGym?: EmptyHandler;
+  onAddVirtualGym?: EmptyHandler;
 };
 
 const PlaceholderText = styled(Typography)({
@@ -28,7 +28,7 @@ const PlaceholderText = styled(Typography)({
 
 const DashboardVirtualGyms = ({
   items,
-  onAddGym
+  onAddVirtualGym
 }: DashboardVirtualGymsProps) => (
   <Stack gap={4}>
     <Typography variant="h5">VIRTUAL GYMS</Typography>
@@ -47,7 +47,7 @@ const DashboardVirtualGyms = ({
           title="add-virtual-gym"
           height={25}
           width={44}
-          onClick={onAddGym}
+          onClick={onAddVirtualGym}
         >
           <PlaceholderText variant="placeholder">
             Click me to create a new virtual gym!
