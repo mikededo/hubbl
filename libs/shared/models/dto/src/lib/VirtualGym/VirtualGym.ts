@@ -48,6 +48,9 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
   )
   capacity!: number;
 
+  @IsOptional()
+  phone!: string;
+
   @IsString({
     message: stringError('openTime'),
     groups: [DTOGroups.ALL, DTOGroups.UPDATE, DTOGroups.CREATE]
@@ -80,6 +83,7 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
     result.description = from.description;
     result.location = from.location;
     result.capacity = from.capacity;
+    result.phone = from.phone;
     result.openTime = from.openTime;
     result.closeTime = from.closeTime;
     result.gym = from.gym;
@@ -136,6 +140,7 @@ export default class VirtualGymDTO implements DTO<VirtualGym> {
     result.description = this.description;
     result.location = this.location;
     result.capacity = this.capacity;
+    result.phone = this.phone;
     result.openTime = this.openTime;
     result.closeTime = this.closeTime;
     result.gym = this.gym;
