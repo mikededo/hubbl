@@ -48,3 +48,27 @@ export const timeNormalizer = (value: string): string => {
           );
   }
 };
+
+/**
+ * Checks if `tb` is before `ta` in a 24h format
+ *
+ * @param ta The first time
+ * @param tb The second time
+ * @returns {boolean}
+ */
+export const isTimeBefore = (ta: string, tb: string): boolean => {
+  // Validate the times
+  const r = /([01][0-9]|2[0-3]):[0-5][0-9]/g;
+  if (!r.test(ta) || r.test(tb)) {
+    throw `Times are not valid [${ta}, ${tb}]`;
+  }
+
+  const tav = ta
+    .split(':')
+    .reduceRight((prev, curr, i) => prev + (i ? +curr * 60 * i : +curr), 0);
+  const tbv = tb
+    .split(':')
+    .reduceRight((prev, curr, i) => prev + (i ? +curr * 60 * i : +curr), 0);
+
+  return tbv < tav;
+};
