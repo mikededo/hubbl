@@ -9,7 +9,7 @@ import {
 
 import InputBase from '../InputBase';
 
-type InputProps = {
+export type InputProps = {
   /**
    * Text to display as the label of the input
    */
@@ -25,15 +25,15 @@ type InputProps = {
    * Result value of registering the input into the
    * `useForm`'s hook
    */
-  registerResult: UseFormRegisterReturn;
-};
+  registerResult?: UseFormRegisterReturn;
+} & InputBaseProps;
 
 const Input = ({
   label,
   labelVariant = 'h6',
   registerResult,
   ...props
-}: InputProps & InputBaseProps): JSX.Element => (
+}: InputProps): JSX.Element => (
   <Stack direction="column" gap={1} width="100%">
     <Typography variant={labelVariant} component="label">
       {label}

@@ -5,6 +5,7 @@ import { decode } from 'jsonwebtoken';
 
 import {
   fetcher as ApiFetcher,
+  poster as ApiPoster,
   GymApi,
   TokenApi,
   UserApi
@@ -75,7 +76,12 @@ const useAppContextValue = (): AppContextValue => {
   };
 
   const fetcher = async (url: string) =>
-    ApiFetcher(url, getAuthorizationConfig()).then((res) => res.data);
+    ApiFetcher(url, getAuthorizationConfig()).then((res) => res.data as never);
+
+  const poster = async <T,>(url: string, data: unknown) =>
+    ApiPoster<T>(url, data, getAuthorizationConfig()).then(
+      (res) => res.data as never
+    );
 
   /** Updaters **/
   /**
@@ -172,6 +178,7 @@ const useAppContextValue = (): AppContextValue => {
       signup,
       login,
       fetcher,
+      poster,
       user: { update: userUpdater },
       gym: { update: gymUpdater }
     }

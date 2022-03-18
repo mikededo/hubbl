@@ -48,6 +48,12 @@ export default class VirtualGym {
   capacity!: number;
 
   /**
+   * Optional contact phone of the gym
+   */
+  @Column('varchar', { length: 45, default: null })
+  phone!: string;
+
+  /**
    * Time at which the `VirtualGym` opens
    */
   @Column('time', { nullable: false })

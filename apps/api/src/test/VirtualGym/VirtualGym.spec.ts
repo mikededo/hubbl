@@ -14,6 +14,7 @@ const createVirtualGym = (
     description: 'Virtual gym description',
     location: 'Any location, Somewhere',
     capacity: 10,
+    phone: '987 654 321',
     openTime: '09:00:00',
     closeTime: '10:00:00',
     gym: ENTITY_IDENTIFIERS.GYM
@@ -47,6 +48,7 @@ export const createUpdateAndDeleteByOwner = async () => {
   util.toBeString(createRes.body.description);
   util.toBeString(createRes.body.location);
   util.toBeNumber(createRes.body.capacity);
+  util.toBeNumber(createRes.body.phone);
   util.toBeString(createRes.body.openTime);
   util.toBeString(createRes.body.closeTime);
   util.toBeNumber(createRes.body.gym);
@@ -60,6 +62,7 @@ export const createUpdateAndDeleteByOwner = async () => {
       description: 'Virtual gym description',
       location: 'Any location, Somewhere',
       capacity: 10,
+      phone: '987, 654, 321',
       openTime: '09:00:00',
       closeTime: '10:00:00',
       gym: ENTITY_IDENTIFIERS.GYM

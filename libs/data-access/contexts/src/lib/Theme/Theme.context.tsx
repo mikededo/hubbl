@@ -8,6 +8,22 @@ import {
   ThemeProvider
 } from '@mui/material';
 
+declare module '@mui/material/styles' {
+  interface TypographyVariants {
+    placeholder: React.CSSProperties;
+  }
+
+  interface TypographyVariantsOptions {
+    placeholder?: React.CSSProperties;
+  }
+}
+
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    placeholder: true;
+  }
+}
+
 const AppTheme: Theme = createTheme({
   palette: {
     primary: { main: '#2196F3' },
@@ -21,12 +37,14 @@ const AppTheme: Theme = createTheme({
     h1: { fontSize: 32, fontWeight: 500, color: '#3F3F3F' },
     h2: { fontSize: 28, fontWeight: 500, color: '#3F3F3F' },
     h3: { fontWeight: 500, color: '#3F3F3F' },
+    h5: { fontSize: 18, fontWeight: 500, color: '#3F3F3F' },
     h6: { fontSize: 16, fontWeight: 500, color: '#3F3F3F' },
     body1: { color: '#3F3F3F' },
     body2: { fontSize: 14, color: '#3F3F3F' },
     subtitle1: { fontSize: 14, color: '#666666' },
     subtitle2: { fontSize: 12, fontWeight: 400, color: '#666666' },
-    button: { fontSize: 16, textTransform: 'none' }
+    button: { fontSize: 16, textTransform: 'none' },
+    placeholder: { fontSize: 16, fontWeight: 400, color: '#BBB' }
   },
   shadows: [
     'none',
@@ -49,11 +67,12 @@ const AppTheme: Theme = createTheme({
     `0 8px 12px ${alpha('#777', 0.85)}`,
     `0 8px 12px ${alpha('#777', 0.9)}`,
     `0 8px 12px ${alpha('#777', 0.95)}`,
-    `0 8px 12px ${alpha('#777', 1)}`,
-    `0 8px 12px ${alpha('#777', 1)}`,
-    `0 8px 12px ${alpha('#777', 1)}`,
-    `0 8px 12px ${alpha('#777', 1)}`,
-    `0 8px 12px ${alpha('#777', 1)}`
+    // Dialogs
+    `0 0px 12px ${alpha('#777', 0.15)}`,
+    `0 0px 12px ${alpha('#777', 0.25)}`,
+    `0 0px 12px ${alpha('#777', 0.5)}`,
+    `0 0px 12px ${alpha('#777', 0.75)}`,
+    `0 0px 12px ${alpha('#777', 1)}`
   ],
   shape: { borderRadius: 8 },
   components: {
@@ -69,6 +88,17 @@ const AppTheme: Theme = createTheme({
           backgroundColor: '#4A5568',
           ':hover': { backgroundColor: darken('#4A5568', 0.3) }
         }
+      }
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        adornedStart: ({ theme }) => ({
+          '& .MuiInputAdornment-root': { marginLeft: theme.spacing(2) },
+          '&.MuiInputBase-root .MuiInputBase-input': {
+            marginLeft: theme.spacing(-5.5),
+            paddingLeft: theme.spacing(6)
+          }
+        })
       }
     },
     MuiSkeleton: {
