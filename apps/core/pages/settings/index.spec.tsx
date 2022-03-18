@@ -53,7 +53,11 @@ describe('Settings page', () => {
   it('should have the getLayout prop defined', () => {
     expect(Settings.getLayout).toBeDefined();
 
-    const { container } = render(Settings.getLayout(<div />));
+    const { container } = render(
+      <ThemeProvider theme={createTheme()}>
+        {Settings.getLayout(<div />)}
+      </ThemeProvider>
+    );
     expect(container).toBeInTheDocument();
   });
 

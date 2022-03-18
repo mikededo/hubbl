@@ -1,17 +1,12 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 
 import useSWR from 'swr';
 
 import { DashboardResponse } from '@hubbl/data-access/api';
 import { useAppContext } from '@hubbl/data-access/contexts';
-import {
-  DashboardVirtualGyms,
-  PageHeader,
-  VirtualGymDialog
-} from '@hubbl/ui/components';
+import { PageHeader } from '@hubbl/ui/components';
 
-import { BaseLayout, GeneralPages } from '../../components';
-import { EmptyHandler } from '@hubbl/shared/types';
+import { BaseLayout, GeneralPages, Pages } from '../../components';
 
 const Dashboard = () => {
   const {
@@ -20,21 +15,11 @@ const Dashboard = () => {
     API: { fetcher }
   } = useAppContext();
 
-  const [openDialog, setOpenDialog] = useState(false);
-
-  const { data } = useSWR<DashboardResponse>(
+  useSWR<DashboardResponse>(
     // Wait for the user to be defined, before making the call
     token.parsed ? () => `/dashboards/${user.gym.id}` : null,
     fetcher
   );
-
-  const handleOnAddClick: EmptyHandler = () => {
-    setOpenDialog(true);
-  };
-
-  const handleOnCloseDialog: EmptyHandler = () => {
-    setOpenDialog(false);
-  };
 
   return (
     <>
@@ -43,18 +28,7 @@ const Dashboard = () => {
         breadcrumbs={[{ href: '/', label: 'Dashboard' }]}
       />
 
-      {data && (
-        <DashboardVirtualGyms
-          items={data.virtualGyms}
-          onAddVirtualGym={handleOnAddClick}
-        />
-      )}
-
-      <VirtualGymDialog
-        open={openDialog}
-        title="Create virtual gym"
-        onClose={handleOnCloseDialog}
-      />
+      <Pages.Dashboard.DashboardVirtualGyms />
     </>
   );
 };
