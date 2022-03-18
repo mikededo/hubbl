@@ -5,7 +5,11 @@ import TimeInput from '../../../TimeInput';
 import { VirtualGymFormFields } from '../../types';
 
 const VirtualGymCloseTime = (): JSX.Element => {
-  const { register, getValues } = useFormContext<VirtualGymFormFields>();
+  const {
+    register,
+    getValues,
+    formState: { errors }
+  } = useFormContext<VirtualGymFormFields>();
 
   return (
     <TimeInput
@@ -17,6 +21,7 @@ const VirtualGymCloseTime = (): JSX.Element => {
         required: true,
         validate: (value) => isTimeBefore(value, getValues('openTime'))
       })}
+      error={!!errors.closeTime}
       fullWidth
     />
   );

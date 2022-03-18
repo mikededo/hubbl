@@ -7,7 +7,10 @@ import Input from '../../../Input';
 import { VirtualGymFormFields } from '../../types';
 
 const VirtualGymCapacity = (): JSX.Element => {
-  const { register } = useFormContext<VirtualGymFormFields>();
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext<VirtualGymFormFields>();
 
   return (
     <Input
@@ -24,6 +27,7 @@ const VirtualGymCapacity = (): JSX.Element => {
           <Person />
         </InputAdornment>
       }
+      error={!!errors.capacity}
       fullWidth
     />
   );

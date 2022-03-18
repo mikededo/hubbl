@@ -7,7 +7,10 @@ import Input from '../../../Input';
 import { VirtualGymFormFields } from '../../types';
 
 const VirtualGymPhone = (): JSX.Element => {
-  const { register } = useFormContext<VirtualGymFormFields>();
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext<VirtualGymFormFields>();
 
   return (
     <Input
@@ -16,6 +19,7 @@ const VirtualGymPhone = (): JSX.Element => {
       placeholder="000 000 000"
       type="tel"
       registerResult={register('phone', { required: true })}
+      error={!!errors.phone}
       startAdornment={
         <InputAdornment position="start">
           <Phone />

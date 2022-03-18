@@ -4,7 +4,10 @@ import Input from '../../../Input';
 import { VirtualGymFormFields } from '../../types';
 
 const VirtualGymPhone = (): JSX.Element => {
-  const { register } = useFormContext<VirtualGymFormFields>();
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext<VirtualGymFormFields>();
 
   return (
     <Input
@@ -13,6 +16,7 @@ const VirtualGymPhone = (): JSX.Element => {
       placeholder="Somewhere, There, 90"
       type="text"
       registerResult={register('location', { required: true })}
+      error={!!errors.location}
       fullWidth
     />
   );

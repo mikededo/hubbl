@@ -1,9 +1,13 @@
 import { useFormContext } from 'react-hook-form';
 
 import Input from '../../../Input';
+import { VirtualGymFormFields } from '../../types';
 
 const VirtualGymName = (): JSX.Element => {
-  const { register } = useFormContext();
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext<VirtualGymFormFields>();
 
   return (
     <Input
@@ -16,6 +20,7 @@ const VirtualGymName = (): JSX.Element => {
         maxLength: 255
       })}
       rows={4}
+      error={!!errors.description}
       multiline
       fullWidth
     />
