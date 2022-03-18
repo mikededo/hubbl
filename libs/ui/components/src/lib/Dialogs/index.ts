@@ -1,5 +1,6 @@
-import type { VirtualGymFormFields } from './types';
+import GymZoneDialog from './GymZoneDialog';
+import type { GymZoneFormFields, VirtualGymFormFields } from './types';
 import VirtualGymDialog from './VirtualGymDialog';
 
-export { VirtualGymDialog };
-export type { VirtualGymFormFields };
+export { GymZoneDialog, VirtualGymDialog };
+export type { GymZoneFormFields, VirtualGymFormFields };
