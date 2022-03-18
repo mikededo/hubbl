@@ -7,54 +7,12 @@ import {
   SettingsLogout,
   SettingsUserInfo,
   SettingsUserPassword,
-  SideNav,
   UserPasswordFields
 } from '@hubbl/ui/components';
-import { Box, Stack, styled } from '@mui/material';
 
-import { Pages, SettingsPages } from '../../components';
+import { BaseLayout, Pages, SettingsPages } from '../../components';
 
 const { SettingsGymInfo } = Pages.Settings;
-
-const entries = [
-  {
-    name: 'GENERAL',
-    hidden: true,
-    entries: {
-      dashboard: { label: 'Dashboard', href: '/dashboard' },
-      virtualGyms: { label: 'Virtual gyms', href: '#' },
-      events: { label: 'Events', href: '#' }
-    }
-  },
-  {
-    name: 'PERSONAL',
-    entries: {
-      trainers: { label: 'Trainers', href: '#' },
-      workers: { label: 'Workers', href: '#' },
-      clients: { label: 'Clients', href: '#' }
-    }
-  },
-  {
-    name: 'SETTINGS',
-    entries: { settings: { label: 'Settings', href: '/settings' } }
-  }
-];
-
-const Container = styled(Stack)({
-  height: '100vh',
-  width: '100vw',
-  overflow: 'hidden'
-});
-
-const SectionWrapper = styled(Box)(({ theme }) => ({
-  overflow: 'auto',
-  width: '100%',
-  padding: theme.spacing(6, 4, 4)
-}));
-
-const SectionStack = styled(Stack)(({ theme }) => ({
-  maxWidth: theme.spacing(140)
-}));
 
 const Settings = () => {
   const {
@@ -100,37 +58,37 @@ const Settings = () => {
   });
 
   return (
-    <Container direction="row" justifyContent="stretch" gap={4}>
-      <SideNav entries={entries} header="Gym name" selected="settings" />
+    <>
+      <PageHeader
+        title="Settings"
+        breadcrumbs={[{ href: '/', label: 'Settings' }]}
+      />
 
-      <SectionWrapper>
-        <SectionStack direction="column" spacing={3}>
-          <PageHeader
-            title="Settings"
-            breadcrumbs={[{ href: '/', label: 'Settings' }]}
-          />
+      <SettingsLogout header="User full name" subtitle="Gym owner" />
 
-          <SettingsLogout header="User full name" subtitle="Gym owner" />
-          <SettingsUserInfo
-            defaultValues={mapUserToValues()}
-            onSubmit={handleOnUpdateUser}
-          />
-          <SettingsUserPassword onSubmit={handleOnUpdateUser} />
+      <SettingsUserInfo
+        defaultValues={mapUserToValues()}
+        onSubmit={handleOnUpdateUser}
+      />
 
-          {parsed?.user === 'owner' && (
-            <SettingsGymInfo
-              defaultValues={mapGymToValues()}
-              onSubmit={handleOnUpdateGym}
-            />
-          )}
-        </SectionStack>
-      </SectionWrapper>
-    </Container>
+      <SettingsUserPassword onSubmit={handleOnUpdateUser} />
+
+      {parsed?.user === 'owner' && (
+        <SettingsGymInfo
+          defaultValues={mapGymToValues()}
+          onSubmit={handleOnUpdateGym}
+        />
+      )}
+    </>
   );
 };
 
 export default Settings;
 
 Settings.getLayout = (page: ReactElement) => (
-  <SettingsPages>{page}</SettingsPages>
+  <SettingsPages>
+    <BaseLayout header="Gym name" selected="settings">
+      {page}
+    </BaseLayout>
+  </SettingsPages>
 );

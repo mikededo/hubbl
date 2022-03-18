@@ -4,15 +4,15 @@ import Image from 'next/image';
 
 import { DownWave, UpWave } from './utils';
 
-type SettingsPagesProps = {
+type GeneralPagesProps = {
   children: ReactNode;
 };
 
-const SettingsPages = ({ children }: SettingsPagesProps): JSX.Element => (
+const GeneralPages = ({ children }: GeneralPagesProps): JSX.Element => (
   <>
     <UpWave>
       <Image
-        src="/WavesSettings3.svg"
+        src="/WavesGeneral1.svg"
         alt="signup-dashboard-image"
         layout="fill"
         objectFit="cover"
@@ -24,7 +24,7 @@ const SettingsPages = ({ children }: SettingsPagesProps): JSX.Element => (
 
     <DownWave>
       <Image
-        src="/WavesSettings1.svg"
+        src="/WavesGeneral2.svg"
         alt="signup-dashboard-image"
         layout="fill"
         objectFit="cover"
@@ -33,7 +33,7 @@ const SettingsPages = ({ children }: SettingsPagesProps): JSX.Element => (
     </DownWave>
     <DownWave>
       <Image
-        src="/WavesSettings2.svg"
+        src="/WavesGeneral3.svg"
         alt="signup-dashboard-image"
         layout="fill"
         objectFit="cover"
@@ -43,4 +43,4 @@ const SettingsPages = ({ children }: SettingsPagesProps): JSX.Element => (
   </>
 );
 
-export default SettingsPages;
+export default GeneralPages;
