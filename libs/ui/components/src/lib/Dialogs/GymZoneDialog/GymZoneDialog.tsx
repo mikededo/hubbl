@@ -61,7 +61,7 @@ const GymZoneDialog = ({
   };
 
   if (error) {
-    onError('An error ocurred.');
+    onError('An error occurred.');
   }
 
   return (
