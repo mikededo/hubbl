@@ -22,7 +22,7 @@ const GymZoneVirtualGym = ({
   const [options, setOptions] = useState<VirtualGymDTO[]>([]);
 
   const mapVirtualGyms = (): SelectItem[] =>
-    (virtualGyms ?? options).map((vg) => ({
+    (virtualGyms?.length ? virtualGyms : options).map((vg) => ({
       key: vg.id,
       value: vg.id,
       label: vg.name
@@ -40,7 +40,7 @@ const GymZoneVirtualGym = ({
       control={control}
       formName="virtualGym"
       label="Virtual gym"
-      defaultValue={virtualGyms ? virtualGyms[0].id : ''}
+      defaultValue={virtualGyms?.length ? virtualGyms[0].id : ''}
       // Placehoder is not displayed, but used in tests
       placeholder="Select a virtual gym"
       inputProps={{ title: 'gym-zone-virtual-gym' }}

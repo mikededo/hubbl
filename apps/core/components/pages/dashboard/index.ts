@@ -1,3 +1,4 @@
+import DashboardGymZones from './DashboardGymZones';
 import DashboardVirtualGyms from './DashboardVirtualGyms';
 
-export { DashboardVirtualGyms };
+export { DashboardGymZones, DashboardVirtualGyms };
