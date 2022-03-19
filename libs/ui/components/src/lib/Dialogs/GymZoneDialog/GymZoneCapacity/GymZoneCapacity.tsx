@@ -28,7 +28,6 @@ const GymZoneCapacity = (): JSX.Element => {
         </InputAdornment>
       }
       error={!!errors.capacity}
-      sx={{ width: '50%' }}
     />
   );
 };

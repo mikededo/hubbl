@@ -75,4 +75,9 @@ export type GymZoneFormFields = {
    * Close time of the `GymZone`
    */
   closeTime: string;
+
+  /**
+   * Id of the `VirtualGym` to which the `GymZone` belongs
+   */
+  virtualGym: number | string;
 };
