@@ -172,7 +172,7 @@ describe('<DasboardGymZones/>', () => {
         return {} as any;
       }
 
-      if (key !== '/virtual-gyms') {
+      if (key !== '/virtual-gyms?level=0') {
         return { data: { gymZones: [] }, mutate: mutateSpy } as never;
       }
 
@@ -223,7 +223,7 @@ describe('<DasboardGymZones/>', () => {
   it('should close the dialog', async () => {
     const mutateSpy = jest.fn().mockImplementation();
     jest.spyOn(swr, 'default').mockImplementation((key) => {
-      if (key !== '/virtual-gyms') {
+      if (key !== '/virtual-gyms?level=0') {
         return { data: { gymZones: [] }, mutate: mutateSpy } as never;
       }
 

@@ -46,7 +46,8 @@ const GymZoneDialog = ({
   } = useAppContext();
   const { onError } = useToastContext();
   const { data, error } = useSWR<VirtualGymDTO[]>(
-    token?.parsed && props.open ? '/virtual-gyms' : null,
+    // Fetch only the virtual gyms, skipping any join
+    token?.parsed && props.open ? '/virtual-gyms?level=0' : null,
     fetcher,
     { revalidateOnFocus: false }
   );
