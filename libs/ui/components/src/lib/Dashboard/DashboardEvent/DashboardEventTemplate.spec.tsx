@@ -13,7 +13,13 @@ describe('<DashboardEventTemplate />', () => {
     capacity: 25
   };
 
-  it('should render properly', () => {
+  it.each([
+    { ...event, difficulty: 1 },
+    { ...event, difficulty: 2 },
+    { ...event, difficulty: 3 },
+    { ...event, difficulty: 4 },
+    { ...event, difficulty: 5 }
+  ])('should render properly for difficulty $difficulty', (event) => {
     const { container } = render(
       <DashboardEventTemplate event={event as any} />
     );

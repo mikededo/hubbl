@@ -1,3 +1,4 @@
+import { alpha } from '@mui/material';
 import { render, screen } from '@testing-library/react';
 
 import GymZoneListItem from './GymZoneListItem';
@@ -19,6 +20,18 @@ describe('<GymZoneListItem />', () => {
     const { container } = render(<GymZoneListItem gymZone={gymZone as any} />);
 
     expect(container).toBeInTheDocument();
+  });
+
+  describe('flat', () => {
+    it('should render properly', () => {
+      const { container } = render(
+        <GymZoneListItem gymZone={gymZone as any} flat />
+      );
+
+      expect(container.firstChild).toHaveStyle(
+        `boxShadow: 0 0 6px ${alpha('#777', 0.15)}`
+      );
+    });
   });
 
   describe('gymZone', () => {
