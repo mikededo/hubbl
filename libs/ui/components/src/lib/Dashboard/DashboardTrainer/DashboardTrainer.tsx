@@ -8,7 +8,7 @@ import { Stack, styled, Typography } from '@mui/material';
 import ContentCard from '../../ContentCard';
 
 const PaddedContentCard = styled(ContentCard)(({ theme }) => ({
-  padding: theme.spacing(1.5),
+  padding: theme.spacing(1.5, 3),
   width: theme.spacing(44),
   height: theme.spacing(10)
 }));

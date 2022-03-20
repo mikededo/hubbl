@@ -6,7 +6,7 @@ import ContentCard from '../../ContentCard';
 import DashboardCommonEvent from './DashboardCommonEvent';
 
 const PaddedContentCard = styled(ContentCard)(({ theme }) => ({
-  padding: theme.spacing(1.5),
+  padding: theme.spacing(1.5, 3),
   width: theme.spacing(44),
   height: theme.spacing(10)
 }));

@@ -18,7 +18,7 @@ const DashboardCommonEvent = ({
     <Stack gap={1} direction="row" alignItems="center">
       <Tooltip title={`Facial mask${event.maskRequired ? '' : 'not'} required`}>
         <Masks
-          fontSize="large"
+          sx={{ fontSize: '1.75rem' }}
           color={event.maskRequired ? 'success' : undefined}
           titleAccess={
             event.maskRequired ? 'mask-required' : 'mask-not-required'
@@ -31,7 +31,6 @@ const DashboardCommonEvent = ({
       >
         <CallToAction
           color={event.covidPassport ? 'success' : undefined}
-          sx={{ fontSize: '1.7rem' }}
           titleAccess={
             event.covidPassport ? 'passport-required' : 'passport-not-required'
           }

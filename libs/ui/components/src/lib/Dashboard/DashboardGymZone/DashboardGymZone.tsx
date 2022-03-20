@@ -17,7 +17,7 @@ const ContentCardAction = styled(CardActionArea)(({ theme }) => ({
 }));
 
 const PaddedContentCard = styled(ContentCard)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(2, 3),
   width: theme.spacing(44),
   height: theme.spacing(25)
 }));
@@ -68,7 +68,7 @@ const DashboardGymZone = React.forwardRef<
                     }
                   >
                     <FitnessCenter
-                      sx={{ fontSize: '2rem', transform: 'rotate(-45deg)' }}
+                      sx={{ transform: 'rotate(-45deg)' }}
                       color={gymZone.isClassType ? 'success' : undefined}
                       titleAccess={
                         gymZone.isClassType ? 'class-zone' : 'non-class-zone'
@@ -82,7 +82,7 @@ const DashboardGymZone = React.forwardRef<
                     } required`}
                   >
                     <Masks
-                      fontSize="large"
+                      sx={{ fontSize: '1.75rem' }}
                       color={gymZone.maskRequired ? 'success' : undefined}
                       titleAccess={
                         gymZone.maskRequired
@@ -99,7 +99,6 @@ const DashboardGymZone = React.forwardRef<
                   >
                     <CallToAction
                       color={gymZone.covidPassport ? 'success' : undefined}
-                      sx={{ fontSize: '1.7rem' }}
                       titleAccess={
                         gymZone.covidPassport
                           ? 'passport-required'

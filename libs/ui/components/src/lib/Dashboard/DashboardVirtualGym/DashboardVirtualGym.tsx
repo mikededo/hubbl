@@ -10,7 +10,7 @@ const ContentCardAction = styled(CardActionArea)(({ theme }) => ({
 }));
 
 const PaddedContentCard = styled(ContentCard)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(2, 3),
   width: theme.spacing(44),
   height: theme.spacing(25)
 }));
