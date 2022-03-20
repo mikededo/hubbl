@@ -10,7 +10,7 @@ const ContentCardAction = styled(CardActionArea)(({ theme }) => ({
 }));
 
 const PaddedContentCard = styled(ContentCard)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(2, 3),
   width: theme.spacing(44),
   height: theme.spacing(25)
 }));
@@ -38,28 +38,30 @@ export type DashboardVirtualGymProps = {
 const DashboardVirtualGym = React.forwardRef<
   HTMLAnchorElement,
   DashboardVirtualGymProps
->(({ virtualGym, href, onClick }, ref) => (
-  <Anchor href={href} ref={ref} onClick={onClick}>
-    <ContentCardAction color="primary">
-      <PaddedContentCard>
-        <ContentStack justifyContent="space-between">
-          <Stack gap={1}>
-            <Typography variant="h6">
-              {virtualGym.name.toUpperCase()}
-            </Typography>
-            <Typography>{virtualGym.description}</Typography>
-          </Stack>
+>(
+  ({ virtualGym, href, onClick }, ref): JSX.Element => (
+    <Anchor href={href} ref={ref} onClick={onClick}>
+      <ContentCardAction color="primary">
+        <PaddedContentCard>
+          <ContentStack justifyContent="space-between">
+            <Stack gap={1}>
+              <Typography variant="h6">
+                {virtualGym.name.toUpperCase()}
+              </Typography>
+              <Typography>{virtualGym.description}</Typography>
+            </Stack>
 
-          <Stack gap={1}>
-            <Typography>
-              {virtualGym.openTime} - {virtualGym.closeTime}
-            </Typography>
-            <Typography>{virtualGym.location}</Typography>
-          </Stack>
-        </ContentStack>
-      </PaddedContentCard>
-    </ContentCardAction>
-  </Anchor>
-));
+            <Stack gap={1}>
+              <Typography>
+                {virtualGym.openTime} - {virtualGym.closeTime}
+              </Typography>
+              <Typography>{virtualGym.location}</Typography>
+            </Stack>
+          </ContentStack>
+        </PaddedContentCard>
+      </ContentCardAction>
+    </Anchor>
+  )
+);
 
 export default DashboardVirtualGym;

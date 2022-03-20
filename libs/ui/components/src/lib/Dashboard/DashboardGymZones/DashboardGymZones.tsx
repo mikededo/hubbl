@@ -26,7 +26,10 @@ const PlaceholderText = styled(Typography)({
   width: '75%'
 });
 
-const DashboardGymZones = ({ items, onAddGymZone }: DashboardGymZonesProps) => (
+const DashboardGymZones = ({
+  items,
+  onAddGymZone
+}: DashboardGymZonesProps): JSX.Element => (
   <Stack gap={4}>
     <Typography variant="h5">GYM ZONES</Typography>
 

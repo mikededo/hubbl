@@ -29,7 +29,7 @@ const PlaceholderText = styled(Typography)({
 const DashboardVirtualGyms = ({
   items,
   onAddVirtualGym
-}: DashboardVirtualGymsProps) => (
+}: DashboardVirtualGymsProps): JSX.Element => (
   <Stack gap={4}>
     <Typography variant="h5">VIRTUAL GYMS</Typography>
 

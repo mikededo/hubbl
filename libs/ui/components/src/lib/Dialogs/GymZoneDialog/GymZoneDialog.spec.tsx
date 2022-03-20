@@ -212,7 +212,9 @@ describe('<GymZoneDialog />', () => {
   it('should call onError', async () => {
     swrSpy
       .mockClear()
-      .mockImplementation(() => ({ data: undefined, error: 'An error' } as any));
+      .mockImplementation(
+        () => ({ data: undefined, error: 'An error' } as any)
+      );
 
     await act(async () => {
       render(<MockComponent open />);
