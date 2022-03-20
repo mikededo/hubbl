@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import useSWR from 'swr';
-
-import { DashboardResponse } from '@hubbl/data-access/api';
 import { useAppContext, useLoadingContext } from '@hubbl/data-access/contexts';
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { EmptyHandler } from '@hubbl/shared/types';
@@ -12,6 +9,8 @@ import {
   GymZoneFormFields
 } from '@hubbl/ui/components';
 
+import { useDashboard } from './hooks';
+
 const DashboardGymZones = () => {
   const {
     token,
@@ -20,12 +19,11 @@ const DashboardGymZones = () => {
   } = useAppContext();
   const { onPopLoading, onPushLoading } = useLoadingContext();
 
-  const { data, mutate } = useSWR<DashboardResponse>(
-    // Wait for the user to be defined, before making the call
-    token.parsed ? `/dashboards/${user.gym.id}` : null,
-    fetcher,
-    { revalidateOnFocus: false }
-  );
+  const { data, mutate } = useDashboard({
+    run: !!token.parsed,
+    gymId: user?.gym?.id,
+    fetcher
+  });
 
   const [openDialog, setOpenDialog] = useState(false);
 

@@ -1,9 +1,8 @@
-import useSWR from 'swr';
-
-import { DashboardResponse } from '@hubbl/data-access/api';
 import { useAppContext } from '@hubbl/data-access/contexts';
 import { EmptyHandler } from '@hubbl/shared/types';
 import { DashboardTrainers as TrainersGrid } from '@hubbl/ui/components';
+
+import { useDashboard } from './hooks';
 
 const DashboardTrainers = () => {
   const {
@@ -12,12 +11,11 @@ const DashboardTrainers = () => {
     API: { fetcher }
   } = useAppContext();
 
-  const { data } = useSWR<DashboardResponse>(
-    // Wait for the user to be defined, before making the call
-    token.parsed ? `/dashboards/${user.gym.id}` : null,
-    fetcher,
-    { revalidateOnFocus: false }
-  );
+  const { data,  } = useDashboard({
+    run: !!token.parsed,
+    gymId: user?.gym?.id,
+    fetcher
+  });
 
   const handleOnAddClick: EmptyHandler = () => {
     console.log('To be implemented');
