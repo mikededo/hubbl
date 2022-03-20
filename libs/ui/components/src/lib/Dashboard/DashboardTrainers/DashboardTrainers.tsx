@@ -24,7 +24,10 @@ const PlaceholderText = styled(Typography)({
   width: '75%'
 });
 
-const DashboardTrainers = ({ items, onAddTrainer }: DashboardTrainersProps) => (
+const DashboardTrainers = ({
+  items,
+  onAddTrainer
+}: DashboardTrainersProps): JSX.Element => (
   <Stack gap={4}>
     <Typography variant="h5">TRAINERS</Typography>
 

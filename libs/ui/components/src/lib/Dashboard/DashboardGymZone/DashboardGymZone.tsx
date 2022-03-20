@@ -45,7 +45,7 @@ export type DashboardGymZoneProps = {
 const DashboardGymZone = React.forwardRef<
   HTMLAnchorElement,
   DashboardGymZoneProps
->(({ gymZone, href, onClick }, ref) => (
+>(({ gymZone, href, onClick }, ref): JSX.Element => (
   <Anchor href={href} ref={ref} onClick={onClick}>
     <ContentCardAction color="primary">
       <PaddedContentCard>

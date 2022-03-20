@@ -24,7 +24,10 @@ const PlaceholderText = styled(Typography)({
   width: '75%'
 });
 
-const DashboardEvents = ({ items, onAddEvent }: DashboardEventsProps) => (
+const DashboardEvents = ({
+  items,
+  onAddEvent
+}: DashboardEventsProps): JSX.Element => (
   <Stack gap={4}>
     <Typography variant="h5">EVENTS</Typography>
 
