@@ -79,9 +79,7 @@ describe('<DashboardGymZones />', () => {
       render(
         <DashboardGymZones items={items as any} onAddGymZone={onAddSpy} />
       );
-      userEvent.click(
-        screen.getByText('Click me to create a new gym zone!')
-      );
+      userEvent.click(screen.getByText('Click me to create a new gym zone!'));
 
       expect(onAddSpy).toHaveBeenCalledTimes(1);
     });
