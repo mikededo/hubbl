@@ -4,6 +4,7 @@ import { useAppContext } from '@hubbl/data-access/contexts';
 import { PageHeader } from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages, Pages } from '../../components';
+import { Stack } from '@mui/material';
 
 const Dashboard = () => {
   const { user } = useAppContext();
@@ -18,6 +19,14 @@ const Dashboard = () => {
       <Pages.Dashboard.DashboardVirtualGyms />
 
       <Pages.Dashboard.DashboardGymZones />
+
+      <Stack direction="row" gap={4}>
+        <Pages.Dashboard.DashboardTrainers />
+
+        <Pages.Dashboard.DashboardEventTemplates />
+
+        <Pages.Dashboard.DashboardTrainers />
+      </Stack>
     </>
   );
 };
