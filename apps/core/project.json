@@ -19,7 +19,8 @@
       "executor": "@nrwl/next:server",
       "options": {
         "buildTarget": "core:build",
-        "dev": true
+        "dev": true,
+        "hostname": "core.hubbl.local"
       },
       "configurations": {
         "production": {

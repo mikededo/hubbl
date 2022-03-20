@@ -17,3 +17,4 @@ const AppProvider = ({ children }: AppContextProps): JSX.Element => {
 };
 
 export { AppProvider, useAppContext };
+export type { AppContextValue };

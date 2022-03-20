@@ -14,6 +14,14 @@ jest.mock('jsonwebtoken', () => {
 
   return { ...actual, decode: jest.fn() };
 });
+jest.mock('@mui/material', () => {
+  const actual = jest.requireActual('@mui/material');
+
+  return {
+    ...actual,
+    useMediaQuery: jest.fn(() => false)
+  };
+});
 
 const renderPage = () =>
   render(
@@ -53,7 +61,11 @@ describe('Settings page', () => {
   it('should have the getLayout prop defined', () => {
     expect(Settings.getLayout).toBeDefined();
 
-    const { container } = render(Settings.getLayout(<div />));
+    const { container } = render(
+      <ThemeProvider theme={createTheme()}>
+        {Settings.getLayout(<div />)}
+      </ThemeProvider>
+    );
     expect(container).toBeInTheDocument();
   });
 

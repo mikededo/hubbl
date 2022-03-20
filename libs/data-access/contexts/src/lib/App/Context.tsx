@@ -5,6 +5,7 @@ import { decode } from 'jsonwebtoken';
 
 import {
   fetcher as ApiFetcher,
+  poster as ApiPoster,
   GymApi,
   TokenApi,
   UserApi
@@ -52,7 +53,7 @@ const useAppContextValue = (): AppContextValue => {
       setToken(token);
       setParsedToken(decode(token) as ParsedToken);
     } catch (e) {
-      onError('An error ocurred. Try again.');
+      onError('An error occurred. Try again.');
     } finally {
       setLoading(false);
     }
@@ -68,14 +69,19 @@ const useAppContextValue = (): AppContextValue => {
       setParsedToken(decode(result.token) as ParsedToken);
     } catch (e) {
       // Check different errors
-      onError('An error ocurred. Try again.');
+      onError('An error occurred. Try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const fetcher = async (url: string) =>
-    ApiFetcher(url, getAuthorizationConfig());
+    ApiFetcher(url, getAuthorizationConfig()).then((res) => res.data as never);
+
+  const poster = async <T,>(url: string, data: unknown) =>
+    ApiPoster<T>(url, data, getAuthorizationConfig()).then(
+      (res) => res.data as never
+    );
 
   /** Updaters **/
   /**
@@ -172,6 +178,7 @@ const useAppContextValue = (): AppContextValue => {
       signup,
       login,
       fetcher,
+      poster,
       user: { update: userUpdater },
       gym: { update: gymUpdater }
     }

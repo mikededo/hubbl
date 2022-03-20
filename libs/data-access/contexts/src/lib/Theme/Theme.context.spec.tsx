@@ -7,6 +7,11 @@ const ThemeAccess = () => {
 
   expect(theme).toBeDefined();
   expect(theme.palette.primary.main).toBe('#2196F3');
+  expect(
+    (theme.components?.MuiInputBase?.styleOverrides?.adornedStart as any)({
+      theme: { spacing: (n: number) => n * 8 }
+    })
+  ).toBeDefined();
 
   return <span />;
 };

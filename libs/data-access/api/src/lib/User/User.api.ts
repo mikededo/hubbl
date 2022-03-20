@@ -12,7 +12,7 @@ export const signup: SignUpType = async (type, data) => {
     `/persons/register/${type}`,
     // Set gender by default
     { ...data, gender: Gender.OTHER },
-    { withCredentials: false }
+    { withCredentials: true }
   );
 
   return response.data;
@@ -22,7 +22,7 @@ export const login: LoginType = async (type, data) => {
   const response: AxiosResponse = await axios.post(
     `/persons/login/${type}`,
     data,
-    { withCredentials: false }
+    { withCredentials: true }
   );
 
   return response.data;

@@ -1,30 +1,12 @@
-import { styled } from '@mui/material';
-import Image from 'next/image';
 import type { ReactNode } from 'react';
+
+import Image from 'next/image';
+
+import { DownWave, UpWave } from './utils';
 
 type SettingsPagesProps = {
   children: ReactNode;
 };
-
-const UpWave = styled('div')({
-  position: 'absolute',
-  width: '100%',
-  height: '300px',
-  top: 0,
-  left: 0,
-  right: 0,
-  zIndex: -1
-});
-
-const DownWave = styled('div')({
-  position: 'absolute',
-  width: '100%',
-  height: '300px',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  zIndex: -1
-});
 
 const SettingsPages = ({ children }: SettingsPagesProps): JSX.Element => (
   <>
@@ -34,6 +16,7 @@ const SettingsPages = ({ children }: SettingsPagesProps): JSX.Element => (
         alt="signup-dashboard-image"
         layout="fill"
         objectFit="cover"
+        objectPosition="bottom"
       />
     </UpWave>
 
@@ -45,6 +28,7 @@ const SettingsPages = ({ children }: SettingsPagesProps): JSX.Element => (
         alt="signup-dashboard-image"
         layout="fill"
         objectFit="cover"
+        objectPosition="top"
       />
     </DownWave>
     <DownWave>
@@ -53,6 +37,7 @@ const SettingsPages = ({ children }: SettingsPagesProps): JSX.Element => (
         alt="signup-dashboard-image"
         layout="fill"
         objectFit="cover"
+        objectPosition="top"
       />
     </DownWave>
   </>

@@ -79,7 +79,7 @@ const onApiError = async (method: 'signup' | 'login') => {
   });
 
   expect(methodSpy).toHaveBeenCalled();
-  expect(screen.getByText('An error ocurred. Try again.')).toBeInTheDocument();
+  expect(screen.getByText('An error occurred. Try again.')).toBeInTheDocument();
 };
 
 describe('<AppProvider />', () => {
@@ -173,6 +173,44 @@ describe('<AppProvider />', () => {
         headers: { Authorization: 'Bearer null' },
         withCredentials: true
       });
+    });
+  });
+
+  describe('poster', () => {
+    const posterSpy = jest.spyOn(Api, 'poster').mockResolvedValue({} as any);
+
+    it('should be defined', async () => {
+      const Component = () => {
+        const { API } = useAppContext();
+
+        return (
+          <button onClick={() => API.poster('/url', { id: 1 })}>post</button>
+        );
+      };
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText('post'));
+      });
+
+      expect(posterSpy).toHaveBeenCalledTimes(1);
+      expect(posterSpy).toHaveBeenCalledWith(
+        '/url',
+        { id: 1 },
+        {
+          // Use null as token is not defined
+          headers: { Authorization: 'Bearer null' },
+          withCredentials: true
+        }
+      );
     });
   });
 

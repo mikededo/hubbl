@@ -18,7 +18,15 @@ function getDirectory(directory?: string): string[] {
 }
 
 export default async function (host: Tree, schema: NewComponentSchema) {
-  const fileName = names(schema.name).className;
+  let fileName: string[];
+
+  if (schema.name.split(',').length) {
+    fileName = schema.name
+      .split(',')
+      .map((name) => names(name.trim()).className);
+  } else {
+    fileName = [names(schema.name).className];
+  }
 
   if (schema.directory) {
     const trimmed = schema.directory.trim();
@@ -29,15 +37,17 @@ export default async function (host: Tree, schema: NewComponentSchema) {
     }
   }
 
-  generateFiles(
-    host,
-    joinPathFragments(__dirname, './files'),
-    joinPathFragments(
-      getProjects(host).get('ui-components').sourceRoot,
-      'lib',
-      ...getDirectory(schema.directory),
-      schema.flat ? '' : fileName
-    ),
-    { name: fileName, fileName, tmpl: '' }
-  );
+  fileName.forEach((file) => {
+    generateFiles(
+      host,
+      joinPathFragments(__dirname, './files'),
+      joinPathFragments(
+        getProjects(host).get('ui-components').sourceRoot,
+        'lib',
+        ...getDirectory(schema.directory),
+        schema.flat ? '' : file
+      ),
+      { name: file, fileName: file, tmpl: '' }
+    );
+  });
 }

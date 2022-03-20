@@ -93,6 +93,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
           description: 'Virtual gym one description',
           capacity: 10,
           location: 'Test location one, 1',
+          phone: '123 456 789',
           openTime: '09:00:00',
           closeTime: '23:00:00',
           gym: ENTITY_IDENTIFIERS.GYM,

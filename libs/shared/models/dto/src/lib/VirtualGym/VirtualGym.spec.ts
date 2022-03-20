@@ -17,6 +17,7 @@ const propCompare = (
   expect(got.description).toBe(want.description);
   expect(got.location).toBe(want.location);
   expect(got.capacity).toBe(want.capacity);
+  expect(got.phone).toBe(want.phone);
   expect(got.openTime).toBe(want.openTime);
   expect(got.closeTime).toBe(want.closeTime);
   expect(got.gym).toBe(want.gym);
@@ -37,6 +38,7 @@ describe('VirtualGym', () => {
         description: 'Description',
         location: 'Location',
         capacity: 1000,
+        phone: '000 000 000',
         openTime: '09:00:00',
         closeTime: '21:00:00',
         gym: 1
@@ -95,6 +97,7 @@ describe('VirtualGym', () => {
       virtualGym.description = '';
       virtualGym.location = 'any';
       virtualGym.capacity = 1000;
+      virtualGym.phone = '000 000 000';
       virtualGym.openTime = '09:00:00';
       virtualGym.closeTime = '21:00:00';
       virtualGym.gym = 1;
@@ -135,6 +138,7 @@ describe('VirtualGym', () => {
       dto.description = '';
       dto.location = 'any';
       dto.capacity = 1000;
+      dto.phone = '000 000 000';
       dto.openTime = '09:00:00';
       dto.closeTime = '21:00:00';
       dto.gym = 1;
