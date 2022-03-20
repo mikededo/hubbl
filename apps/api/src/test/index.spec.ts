@@ -13,7 +13,7 @@ import { token } from './Token';
 import { common } from './util';
 import { virtualGym } from './VirtualGym';
 
-//jest.mock('npmlog');
+jest.mock('npmlog');
 
 describe('Integration tests', () => {
   beforeAll((done) => {
@@ -133,9 +133,9 @@ describe('Integration tests', () => {
 
   describe('Gym', () => {
     it('should update a gym', async () => {
-      await gym.update()
-    })
-  })
+      await gym.update();
+    });
+  });
 
   describe('Dashboard', () => {
     it('should fetch the dashboard by an owner', async () => {
@@ -280,6 +280,12 @@ describe('Integration tests', () => {
     describe('fetch', () => {
       it('should fetch event templates by owner', async () => {
         await virtualGym.fetch('owner');
+      });
+
+      it('should fetch with level', async () => {
+        // Is the same as the base fetch, therefore it is only tested
+        // with the owner
+        await virtualGym.fetchLevel();
       });
 
       it('should fetch event templates by worker', async () => {
