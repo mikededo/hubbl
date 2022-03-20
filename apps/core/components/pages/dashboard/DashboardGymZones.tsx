@@ -4,22 +4,22 @@ import useSWR from 'swr';
 
 import { DashboardResponse } from '@hubbl/data-access/api';
 import { useAppContext, useLoadingContext } from '@hubbl/data-access/contexts';
-import { VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { EmptyHandler } from '@hubbl/shared/types';
 import {
-  DashboardVirtualGyms as VirtualGymsGrid,
-  VirtualGymDialog,
-  VirtualGymFormFields
+  DashboardGymZones as GymZonesGrid,
+  GymZoneDialog,
+  GymZoneFormFields
 } from '@hubbl/ui/components';
 
-const DashboardVirtualGyms = () => {
+const DashboardGymZones = () => {
   const {
     token,
     user,
     API: { fetcher, poster }
   } = useAppContext();
   const { onPopLoading, onPushLoading } = useLoadingContext();
-  
+
   const { data, mutate } = useSWR<DashboardResponse>(
     // Wait for the user to be defined, before making the call
     token.parsed ? `/dashboards/${user.gym.id}` : null,
@@ -37,18 +37,18 @@ const DashboardVirtualGyms = () => {
     setOpenDialog(false);
   };
 
-  const handleOnSubmitVirtualGym = async (formData: VirtualGymFormFields) => {
+  const handleOnSubmitGymZone = async (formData: GymZoneFormFields) => {
     setOpenDialog(false);
     onPushLoading();
 
     // The data should include the gym
-    const created = await poster<VirtualGymDTO>('/virtual-gyms', {
+    const created = await poster<GymZoneDTO>(`/virtual-gyms/${1}/gym-zones`, {
       ...formData,
       gym: user.gym.id
     });
 
     // Mutate the state once the virtual gym has been created
-    await mutate({ ...data, virtualGyms: [created, ...data.virtualGyms] });
+    await mutate({ ...data, gymZones: [created, ...data.gymZones] });
 
     onPopLoading();
   };
@@ -56,20 +56,17 @@ const DashboardVirtualGyms = () => {
   return (
     <>
       {data && (
-        <VirtualGymsGrid
-          items={data.virtualGyms}
-          onAddVirtualGym={handleOnAddClick}
-        />
+        <GymZonesGrid items={data.gymZones} onAddGymZone={handleOnAddClick} />
       )}
 
-      <VirtualGymDialog
+      <GymZoneDialog
         open={openDialog}
-        title="Create virtual gym"
+        title="Create gym zone"
         onClose={handleOnCloseDialog}
-        onSubmit={handleOnSubmitVirtualGym}
+        onSubmit={handleOnSubmitGymZone}
       />
     </>
   );
 };
 
-export default DashboardVirtualGyms;
+export default DashboardGymZones;

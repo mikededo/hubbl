@@ -7,7 +7,7 @@ import {
   LoadingContext,
   ToastContext
 } from '@hubbl/data-access/contexts';
-import { VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { createTheme, ThemeProvider } from '@mui/material';
 import {
   act,
@@ -18,7 +18,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DashboardVirtualGyms from './DashboardVirtualGyms';
+import DashboardGymZones from './DashboardGymZones';
 
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
@@ -35,9 +35,11 @@ const response = [
     capacity: 25,
     openTime: '09:00',
     closeTime: '23:00',
-    gym: 1,
-    location: 'One Location',
-    phone: '000 000 000'
+    calendar: 1,
+    isClassType: false,
+    covidPassport: true,
+    maskRequired: true,
+    virtualGym: 1
   },
   {
     id: 2,
@@ -46,9 +48,11 @@ const response = [
     capacity: 25,
     openTime: '09:00',
     closeTime: '23:00',
-    gym: 1,
-    location: 'Two Location',
-    phone: '000 000 000'
+    calendar: 1,
+    isClassType: false,
+    covidPassport: true,
+    maskRequired: true,
+    virtualGym: 1
   },
   {
     id: 3,
@@ -57,9 +61,11 @@ const response = [
     capacity: 25,
     openTime: '09:00',
     closeTime: '23:00',
-    gym: 1,
-    location: 'Three Location',
-    phone: '000 000 000'
+    calendar: 1,
+    isClassType: false,
+    covidPassport: true,
+    maskRequired: true,
+    virtualGym: 1
   },
   {
     id: 4,
@@ -68,9 +74,11 @@ const response = [
     capacity: 25,
     openTime: '09:00',
     closeTime: '23:00',
-    gym: 1,
-    location: 'Four Location',
-    phone: '000 000 000'
+    calendar: 1,
+    isClassType: false,
+    covidPassport: true,
+    maskRequired: true,
+    virtualGym: 1
   },
   {
     id: 5,
@@ -79,11 +87,13 @@ const response = [
     capacity: 25,
     openTime: '09:00',
     closeTime: '23:00',
-    gym: 1,
-    location: 'Five Location',
-    phone: '000 000 000'
+    calendar: 1,
+    isClassType: false,
+    covidPassport: true,
+    maskRequired: true,
+    virtualGym: 1
   }
-] as VirtualGymDTO[];
+] as GymZoneDTO[];
 
 const renderComponent = () =>
   render(
@@ -91,14 +101,14 @@ const renderComponent = () =>
       <ThemeProvider theme={createTheme()}>
         <ToastContext>
           <AppProvider>
-            <DashboardVirtualGyms />
+            <DashboardGymZones />
           </AppProvider>
         </ToastContext>
       </ThemeProvider>
     </LoadingContext>
   );
 
-describe('<DasboardVirtualGyms/>', () => {
+describe('<DasboardGymZones/>', () => {
   const fetcher = jest.fn();
   const poster = jest.fn();
 
@@ -132,55 +142,56 @@ describe('<DasboardVirtualGyms/>', () => {
     });
   });
 
-  it('should render the list of gyms', async () => {
+  it('should render the list of gym zones', async () => {
     jest.spyOn(swr, 'default').mockImplementation((cb, f, opt) => {
       expect(f).toBe(fetcher);
-      expect(cb).toBe(`/dashboards/1`);
+      if (cb) {
+        expect(cb).toBe(`/dashboards/1`);
+      }
       expect(opt).toStrictEqual({ revalidateOnFocus: false });
 
-      return { data: { virtualGyms: response } } as never;
+      return { data: { gymZones: response } } as never;
     });
 
     await act(async () => {
       renderComponent();
     });
 
-    // Find gyms
+    // Find gym zones
     response.forEach(({ name }) => {
       expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
     });
     // Find placeholder
-    expect(screen.getByTitle('add-virtual-gym')).toBeInTheDocument();
+    expect(screen.getByTitle('add-gym-zone')).toBeInTheDocument();
   });
 
-  it('should create a new gym', async () => {
+  it('should create a new gym zone', async () => {
     const mutateSpy = jest.fn().mockImplementation();
-    jest
-      .spyOn(swr, 'default')
-      .mockImplementation(
-        () => ({ data: { virtualGyms: [] }, mutate: mutateSpy } as never)
-      );
+    jest.spyOn(swr, 'default').mockImplementation((key) => {
+      if (!key) {
+        return {} as any;
+      }
+
+      if (key !== '/virtual-gyms') {
+        return { data: { gymZones: [] }, mutate: mutateSpy } as never;
+      }
+
+      return { data: [response[0]] } as never;
+    });
     poster.mockImplementation(() => response[0]);
 
     await act(async () => {
       renderComponent();
     });
     await act(async () => {
-      fireEvent.click(screen.getByTitle('add-virtual-gym'));
+      fireEvent.click(screen.getByTitle('add-gym-zone'));
     });
     await act(async () => {
       fireEvent.input(screen.getByPlaceholderText('New name'), {
         target: { name: 'name', value: 'Name' }
       });
-      fireEvent.input(
-        screen.getByPlaceholderText('New virtual gym description'),
-        { target: { name: 'description', value: 'Gym description' } }
-      );
-      fireEvent.input(screen.getByPlaceholderText('Somewhere, There, 90'), {
-        target: { name: 'location', value: 'Some, Location, 90' }
-      });
-      fireEvent.input(screen.getByPlaceholderText('000 000 000'), {
-        target: { name: 'phone', value: '111 222 333' }
+      fireEvent.input(screen.getByPlaceholderText('New gym zone description'), {
+        target: { name: 'description', value: 'Gym zone description' }
       });
       fireEvent.input(screen.getByPlaceholderText('200'), {
         target: { name: 'capacity', value: '25' }
@@ -193,33 +204,37 @@ describe('<DasboardVirtualGyms/>', () => {
     });
 
     expect(poster).toHaveBeenCalledTimes(1);
-    expect(poster).toHaveBeenCalledWith('/virtual-gyms', {
+    expect(poster).toHaveBeenCalledWith('/virtual-gyms/1/gym-zones', {
       name: 'Name',
-      description: 'Gym description',
-      location: 'Some, Location, 90',
-      phone: '111 222 333',
-      capacity: 25,
+      description: 'Gym zone description',
+      isClassType: false,
+      maskRequired: true,
+      covidPassport: true,
       openTime: '10:00',
       closeTime: '22:00',
-      gym: 1
+      capacity: 25,
+      gym: 1,
+      virtualGym: 1
     });
     expect(mutateSpy).toHaveBeenCalledTimes(1);
-    expect(mutateSpy).toHaveBeenCalledWith({ virtualGyms: [response[0]] });
+    expect(mutateSpy).toHaveBeenCalledWith({ gymZones: [response[0]] });
   });
 
   it('should close the dialog', async () => {
     const mutateSpy = jest.fn().mockImplementation();
-    jest
-      .spyOn(swr, 'default')
-      .mockImplementation(
-        () => ({ data: { virtualGyms: [] }, mutate: mutateSpy } as never)
-      );
+    jest.spyOn(swr, 'default').mockImplementation((key) => {
+      if (key !== '/virtual-gyms') {
+        return { data: { gymZones: [] }, mutate: mutateSpy } as never;
+      }
+
+      return { data: [] } as never;
+    });
 
     await act(async () => {
       renderComponent();
     });
     await act(async () => {
-      fireEvent.click(screen.getByTitle('add-virtual-gym'));
+      fireEvent.click(screen.getByTitle('add-gym-zone'));
     });
     await act(async () => {
       fireEvent.click(screen.getByTitle('close-dialog'));

@@ -61,7 +61,7 @@ const DialogCardContent = styled(ContentCard)(({ theme }) => ({
 
 const DialogScrollable = styled('section')(({ theme }) => ({
   maxHeight: `calc(100% - ${theme.spacing(17)})`,
-  overflowY: 'scroll'
+  overflowY: 'auto'
 }));
 
 const Base = ({

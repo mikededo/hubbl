@@ -79,7 +79,7 @@ const onApiError = async (method: 'signup' | 'login') => {
   });
 
   expect(methodSpy).toHaveBeenCalled();
-  expect(screen.getByText('An error ocurred. Try again.')).toBeInTheDocument();
+  expect(screen.getByText('An error occurred. Try again.')).toBeInTheDocument();
 };
 
 describe('<AppProvider />', () => {

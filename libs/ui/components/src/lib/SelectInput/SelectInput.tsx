@@ -11,17 +11,17 @@ import {
 
 import InputBase from '../InputBase';
 
-type SelectItem = {
+export type SelectItem = {
   /**
    * Key attached to the item rendered
    */
-  key: string;
+  key: string | number;
 
   /**
    * Value attached to the item rendered, which will be
    * returned once the form is submitted
    */
-  value: string;
+  value: string | number;
 
   /**
    * Value to display as the value of the select
@@ -75,6 +75,7 @@ const SelectInput = <T extends FieldValues, J extends SelectItem[]>({
     <Controller
       control={control}
       name={formName}
+      rules={{ required: props.required }}
       render={({
         field: { onChange, value, name, ref },
         fieldState: { error }
@@ -89,7 +90,7 @@ const SelectInput = <T extends FieldValues, J extends SelectItem[]>({
           onChange={onChange}
         >
           {options.map(({ key, value, label }) => (
-            <MenuItem key={key} value={value}>
+            <MenuItem key={`${key}`} value={value}>
               {label}
             </MenuItem>
           ))}

@@ -53,7 +53,7 @@ const useAppContextValue = (): AppContextValue => {
       setToken(token);
       setParsedToken(decode(token) as ParsedToken);
     } catch (e) {
-      onError('An error ocurred. Try again.');
+      onError('An error occurred. Try again.');
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ const useAppContextValue = (): AppContextValue => {
       setParsedToken(decode(result.token) as ParsedToken);
     } catch (e) {
       // Check different errors
-      onError('An error ocurred. Try again.');
+      onError('An error occurred. Try again.');
     } finally {
       setLoading(false);
     }

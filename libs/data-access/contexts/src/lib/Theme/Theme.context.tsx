@@ -28,6 +28,7 @@ const AppTheme: Theme = createTheme({
   palette: {
     primary: { main: '#2196F3' },
     text: { primary: '#3F3F3F', secondary: '#666666', disabled: '#BBBBBB' },
+    success: { main: '#68D391' },
     info: { main: '#2196F3' },
     error: { main: '#F56565' },
     divider: alpha('#94A3B8', 0.15)
