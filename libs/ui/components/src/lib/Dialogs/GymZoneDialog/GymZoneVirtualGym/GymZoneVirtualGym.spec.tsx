@@ -8,11 +8,15 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { VirtualGymDTO } from '@hubbl/shared/models/dto';
 
 const MockComponent = ({
+  defaultValues,
   virtualGyms
 }: {
+  defaultValues?: Partial<GymZoneFormFields>;
   virtualGyms?: Partial<VirtualGymDTO>[];
 }) => {
-  const { control, ...rest } = useForm<GymZoneFormFields>();
+  const { control, ...rest } = useForm<GymZoneFormFields>({
+    defaultValues: { virtualGym: defaultValues?.virtualGym ?? '' }
+  });
 
   return (
     <ThemeProvider theme={createTheme()}>
@@ -51,6 +55,22 @@ describe('<GymZoneVirtualGym />', () => {
     expect(screen.getByRole('option', { name: 'Two' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Three' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Four' })).toBeInTheDocument();
+  });
+
+  describe('defaultValues', () => {
+    it('should use default value', () => {
+      render(
+        <MockComponent
+          defaultValues={{ virtualGym: 2 }}
+          virtualGyms={[
+            { id: 1, name: 'One' },
+            { id: 2, name: 'Two' }
+          ]}
+        />
+      );
+
+      expect(screen.getByText('Two')).toBeInTheDocument();
+    });
   });
 
   describe('disabled', () => {

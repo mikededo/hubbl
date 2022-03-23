@@ -21,7 +21,7 @@ export type VirtualGymDialogProps = {
    *
    * @default undefined
    */
-  defaultValues?: VirtualGymFormFields;
+  defaultValues?: Partial<VirtualGymFormFields>;
 
   /**
    * Callback to run when the form has been successfully
@@ -37,7 +37,10 @@ const VirtualGymDialog = ({
   onSubmit,
   ...props
 }: VirtualGymDialogProps): JSX.Element => {
-  const methods = useForm<VirtualGymFormFields>({ defaultValues });
+  const methods = useForm<VirtualGymFormFields>({
+    defaultValues,
+    shouldUnregister: true
+  });
 
   const handleOnSubmit = (data: VirtualGymFormFields) => {
     onSubmit?.(data);

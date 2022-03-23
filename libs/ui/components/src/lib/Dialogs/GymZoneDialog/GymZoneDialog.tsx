@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { FormProvider, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 
@@ -24,7 +26,7 @@ export type GymZoneDialogProps = {
    *
    * @default undefined
    */
-  defaultValues?: GymZoneFormFields;
+  defaultValues?: Partial<GymZoneFormFields>;
 
   /**
    * Callback to run when the form has been successfully
@@ -64,6 +66,15 @@ const GymZoneDialog = ({
   if (error) {
     onError('An error occurred.');
   }
+
+  useEffect(() => {
+    if (data && data.length) {
+      methods.reset({
+        ...defaultValues,
+        virtualGym: defaultValues?.virtualGym ?? data[0].id
+      });
+    }
+  }, [data, defaultValues, methods]);
 
   return (
     <Base {...props}>

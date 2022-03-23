@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 import { VirtualGymDTO } from '@hubbl/shared/models/dto';
-import { SingleHandler } from '@hubbl/shared/types';
+import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
 import { notForwardOne } from '@hubbl/utils';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import {
@@ -96,15 +96,15 @@ const VirtualGymListItem = ({
 }: VirtualGymListItemProps): JSX.Element => {
   const [iteration, setIteration] = useState(0);
 
-  const decrementIteration = () => {
+  const decrementIteration: EmptyHandler = () => {
     setIteration((prev) => prev - 1);
   };
 
-  const incrementIteration = () => {
+  const incrementIteration: EmptyHandler = () => {
     setIteration((prev) => prev + 1);
   };
 
-  const handleOnAddClick = () => {
+  const handleOnAddClick: EmptyHandler = () => {
     onAddGymZone?.(virtualGym.id);
   };
 
