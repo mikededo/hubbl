@@ -16,7 +16,8 @@ const FixedLinearProgress = styled(LinearProgress)({
   position: 'fixed',
   left: 0,
   right: 0,
-  top: 0
+  top: 0, 
+  zIndex: 1000
 });
 
 const LoadingContext = createContext<LoadingContextValue>(

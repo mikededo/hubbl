@@ -1,5 +1,4 @@
 import { act } from 'react-dom/test-utils';
-import { FormProvider, useForm } from 'react-hook-form';
 import * as swr from 'swr';
 
 import * as ctx from '@hubbl/data-access/contexts';
@@ -9,7 +8,7 @@ import {
   ToastContext
 } from '@hubbl/data-access/contexts';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { GymZoneFormFields } from '../types';
@@ -17,11 +16,13 @@ import GymZoneDialog from './GymZoneDialog';
 
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
+  const app = jest.fn();
+  const toast = jest.fn();
 
   return {
     ...actual,
-    useAppContext: jest.fn(),
-    useToastContext: jest.fn()
+    useAppContext: app,
+    useToastContext: toast
   };
 });
 jest.mock('axios');
@@ -34,31 +35,33 @@ const MockComponent = ({
   defaultValues?: GymZoneFormFields;
   open: boolean;
   onSubmit?: any;
-}) => {
-  const { control, ...rest } = useForm<GymZoneFormFields>();
-
-  return (
-    <AppProvider>
-      <ThemeProvider theme={createTheme()}>
-        <ToastContext>
-          <FormProvider {...{ control, ...rest }}>
-            <GymZoneDialog
-              title="Create gym zone"
-              defaultValues={defaultValues}
-              open={open}
-              onSubmit={onSubmit}
-            />
-          </FormProvider>
-        </ToastContext>
-      </ThemeProvider>
-    </AppProvider>
-  );
-};
+}) => (
+  <AppProvider>
+    <ThemeProvider theme={createTheme()}>
+      <ToastContext>
+        <GymZoneDialog
+          title="Create gym zone"
+          defaultValues={defaultValues}
+          open={open}
+          onSubmit={onSubmit}
+        />
+      </ToastContext>
+    </ThemeProvider>
+  </AppProvider>
+);
 
 describe('<GymZoneDialog />', () => {
   const fetcher = jest.fn();
   const swrSpy = jest.spyOn(swr, 'default');
   const onError = jest.fn();
+
+  const response = {
+    data: [
+      { id: 1, name: 'One' },
+      { id: 2, name: 'Two' }
+    ],
+    error: null
+  };
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -68,16 +71,7 @@ describe('<GymZoneDialog />', () => {
       API: { fetcher }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({ onError });
-    swrSpy.mockImplementation(
-      () =>
-        ({
-          data: [
-            { id: 1, name: 'One' },
-            { id: 2, name: 'Two' }
-          ],
-          error: null
-        } as any)
-    );
+    swrSpy.mockImplementation(() => response as any);
   });
 
   describe('open', () => {
@@ -94,7 +88,7 @@ describe('<GymZoneDialog />', () => {
 
       expect(screen.queryByRole('dialog')).toBeInTheDocument();
       expect(screen.getByText('Create gym zone')).toBeInTheDocument();
-      expect(swrSpy).toHaveBeenCalledTimes(1);
+      expect(swrSpy).toHaveBeenCalled();
     });
   });
 
@@ -192,19 +186,17 @@ describe('<GymZoneDialog />', () => {
         userEvent.click(screen.getByText('Save'));
       });
 
-      await waitFor(() => {
-        expect(onSubmitSpy).toHaveBeenCalledTimes(1);
-        expect(onSubmitSpy).toHaveBeenCalledWith({
-          name: 'Name',
-          description: 'Gym description',
-          capacity: 25,
-          isClassType: false,
-          maskRequired: true,
-          covidPassport: true,
-          openTime: '10:00',
-          closeTime: '22:00',
-          virtualGym: 1
-        });
+      expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+      expect(onSubmitSpy).toHaveBeenCalledWith({
+        name: 'Name',
+        description: 'Gym description',
+        capacity: 25,
+        isClassType: false,
+        maskRequired: true,
+        covidPassport: true,
+        openTime: '10:00',
+        closeTime: '22:00',
+        virtualGym: 1
       });
     });
   });

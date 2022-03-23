@@ -82,7 +82,7 @@ const SelectInput = <T extends FieldValues, J extends SelectItem[]>({
       }) => (
         <Select
           name={name}
-          value={value}
+          value={options.length ? value : ''}
           input={<InputBase />}
           error={!!error}
           inputRef={ref}

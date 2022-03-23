@@ -1,10 +1,11 @@
+import { useEffect, useState } from 'react';
+
 import { useFormContext } from 'react-hook-form';
 
 import { VirtualGymDTO } from '@hubbl/shared/models/dto';
 
 import SelectInput, { SelectItem } from '../../../SelectInput';
 import { GymZoneFormFields } from '../../types';
-import { useEffect, useState } from 'react';
 
 export type GymZoneVirtualGymProps = {
   virtualGyms?: VirtualGymDTO[];
@@ -13,7 +14,7 @@ export type GymZoneVirtualGymProps = {
 const GymZoneVirtualGym = ({
   virtualGyms
 }: GymZoneVirtualGymProps): JSX.Element => {
-  const { control, setValue } = useFormContext<GymZoneFormFields>();
+  const { control, getValues, setValue } = useFormContext<GymZoneFormFields>();
 
   // A state is required since, whent he dialog unmounts,
   // the virtualGyms prop becomes undefined and therefore,
@@ -31,16 +32,18 @@ const GymZoneVirtualGym = ({
   useEffect(() => {
     if (virtualGyms?.length) {
       setOptions(virtualGyms);
-      setValue('virtualGym', virtualGyms[0].id);
+      setValue(
+        'virtualGym',
+        getValues('virtualGym') ? getValues('virtualGym') : virtualGyms[0].id
+      );
     }
-  }, [virtualGyms, setValue]);
+  }, [virtualGyms, getValues, setValue]);
 
   return (
     <SelectInput
       control={control}
       formName="virtualGym"
       label="Virtual gym"
-      defaultValue={virtualGyms?.length ? virtualGyms[0].id : ''}
       // Placehoder is not displayed, but used in tests
       placeholder="Select a virtual gym"
       inputProps={{ title: 'gym-zone-virtual-gym' }}
