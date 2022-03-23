@@ -34,19 +34,23 @@ class IVirtualGymFetchController extends BaseController {
 
       // Find the virtual gyms of the gym to which the token is validated
       try {
-        const result = await this.service
-          .createQueryBuilder({ alias: 'virtualGym' })
-          .where('virtualGym.gym = :gym', { gym: (person.gym as Gym).id })
-          .leftJoinAndMapMany(
-            'virtualGym.gymZones',
-            'virtualGym.gymZones',
-            'gz'
-          )
-          .getMany();
+        const { level } = req.query;
+
+        const query = this.service.createQueryBuilder({ alias: 'virtualGym' });
+
+        if (+level !== 0) {
+          query
+            .where('virtualGym.gym = :gym', { gym: (person.gym as Gym).id })
+            .leftJoinAndMapMany(
+              'virtualGym.gymZones',
+              'virtualGym.gymZones',
+              'gz'
+            );
+        }
 
         return this.ok(
           res,
-          result.map((vg) => VirtualGymDTO.fromClass(vg))
+          (await query.getMany()).map((vg) => VirtualGymDTO.fromClass(vg))
         );
       } catch (_) {
         log.error(

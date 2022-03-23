@@ -37,7 +37,11 @@ describe('VirtualGym Controller', () => {
     ...mockVirtualGym,
     toClass: jest.fn()
   };
-  const mockReq = { body: {}, headers: { authorization: 'Any token' } } as any;
+  const mockReq = {
+    body: {},
+    headers: { authorization: 'Any token' },
+    query: { level: 1 }
+  } as any;
   const mockRes = { locals: { token: { id: 1, user: 'owner' } } } as any;
 
   const mockService = {
@@ -117,6 +121,41 @@ describe('VirtualGym Controller', () => {
       expect(mockService.where).toHaveBeenCalledWith('virtualGym.gym = :gym', {
         gym: mockPerson.gym.id
       });
+      expect(mockService.getMany).toHaveBeenCalledTimes(1);
+      expect(fromClassSpy).toHaveBeenCalledTimes(2);
+      expect(okSpy).toHaveBeenCalledTimes(1);
+      expect(okSpy).toHaveBeenCalledWith(mockRes, [mockDto, mockDto]);
+    });
+
+    it('should not join the gyms if level is 0', async () => {
+      mockService.getMany.mockResolvedValue([mockVirtualGym, mockVirtualGym]);
+      mockService.findOne.mockResolvedValue(mockPerson);
+
+      VirtualGymFetchController['service'] = mockService as any;
+      VirtualGymFetchController['personService'] = mockService as any;
+
+      const okSpy = jest
+        .spyOn(VirtualGymFetchController, 'ok')
+        .mockReturnValue({} as any);
+
+      await VirtualGymFetchController.execute(
+        {
+          ...mockReq,
+          query: { level: 0 }
+        },
+        mockRes
+      );
+
+      expect(mockService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockService.findOne).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
+      expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
+        alias: 'virtualGym'
+      });
+      expect(mockService.leftJoinAndMapMany).not.toHaveBeenCalled();
+      expect(mockService.where).not.toHaveBeenCalled();
       expect(mockService.getMany).toHaveBeenCalledTimes(1);
       expect(fromClassSpy).toHaveBeenCalledTimes(2);
       expect(okSpy).toHaveBeenCalledTimes(1);
