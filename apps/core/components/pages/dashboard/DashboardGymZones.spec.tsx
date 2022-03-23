@@ -22,8 +22,9 @@ import DashboardGymZones from './DashboardGymZones';
 
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
+  const app = jest.fn();
 
-  return { ...actual, useAppContext: jest.fn() };
+  return { ...actual, useAppContext: app };
 });
 jest.mock('axios');
 
@@ -167,16 +168,21 @@ describe('<DasboardGymZones/>', () => {
 
   it('should create a new gym zone', async () => {
     const mutateSpy = jest.fn().mockImplementation();
+    // Constants have to be used so useEffect is not infinitely triggered
+    const emptyResponse = {}
+    const virtualGymList = { data: { gymZones: [] }, mutate: mutateSpy };
+    const defaultResponse = { data: [response[0]] };
+
     jest.spyOn(swr, 'default').mockImplementation((key) => {
       if (!key) {
-        return {} as any;
+        return emptyResponse as any;
       }
 
       if (key !== '/virtual-gyms?level=0') {
-        return { data: { gymZones: [] }, mutate: mutateSpy } as never;
+        return virtualGymList as never;
       }
 
-      return { data: [response[0]] } as never;
+      return defaultResponse as never;
     });
     poster.mockImplementation(() => response[0]);
 

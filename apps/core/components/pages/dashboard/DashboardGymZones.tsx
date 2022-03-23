@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { useAppContext, useLoadingContext } from '@hubbl/data-access/contexts';
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
-import { EmptyHandler } from '@hubbl/shared/types';
+import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
 import {
   DashboardGymZones as GymZonesGrid,
   GymZoneDialog,
@@ -35,15 +35,17 @@ const DashboardGymZones = () => {
     setOpenDialog(false);
   };
 
-  const handleOnSubmitGymZone = async (formData: GymZoneFormFields) => {
+  const handleOnSubmitGymZone: SingleHandler<GymZoneFormFields> = async (
+    formData
+  ) => {
     setOpenDialog(false);
     onPushLoading();
 
     // The data should include the gym
-    const created = await poster<GymZoneDTO>(`/virtual-gyms/${1}/gym-zones`, {
-      ...formData,
-      gym: user.gym.id
-    });
+    const created = await poster<GymZoneDTO>(
+      `/virtual-gyms/${formData.virtualGym}/gym-zones`,
+      { ...formData, gym: user.gym.id }
+    );
 
     // Mutate the state once the virtual gym has been created
     await mutate({ ...data, gymZones: [created, ...data.gymZones] });
