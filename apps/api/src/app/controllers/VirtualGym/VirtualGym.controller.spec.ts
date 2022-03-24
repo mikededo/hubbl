@@ -11,6 +11,7 @@ import {
   VirtualGymCreateController,
   VirtualGymDeleteController,
   VirtualGymFetchController,
+  VirtualGymFetchSingleController,
   VirtualGymUpdateController
 } from './VirtualGym.controller';
 
@@ -40,7 +41,8 @@ describe('VirtualGym Controller', () => {
   const mockReq = {
     body: {},
     headers: { authorization: 'Any token' },
-    query: { level: 1 }
+    query: { level: 1 },
+    params: { id: 1 }
   } as any;
   const mockRes = { locals: { token: { id: 1, user: 'owner' } } } as any;
 
@@ -49,7 +51,8 @@ describe('VirtualGym Controller', () => {
     createQueryBuilder: jest.fn().mockReturnThis(),
     leftJoinAndMapMany: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
-    getMany: jest.fn()
+    getMany: jest.fn(),
+    getOne: jest.fn()
   };
 
   const fromClassSpy = jest
@@ -75,119 +78,49 @@ describe('VirtualGym Controller', () => {
     );
   };
 
-  describe('VirtualGymFetchController', () => {
-    it('should create the services if does not have any', async () => {
-      jest.spyOn(VirtualGymFetchController, 'fail').mockImplementation();
+  describe('fetch', () => {
+    type Controller =
+      | typeof VirtualGymFetchController
+      | typeof VirtualGymFetchSingleController;
 
-      VirtualGymFetchController['service'] = undefined;
-      VirtualGymFetchController['personService'] = undefined;
+    const checkServices = async (controller: Controller) => {
+      jest.spyOn(controller, 'fail').mockImplementation();
 
-      await VirtualGymFetchController.execute({} as any, {} as any);
+      controller['service'] = undefined;
+      controller['personService'] = undefined;
+
+      await controller.execute({} as any, {} as any);
 
       expect(VirtualGymService).toHaveBeenCalled();
       expect(VirtualGymService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalled();
       expect(PersonService).toHaveBeenCalledWith(getRepository);
-    });
+    };
 
-    it('should search for the list of virtual gyms of the auth user gym', async () => {
-      mockService.getMany.mockResolvedValue([mockVirtualGym, mockVirtualGym]);
-      mockService.findOne.mockResolvedValue(mockPerson);
-
-      VirtualGymFetchController['service'] = mockService as any;
-      VirtualGymFetchController['personService'] = mockService as any;
-
-      const okSpy = jest
-        .spyOn(VirtualGymFetchController, 'ok')
-        .mockReturnValue({} as any);
-
-      await VirtualGymFetchController.execute(mockReq, mockRes);
-
-      expect(mockService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockService.findOne).toHaveBeenCalledWith({
-        id: mockRes.locals.token.id
-      });
-      expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
-        alias: 'virtualGym'
-      });
-      expect(mockService.leftJoinAndMapMany).toHaveBeenCalledTimes(1);
-      expect(mockService.leftJoinAndMapMany).toHaveBeenCalledWith(
-        'virtualGym.gymZones',
-        'virtualGym.gymZones',
-        'gz'
-      );
-      expect(mockService.where).toHaveBeenCalledTimes(1);
-      expect(mockService.where).toHaveBeenCalledWith('virtualGym.gym = :gym', {
-        gym: mockPerson.gym.id
-      });
-      expect(mockService.getMany).toHaveBeenCalledTimes(1);
-      expect(fromClassSpy).toHaveBeenCalledTimes(2);
-      expect(okSpy).toHaveBeenCalledTimes(1);
-      expect(okSpy).toHaveBeenCalledWith(mockRes, [mockDto, mockDto]);
-    });
-
-    it('should not join the gyms if level is 0', async () => {
-      mockService.getMany.mockResolvedValue([mockVirtualGym, mockVirtualGym]);
-      mockService.findOne.mockResolvedValue(mockPerson);
-
-      VirtualGymFetchController['service'] = mockService as any;
-      VirtualGymFetchController['personService'] = mockService as any;
-
-      const okSpy = jest
-        .spyOn(VirtualGymFetchController, 'ok')
-        .mockReturnValue({} as any);
-
-      await VirtualGymFetchController.execute(
-        {
-          ...mockReq,
-          query: { level: 0 }
-        },
-        mockRes
-      );
-
-      expect(mockService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockService.findOne).toHaveBeenCalledWith({
-        id: mockRes.locals.token.id
-      });
-      expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
-        alias: 'virtualGym'
-      });
-      expect(mockService.leftJoinAndMapMany).not.toHaveBeenCalled();
-      expect(mockService.where).not.toHaveBeenCalled();
-      expect(mockService.getMany).toHaveBeenCalledTimes(1);
-      expect(fromClassSpy).toHaveBeenCalledTimes(2);
-      expect(okSpy).toHaveBeenCalledTimes(1);
-      expect(okSpy).toHaveBeenCalledWith(mockRes, [mockDto, mockDto]);
-    });
-
-    it('should call fail on person service error', async () => {
-      const failSpy = jest
-        .spyOn(VirtualGymFetchController, 'fail')
-        .mockImplementation();
+    const onPersonServiceError = async (controller: Controller) => {
+      const failSpy = jest.spyOn(controller, 'fail').mockImplementation();
       mockService.findOne.mockRejectedValue({});
 
-      VirtualGymFetchController['service'] = {} as any;
-      VirtualGymFetchController['personService'] = mockService as any;
+      controller['service'] = {} as any;
+      controller['personService'] = mockService as any;
 
-      await VirtualGymFetchController.execute(mockReq, mockRes);
+      await controller.execute(mockReq, mockRes);
 
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       failSpyAsserts(failSpy);
-    });
+    };
 
-    it('should call clientError if person does not exist', async () => {
+    const onClientErrorFail = async (controller: Controller) => {
       const clientErrorSpy = jest
-        .spyOn(VirtualGymFetchController, 'clientError')
+        .spyOn(controller, 'clientError')
         .mockImplementation();
       mockService.findOne.mockResolvedValue(undefined);
 
-      VirtualGymFetchController['service'] = {} as any;
-      VirtualGymFetchController['personService'] = mockService as any;
+      controller['service'] = {} as any;
+      controller['personService'] = mockService as any;
 
-      await VirtualGymFetchController.execute(mockReq, mockRes);
+      await controller.execute(mockReq, mockRes);
 
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
       // Ensure fail is called
@@ -196,26 +129,176 @@ describe('VirtualGym Controller', () => {
         mockRes,
         'Person does not exist'
       );
-    });
+    };
 
-    it('should call fail on service error', async () => {
-      const failSpy = jest
-        .spyOn(VirtualGymFetchController, 'fail')
-        .mockImplementation();
+    const onServiceFail = async (
+      controller: Controller,
+      get: 'getMany' | 'getOne'
+    ) => {
+      const failSpy = jest.spyOn(controller, 'fail').mockImplementation();
       mockService.findOne.mockResolvedValue(mockPerson);
-      mockService.getMany.mockRejectedValue({});
+      mockService[get].mockRejectedValue({});
 
-      VirtualGymFetchController['service'] = mockService as any;
-      VirtualGymFetchController['personService'] = mockService as any;
+      controller['service'] = mockService as any;
+      controller['personService'] = mockService as any;
 
-      await VirtualGymFetchController.execute(mockReq, mockRes);
+      await controller.execute(mockReq, mockRes);
 
       expect(mockService.findOne).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
-      expect(mockService.getMany).toHaveBeenCalledTimes(1);
+      expect(mockService[get]).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       failSpyAsserts(failSpy);
+    };
+
+    describe('VirtualGymFetchController', () => {
+      it('should create the services if does not have any', async () => {
+        await checkServices(VirtualGymFetchController);
+      });
+
+      it('should search for the list of virtual gyms of the auth user gym', async () => {
+        mockService.getMany.mockResolvedValue([mockVirtualGym, mockVirtualGym]);
+        mockService.findOne.mockResolvedValue(mockPerson);
+
+        VirtualGymFetchController['service'] = mockService as any;
+        VirtualGymFetchController['personService'] = mockService as any;
+
+        const okSpy = jest
+          .spyOn(VirtualGymFetchController, 'ok')
+          .mockReturnValue({} as any);
+
+        await VirtualGymFetchController.execute(mockReq, mockRes);
+
+        expect(mockService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockService.findOne).toHaveBeenCalledWith({
+          id: mockRes.locals.token.id
+        });
+        expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
+        expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
+          alias: 'virtualGym'
+        });
+        expect(mockService.leftJoinAndMapMany).toHaveBeenCalledTimes(1);
+        expect(mockService.leftJoinAndMapMany).toHaveBeenCalledWith(
+          'virtualGym.gymZones',
+          'virtualGym.gymZones',
+          'gz'
+        );
+        expect(mockService.where).toHaveBeenCalledTimes(1);
+        expect(mockService.where).toHaveBeenCalledWith(
+          'virtualGym.gym = :gym',
+          {
+            gym: mockPerson.gym.id
+          }
+        );
+        expect(mockService.getMany).toHaveBeenCalledTimes(1);
+        expect(fromClassSpy).toHaveBeenCalledTimes(2);
+        expect(okSpy).toHaveBeenCalledTimes(1);
+        expect(okSpy).toHaveBeenCalledWith(mockRes, [mockDto, mockDto]);
+      });
+
+      it('should not join the gyms if level is 0', async () => {
+        mockService.getMany.mockResolvedValue([mockVirtualGym, mockVirtualGym]);
+        mockService.findOne.mockResolvedValue(mockPerson);
+
+        VirtualGymFetchController['service'] = mockService as any;
+        VirtualGymFetchController['personService'] = mockService as any;
+
+        const okSpy = jest
+          .spyOn(VirtualGymFetchController, 'ok')
+          .mockReturnValue({} as any);
+
+        await VirtualGymFetchController.execute(
+          {
+            ...mockReq,
+            query: { level: 0 }
+          },
+          mockRes
+        );
+
+        expect(mockService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockService.findOne).toHaveBeenCalledWith({
+          id: mockRes.locals.token.id
+        });
+        expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
+        expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
+          alias: 'virtualGym'
+        });
+        expect(mockService.leftJoinAndMapMany).not.toHaveBeenCalled();
+        expect(mockService.where).not.toHaveBeenCalled();
+        expect(mockService.getMany).toHaveBeenCalledTimes(1);
+        expect(fromClassSpy).toHaveBeenCalledTimes(2);
+        expect(okSpy).toHaveBeenCalledTimes(1);
+        expect(okSpy).toHaveBeenCalledWith(mockRes, [mockDto, mockDto]);
+      });
+
+      it('should call fail on person service error', async () => {
+        await onPersonServiceError(VirtualGymFetchController);
+      });
+
+      it('should call clientError if person does not exist', async () => {
+        await onClientErrorFail(VirtualGymFetchController);
+      });
+
+      it('should call fail on service error', async () => {
+        await onServiceFail(VirtualGymFetchController, 'getMany');
+      });
+    });
+
+    describe('VirtualGymFetchSingleController', () => {
+      it('should create the services if does not have any', async () => {
+        await checkServices(VirtualGymFetchSingleController);
+      });
+
+      it('should search for a virtual gym of the auth user gym', async () => {
+        mockService.getOne.mockResolvedValue(mockVirtualGym);
+        mockService.findOne.mockResolvedValue(mockPerson);
+
+        VirtualGymFetchSingleController['service'] = mockService as any;
+        VirtualGymFetchSingleController['personService'] = mockService as any;
+
+        const okSpy = jest
+          .spyOn(VirtualGymFetchSingleController, 'ok')
+          .mockReturnValue({} as any);
+
+        await VirtualGymFetchSingleController.execute(mockReq, mockRes);
+
+        expect(mockService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockService.findOne).toHaveBeenCalledWith({
+          id: mockRes.locals.token.id
+        });
+        expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
+        expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
+          alias: 'virtualGym'
+        });
+        expect(mockService.leftJoinAndMapMany).toHaveBeenCalledTimes(1);
+        expect(mockService.leftJoinAndMapMany).toHaveBeenCalledWith(
+          'virtualGym.gymZones',
+          'virtualGym.gymZones',
+          'gz'
+        );
+        expect(mockService.where).toHaveBeenCalledTimes(1);
+        expect(mockService.where).toHaveBeenCalledWith(
+          'virtualGym.gym = :gym',
+          { id: mockReq.params.id, gym: mockPerson.gym.id }
+        );
+        expect(mockService.getOne).toHaveBeenCalledTimes(1);
+        expect(fromClassSpy).toHaveBeenCalledTimes(1);
+        expect(okSpy).toHaveBeenCalledTimes(1);
+        expect(okSpy).toHaveBeenCalledWith(mockRes, mockDto);
+      });
+
+      it('should call fail on person service error', async () => {
+        await onPersonServiceError(VirtualGymFetchSingleController);
+      });
+
+      it('should call clientError if person does not exist', async () => {
+        await onClientErrorFail(VirtualGymFetchSingleController);
+      });
+
+      it('should call fail on service error', async () => {
+        await onServiceFail(VirtualGymFetchSingleController, 'getOne');
+      });
     });
   });
 

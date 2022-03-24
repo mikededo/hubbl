@@ -4,7 +4,8 @@ import {
   VirtualGymCreateController,
   VirtualGymDeleteController,
   VirtualGymFetchController,
-  VirtualGymUpdateController
+  VirtualGymUpdateController,
+  VirtualGymFetchSingleController
 } from '../controllers';
 import GymZoneRouter from './GymZone.routes';
 import middlewares from '../middlewares';
@@ -17,6 +18,14 @@ const VirtualGymRouter: Router = Router();
  */
 VirtualGymRouter.get('', middlewares.auth, (req, res) => {
   VirtualGymFetchController.execute(req, res);
+});
+
+/**
+ * @description Fetches the list of virtual gyms for the current
+ * user.
+ */
+VirtualGymRouter.get('/:id', middlewares.auth, (req, res) => {
+  VirtualGymFetchSingleController.execute(req, res);
 });
 
 /**
