@@ -1,12 +1,26 @@
-/* eslint-disable-next-line */
-export interface IdProps {}
+import { PageHeader } from '@hubbl/ui/components';
+import { ReactElement } from 'react';
 
-export function Id(props: IdProps) {
-  return (
-    <div>
-      <h1>Welcome to Id!</h1>
-    </div>
-  );
-}
+import { BaseLayout, GeneralPages } from '../../../components';
 
-export default Id;
+const VirtualGym = () => (
+  <>
+    <PageHeader
+      title="Virtual gym"
+      breadcrumbs={[
+        { href: '/virtual-gyms', label: 'Virtual gyms' },
+        { href: '/virtual-gyms/id', label: 'Virtual gym name' }
+      ]}
+    />
+  </>
+);
+
+VirtualGym.getLayout = (page: ReactElement) => (
+  <GeneralPages>
+    <BaseLayout header="Gym name" selected="virtualGyms">
+      {page}
+    </BaseLayout>
+  </GeneralPages>
+);
+
+export default VirtualGym;
