@@ -124,8 +124,8 @@ class IVirtualGymFetchSingleController extends BaseController {
       } catch (e) {
         return this.onFail(res, e, 'fetch');
       }
-    } catch (_) {
-      return this.onFail(res, _, 'fetch');
+    } catch (e) {
+      return this.onFail(res, e, 'fetch');
     }
   }
 }

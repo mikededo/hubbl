@@ -50,6 +50,27 @@ export const fetchLevel = async () => {
   expect(fetchRes.body[0].gymZones.length).toBe(0);
 };
 
+export const fetchSingle = async (by: 'owner' | 'worker' | 'client') => {
+  const testApp = supertest(app);
+  const loginRes = await util.common.loginByAny(testApp, by);
+
+  const fetchRes = await testApp
+    .get(`/virtual-gyms/${ENTITY_IDENTIFIERS.VIRTUAL_GYM}`)
+    .set('Authorization', `Bearer ${loginRes.body.token}`);
+
+  expect(fetchRes.statusCode).toBe(200);
+  expect(fetchRes.body).toBeDefined();
+  util.toBeNumber(fetchRes.body.id);
+  util.toBeString(fetchRes.body.name);
+  util.toBeString(fetchRes.body.description);
+  util.toBeString(fetchRes.body.location);
+  util.toBeNumber(fetchRes.body.capacity);
+  util.toBeString(fetchRes.body.phone);
+  util.toBeString(fetchRes.body.openTime);
+  util.toBeString(fetchRes.body.closeTime);
+  expect(fetchRes.body.gymZones.length).toBe(3);
+};
+
 export const createUpdateAndDeleteByOwner = async () => {
   const testApp = supertest(app);
   const loginRes = await loginByOwner(testApp);

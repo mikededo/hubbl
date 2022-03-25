@@ -21,8 +21,7 @@ VirtualGymRouter.get('', middlewares.auth, (req, res) => {
 });
 
 /**
- * @description Fetches the list of virtual gyms for the current
- * user.
+ * @description Fetches a specific virtual gym.
  */
 VirtualGymRouter.get('/:id', middlewares.auth, (req, res) => {
   VirtualGymFetchSingleController.execute(req, res);
