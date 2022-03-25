@@ -18,6 +18,7 @@ export {
 
 export * from './Dashboard';
 export * from './Dialogs';
+export * from './Layout';
 export * from './Settings';
 
 export type { RequiredUserInfoFields, UserPasswordFields } from './Settings';

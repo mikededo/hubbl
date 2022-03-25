@@ -1,3 +1,4 @@
+import { notForwardOne } from '@hubbl/utils';
 import {
   Breakpoint,
   Divider,
@@ -10,14 +11,26 @@ import {
 
 import SideNavGroup, { SideNavGroupItem } from '../SideNavGroup';
 
-const Container = styled('nav')(({ theme }) => ({
+type ContainerProps = {
+  /**
+   * Breakpoint in which the side nav is shrink
+   *
+   * @default 'lg'
+   */
+  breakpoint?: Breakpoint;
+};
+
+const Container = styled('nav', {
+  shouldForwardProp: notForwardOne('breakpoint')
+})<ContainerProps>(({ theme, breakpoint = 'lg' }) => ({
   minWidth: theme.spacing(40),
   width: theme.spacing(40),
   margin: theme.spacing(6, 4, 4),
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(4),
-  [theme.breakpoints.down('lg')]: {
+  transition: theme.transitions.create(['width', 'minWidth']),
+  [theme.breakpoints.down(breakpoint)]: {
     minWidth: theme.spacing(8),
     width: theme.spacing(8)
   }
@@ -58,7 +71,7 @@ const SideNav = <T extends SideNavGroupItem>({
   );
 
   return (
-    <Container>
+    <Container breakpoint={breakpoint}>
       <Typography variant="h2" textAlign="center">
         {shrink ? header[0].toUpperCase() : header}
       </Typography>
