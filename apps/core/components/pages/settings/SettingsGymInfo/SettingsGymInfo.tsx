@@ -68,7 +68,7 @@ const SettingsGymInfo = ({
 
         <Stack gap={2}>
           <Grid spacing={{ xs: 2, sm: 2, md: 3 }} container>
-            <Grid sm={12} md={6} lg={4} item>
+            <Grid xs={12} sm={12} md={6} lg={4} item>
               <Input
                 label="Gym name"
                 labelVariant="body1"
@@ -81,7 +81,7 @@ const SettingsGymInfo = ({
               />
             </Grid>
 
-            <Grid sm={12} md={6} lg={4} item>
+            <Grid xs={12} sm={12} md={6} lg={4} item>
               <Input
                 label="Gym email"
                 labelVariant="body1"
@@ -94,7 +94,7 @@ const SettingsGymInfo = ({
               />
             </Grid>
 
-            <Grid sm={12} md={6} lg={4} item>
+            <Grid xs={12} sm={12} md={6} lg={4} item>
               <Input
                 label="Gym phone"
                 labelVariant="body1"

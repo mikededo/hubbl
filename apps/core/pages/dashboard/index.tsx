@@ -28,15 +28,15 @@ const Dashboard = () => {
       <Pages.Dashboard.DashboardGymZones />
 
       <ResponsiveGrid gap={{ xs: 3, sm: 2, md: 3 }} container>
-        <Grid  item>
+        <Grid item>
           <Pages.Dashboard.DashboardTrainers />
         </Grid>
 
-        <Grid  item>
+        <Grid item>
           <Pages.Dashboard.DashboardEventTemplates />
         </Grid>
 
-        <Grid  item>
+        <Grid item>
           <Pages.Dashboard.DashboardTrainers />
         </Grid>
       </ResponsiveGrid>
