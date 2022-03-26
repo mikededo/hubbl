@@ -1,5 +1,5 @@
 import { AppPalette } from '@hubbl/shared/types';
-import { notForwardAny } from '@hubbl/utils';
+import { notForwardOne } from '@hubbl/utils';
 import { Box, BoxProps, styled } from '@mui/material';
 
 type ColorProps = {
@@ -10,12 +10,12 @@ type ColorProps = {
 };
 
 export default styled(Box, {
-  shouldForwardProp: notForwardAny(['color', 'selected'])
+  shouldForwardProp: notForwardOne('color')
 })<BoxProps & ColorProps>(({ theme, color }) => ({
-  minWidth: theme.spacing(3),
-  maxWidth: theme.spacing(3),
-  minHeight: theme.spacing(3),
-  maxHeight: theme.spacing(3),
+  minWidth: theme.spacing(2),
+  maxWidth: theme.spacing(2),
+  minHeight: theme.spacing(2),
+  maxHeight: theme.spacing(2),
   backgroundColor: color,
   borderRadius: '100%',
   cursor: 'pointer'
