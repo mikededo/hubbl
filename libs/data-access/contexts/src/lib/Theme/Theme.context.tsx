@@ -91,6 +91,13 @@ const AppTheme: Theme = createTheme({
         }
       }
     },
+    MuiGrid: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create(['gap'])
+        })
+      }
+    },
     MuiInputBase: {
       styleOverrides: {
         adornedStart: ({ theme }) => ({
