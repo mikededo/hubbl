@@ -122,7 +122,7 @@ const VirtualGymListItem = ({
             data-testid="gym-zone-carousel"
           >
             {virtualGym.gymZones.map((gymZone) => (
-              <CarouselItem iteration={iteration} width={46}>
+              <CarouselItem key={gymZone.id} iteration={iteration} width={46}>
                 <Link
                   href={`/virtual-gyms/${virtualGym.id}/gym-zones/${gymZone.id}`}
                   passHref

@@ -14,22 +14,20 @@ import SideNavGroup, { SideNavGroupItem } from '../SideNavGroup';
 type ContainerProps = {
   /**
    * Breakpoint in which the side nav is shrink
-   *
-   * @default 'lg'
    */
-  breakpoint?: Breakpoint;
+  breakpoint: Breakpoint;
 };
 
 const Container = styled('nav', {
   shouldForwardProp: notForwardOne('breakpoint')
-})<ContainerProps>(({ theme, breakpoint = 'lg' }) => ({
+})<ContainerProps>(({ theme, breakpoint }) => ({
   minWidth: theme.spacing(40),
   width: theme.spacing(40),
   margin: theme.spacing(6, 4, 4),
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(4),
-  transition: theme.transitions.create(['width', 'minWidth']),
+  transition: theme.transitions.create(['width', 'min-width']),
   [theme.breakpoints.down(breakpoint)]: {
     minWidth: theme.spacing(8),
     width: theme.spacing(8)
