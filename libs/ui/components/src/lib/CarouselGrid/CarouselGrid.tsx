@@ -9,8 +9,9 @@ const GridWrapper = styled(Stack)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden',
   height: theme.spacing(60),
-  margin: theme.spacing(-3, -3, -3, -1.5),
-  padding: theme.spacing(3, 3, 3, 1.5),
+  width: 'unset',
+  margin: theme.spacing(-3, 1.5, -3, -1.5),
+  padding: theme.spacing(3, 0, 3, 1.5),
   gap: theme.spacing(2.5),
   transition: theme.transitions.create(['margin', 'padding']),
   [theme.breakpoints.down('md')]: {
