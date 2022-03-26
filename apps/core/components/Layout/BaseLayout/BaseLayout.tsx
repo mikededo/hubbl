@@ -30,7 +30,20 @@ const MainContentContainer = styled(Box, {
 })<MainContentContainerProps>(({ theme, topBar }) => ({
   overflow: 'auto',
   width: '100%',
-  padding: theme.spacing(topBar ? 8 : 4, 4, 4)
+  padding: theme.spacing(topBar ? 8 : 4, 4, 4),
+  transition: theme.transitions.create(['padding']),
+  [theme.breakpoints.down('lg')]: {
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3)
+  },
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2)
+  },
+  [theme.breakpoints.down('sm')]: {
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1)
+  }
 }));
 
 type ContentStackProps = {

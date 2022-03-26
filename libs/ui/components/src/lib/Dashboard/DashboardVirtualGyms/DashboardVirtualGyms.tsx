@@ -7,6 +7,13 @@ import { Grid, Stack, styled, Typography } from '@mui/material';
 import AddItemPlaceholder from '../../AddItemPlaceholder';
 import DashboardVirtualGym from '../DashboardVirtualGym';
 
+const ResponseiveGrid = styled(Grid)(({ theme }) => ({
+  justifyContent: 'flex-start',
+  [theme.breakpoints.down('sm')]: {
+    justifyContent: 'center'
+  }
+}));
+
 export type DashboardVirtualGymsProps = {
   /**
    * List of `VirtualGym`'s to display
@@ -33,7 +40,11 @@ const DashboardVirtualGyms = ({
   <Stack gap={4}>
     <Typography variant="h5">VIRTUAL GYMS</Typography>
 
-    <Grid direction="row" gap={4} container>
+    <ResponseiveGrid
+      direction="row"
+      gap={{ xs: 3, sm: 2, md: 3, lg: 4 }}
+      container
+    >
       {items.slice(0, Math.min(items.length, 5)).map((virtualGym) => (
         <Grid key={virtualGym.id} item>
           <Link href={`/virtual-gyms/${virtualGym.id}`} passHref>
@@ -54,7 +65,7 @@ const DashboardVirtualGyms = ({
           </PlaceholderText>
         </AddItemPlaceholder>
       </Grid>
-    </Grid>
+    </ResponseiveGrid>
   </Stack>
 );
 

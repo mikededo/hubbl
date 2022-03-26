@@ -35,6 +35,7 @@ const SideNavWrapper = ({
 
   return (
     <motion.nav
+      role="menubar"
       animate={{
         marginLeft: hidden
           ? `-${ref?.getBoundingClientRect().width ?? 0}px`

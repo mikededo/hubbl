@@ -4,7 +4,14 @@ import { useAppContext } from '@hubbl/data-access/contexts';
 import { PageHeader } from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages, Pages } from '../../components';
-import { Stack } from '@mui/material';
+import { Grid, styled } from '@mui/material';
+
+const ResponsiveGrid = styled(Grid)(({ theme }) => ({
+  justifyContent: 'flex-start',
+  [theme.breakpoints.down('sm')]: {
+    justifyContent: 'center'
+  }
+}));
 
 const Dashboard = () => {
   const { user } = useAppContext();
@@ -20,13 +27,19 @@ const Dashboard = () => {
 
       <Pages.Dashboard.DashboardGymZones />
 
-      <Stack direction="row" gap={4}>
-        <Pages.Dashboard.DashboardTrainers />
+      <ResponsiveGrid gap={{ xs: 3, sm: 2, md: 3 }} container>
+        <Grid  item>
+          <Pages.Dashboard.DashboardTrainers />
+        </Grid>
 
-        <Pages.Dashboard.DashboardEventTemplates />
+        <Grid  item>
+          <Pages.Dashboard.DashboardEventTemplates />
+        </Grid>
 
-        <Pages.Dashboard.DashboardTrainers />
-      </Stack>
+        <Grid  item>
+          <Pages.Dashboard.DashboardTrainers />
+        </Grid>
+      </ResponsiveGrid>
     </>
   );
 };

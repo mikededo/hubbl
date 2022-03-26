@@ -20,7 +20,7 @@ const ContentContainer = ({ children }: ContentContainerProps): JSX.Element => (
     justifyContent="stretch"
     gap={{
       xs: 0,
-      sm: 1,
+      sm: 0,
       md: 2,
       lg: 4,
       xl: 4
