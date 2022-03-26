@@ -91,6 +91,9 @@ const AppTheme: Theme = createTheme({
         }
       }
     },
+    MuiCardActionArea: {
+      styleOverrides: { root: { color: '#3F3F3F' } }
+    },
     MuiGrid: {
       styleOverrides: {
         root: ({ theme }) => ({
