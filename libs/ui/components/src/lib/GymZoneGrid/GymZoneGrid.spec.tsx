@@ -1,7 +1,6 @@
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 
 import type { GymZoneGridProps } from './GymZoneGrid';
 import GymZoneGrid from './GymZoneGrid';
@@ -67,34 +66,7 @@ describe('<GymZoneGrid />', () => {
     // Add gym zone button
     expect(screen.getByTitle('add-gym-zone')).toBeInTheDocument();
   });
-
-  it('should iterate the carousel', async () => {
-    render(<Component gymZones={gymZones as any} />);
-
-    const prev = screen.getByLabelText('carousel-prev');
-    const next = screen.getByLabelText('carousel-next');
-
-    expect(prev).toBeDisabled();
-    expect(next).not.toBeDisabled();
-
-    await act(async () => {
-      fireEvent.click(next);
-    });
-    await act(async () => {
-      fireEvent.click(next);
-    });
-
-    expect(prev).not.toBeDisabled();
-    expect(next).toBeDisabled();
-
-    await act(async () =>{
-      fireEvent.click(prev);
-    });
-
-    expect(prev).not.toBeDisabled();
-    expect(next).not.toBeDisabled();
-  });
-
+  
   describe('href', () => {
     it('should render the gym zones as links', () => {
       render(<Component gymZones={gymZones as any} href="/base" />);
