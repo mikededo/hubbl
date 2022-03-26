@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 import { VirtualGymDTO } from '@hubbl/shared/models/dto';
 import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
-import { notForwardOne } from '@hubbl/utils';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import {
   alpha,
@@ -17,6 +16,7 @@ import {
 
 import AddItemPlaceholder from '../AddItemPlaceholder';
 import Anchor from '../Anchor';
+import CarouselItem from '../CarouselItem';
 import ContentCard from '../ContentCard';
 import GymZoneListItem from '../GymZoneListItem';
 
@@ -54,21 +54,6 @@ const CarouselStack = styled(Stack)(({ theme }) => ({
   overflow: 'hidden',
   width: '100%',
   '& > *': { flexShrink: 0 }
-}));
-
-type GymZoneWrapperProps = {
-  /**
-   * Amount multiplied by the width of the item to
-   * calculate the translation effect
-   */
-  iteration: number;
-};
-
-const CarouselItemWrapper = styled('div', {
-  shouldForwardProp: notForwardOne('iteration')
-})<GymZoneWrapperProps>(({ theme, iteration }) => ({
-  transform: `translate(${theme.spacing(-(46 * iteration))})`,
-  transition: theme.transitions.create(['transform'], { duration: 200 })
 }));
 
 const PlaceholderText = styled(Typography)({
@@ -137,7 +122,7 @@ const VirtualGymListItem = ({
             data-testid="gym-zone-carousel"
           >
             {virtualGym.gymZones.map((gymZone) => (
-              <CarouselItemWrapper key={gymZone.id} iteration={iteration}>
+              <CarouselItem key={gymZone.id} iteration={iteration} width={46}>
                 <Link
                   href={`/virtual-gyms/${virtualGym.id}/gym-zones/${gymZone.id}`}
                   passHref
@@ -148,10 +133,10 @@ const VirtualGymListItem = ({
                     </ContentCardAction>
                   </Anchor>
                 </Link>
-              </CarouselItemWrapper>
+              </CarouselItem>
             ))}
 
-            <CarouselItemWrapper iteration={iteration}>
+            <CarouselItem iteration={iteration} width={46}>
               <AddItemPlaceholder
                 title={`add-gym-zone-${virtualGym.id}`}
                 height={25}
@@ -162,7 +147,7 @@ const VirtualGymListItem = ({
                   Click me to create a new gym zone!
                 </PlaceholderText>
               </AddItemPlaceholder>
-            </CarouselItemWrapper>
+            </CarouselItem>
           </CarouselStack>
 
           <IconButton

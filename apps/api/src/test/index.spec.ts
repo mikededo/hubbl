@@ -297,6 +297,20 @@ describe('Integration tests', () => {
       });
     });
 
+    describe('fetchSingle', () => {
+      it('should fetch a virtual gym by owner', async () => {
+        await virtualGym.fetchSingle('owner');
+      });
+
+      it('should fetch a virtual gym by worker', async () => {
+        await virtualGym.fetchSingle('worker');
+      });
+
+      it('should fetch a virtual gym by client', async () => {
+        await virtualGym.fetchSingle('client');
+      });
+    })
+
     describe('create, update & delete', () => {
       it('should create, update and delete a virtual gym by an owner', async () => {
         await virtualGym.createUpdateAndDeleteByOwner();

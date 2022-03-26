@@ -1,9 +1,22 @@
-import { Typography, styled, useMediaQuery, Theme } from '@mui/material';
+import {
+  Typography,
+  styled,
+  useMediaQuery,
+  Theme,
+  Breakpoint
+} from '@mui/material';
 import SideNavLink, { SideNavLinkItem } from '../SideNavLink';
 
 const HeaderListItem = styled('li')({ listStyle: 'none' });
 
 export type SideNavGroupItem = {
+  /**
+   * Breakpoint in which the side nav group is shrink
+   *
+   * @default 'lg'
+   */
+  breakpoint?: Breakpoint;
+
   /**
    * Entries of the group
    */
@@ -29,19 +42,22 @@ type SideNavGroupProps = {
 } & SideNavGroupItem;
 
 const SideNavGroup = ({
+  breakpoint = 'lg',
   entries,
   hidden = false,
   name,
   selected
 }: SideNavGroupProps): JSX.Element => {
-  const md = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const shrink = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down(breakpoint)
+  );
 
   return (
     <>
       {!hidden && name && (
         <HeaderListItem>
           <Typography variant="h6">
-            {md ? name[0].toUpperCase() : name}
+            {shrink ? name[0].toUpperCase() : name}
           </Typography>
         </HeaderListItem>
       )}
@@ -49,6 +65,7 @@ const SideNavGroup = ({
       {Object.entries(entries).map(([entry, { label, href }]) => (
         <SideNavLink
           key={entry}
+          breakpoint={breakpoint}
           label={label}
           href={href}
           selected={entry === selected}

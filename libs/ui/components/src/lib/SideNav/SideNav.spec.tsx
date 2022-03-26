@@ -58,7 +58,7 @@ describe('<SideNav />', () => {
       cb(mockTheme);
 
       expect(mockTheme.breakpoints.down).toHaveBeenCalledTimes(1);
-      expect(mockTheme.breakpoints.down).toHaveBeenCalledWith('md');
+      expect(mockTheme.breakpoints.down).toHaveBeenCalledWith('lg');
 
       return true;
     });
@@ -71,5 +71,28 @@ describe('<SideNav />', () => {
 
     expect(utils.container).toBeInTheDocument();
     expect(utils.getByText('S')).toBeInTheDocument();
+  });
+
+  it('should render with the given breakpoints', () => {
+    (useMediaQuery as any as jest.Mock).mockReset().mockImplementation((cb) => {
+      const mockTheme = { breakpoints: { down: jest.fn() } };
+      cb(mockTheme);
+
+      expect(mockTheme.breakpoints.down).toHaveBeenCalledTimes(1);
+      expect(mockTheme.breakpoints.down).toHaveBeenCalledWith('sm');
+
+      return true;
+    });
+
+    render(
+      <ThemeProvider theme={createTheme()}>
+        <SideNav
+          breakpoint="sm"
+          entries={[]}
+          header="SideNav"
+          selected="sixth"
+        />
+      </ThemeProvider>
+    );
   });
 });

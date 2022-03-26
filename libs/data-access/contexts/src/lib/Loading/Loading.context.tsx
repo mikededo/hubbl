@@ -8,6 +8,7 @@ import { LinearProgress, styled } from '@mui/material';
 type LoadingContextProps = { children: React.ReactNode };
 
 type LoadingContextValue = {
+  loading: boolean;
   onPushLoading: EmptyHandler;
   onPopLoading: EmptyHandler;
 };
@@ -16,7 +17,7 @@ const FixedLinearProgress = styled(LinearProgress)({
   position: 'fixed',
   left: 0,
   right: 0,
-  top: 0, 
+  top: 0,
   zIndex: 1000
 });
 
@@ -39,7 +40,9 @@ const ToastProvider = ({ children }: LoadingContextProps): JSX.Element => {
   };
 
   return (
-    <LoadingContext.Provider value={{ onPushLoading, onPopLoading }}>
+    <LoadingContext.Provider
+      value={{ onPushLoading, onPopLoading, loading: !!loading }}
+    >
       <AnimatePresence>{loading && <FixedLinearProgress />}</AnimatePresence>
 
       {children}

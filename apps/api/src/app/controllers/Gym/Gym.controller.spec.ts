@@ -87,6 +87,26 @@ describe('Gym controller', () => {
       expect(failSpy).toHaveBeenCalledTimes(1);
     });
 
+    it('should call forbidden if the user does not own the gym', async () => {
+      GymUpdateController['service'] = {} as any;
+      GymUpdateController['ownerService'] = mockOwnerService as any;
+
+      mockOwnerService.count.mockResolvedValue(0);
+      const fromJsonSpy = jest
+        .spyOn(GymDTO, 'fromJson')
+        .mockResolvedValue(mockReq.body as any);
+      const forbiddenSpy = jest
+        .spyOn(GymUpdateController, 'forbidden')
+        .mockImplementation();
+
+      await GymUpdateController.execute(mockReq as any, mockRes as any);
+
+      expect(fromJsonSpy).toHaveBeenCalledTimes(1);
+      expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith(mockRes, 'User does not own the gym.');
+    });
+
     it('should call fail ownerService error', async () => {
       GymUpdateController['service'] = {} as any;
       GymUpdateController['ownerService'] = mockOwnerService as any;

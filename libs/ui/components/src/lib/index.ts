@@ -1,4 +1,5 @@
 import ContentCard from './ContentCard';
+import GymZoneGrid from './GymZoneGrid';
 import Input from './Input';
 import LoadingButton from './LoadingButton';
 import PageHeader from './PageHeader';
@@ -8,6 +9,7 @@ import VirtualGymList from './VirtualGymList';
 
 export {
   ContentCard,
+  GymZoneGrid,
   Input,
   LoadingButton,
   PageHeader,
@@ -18,6 +20,7 @@ export {
 
 export * from './Dashboard';
 export * from './Dialogs';
+export * from './Layout';
 export * from './Settings';
 
 export type { RequiredUserInfoFields, UserPasswordFields } from './Settings';

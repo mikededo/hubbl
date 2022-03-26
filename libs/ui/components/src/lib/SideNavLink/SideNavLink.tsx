@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import {
   alpha,
+  Breakpoint,
   ListItem,
   ListItemProps,
   styled,
@@ -39,6 +40,13 @@ const Selected = styled(ContentCard)(({ theme }) => ({
 
 export type SideNavLinkItem = {
   /**
+   * Breakpoint in which the side nav link is shrink
+   *
+   * @default 'lg'
+   */
+  breakpoint?: Breakpoint;
+
+  /**
    * Label of the link to display
    */
   label: string;
@@ -59,16 +67,17 @@ type SideNavLinkProps = {
 } & SideNavLinkItem;
 
 const SideNavLink = ({
-  label,
+  breakpoint = 'lg',
   href,
+  label,
   selected = false
 }: SideNavLinkProps): JSX.Element => {
   const theme = useTheme();
-  const md = useMediaQuery(theme.breakpoints.down('md'));
+  const shrink = useMediaQuery(theme.breakpoints.down(breakpoint));
 
   return selected ? (
     <Selected role="listitem">
-      <Typography> {md ? label[0].toUpperCase() : label}</Typography>
+      <Typography> {shrink ? label[0].toUpperCase() : label}</Typography>
     </Selected>
   ) : (
     <Unselected
@@ -84,7 +93,7 @@ const SideNavLink = ({
     >
       <Link href={href} passHref>
         <UnselectedLink as="a">
-          {md ? label[0].toUpperCase() : label}
+          {shrink ? label[0].toUpperCase() : label}
         </UnselectedLink>
       </Link>
     </Unselected>

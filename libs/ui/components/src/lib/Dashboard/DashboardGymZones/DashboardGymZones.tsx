@@ -7,6 +7,13 @@ import { Grid, Stack, styled, Typography } from '@mui/material';
 import AddItemPlaceholder from '../../AddItemPlaceholder';
 import DashboardGymZone from '../DashboardGymZone';
 
+const ResponseiveGrid = styled(Grid)(({ theme }) => ({
+  justifyContent: 'flex-start',
+  [theme.breakpoints.down('sm')]: {
+    justifyContent: 'center'
+  }
+}));
+
 export type DashboardGymZonesProps = {
   /**
    * List of `GymZone`'s to display
@@ -33,7 +40,11 @@ const DashboardGymZones = ({
   <Stack gap={4}>
     <Typography variant="h5">GYM ZONES</Typography>
 
-    <Grid direction="row" gap={4} container>
+    <ResponseiveGrid
+      direction="row"
+      gap={{ xs: 3, sm: 2, md: 3}}
+      container
+    >
       {items.slice(0, Math.min(items.length, 5)).map((gymZone) => (
         <Grid key={gymZone.id} item>
           <Link
@@ -57,7 +68,7 @@ const DashboardGymZones = ({
           </PlaceholderText>
         </AddItemPlaceholder>
       </Grid>
-    </Grid>
+    </ResponseiveGrid>
   </Stack>
 );
 
