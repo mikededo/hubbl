@@ -8,6 +8,19 @@ const ThemeAccess = () => {
   expect(theme).toBeDefined();
   expect(theme.palette.primary.main).toBe('#2196F3');
   expect(
+    (theme.components?.MuiGrid?.styleOverrides?.root as any)({
+      theme: {
+        transitions: {
+          create: (properties: string[]) => {
+            expect(properties).toStrictEqual(['gap']);
+
+            return {};
+          }
+        }
+      }
+    })
+  ).toBeDefined();
+  expect(
     (theme.components?.MuiInputBase?.styleOverrides?.adornedStart as any)({
       theme: { spacing: (n: number) => n * 8 }
     })
