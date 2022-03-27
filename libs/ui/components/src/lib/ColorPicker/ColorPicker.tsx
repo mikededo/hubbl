@@ -1,31 +1,25 @@
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 
 import { AppPalette } from '@hubbl/shared/types';
-import { notForwardAny } from '@hubbl/utils';
-import { alpha, Box, BoxProps, Grid, styled } from '@mui/material';
+import { notForwardOne } from '@hubbl/utils';
+import { alpha, Grid, styled } from '@mui/material';
 
-import { RequiredGymInfoFields } from './types';
+import ColorCircle, { ColorCircleProps } from '../ColorCircle';
 
 type ColorProps = {
-  /**
-   * The color to render as the background of the circle
-   */
-  color: AppPalette;
-
   /**
    * Whether the color is selected or not
    */
   selected?: boolean;
 };
 
-const Color = styled(Box, {
-  shouldForwardProp: notForwardAny(['color', 'selected'])
-})<BoxProps & ColorProps>(({ theme, color, selected }) => ({
+const Color = styled(ColorCircle, {
+  shouldForwardProp: notForwardOne('selected')
+})<ColorCircleProps & ColorProps>(({ theme, color, selected }) => ({
   minWidth: theme.spacing(3),
   maxWidth: theme.spacing(3),
   minHeight: theme.spacing(3),
   maxHeight: theme.spacing(3),
-  backgroundColor: color,
   borderRadius: '100%',
   boxShadow: selected
     ? `0 0 0 2px #fff, 0 0 0 4px ${color}`
@@ -36,7 +30,7 @@ const Color = styled(Box, {
   })
 }));
 
-const ResponsiveGrid = styled(Grid)(({ theme, spacing }) => ({
+const ResponsiveGrid = styled(Grid)(({ theme }) => ({
   '&.MuiGrid-root': {
     width: `calc(75% + ${theme.spacing(2)})`
   },
@@ -45,16 +39,24 @@ const ResponsiveGrid = styled(Grid)(({ theme, spacing }) => ({
   }
 }));
 
-type ColorPickerProps = {
+type ColorPickerProps<T extends FieldValues> = {
   /**
    * Control prop of the form hook to attach the controller to
    */
-  control: Control<RequiredGymInfoFields>;
+  control: Control<T>;
+
+  /**
+   * Name of the controller of the color picker
+   */
+  name: Path<T>;
 };
 
-const ColorPicker = ({ control }: ColorPickerProps) => (
+const ColorPicker = <T extends FieldValues>({
+  control,
+  name
+}: ColorPickerProps<T>) => (
   <Controller
-    name="color"
+    name={name}
     control={control}
     render={({ field: { onChange, value } }) => (
       <ResponsiveGrid

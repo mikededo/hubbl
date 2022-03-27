@@ -2,7 +2,7 @@ import { AppPalette } from '@hubbl/shared/types';
 import { notForwardOne } from '@hubbl/utils';
 import { Box, BoxProps, styled } from '@mui/material';
 
-type ColorProps = {
+export type ColorCircleProps = {
   /**
    * The color to render as the background of the circle
    */
@@ -11,7 +11,7 @@ type ColorProps = {
 
 export default styled(Box, {
   shouldForwardProp: notForwardOne('color')
-})<BoxProps & ColorProps>(({ theme, color }) => ({
+})<BoxProps & ColorCircleProps>(({ theme, color }) => ({
   minWidth: theme.spacing(2),
   maxWidth: theme.spacing(2),
   minHeight: theme.spacing(2),

@@ -1,6 +1,8 @@
+import { useForm } from 'react-hook-form';
+
 import { AppPalette } from '@hubbl/shared/types';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { useForm } from 'react-hook-form';
+
 import ColorPicker from './ColorPicker';
 
 const Component = () => {
@@ -8,7 +10,7 @@ const Component = () => {
 
   return (
     <>
-      <ColorPicker control={control as any} />
+      <ColorPicker control={control as any} name="color" />
       <span data-testid="result">{watch('color')}</span>
     </>
   );
