@@ -1,4 +1,5 @@
 import ColorCircle from './ColorCircle';
+import ColorPicker from './ColorPicker';
 import ContentCard from './ContentCard';
 import EventTypeGrid from './EventTypeGrid';
 import GymZoneGrid from './GymZoneGrid';
@@ -11,6 +12,7 @@ import VirtualGymList from './VirtualGymList';
 
 export {
   ColorCircle,
+  ColorPicker,
   ContentCard,
   EventTypeGrid,
   GymZoneGrid,

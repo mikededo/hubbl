@@ -28,7 +28,7 @@ LoadingContext.displayName = 'LoadingContext';
 
 const useLoadingContext = () => useContext(LoadingContext);
 
-const ToastProvider = ({ children }: LoadingContextProps): JSX.Element => {
+const LoadingProvider = ({ children }: LoadingContextProps): JSX.Element => {
   const [loading, setLoading] = useState<number>(0);
 
   const onPushLoading = () => {
@@ -36,7 +36,7 @@ const ToastProvider = ({ children }: LoadingContextProps): JSX.Element => {
   };
 
   const onPopLoading = () => {
-    setLoading((prev) => Math.min(0, prev - 1));
+    setLoading((prev) => Math.max(0, prev - 1));
   };
 
   return (
@@ -50,6 +50,6 @@ const ToastProvider = ({ children }: LoadingContextProps): JSX.Element => {
   );
 };
 
-const memoizedProvider = memo(ToastProvider);
+const memoizedProvider = memo(LoadingProvider);
 
 export { memoizedProvider as LoadingContext, useLoadingContext };

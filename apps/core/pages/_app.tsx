@@ -33,7 +33,6 @@ const App = ({ Component, pageProps }: LayoutAppProps) => {
 
       <LoadingContext>
         <ThemeProvider>
-          {/* TODO: Add user context */}
           <ToastContext>
             <AppProvider>
               {/* TODO: Add auth guard */}

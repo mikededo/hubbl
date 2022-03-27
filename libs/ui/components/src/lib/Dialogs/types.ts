@@ -1,3 +1,5 @@
+import { AppPalette } from '@hubbl/shared/types';
+
 export type VirtualGymFormFields = {
   /**
    * Name of the `VirtualGym`
@@ -80,4 +82,21 @@ export type GymZoneFormFields = {
    * Id of the `VirtualGym` to which the `GymZone` belongs
    */
   virtualGym: number | string;
+};
+
+export type EventTypeFormFields = {
+  /**
+   * Name of the event type
+   */
+  name: string;
+
+  /**
+   * Description of the event type
+   */
+  description: string;
+
+  /**
+   * Color of the event type
+   */
+  color: AppPalette;
 };

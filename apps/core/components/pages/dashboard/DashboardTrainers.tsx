@@ -11,7 +11,7 @@ const DashboardTrainers = () => {
     API: { fetcher }
   } = useAppContext();
 
-  const { data,  } = useDashboard({
+  const { data } = useDashboard({
     run: !!token.parsed,
     gymId: user?.gym?.id,
     fetcher

@@ -173,7 +173,7 @@ describe('Virtual gyms page', () => {
       token: { parsed: undefined },
       API: { fetcher, poster }
     });
-    swrSpy.mockImplementation(() => ({}) as any);
+    swrSpy.mockImplementation(() => ({} as any));
 
     await act(async () => {
       renderPage();

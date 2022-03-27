@@ -79,7 +79,7 @@ const BaseLayout = ({
   selected
 }: BaseLayoutProps) => {
   const theme = useTheme();
-  const hideSideNav = useMediaQuery(theme.breakpoints.down('md'));  
+  const hideSideNav = useMediaQuery(theme.breakpoints.down('md'));
 
   const [toggleNavBar, setToggleNavBar] = useState(false);
 

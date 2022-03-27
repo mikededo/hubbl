@@ -169,7 +169,7 @@ describe('<DasboardGymZones/>', () => {
   it('should create a new gym zone', async () => {
     const mutateSpy = jest.fn().mockImplementation();
     // Constants have to be used so useEffect is not infinitely triggered
-    const emptyResponse = {}
+    const emptyResponse = {};
     const virtualGymList = { data: { gymZones: [] }, mutate: mutateSpy };
     const defaultResponse = { data: [response[0]] };
 

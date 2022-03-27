@@ -8,9 +8,10 @@ import {
 } from '@hubbl/data-access/contexts';
 import { AppPalette } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { act, render, screen } from '@testing-library/react';
+import { fireEvent, act, render, screen } from '@testing-library/react';
 
 import Events from './index';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('@hubbl/data-access/api');
 jest.mock('@hubbl/data-access/contexts', () => {
@@ -69,19 +70,20 @@ const eventTypesResponse = {
 
 const renderPage = () =>
   render(
-    <AppProvider>
-      <LoadingContext>
+    <LoadingContext>
+      <AppProvider>
         <ThemeProvider theme={createTheme()}>
           <ToastContext>
             <Events />
           </ToastContext>
         </ThemeProvider>
-      </LoadingContext>
-    </AppProvider>
+      </AppProvider>
+    </LoadingContext>
   );
 
 describe('Events page', () => {
   const fetcher = jest.fn();
+  const poster = jest.fn();
   const swrSpy = jest.spyOn(swr, 'default');
   const onError = jest.fn();
 
@@ -93,7 +95,8 @@ describe('Events page', () => {
 
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: {} },
-      API: { fetcher }
+      user: { gym: { id: 1 } },
+      API: { fetcher, poster }
     });
     (ctx.useToastContext as jest.Mock).mockReturnValue({ onError });
     (ctx.useLoadingContext as jest.Mock).mockReturnValue({
@@ -114,57 +117,96 @@ describe('Events page', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('should render the list of event types', async () => {
-    swrSpy.mockImplementation(() => eventTypesResponse as any);
+  describe('Event types', () => {
+    it('should render the list of event types', async () => {
+      swrSpy.mockImplementation(() => eventTypesResponse as any);
 
-    await act(async () => {
-      renderPage();
+      await act(async () => {
+        renderPage();
+      });
+
+      expect(screen.getByText('Event types')).toBeInTheDocument();
+      eventTypesResponse.data.forEach(({ name }) => {
+        expect(screen.getByText(name)).toBeInTheDocument();
+      });
+      expect(screen.getByTitle('add-event-type')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Event types')).toBeInTheDocument();
-    eventTypesResponse.data.forEach(({ name }) => {
-      expect(screen.getByText(name)).toBeInTheDocument();
-    });
-    expect(screen.getByTitle('add-event-type')).toBeInTheDocument();
-  });
+    it('should not call fetcher if token is null', async () => {
+      (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
+        token: { parsed: undefined },
+        API: { fetcher }
+      });
+      swrSpy.mockImplementation(() => ({} as any));
 
-  it('should not call fetcher if token is null', async () => {
-    (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
-      token: { parsed: undefined },
-      API: { fetcher }
-    });
-    swrSpy.mockImplementation(() => ({} as any));
+      await act(async () => {
+        renderPage();
+      });
 
-    await act(async () => {
-      renderPage();
+      expect(fetcher).not.toHaveBeenCalled();
     });
 
-    expect(fetcher).not.toHaveBeenCalled();
-  });
+    it('should call onError if fetching event types fails', async () => {
+      swrSpy.mockImplementation(() => ({ error: 'Error thrown' } as any));
 
-  it('should call onError if fetching event types fails', async () => {
-    swrSpy.mockImplementation(() => ({ error: 'Error thrown' } as any));
+      await act(async () => {
+        renderPage();
+      });
 
-    await act(async () => {
-      renderPage();
+      expect(onError).toHaveBeenCalledTimes(1);
+      expect(onError).toHaveBeenCalledWith('Error thrown');
     });
 
-    expect(onError).toHaveBeenCalledTimes(1);
-    expect(onError).toHaveBeenCalledWith('Error thrown');
-  });
+    it('should post a new event type', async () => {
+      const mutateSpy = jest.fn().mockImplementation();
+      swrSpy.mockImplementation(
+        () => ({ ...eventTypesResponse, mutate: mutateSpy } as any)
+      );
+      poster.mockImplementation(() => ({
+        ...eventTypesResponse.data[0],
+        id: 10
+      }));
 
-  it("should call onPopLoading if data has been fetched and it's loading", async () => {
-    swrSpy.mockImplementation(() => ({ data: [] } as any));
-    const onPopLoadingSpy = jest.fn();
-    (ctx.useLoadingContext as jest.Mock).mockReturnValue({
-      onPopLoading: onPopLoadingSpy,
-      loading: true
+      await act(async () => {
+        renderPage();
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('add-event-type'));
+      });
+      await act(async () => {
+        fireEvent.input(screen.getByPlaceholderText('New name'), {
+          target: { name: 'name', value: 'Name' }
+        });
+        fireEvent.input(
+          screen.getByPlaceholderText('New event type description'),
+          {
+            target: { name: 'description', value: 'Description' }
+          }
+        );
+      });
+      await act(async () => {
+        userEvent.click(screen.getByTitle(AppPalette.GREEN));
+      });
+      await act(async () => {
+        fireEvent.submit(screen.getByText('Save'));
+      });
+
+      expect(mutateSpy).toHaveBeenCalledTimes(1);
+      expect(poster).toHaveBeenCalledTimes(1);
     });
 
-    await act(async () => {
-      renderPage();
-    });
+    it('should open and close the dialog', async () => {
+      swrSpy.mockImplementation(() => eventTypesResponse as any);
 
-    expect(onPopLoadingSpy).toHaveBeenCalledTimes(1);
+      await act(async () => {
+        renderPage();
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('add-event-type'));
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTitle(`close-dialog`));
+      });
+    });
   });
 });

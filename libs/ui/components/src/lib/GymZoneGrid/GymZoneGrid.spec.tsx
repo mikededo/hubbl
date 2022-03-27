@@ -66,7 +66,7 @@ describe('<GymZoneGrid />', () => {
     // Add gym zone button
     expect(screen.getByTitle('add-gym-zone')).toBeInTheDocument();
   });
-  
+
   describe('href', () => {
     it('should render the gym zones as links', () => {
       render(<Component gymZones={gymZones as any} href="/base" />);

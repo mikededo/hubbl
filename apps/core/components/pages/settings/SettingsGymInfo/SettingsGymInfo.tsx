@@ -1,13 +1,18 @@
+import { useEffect } from 'react';
+
 import { useForm } from 'react-hook-form';
 
-import { Input, LoadingButton, SettingsCard } from '@hubbl/ui/components';
+import { AppPalette, SingleHandler } from '@hubbl/shared/types';
+import {
+  ColorPicker,
+  Input,
+  LoadingButton,
+  SettingsCard
+} from '@hubbl/ui/components';
 import { Save } from '@mui/icons-material';
 import { Grid, Stack, Typography } from '@mui/material';
 
-import ColorPicker from './ColorPicker';
 import { RequiredGymInfoFields } from './types';
-import { useEffect } from 'react';
-import { AppPalette, SingleHandler } from '@hubbl/shared/types';
 
 type SettingsGymInfoProps = {
   /**
@@ -110,7 +115,7 @@ const SettingsGymInfo = ({
 
           <Stack gap={2}>
             <Typography>Gym color</Typography>
-            <ColorPicker control={control} />
+            <ColorPicker control={control} name="color" />
           </Stack>
         </Stack>
 
