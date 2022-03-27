@@ -13,8 +13,8 @@ jest.mock('@hubbl/data-access/api');
 jest.mock('../Loading', () => {
   const actual = jest.requireActual('../Loading');
 
-  return {...actual, useLoadingContext: jest.fn()}
-})
+  return { ...actual, useLoadingContext: jest.fn() };
+});
 jest.mock('jsonwebtoken');
 
 const onApiSuccess = async (method: 'signup' | 'login') => {
