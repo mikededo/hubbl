@@ -30,7 +30,7 @@ export type GymZoneDialogProps = {
 
   /**
    * Callback to run when the form has been successfully
-   * submitted.
+   * submitted
    *
    * @default undefined
    */
