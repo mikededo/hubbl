@@ -9,8 +9,9 @@ const GridWrapper = styled(Stack)(({ theme }) => ({
   position: 'relative',
   overflow: 'hidden',
   height: theme.spacing(60),
-  margin: theme.spacing(-3, -3, -3, -1.5),
-  padding: theme.spacing(3, 3, 3, 1.5),
+  width: 'unset',
+  margin: theme.spacing(-3, 1.5, -3, -1.5),
+  padding: theme.spacing(3, 0, 3, 1.5),
   gap: theme.spacing(2.5),
   transition: theme.transitions.create(['margin', 'padding']),
   [theme.breakpoints.down('md')]: {
@@ -35,6 +36,13 @@ export type CarouselGridProps = {
   header: string;
 
   /**
+   * Number of elements per row
+   *
+   * @default 2
+   */
+  rowCount?: number;
+
+  /**
    * Width of each item as a `theme.spacing` factor
    */
   width: number;
@@ -43,6 +51,7 @@ export type CarouselGridProps = {
 const CarouselGrid = ({
   children,
   header,
+  rowCount = 2,
   width
 }: CarouselGridProps): JSX.Element => {
   const [iteration, setIteration] = useState(0);
@@ -71,7 +80,7 @@ const CarouselGrid = ({
 
           <IconButton
             aria-label="carousel-next"
-            disabled={iteration >= Children.count(children) / 2 - 1}
+            disabled={iteration >= Children.count(children) / rowCount - 1}
             onClick={incrementIteration}
           >
             <ChevronRight fontSize="large" />

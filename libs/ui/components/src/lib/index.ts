@@ -1,4 +1,6 @@
+import ColorCircle from './ColorCircle';
 import ContentCard from './ContentCard';
+import EventTypeGrid from './EventTypeGrid';
 import GymZoneGrid from './GymZoneGrid';
 import Input from './Input';
 import LoadingButton from './LoadingButton';
@@ -8,7 +10,9 @@ import SideNav from './SideNav';
 import VirtualGymList from './VirtualGymList';
 
 export {
+  ColorCircle,
   ContentCard,
+  EventTypeGrid,
   GymZoneGrid,
   Input,
   LoadingButton,
