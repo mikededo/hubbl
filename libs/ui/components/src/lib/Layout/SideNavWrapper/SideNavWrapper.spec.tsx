@@ -7,7 +7,9 @@ describe('<SideNavWrapper />', () => {
   it('should render properly', () => {
     const { container } = render(
       <ThemeProvider theme={createTheme()}>
-        <SideNavWrapper hidden toggled>SideNav</SideNavWrapper>
+        <SideNavWrapper hidden toggled>
+          SideNav
+        </SideNavWrapper>
       </ThemeProvider>
     );
 

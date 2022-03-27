@@ -11,7 +11,7 @@ export type CarouselItemProps = {
   children: React.ReactNode;
 
   /**
-   * Iteration count, which is multiplied by the width to 
+   * Iteration count, which is multiplied by the width to
    * move the element.
    */
   iteration: number;
