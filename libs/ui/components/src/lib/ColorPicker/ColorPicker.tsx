@@ -2,7 +2,7 @@ import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 
 import { AppPalette } from '@hubbl/shared/types';
 import { notForwardOne } from '@hubbl/utils';
-import { alpha, Grid, styled } from '@mui/material';
+import { alpha, Stack, styled } from '@mui/material';
 
 import ColorCircle, { ColorCircleProps } from '../ColorCircle';
 
@@ -30,12 +30,21 @@ const Color = styled(ColorCircle, {
   })
 }));
 
-const ResponsiveGrid = styled(Grid)(({ theme }) => ({
-  '&.MuiGrid-root': {
-    width: `calc(75% + ${theme.spacing(2)})`
-  },
+type ColorStack = {
+  /**
+   * Whether the stack extends to its maximum
+   *
+   * @default false
+   */
+  fullWidth?: boolean;
+};
+
+const ColorStack = styled(Stack, {
+  shouldForwardProp: notForwardOne('fullWidth')
+})<ColorStack>(({ theme, fullWidth }) => ({
+  width: fullWidth ? '100%' : `calc(75% + ${theme.spacing(2)})`,
   [theme.breakpoints.between('xs', 'lg')]: {
-    '&.MuiGrid-root': { width: `calc(100% + ${theme.spacing(1)})` }
+    width: `calc(100% + ${theme.spacing(1)})`
   }
 }));
 
@@ -46,6 +55,13 @@ type ColorPickerProps<T extends FieldValues> = {
   control: Control<T>;
 
   /**
+   * Whether the stack extends to its maximum
+   *
+   * @default false
+   */
+  fullWidth?: boolean;
+
+  /**
    * Name of the controller of the color picker
    */
   name: Path<T>;
@@ -53,31 +69,34 @@ type ColorPickerProps<T extends FieldValues> = {
 
 const ColorPicker = <T extends FieldValues>({
   control,
+  fullWidth = false,
   name
 }: ColorPickerProps<T>) => (
   <Controller
     name={name}
     control={control}
     render={({ field: { onChange, value } }) => (
-      <ResponsiveGrid
-        spacing={{ xs: 1, sm: 1, md: 2 }}
+      <ColorStack
+        direction="row"
+        gap={{ xs: 1, sm: 1, md: 2 }}
+        alignItems="center"
         justifyContent="space-between"
-        container
+        flexWrap="wrap"
+        fullWidth={fullWidth}
       >
         {Object.entries(AppPalette).map(([key, color]) => (
-          <Grid key={key} lg={1} md={2} item>
-            <Color
-              aria-label="color selector"
-              aria-selected={value === color}
-              color={color}
-              selected={value === color}
-              role="option"
-              title={color}
-              onClick={() => onChange(color)}
-            />
-          </Grid>
+          <Color
+            key={key}
+            aria-label="color selector"
+            aria-selected={value === color}
+            color={color}
+            selected={value === color}
+            role="option"
+            title={color}
+            onClick={() => onChange(color)}
+          />
         ))}
-      </ResponsiveGrid>
+      </ColorStack>
     )}
   />
 );

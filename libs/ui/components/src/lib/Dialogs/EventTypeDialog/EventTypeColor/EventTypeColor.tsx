@@ -12,7 +12,7 @@ const EventTypeName = (): JSX.Element => {
     <Stack direction="column" spacing={1}>
       <Typography variant="h6">Event type color</Typography>
 
-      <ColorPicker control={control} name="color" />
+      <ColorPicker control={control} name="color" fullWidth />
     </Stack>
   );
 };
