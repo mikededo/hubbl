@@ -53,7 +53,7 @@ const EventTypeDialog = ({
 
               <EventTypeDescription />
 
-              <EventTypeColor/>
+              <EventTypeColor />
             </Stack>
           </DialogSection>
 
