@@ -69,7 +69,7 @@ const EventTypeGrid = ({
   onAddEventType,
   onEventTypeClick
 }: EventTypeGridProps): JSX.Element => (
-  <CarouselGrid rowCount={3} header="Event types" width={46.5}>
+  <CarouselGrid rowCount={4} header="Event types" height={53.5} width={46.5}>
     {eventTypes.map((eventType) => (
       <EventTypeGridItem
         key={eventType.id}

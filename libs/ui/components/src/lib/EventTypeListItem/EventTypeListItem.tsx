@@ -11,7 +11,7 @@ import EllipsedTypography from '../EllipsedTypography';
 const PaddedContentCard = styled(ContentCard)(({ theme }) => ({
   padding: theme.spacing(2, 3),
   width: theme.spacing(44),
-  height: theme.spacing(12.5)
+  height: theme.spacing(10)
 }));
 
 const ContentStack = styled(Stack)({ height: '100%' });

@@ -102,7 +102,7 @@ const GymZoneListItem = React.forwardRef<HTMLDivElement, GymZoneListItemProps>(
             </Stack>
           </Stack>
 
-          <Typography>{gymZone.description}</Typography>
+          <Typography noWrap>{gymZone.description}</Typography>
         </Stack>
 
         <Stack gap={1}>
