@@ -1,8 +1,8 @@
 import { EventTemplateDTO } from '@hubbl/shared/models/dto';
-import { LocalFireDepartment as Fire } from '@mui/icons-material';
 import { Stack, styled } from '@mui/material';
 
 import ContentCard from '../../ContentCard';
+import DifficultyStack from '../../DifficultyStack';
 import DashboardCommonEvent from './DashboardCommonEvent';
 
 const PaddedContentCard = styled(ContentCard)(({ theme }) => ({
@@ -25,33 +25,7 @@ const DashboardEvent = ({ event }: DashboardEventProps): JSX.Element => (
     <ContentStack justifyContent="space-between">
       <DashboardCommonEvent event={event} />
 
-      <Stack direction="row">
-        <Fire
-          key="difficulty-one"
-          titleAccess="difficulty-one"
-          color="primary"
-        />
-        <Fire
-          key="difficulty-two"
-          titleAccess="difficulty-two"
-          color={event.difficulty >= 2 ? 'primary' : 'disabled'}
-        />
-        <Fire
-          key="difficulty-three"
-          titleAccess="difficulty-three"
-          color={event.difficulty >= 3 ? 'primary' : 'disabled'}
-        />
-        <Fire
-          key="difficulty-four"
-          titleAccess="difficulty-four"
-          color={event.difficulty >= 4 ? 'primary' : 'disabled'}
-        />
-        <Fire
-          key="difficulty-five"
-          titleAccess="difficulty-five"
-          color={event.difficulty >= 5 ? 'primary' : 'disabled'}
-        />
-      </Stack>
+      <DifficultyStack difficulty={event.difficulty} />
     </ContentStack>
   </PaddedContentCard>
 );

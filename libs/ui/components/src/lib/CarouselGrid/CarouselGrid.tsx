@@ -4,11 +4,23 @@ import { EmptyHandler } from '@hubbl/shared/types';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { IconButton, Stack, styled, Typography } from '@mui/material';
 import CarouselItem from '../CarouselItem';
+import { notForwardOne } from '@hubbl/utils';
 
-const GridWrapper = styled(Stack)(({ theme }) => ({
+type GridWrapperProps = {
+  /**
+   * Height set to the grid wrapper
+   *
+   * @default 60
+   */
+  height?: number;
+};
+
+const GridWrapper = styled(Stack, {
+  shouldForwardProp: notForwardOne('height')
+})<GridWrapperProps>(({ theme, height = 60 }) => ({
   position: 'relative',
   overflow: 'hidden',
-  height: theme.spacing(60),
+  height: theme.spacing(height),
   width: 'unset',
   margin: theme.spacing(-3, 1.5, -3, -1.5),
   padding: theme.spacing(3, 0, 3, 1.5),
@@ -46,11 +58,12 @@ export type CarouselGridProps = {
    * Width of each item as a `theme.spacing` factor
    */
   width: number;
-};
+} & GridWrapperProps;
 
 const CarouselGrid = ({
   children,
   header,
+  height,
   rowCount = 2,
   width
 }: CarouselGridProps): JSX.Element => {
@@ -94,6 +107,7 @@ const CarouselGrid = ({
         alignItems="flex-start"
         alignContent="flex-start"
         gap={0}
+        height={height}
       >
         {Children.map(children, (child) => (
           <CarouselItem iteration={iteration} width={width}>

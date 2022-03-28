@@ -7,11 +7,12 @@ import {
   useLoadingContext,
   useToastContext
 } from '@hubbl/data-access/contexts';
-import { EventTypeDTO } from '@hubbl/shared/models/dto';
+import { EventTypeDTO, EventTemplateDTO } from '@hubbl/shared/models/dto';
 import {
   EventTypeDialog,
   EventTypeFormFields,
   EventTypeGrid,
+  EventTemplateGrid,
   PageHeader
 } from '@hubbl/ui/components';
 
@@ -29,6 +30,11 @@ const EventTypes = () => {
   // Fetch event types
   const eventTypes = useSWR<EventTypeDTO[]>(
     token.parsed ? '/event-types' : null,
+    fetcher
+  );
+  // Fetch event templates
+  const eventTemplates = useSWR<EventTemplateDTO[]>(
+    token.parsed ? '/event-templates' : null,
     fetcher
   );
 
@@ -71,6 +77,10 @@ const EventTypes = () => {
     onError(`${eventTypes.error}`);
   }
 
+  if (eventTemplates.error) {
+    onError(`${eventTemplates.error}`);
+  }
+
   return (
     <>
       <PageHeader
@@ -82,6 +92,8 @@ const EventTypes = () => {
         eventTypes={eventTypes.data ?? []}
         onAddEventType={handleOnAddEventType}
       />
+
+      <EventTemplateGrid eventTemplates={eventTemplates.data ?? []} />
 
       <EventTypeDialog
         open={eventTypeDialog}
