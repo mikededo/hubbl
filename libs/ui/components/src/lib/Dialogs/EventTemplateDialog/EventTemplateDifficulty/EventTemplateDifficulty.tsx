@@ -41,6 +41,7 @@ const EventTemplateDifficulty = (): JSX.Element => (
 
     <Controller<EventTemplateFormFields>
       name="difficulty"
+      defaultValue={3}
       render={({ field: { name, onChange } }) => (
         <DifficultySlider
           name={name}

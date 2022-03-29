@@ -44,7 +44,7 @@ const EventTemplateEventType = ({
     <SelectInput
       control={control}
       formName="eventType"
-      label="Event type"
+      label="Event type (optional)"
       // Placehoder is not displayed, but used in tests
       placeholder="Select an event type (optional)"
       inputProps={{ title: 'event-template-event-type' }}
