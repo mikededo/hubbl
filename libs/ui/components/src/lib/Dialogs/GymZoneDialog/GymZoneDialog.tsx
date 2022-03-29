@@ -56,7 +56,8 @@ const GymZoneDialog = ({
 
   const methods = useForm<GymZoneFormFields>({
     defaultValues: { ...defaultValues, virtualGym: '' },
-    shouldUnregister: true
+    shouldUnregister: true,
+    shouldFocusError: false
   });
 
   const handleOnSubmit = (data: GymZoneFormFields) => {
