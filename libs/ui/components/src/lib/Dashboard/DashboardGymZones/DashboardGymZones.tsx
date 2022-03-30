@@ -40,11 +40,7 @@ const DashboardGymZones = ({
   <Stack gap={4}>
     <Typography variant="h5">GYM ZONES</Typography>
 
-    <ResponseiveGrid
-      direction="row"
-      gap={{ xs: 3, sm: 2, md: 3}}
-      container
-    >
+    <ResponseiveGrid direction="row" gap={{ xs: 3, sm: 2, md: 3 }} container>
       {items.slice(0, Math.min(items.length, 5)).map((gymZone) => (
         <Grid key={gymZone.id} item>
           <Link

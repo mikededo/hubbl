@@ -56,7 +56,7 @@ const response = [
     lastName: 'Trainer',
     gender: Gender.OTHER,
     workerCode: 'SomeCode'
-  },
+  }
 ] as TrainerDTO<number>[];
 
 const renderComponent = () =>

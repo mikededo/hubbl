@@ -29,6 +29,12 @@ const InputBase = styled(MuiInputBase)(({ theme, error }) => ({
         theme.palette.primary.main,
         0.5
       )} 0 0 0 2px`
+    },
+    '&.Mui-disabled:hover': {
+      boxShadow: `${alpha(theme.palette.grey[500], 0.25)} 0 0 0 4px, ${alpha(
+        theme.palette.grey[500],
+        0.5
+      )} 0 0 0 2px`
     }
   }
 }));

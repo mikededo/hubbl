@@ -7,7 +7,7 @@ const entries = [
     entries: {
       dashboard: { label: 'Dashboard', href: '/dashboard' },
       virtualGyms: { label: 'Virtual gyms', href: '/virtual-gyms' },
-      events: { label: 'Events', href: '#' }
+      events: { label: 'Events', href: '/events' }
     }
   },
   {

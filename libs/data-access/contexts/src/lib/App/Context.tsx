@@ -5,14 +5,14 @@ import { decode } from 'jsonwebtoken';
 
 import {
   fetcher as ApiFetcher,
-  poster as ApiPoster,
   GymApi,
+  poster as ApiPoster,
   TokenApi,
   UserApi
 } from '@hubbl/data-access/api';
 import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
-import { ParsedToken } from '@hubbl/shared/types';
+import { EmptyHandler, ParsedToken } from '@hubbl/shared/types';
 
 import { useToastContext } from '../Toast';
 import {
@@ -24,7 +24,15 @@ import {
   UserUpdatableFields
 } from './types';
 
-const useAppContextValue = (): AppContextValue => {
+type AppContextProps = {
+  onPopLoading: EmptyHandler;
+  onPushLoading: EmptyHandler;
+};
+
+const useAppContextValue = ({
+  onPopLoading,
+  onPushLoading
+}: AppContextProps): AppContextValue => {
   const { onError } = useToastContext();
 
   // User token to be sent on each request
@@ -75,14 +83,25 @@ const useAppContextValue = (): AppContextValue => {
     }
   };
 
-  const fetcher = async (url: string) =>
-    ApiFetcher(url, getAuthorizationConfig()).then((res) => res.data as never);
+  const fetcher = async (url: string) => {
+    onPushLoading();
 
-  const poster = async <T,>(url: string, data: unknown) =>
-    ApiPoster<T>(url, data, getAuthorizationConfig()).then(
-      (res) => res.data as never
-    );
+    return ApiFetcher(url, getAuthorizationConfig()).then((res) => {
+      onPopLoading();
 
+      return res.data as never;
+    });
+  };
+
+  const poster = async <T,>(url: string, data: unknown) => {
+    onPushLoading();
+
+    return ApiPoster<T>(url, data, getAuthorizationConfig()).then((res) => {
+      onPopLoading();
+
+      return res.data as never;
+    });
+  };
   /** Updaters **/
   /**
    * Updates the current user information
