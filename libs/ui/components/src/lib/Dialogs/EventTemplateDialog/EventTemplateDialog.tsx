@@ -4,29 +4,28 @@ import { FormProvider, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 
 import { useAppContext, useToastContext } from '@hubbl/data-access/contexts';
-import { VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { EventTypeDTO } from '@hubbl/shared/models/dto';
 import { SingleHandler } from '@hubbl/shared/types';
 import { Save } from '@mui/icons-material';
 import { Button, CircularProgress, Divider, Stack } from '@mui/material';
 
 import Base, { BaseProps } from '../Base';
 import DialogSection from '../DialogSection';
-import { GymZoneFormFields } from '../types';
-import GymZoneCapacity from './GymZoneCapacity';
-import GymZoneCloseTime from './GymZoneCloseTime';
-import GymZoneDescription from './GymZoneDescription';
-import GymZoneName from './GymZoneName';
-import GymZoneOpenTime from './GymZoneOpenTime';
-import GymZoneProperties from './GymZoneProperties';
-import GymZoneVirtualGym from './GymZoneVirtualGym';
+import { EventTemplateFormFields } from '../types';
+import EventTemplateCapacity from './EventTemplateCapacity';
+import EventTemplateDescription from './EventTemplateDescription';
+import EventTemplateName from './EventTemplateName';
+import EventTemplateProperties from './EventTemplateProperties';
+import EventTemplateVirtualEvent from './EventTemplateType';
+import EventTemplateDifficulty from './EventTemplateDifficulty';
 
-export type GymZoneDialogProps = {
+export type EventTemplateDialogProps = {
   /**
    * Default values of the form
    *
    * @default undefined
    */
-  defaultValues?: Partial<GymZoneFormFields>;
+  defaultValues?: Partial<EventTemplateFormFields>;
 
   /**
    * Callback to run when the form has been successfully
@@ -34,33 +33,32 @@ export type GymZoneDialogProps = {
    *
    * @default undefined
    */
-  onSubmit?: SingleHandler<GymZoneFormFields>;
+  onSubmit?: SingleHandler<EventTemplateFormFields>;
 } & BaseProps;
 
-const GymZoneDialog = ({
+const EventTemplateDialog = ({
   defaultValues,
   onSubmit,
   ...props
-}: GymZoneDialogProps): JSX.Element => {
+}: EventTemplateDialogProps): JSX.Element => {
   const {
     token,
     API: { fetcher }
   } = useAppContext();
   const { onError } = useToastContext();
-  const { data, error } = useSWR<VirtualGymDTO[]>(
-    // Fetch only the virtual gyms, skipping any join
-    token?.parsed && props.open ? '/virtual-gyms?level=0' : null,
+  const { data, error } = useSWR<EventTypeDTO[]>(
+    token?.parsed && props.open ? '/event-types' : null,
     fetcher,
     { revalidateOnFocus: false }
   );
 
-  const methods = useForm<GymZoneFormFields>({
-    defaultValues: { ...defaultValues, virtualGym: '' },
+  const methods = useForm<EventTemplateFormFields>({
+    defaultValues: { ...defaultValues, eventType: '' },
     shouldUnregister: true,
     shouldFocusError: false
   });
 
-  const handleOnSubmit = (data: GymZoneFormFields) => {
+  const handleOnSubmit = (data: EventTemplateFormFields) => {
     onSubmit?.(data);
   };
 
@@ -72,7 +70,7 @@ const GymZoneDialog = ({
     if (data && data.length) {
       methods.reset({
         ...defaultValues,
-        virtualGym: defaultValues?.virtualGym ?? data[0].id
+        eventType: defaultValues?.eventType ?? data[0].id
       });
     }
   }, [data, defaultValues, methods]);
@@ -83,9 +81,9 @@ const GymZoneDialog = ({
         <FormProvider {...methods}>
           <DialogSection>
             <Stack width="100%" gap={2}>
-              <GymZoneName />
+              <EventTemplateName />
 
-              <GymZoneDescription />
+              <EventTemplateDescription />
             </Stack>
           </DialogSection>
 
@@ -93,25 +91,18 @@ const GymZoneDialog = ({
 
           <DialogSection>
             <Stack width="100%" gap={1.5}>
-              <GymZoneProperties />
+              <EventTemplateProperties />
 
               <Stack
                 direction={{ xs: 'column', sm: 'column', md: 'row' }}
                 gap={{ xs: 1, sm: 1, md: 3 }}
               >
-                <GymZoneOpenTime />
+                <EventTemplateCapacity />
 
-                <GymZoneCloseTime />
+                <EventTemplateVirtualEvent eventTypes={data} />
               </Stack>
 
-              <Stack
-                direction={{ xs: 'column', sm: 'column', md: 'row' }}
-                gap={{ xs: 1, sm: 1, md: 3 }}
-              >
-                <GymZoneCapacity />
-
-                <GymZoneVirtualGym virtualGyms={data} />
-              </Stack>
+              <EventTemplateDifficulty />
             </Stack>
           </DialogSection>
 
@@ -132,4 +123,4 @@ const GymZoneDialog = ({
   );
 };
 
-export default GymZoneDialog;
+export default EventTemplateDialog;

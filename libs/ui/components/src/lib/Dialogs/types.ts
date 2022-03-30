@@ -100,3 +100,19 @@ export type EventTypeFormFields = {
    */
   color: AppPalette;
 };
+
+export type EventTemplateFormFields = {
+  name: string;
+
+  description: string;
+
+  capacity: number;
+
+  maskRequired: boolean;
+
+  covidPassport: boolean;
+
+  difficulty: number;
+
+  eventType: number | string;
+}
