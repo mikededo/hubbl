@@ -68,43 +68,61 @@ const eventTypesResponse = {
   ]
 };
 
-const eventTemplatesResponse = [
-  {
-    id: 1,
-    name: 'TemplateOne',
-    description: 'Event template one description',
-    difficulty: 5,
-    type: eventTypesResponse[0]
-  },
-  {
-    id: 1,
-    name: 'TemplateTwo',
-    description: 'Event template two description',
-    difficulty: 5,
-    type: eventTypesResponse[1]
-  },
-  {
-    id: 1,
-    name: 'TemplateThree',
-    description: 'Event template three description',
-    difficulty: 5,
-    type: eventTypesResponse[2]
-  },
-  {
-    id: 1,
-    name: 'TemplateFour',
-    description: 'Event template four description',
-    difficulty: 5,
-    type: eventTypesResponse[3]
-  },
-  {
-    id: 1,
-    name: 'TemplateFive',
-    description: 'Event template five description',
-    difficulty: 5,
-    type: eventTypesResponse[4]
-  }
-];
+const eventTemplatesResponse = {
+  data: [
+    {
+      id: 1,
+      name: 'TemplateOne',
+      description: 'Event template one description',
+      difficulty: 5,
+      type: {
+        ...eventTypesResponse.data[0],
+        // Use another name to avoid getByText name coalision
+        name: 'EventTypeTemplateOne'
+      }
+    },
+    {
+      id: 2,
+      name: 'TemplateTwo',
+      description: 'Event template two description',
+      difficulty: 5,
+      type: {
+        ...eventTypesResponse.data[1],
+        name: 'EventTypeTemplateTwo'
+      }
+    },
+    {
+      id: 3,
+      name: 'TemplateThree',
+      description: 'Event template three description',
+      difficulty: 5,
+      type: {
+        ...eventTypesResponse.data[2],
+        name: 'EventTypeTemplateThree'
+      }
+    },
+    {
+      id: 4,
+      name: 'TemplateFour',
+      description: 'Event template four description',
+      difficulty: 5,
+      type: {
+        ...eventTypesResponse.data[3],
+        name: 'EventTypeTemplateFour'
+      }
+    },
+    {
+      id: 5,
+      name: 'TemplateFive',
+      description: 'Event template five description',
+      difficulty: 5,
+      type: {
+        ...eventTypesResponse.data[4],
+        name: 'EventTypeTemplateFive'
+      }
+    }
+  ]
+};
 
 const renderPage = () =>
   render(
@@ -120,6 +138,8 @@ const renderPage = () =>
   );
 
 describe('Events page', () => {
+  const swrSpy = jest.spyOn(swr, 'default');
+
   it('should have the getLayout prop defined', () => {
     expect(Events.getLayout).toBeDefined();
 
@@ -131,10 +151,21 @@ describe('Events page', () => {
     expect(container).toBeInTheDocument();
   });
 
+  const mockSwr = () => {
+    swrSpy.mockClear().mockImplementation((key) => {
+      if (key === '/event-types') {
+        return eventTypesResponse as any;
+      } else if (key === '/event-templates') {
+        return eventTemplatesResponse as any;
+      }
+
+      return {};
+    });
+  };
+
   describe('Event types', () => {
     const fetcher = jest.fn();
     const poster = jest.fn();
-    const swrSpy = jest.spyOn(swr, 'default');
     const onError = jest.fn();
 
     beforeEach(() => {
@@ -157,13 +188,7 @@ describe('Events page', () => {
     });
 
     it('should render the list of event types', async () => {
-      swrSpy.mockImplementation((key) => {
-        if (key === '/event-types') {
-          return eventTypesResponse as any;
-        } else if (key === '/event-templates') {
-          return eventTemplatesResponse as any;
-        }
-      });
+      mockSwr();
 
       await act(async () => {
         renderPage();
@@ -197,6 +222,8 @@ describe('Events page', () => {
         } else if (key === '/event-templates') {
           return eventTemplatesResponse as any;
         }
+
+        return {};
       });
 
       await act(async () => {
@@ -215,6 +242,8 @@ describe('Events page', () => {
         } else if (key === '/event-templates') {
           return eventTemplatesResponse as any;
         }
+
+        return {};
       });
       poster.mockImplementation(() => ({
         ...eventTypesResponse.data[0],
@@ -233,9 +262,7 @@ describe('Events page', () => {
         });
         fireEvent.input(
           screen.getByPlaceholderText('New event type description'),
-          {
-            target: { name: 'description', value: 'Description' }
-          }
+          { target: { name: 'description', value: 'Description' } }
         );
       });
       await act(async () => {
@@ -245,18 +272,22 @@ describe('Events page', () => {
         fireEvent.submit(screen.getByText('Save'));
       });
 
-      expect(mutateSpy).toHaveBeenCalledTimes(1);
       expect(poster).toHaveBeenCalledTimes(1);
+      expect(poster).toHaveBeenCalledWith('/event-types', {
+        name: 'Name',
+        description: 'Description',
+        labelColor: AppPalette.GREEN,
+        gym: 1
+      });
+      expect(mutateSpy).toHaveBeenCalledTimes(1);
+      expect(mutateSpy).toHaveBeenCalledWith(
+        [...eventTypesResponse.data, { ...eventTypesResponse.data[0], id: 10 }],
+        false
+      );
     });
 
     it('should open and close the dialog', async () => {
-      swrSpy.mockImplementation((key) => {
-        if (key === '/event-types') {
-          return eventTypesResponse as any;
-        } else if (key === '/event-templates') {
-          return eventTemplatesResponse as any;
-        }
-      });
+      mockSwr();
 
       await act(async () => {
         renderPage();
@@ -272,8 +303,9 @@ describe('Events page', () => {
 
   describe('Event templates', () => {
     const fetcher = jest.fn();
-    const swrSpy = jest.spyOn(swr, 'default');
+    const poster = jest.fn();
     const onError = jest.fn();
+    const onSuccess = jest.fn();
 
     beforeEach(() => {
       jest.resetAllMocks();
@@ -284,9 +316,12 @@ describe('Events page', () => {
       (ctx.useAppContext as jest.Mock).mockReturnValue({
         token: { parsed: {} },
         user: { gym: { id: 1 } },
-        API: { fetcher }
+        API: { fetcher, poster }
       });
-      (ctx.useToastContext as jest.Mock).mockReturnValue({ onError });
+      (ctx.useToastContext as jest.Mock).mockReturnValue({
+        onError,
+        onSuccess
+      });
       (ctx.useLoadingContext as jest.Mock).mockReturnValue({
         loading: false,
         onPopLoading: pop,
@@ -295,20 +330,14 @@ describe('Events page', () => {
     });
 
     it('should render the list of event templates', async () => {
-      swrSpy.mockImplementation((key) => {
-        if (key === '/event-types') {
-          return eventTypesResponse as any;
-        } else if (key === '/event-templates') {
-          return eventTemplatesResponse as any;
-        }
-      });
+      mockSwr();
 
       await act(async () => {
         renderPage();
       });
 
       expect(screen.getByText('Event templates')).toBeInTheDocument();
-      eventTypesResponse.data.forEach(({ name }) => {
+      eventTemplatesResponse.data.forEach(({ name }) => {
         expect(screen.getByText(name)).toBeInTheDocument();
       });
       expect(screen.getByTitle('add-event-template')).toBeInTheDocument();
@@ -328,13 +357,80 @@ describe('Events page', () => {
       expect(fetcher).not.toHaveBeenCalled();
     });
 
-    it('should call onError if fetching event types fails', async () => {
+    it('should post a new event template', async () => {
+      const mutateSpy = jest.fn().mockImplementation();
+      swrSpy.mockImplementation((key) => {
+        if (key === '/event-types') {
+          return eventTypesResponse as any;
+        } else if (key === '/event-templates') {
+          return { ...eventTemplatesResponse, mutate: mutateSpy } as any;
+        }
+
+        return {};
+      });
+      poster.mockImplementation(() => ({
+        ...eventTemplatesResponse.data[0],
+        id: 10
+      }));
+
+      await act(async () => {
+        renderPage();
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('add-event-template'));
+      });
+      await act(async () => {
+        fireEvent.input(screen.getByPlaceholderText('New name'), {
+          target: { name: 'name', value: 'Name' }
+        });
+        fireEvent.input(
+          screen.getByPlaceholderText('New event template description'),
+          { target: { name: 'description', value: 'Description' } }
+        );
+        fireEvent.input(screen.getByPlaceholderText('200'), {
+          target: { name: 'capacity', value: 25 }
+        });
+      });
+      await act(async () => {
+        fireEvent.submit(screen.getByText('Save'));
+      });
+
+      expect(poster).toHaveBeenCalledTimes(1);
+      expect(poster).toHaveBeenCalledWith('/event-templates', {
+        name: 'Name',
+        description: 'Description',
+        capacity: 25,
+        maskRequired: true,
+        covidPassport: true,
+        difficulty: 3,
+        type: 1,
+        gym: 1
+      });
+      expect(mutateSpy).toHaveBeenCalledTimes(1);
+      expect(mutateSpy).toHaveBeenCalledWith(
+        [
+          ...eventTemplatesResponse.data,
+          {
+            ...eventTemplatesResponse.data[0],
+            type: { ...eventTypesResponse.data[0], name: 'TypeOne' },
+            id: 10
+          }
+        ],
+        false
+      );
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledWith('Event template created!');
+    });
+
+    it('should call onError if fetching event templates fails', async () => {
       swrSpy.mockImplementation((key) => {
         if (key === '/event-types') {
           return eventTypesResponse as any;
         } else if (key === '/event-templates') {
           return { error: 'Error thrown' } as any;
         }
+
+        return {};
       });
 
       await act(async () => {
@@ -343,6 +439,20 @@ describe('Events page', () => {
 
       expect(onError).toHaveBeenCalledTimes(1);
       expect(onError).toHaveBeenCalledWith('Error thrown');
+    });
+
+    it('should open and close the dialog', async () => {
+      mockSwr();
+
+      await act(async () => {
+        renderPage();
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('add-event-type'));
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTitle(`close-dialog`));
+      });
     });
   });
 });

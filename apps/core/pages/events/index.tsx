@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 
 import useSWR from 'swr';
 
@@ -13,7 +13,9 @@ import {
   EventTypeFormFields,
   EventTypeGrid,
   EventTemplateGrid,
-  PageHeader
+  PageHeader,
+  EventTemplateDialog,
+  EventTemplateFormFields
 } from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages } from '../../components';
@@ -30,25 +32,30 @@ const EventTypes = () => {
   // Fetch event types
   const eventTypes = useSWR<EventTypeDTO[]>(
     token.parsed ? '/event-types' : null,
-    fetcher
+    fetcher,
+    { revalidateOnFocus: false }
   );
   // Fetch event templates
   const eventTemplates = useSWR<EventTemplateDTO[]>(
     token.parsed ? '/event-templates' : null,
-    fetcher
+    fetcher,
+    { revalidateOnFocus: false }
   );
 
   // Dialogs state
   const [eventTypeDialog, setEventTypeDialog] = useState(false);
+  const [eventTemplateDialog, setEventTemplateDialog] = useState(false);
 
   // Handlers
-  const handleOnAddEventType = () => {
-    setEventTypeDialog(true);
-  };
+  const handleOnOpenDialog =
+    (dispatcher: Dispatch<SetStateAction<boolean>>) => () => {
+      dispatcher(true);
+    };
 
-  const handleOnCloseEventTypeDialog = () => {
-    setEventTypeDialog(false);
-  };
+  const handleOnCloseDialog =
+    (dispatcher: Dispatch<SetStateAction<boolean>>) => () => {
+      dispatcher(false);
+    };
 
   const handleOnSubmitEventType = async (data: EventTypeFormFields) => {
     setEventTypeDialog(false);
@@ -62,10 +69,42 @@ const EventTypes = () => {
         gym: user.gym.id
       });
 
-      // Mutate the modified virtual gym
+      // Mutate the event type list
       await eventTypes.mutate([...eventTypes.data, created], false);
 
       onSuccess('Event type created!');
+    } catch (e) {
+      onError(`${e}`);
+    }
+
+    onPopLoading();
+  };
+
+  const handleOnSubmitEventTemplate = async (data: EventTemplateFormFields) => {
+    setEventTemplateDialog(false);
+    onPushLoading();
+
+    try {
+      const created = await poster<EventTemplateDTO>('/event-templates', {
+        name: data.name,
+        description: data.description,
+        capacity: data.capacity,
+        maskRequired: data.maskRequired,
+        difficulty: data.difficulty,
+        covidPassport: data.covidPassport,
+        type: data.eventType,
+        gym: user.gym.id
+      });
+
+      // Add the type
+      created.type = eventTypes.data?.find(
+        (type) => type.id === data.eventType
+      );
+
+      // Mutate the event template list
+      await eventTemplates.mutate([...eventTemplates.data, created], false);
+
+      onSuccess('Event template created!');
     } catch (e) {
       onError(`${e}`);
     }
@@ -90,16 +129,26 @@ const EventTypes = () => {
 
       <EventTypeGrid
         eventTypes={eventTypes.data ?? []}
-        onAddEventType={handleOnAddEventType}
+        onAddEventType={handleOnOpenDialog(setEventTypeDialog)}
       />
 
-      <EventTemplateGrid eventTemplates={eventTemplates.data ?? []} />
+      <EventTemplateGrid
+        eventTemplates={eventTemplates.data ?? []}
+        onAddEventTemplate={handleOnOpenDialog(setEventTemplateDialog)}
+      />
 
       <EventTypeDialog
         open={eventTypeDialog}
         title="Create an event type"
-        onClose={handleOnCloseEventTypeDialog}
+        onClose={handleOnCloseDialog(setEventTypeDialog)}
         onSubmit={handleOnSubmitEventType}
+      />
+
+      <EventTemplateDialog
+        open={eventTemplateDialog}
+        title="Create an event template"
+        onClose={handleOnCloseDialog(setEventTemplateDialog)}
+        onSubmit={handleOnSubmitEventTemplate}
       />
     </>
   );
