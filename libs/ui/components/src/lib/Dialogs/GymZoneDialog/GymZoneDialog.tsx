@@ -30,7 +30,7 @@ export type GymZoneDialogProps = {
 
   /**
    * Callback to run when the form has been successfully
-   * submitted.
+   * submitted
    *
    * @default undefined
    */
@@ -56,7 +56,8 @@ const GymZoneDialog = ({
 
   const methods = useForm<GymZoneFormFields>({
     defaultValues: { ...defaultValues, virtualGym: '' },
-    shouldUnregister: true
+    shouldUnregister: true,
+    shouldFocusError: false
   });
 
   const handleOnSubmit = (data: GymZoneFormFields) => {

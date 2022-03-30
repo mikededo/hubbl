@@ -7,8 +7,14 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import { ToastContext } from '../Toast';
 import { AppProvider, useAppContext } from './App.context';
+import { LoadingContext, useLoadingContext } from '../Loading';
 
 jest.mock('@hubbl/data-access/api');
+jest.mock('../Loading', () => {
+  const actual = jest.requireActual('../Loading');
+
+  return { ...actual, useLoadingContext: jest.fn() };
+});
 jest.mock('jsonwebtoken');
 
 const onApiSuccess = async (method: 'signup' | 'login') => {
@@ -67,11 +73,13 @@ const onApiError = async (method: 'signup' | 'login') => {
 
   await act(async () => {
     render(
-      <ToastContext>
-        <AppProvider>
-          <Component />
-        </AppProvider>
-      </ToastContext>
+      <LoadingContext>
+        <ToastContext>
+          <AppProvider>
+            <Component />
+          </AppProvider>
+        </ToastContext>
+      </LoadingContext>
     );
   });
   await act(async () => {
@@ -83,6 +91,18 @@ const onApiError = async (method: 'signup' | 'login') => {
 };
 
 describe('<AppProvider />', () => {
+  const pop = jest.fn();
+  const push = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    (useLoadingContext as jest.Mock).mockReturnValue({
+      onPushLoading: push,
+      onPopLoading: pop
+    } as any);
+  });
+
   it('should call validate on mount', async () => {
     const decodeSpy = jest.spyOn(jwt, 'decode');
     const validateSpy = jest.spyOn(TokenApi, 'validate').mockResolvedValue({
@@ -167,6 +187,8 @@ describe('<AppProvider />', () => {
         fireEvent.click(screen.getByText('fetch'));
       });
 
+      expect(push).toHaveBeenCalledTimes(1);
+      expect(pop).toHaveBeenCalledTimes(1);
       expect(fetcherSpy).toHaveBeenCalledTimes(1);
       expect(fetcherSpy).toHaveBeenCalledWith('/url', {
         // Use null as token is not defined
@@ -201,6 +223,8 @@ describe('<AppProvider />', () => {
         fireEvent.click(screen.getByText('post'));
       });
 
+      expect(push).toHaveBeenCalledTimes(1);
+      expect(pop).toHaveBeenCalledTimes(1);
       expect(posterSpy).toHaveBeenCalledTimes(1);
       expect(posterSpy).toHaveBeenCalledWith(
         '/url',

@@ -25,6 +25,11 @@ const ThemeAccess = () => {
       theme: { spacing: (n: number) => n * 8 }
     })
   ).toBeDefined();
+  expect(
+    (theme.components?.MuiSlider?.styleOverrides?.root as any)({
+      theme: { spacing: (n: number) => n * 8, palette: { divider: '#FFFFFF' } }
+    })
+  ).toBeDefined();
 
   return <span />;
 };

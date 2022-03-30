@@ -1,3 +1,5 @@
+import { AppPalette } from '@hubbl/shared/types';
+
 export type VirtualGymFormFields = {
   /**
    * Name of the `VirtualGym`
@@ -81,3 +83,36 @@ export type GymZoneFormFields = {
    */
   virtualGym: number | string;
 };
+
+export type EventTypeFormFields = {
+  /**
+   * Name of the event type
+   */
+  name: string;
+
+  /**
+   * Description of the event type
+   */
+  description: string;
+
+  /**
+   * Color of the event type
+   */
+  color: AppPalette;
+};
+
+export type EventTemplateFormFields = {
+  name: string;
+
+  description: string;
+
+  capacity: number;
+
+  maskRequired: boolean;
+
+  covidPassport: boolean;
+
+  difficulty: number;
+
+  eventType: number | string;
+}

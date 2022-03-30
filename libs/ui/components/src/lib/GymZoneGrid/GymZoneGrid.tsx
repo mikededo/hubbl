@@ -1,41 +1,14 @@
-import { useState } from 'react';
-
 import Link from 'next/link';
 
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { GymZone } from '@hubbl/shared/models/entities';
 import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import {
-  CardActionArea,
-  IconButton,
-  Stack,
-  styled,
-  Typography
-} from '@mui/material';
+import { CardActionArea, styled, Typography } from '@mui/material';
 
 import AddItemPlaceholder from '../AddItemPlaceholder';
 import Anchor from '../Anchor';
-import CarouselItem from '../CarouselItem';
+import CarouselGrid from '../CarouselGrid';
 import GymZoneListItem from '../GymZoneListItem';
-
-const CarouselGrid = styled(Stack)(({ theme }) => ({
-  position: 'relative',
-  overflow: 'hidden',
-  height: theme.spacing(60),
-  margin: theme.spacing(-3, -3, -3, -1.5),
-  padding: theme.spacing(3, 3, 3, 1.5),
-  gap: theme.spacing(2.5),
-  transition: theme.transitions.create(['margin', 'padding']),
-  [theme.breakpoints.down('md')]: {
-    margin: theme.spacing(-3, -2, -3, -1.5),
-    padding: theme.spacing(3, 2, 3, 1.5)
-  },
-  [theme.breakpoints.down('sm')]: {
-    maxWidth: theme.spacing(47),
-    margin: 'auto'
-  }
-}));
 
 const ContentCardAction = styled(CardActionArea)(({ theme }) => ({
   borderRadius: theme.spacing(2)
@@ -110,77 +83,35 @@ const GymZoneGrid = ({
   href,
   onAddGymZone,
   onGymZoneClick
-}: GymZoneGridProps): JSX.Element => {
-  const [iteration, setIteration] = useState(0);
+}: GymZoneGridProps): JSX.Element => (
+  <CarouselGrid header={header} width={46.5}>
+    {gymZones.map((gymZone) =>
+      href ? (
+        <Link key={gymZone.id} href={`${href}/${gymZone.id}`} passHref>
+          <Anchor>
+            <GymZoneGridItem gymZone={gymZone} />
+          </Anchor>
+        </Link>
+      ) : (
+        <GymZoneGridItem
+          key={gymZone.id}
+          gymZone={gymZone}
+          onClick={onGymZoneClick}
+        />
+      )
+    )}
 
-  const decrementIteration: EmptyHandler = () => {
-    setIteration((prev) => prev - 1);
-  };
-
-  const incrementIteration: EmptyHandler = () => {
-    setIteration((prev) => prev + 1);
-  };
-
-  return (
-    <Stack gap={2}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography variant="h5">{header}</Typography>
-
-        <Stack direction="row" component="ul">
-          <IconButton
-            aria-label="carousel-prev"
-            disabled={iteration === 0}
-            onClick={decrementIteration}
-          >
-            <ChevronLeft fontSize="large" />
-          </IconButton>
-
-          <IconButton
-            aria-label="carousel-next"
-            disabled={iteration >= gymZones.length / 2 - 1}
-            onClick={incrementIteration}
-          >
-            <ChevronRight fontSize="large" />
-          </IconButton>
-        </Stack>
-      </Stack>
-
-      <CarouselGrid
-        direction="column"
-        flexWrap="wrap"
-        alignItems="flex-start"
-        alignContent="flex-start"
-        gap={0}
-      >
-        {gymZones.map((gymZone) => (
-          <CarouselItem key={gymZone.id} iteration={iteration} width={46.5}>
-            {href ? (
-              <Link href={`${href}/${gymZone.id}`} passHref>
-                <Anchor>
-                  <GymZoneGridItem gymZone={gymZone} />
-                </Anchor>
-              </Link>
-            ) : (
-              <GymZoneGridItem gymZone={gymZone} onClick={onGymZoneClick} />
-            )}
-          </CarouselItem>
-        ))}
-
-        <CarouselItem iteration={iteration} width={46.5}>
-          <AddItemPlaceholder
-            title="add-gym-zone"
-            height={25}
-            width={44}
-            onClick={onAddGymZone}
-          >
-            <Typography variant="placeholder">
-              Click me to create a gym zone!
-            </Typography>
-          </AddItemPlaceholder>
-        </CarouselItem>
-      </CarouselGrid>
-    </Stack>
-  );
-};
+    <AddItemPlaceholder
+      title="add-gym-zone"
+      height={25}
+      width={44}
+      onClick={onAddGymZone}
+    >
+      <Typography variant="placeholder">
+        Click me to create a gym zone!
+      </Typography>
+    </AddItemPlaceholder>
+  </CarouselGrid>
+);
 
 export default GymZoneGrid;

@@ -75,7 +75,7 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
       groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
     }
   )
-  type!: number;
+  type!: number | EventType | EventTypeDTO;
 
   @IsNumber(
     {},
@@ -159,7 +159,7 @@ export default class EventTemplateDTO implements DTO<EventTemplate> {
     result.covidPassport = this.covidPassport;
     result.maskRequired = this.maskRequired;
     result.difficulty = this.difficulty;
-    result.type = this.type;
+    result.type = this.type as EventType;
     result.gym = this.gym;
 
     return result;
