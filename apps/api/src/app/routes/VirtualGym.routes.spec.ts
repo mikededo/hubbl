@@ -24,6 +24,17 @@ describe('VirtualGym routes', () => {
     expect(executeSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('should call VirtualGymFetchSingleController.execute', async () => {
+    const executeSpy = jest.spyOn(
+      controllers.VirtualGymFetchSingleController,
+      'execute'
+    );
+
+    await supertest(app).get('/virtual-gyms/1');
+
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('should call VirtualGymCreateController.execute', async () => {
     const executeSpy = jest.spyOn(
       controllers.VirtualGymCreateController,

@@ -69,11 +69,11 @@ const AppTheme: Theme = createTheme({
     `0 8px 12px ${alpha('#777', 0.9)}`,
     `0 8px 12px ${alpha('#777', 0.95)}`,
     // Dialogs
-    `0 0px 12px ${alpha('#777', 0.15)}`,
-    `0 0px 12px ${alpha('#777', 0.25)}`,
-    `0 0px 12px ${alpha('#777', 0.5)}`,
-    `0 0px 12px ${alpha('#777', 0.75)}`,
-    `0 0px 12px ${alpha('#777', 1)}`
+    `0 0 12px ${alpha('#777', 0.15)}`,
+    `0 0 12px ${alpha('#777', 0.25)}`,
+    `0 0 12px ${alpha('#777', 0.5)}`,
+    `0 0 12px ${alpha('#777', 0.75)}`,
+    `0 0 12px ${alpha('#777', 1)}`
   ],
   shape: { borderRadius: 8 },
   components: {
@@ -91,6 +91,16 @@ const AppTheme: Theme = createTheme({
         }
       }
     },
+    MuiCardActionArea: {
+      styleOverrides: { root: { color: '#3F3F3F' } }
+    },
+    MuiGrid: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create(['gap'])
+        })
+      }
+    },
     MuiInputBase: {
       styleOverrides: {
         adornedStart: ({ theme }) => ({
@@ -105,6 +115,25 @@ const AppTheme: Theme = createTheme({
     MuiSkeleton: {
       styleOverrides: {
         rectangular: { borderRadius: 8 }
+      }
+    },
+    MuiSlider: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '& .MuiSlider-thumb': {
+            width: theme.spacing(1.25),
+            height: theme.spacing(1.25),
+            transition: '0.3s all cubic-bezier(0.47, 1.64, 0.41, 0.8)',
+            '&:before': { boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.4)' },
+            '&:hover, &.Mui-focusVisible': {
+              boxShadow: `0 0 0 8px ${alpha(theme.palette.divider, 0.25)}`
+            },
+            '&.Mui-active': {
+              width: theme.spacing(2),
+              height: theme.spacing(2)
+            }
+          }
+        })
       }
     }
   }

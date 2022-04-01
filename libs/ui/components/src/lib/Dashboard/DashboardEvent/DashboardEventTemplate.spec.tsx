@@ -10,7 +10,8 @@ describe('<DashboardEventTemplate />', () => {
     startTime: '09:00',
     endTime: '10:00',
     appointmentCount: 15,
-    capacity: 25
+    capacity: 25,
+    difficulty: 5
   };
 
   it.each([
@@ -32,11 +33,11 @@ describe('<DashboardEventTemplate />', () => {
       render(<DashboardEventTemplate event={event as any} />);
 
       expect(screen.getByText(event.name)).toBeInTheDocument();
-      expect(screen.getByText('difficulty-one')).toBeInTheDocument();
-      expect(screen.getByText('difficulty-two')).toBeInTheDocument();
-      expect(screen.getByText('difficulty-three')).toBeInTheDocument();
-      expect(screen.getByText('difficulty-four')).toBeInTheDocument();
-      expect(screen.getByText('difficulty-five')).toBeInTheDocument();
+      expect(screen.getByText('difficulty-one-active')).toBeInTheDocument();
+      expect(screen.getByText('difficulty-two-active')).toBeInTheDocument();
+      expect(screen.getByText('difficulty-three-active')).toBeInTheDocument();
+      expect(screen.getByText('difficulty-four-active')).toBeInTheDocument();
+      expect(screen.getByText('difficulty-five-active')).toBeInTheDocument();
     });
   });
 });

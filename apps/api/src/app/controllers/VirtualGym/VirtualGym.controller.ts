@@ -82,6 +82,58 @@ const fetchInstance = new IVirtualGymFetchController();
 
 export const VirtualGymFetchController = fetchInstance;
 
+class IVirtualGymFetchSingleController extends BaseController {
+  protected service: VirtualGymService = undefined;
+  protected personService: PersonService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.service) {
+      this.service = new VirtualGymService(getRepository);
+    }
+
+    if (!this.personService) {
+      this.personService = new PersonService(getRepository);
+    }
+
+    const { token } = res.locals;
+
+    try {
+      // Get the person, if any
+      const person = await this.personService.findOne({ id: token.id });
+
+      if (!person) {
+        return this.clientError(res, 'Person does not exist');
+      }
+
+      // Find the virtual gym of the gym to which the token is validated
+      try {
+        const result = await this.service
+          .createQueryBuilder({ alias: 'virtualGym' })
+          .where('virtualGym.gym = :gym', {
+            id: +req.params.id,
+            gym: (person.gym as Gym).id
+          })
+          .leftJoinAndMapMany(
+            'virtualGym.gymZones',
+            'virtualGym.gymZones',
+            'gz'
+          )
+          .getOne();
+
+        return this.ok(res, VirtualGymDTO.fromClass(result));
+      } catch (e) {
+        return this.onFail(res, e, 'fetch');
+      }
+    } catch (e) {
+      return this.onFail(res, e, 'fetch');
+    }
+  }
+}
+
+const fetchSingleInstance = new IVirtualGymFetchSingleController();
+
+export const VirtualGymFetchSingleController = fetchSingleInstance;
+
 class IVirtualGymCreateController extends BaseController {
   protected service: VirtualGymService = undefined;
   protected ownerService: OwnerService = undefined;

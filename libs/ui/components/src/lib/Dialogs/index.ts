@@ -1,6 +1,23 @@
+import EventTemplateDialog from './EventTemplateDialog';
+import EventTypeDialog from './EventTypeDialog';
 import GymZoneDialog from './GymZoneDialog';
-import type { GymZoneFormFields, VirtualGymFormFields } from './types';
+import type {
+  EventTemplateFormFields,
+  EventTypeFormFields,
+  GymZoneFormFields,
+  VirtualGymFormFields
+} from './types';
 import VirtualGymDialog from './VirtualGymDialog';
 
-export { GymZoneDialog, VirtualGymDialog };
-export type { GymZoneFormFields, VirtualGymFormFields };
+export {
+  EventTemplateDialog,
+  EventTypeDialog,
+  GymZoneDialog,
+  VirtualGymDialog
+};
+export type {
+  EventTemplateFormFields,
+  EventTypeFormFields,
+  GymZoneFormFields,
+  VirtualGymFormFields
+};

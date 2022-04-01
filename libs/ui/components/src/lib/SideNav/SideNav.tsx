@@ -1,28 +1,47 @@
+import { notForwardOne } from '@hubbl/utils';
 import {
+  Breakpoint,
   Divider,
   Stack,
+  styled,
   Theme,
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { styled } from '@mui/system';
 
 import SideNavGroup, { SideNavGroupItem } from '../SideNavGroup';
 
-const Container = styled('nav')(({ theme }) => ({
+type ContainerProps = {
+  /**
+   * Breakpoint in which the side nav is shrink
+   */
+  breakpoint: Breakpoint;
+};
+
+const Container = styled('nav', {
+  shouldForwardProp: notForwardOne('breakpoint')
+})<ContainerProps>(({ theme, breakpoint }) => ({
   minWidth: theme.spacing(40),
   width: theme.spacing(40),
   margin: theme.spacing(6, 4, 4),
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(4),
-  [theme.breakpoints.down('md')]: {
+  transition: theme.transitions.create(['width', 'min-width']),
+  [theme.breakpoints.down(breakpoint)]: {
     minWidth: theme.spacing(8),
     width: theme.spacing(8)
   }
 }));
 
 type SideNavProps<T extends SideNavGroupItem> = {
+  /**
+   * Breakpoint in which the side nav is shrink
+   *
+   * @default 'lg'
+   */
+  breakpoint?: Breakpoint;
+
   /**
    * Entries of the side navigation bar
    */
@@ -40,16 +59,19 @@ type SideNavProps<T extends SideNavGroupItem> = {
 };
 
 const SideNav = <T extends SideNavGroupItem>({
+  breakpoint = 'lg',
   entries,
   header,
   selected
 }: SideNavProps<T>): JSX.Element => {
-  const md = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const shrink = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down(breakpoint)
+  );
 
   return (
-    <Container>
+    <Container breakpoint={breakpoint}>
       <Typography variant="h2" textAlign="center">
-        {md ? header[0].toUpperCase() : header}
+        {shrink ? header[0].toUpperCase() : header}
       </Typography>
 
       <Divider />
@@ -58,6 +80,7 @@ const SideNav = <T extends SideNavGroupItem>({
         {Object.values(entries).map(({ entries, hidden, name }) => (
           <SideNavGroup
             key={name}
+            breakpoint={breakpoint}
             entries={entries}
             hidden={hidden}
             name={name}

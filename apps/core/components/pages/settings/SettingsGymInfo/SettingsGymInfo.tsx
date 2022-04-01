@@ -1,13 +1,18 @@
+import { useEffect } from 'react';
+
 import { useForm } from 'react-hook-form';
 
-import { Input, LoadingButton, SettingsCard } from '@hubbl/ui/components';
+import { AppPalette, SingleHandler } from '@hubbl/shared/types';
+import {
+  ColorPicker,
+  Input,
+  LoadingButton,
+  SettingsCard
+} from '@hubbl/ui/components';
 import { Save } from '@mui/icons-material';
 import { Grid, Stack, Typography } from '@mui/material';
 
-import ColorPicker from './ColorPicker';
 import { RequiredGymInfoFields } from './types';
-import { useEffect } from 'react';
-import { AppPalette, SingleHandler } from '@hubbl/shared/types';
 
 type SettingsGymInfoProps = {
   /**
@@ -68,7 +73,7 @@ const SettingsGymInfo = ({
 
         <Stack gap={2}>
           <Grid spacing={{ xs: 2, sm: 2, md: 3 }} container>
-            <Grid sm={12} md={6} lg={4} item>
+            <Grid xs={12} sm={12} md={6} lg={4} item>
               <Input
                 label="Gym name"
                 labelVariant="body1"
@@ -81,7 +86,7 @@ const SettingsGymInfo = ({
               />
             </Grid>
 
-            <Grid sm={12} md={6} lg={4} item>
+            <Grid xs={12} sm={12} md={6} lg={4} item>
               <Input
                 label="Gym email"
                 labelVariant="body1"
@@ -94,7 +99,7 @@ const SettingsGymInfo = ({
               />
             </Grid>
 
-            <Grid sm={12} md={6} lg={4} item>
+            <Grid xs={12} sm={12} md={6} lg={4} item>
               <Input
                 label="Gym phone"
                 labelVariant="body1"
@@ -110,7 +115,7 @@ const SettingsGymInfo = ({
 
           <Stack gap={2}>
             <Typography>Gym color</Typography>
-            <ColorPicker control={control} />
+            <ColorPicker control={control} name="color" />
           </Stack>
         </Stack>
 
