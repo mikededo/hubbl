@@ -167,6 +167,7 @@ describe('Events page', () => {
     const fetcher = jest.fn();
     const poster = jest.fn();
     const onError = jest.fn();
+    const onSuccess = jest.fn();
 
     beforeEach(() => {
       jest.resetAllMocks();
@@ -179,13 +180,37 @@ describe('Events page', () => {
         user: { gym: { id: 1 } },
         API: { fetcher, poster }
       });
-      (ctx.useToastContext as jest.Mock).mockReturnValue({ onError });
+      (ctx.useToastContext as jest.Mock).mockReturnValue({
+        onError,
+        onSuccess
+      });
       (ctx.useLoadingContext as jest.Mock).mockReturnValue({
         loading: false,
         onPopLoading: pop,
         onPushLoading: push
       });
     });
+
+    const fillEventTypesForm = async () => {
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('add-event-type'));
+      });
+      await act(async () => {
+        fireEvent.input(screen.getByPlaceholderText('New name'), {
+          target: { name: 'name', value: 'Name' }
+        });
+        fireEvent.input(
+          screen.getByPlaceholderText('New event type description'),
+          { target: { name: 'description', value: 'Description' } }
+        );
+      });
+      await act(async () => {
+        userEvent.click(screen.getByTitle(AppPalette.GREEN));
+      });
+      await act(async () => {
+        fireEvent.submit(screen.getByText('Save'));
+      });
+    };
 
     it('should render the list of event types', async () => {
       mockSwr();
@@ -253,24 +278,7 @@ describe('Events page', () => {
       await act(async () => {
         renderPage();
       });
-      await act(async () => {
-        fireEvent.click(screen.getByTitle('add-event-type'));
-      });
-      await act(async () => {
-        fireEvent.input(screen.getByPlaceholderText('New name'), {
-          target: { name: 'name', value: 'Name' }
-        });
-        fireEvent.input(
-          screen.getByPlaceholderText('New event type description'),
-          { target: { name: 'description', value: 'Description' } }
-        );
-      });
-      await act(async () => {
-        userEvent.click(screen.getByTitle(AppPalette.GREEN));
-      });
-      await act(async () => {
-        fireEvent.submit(screen.getByText('Save'));
-      });
+      await fillEventTypesForm();
 
       expect(poster).toHaveBeenCalledTimes(1);
       expect(poster).toHaveBeenCalledWith('/event-types', {
@@ -284,6 +292,32 @@ describe('Events page', () => {
         [...eventTypesResponse.data, { ...eventTypesResponse.data[0], id: 10 }],
         false
       );
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledWith('Event type created!');
+    });
+
+    it('should call onError if posting event types fails', async () => {
+      const mutateSpy = jest.fn().mockImplementation();
+      swrSpy.mockImplementation((key) => {
+        if (key === '/event-types') {
+          return { ...eventTypesResponse, mutate: mutateSpy } as any;
+        } else if (key === '/event-templates') {
+          return eventTemplatesResponse as any;
+        }
+
+        return {};
+      });
+      poster.mockRejectedValue('Error thrown');
+
+      await act(async () => {
+        renderPage();
+      });
+      await fillEventTypesForm();
+
+      expect(poster).toHaveBeenCalledTimes(1);
+      expect(mutateSpy).toHaveBeenCalledTimes(0);
+      expect(onError).toHaveBeenCalledTimes(1);
+      expect(onError).toHaveBeenCalledWith('Error thrown');
     });
 
     it('should open and close the dialog', async () => {
@@ -329,6 +363,27 @@ describe('Events page', () => {
       });
     });
 
+    const fillEventTemplatesForm = async () => {
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('add-event-template'));
+      });
+      await act(async () => {
+        fireEvent.input(screen.getByPlaceholderText('New name'), {
+          target: { name: 'name', value: 'Name' }
+        });
+        fireEvent.input(
+          screen.getByPlaceholderText('New event template description'),
+          { target: { name: 'description', value: 'Description' } }
+        );
+        fireEvent.input(screen.getByPlaceholderText('200'), {
+          target: { name: 'capacity', value: 25 }
+        });
+      });
+      await act(async () => {
+        fireEvent.submit(screen.getByText('Save'));
+      });
+    };
+
     it('should render the list of event templates', async () => {
       mockSwr();
 
@@ -357,6 +412,25 @@ describe('Events page', () => {
       expect(fetcher).not.toHaveBeenCalled();
     });
 
+    it('should call onError if fetching event templates fails', async () => {
+      swrSpy.mockImplementation((key) => {
+        if (key === '/event-types') {
+          return eventTypesResponse as any;
+        } else if (key === '/event-templates') {
+          return { error: 'Error thrown' } as any;
+        }
+
+        return {};
+      });
+
+      await act(async () => {
+        renderPage();
+      });
+
+      expect(onError).toHaveBeenCalledTimes(1);
+      expect(onError).toHaveBeenCalledWith('Error thrown');
+    });
+
     it('should post a new event template', async () => {
       const mutateSpy = jest.fn().mockImplementation();
       swrSpy.mockImplementation((key) => {
@@ -376,24 +450,7 @@ describe('Events page', () => {
       await act(async () => {
         renderPage();
       });
-      await act(async () => {
-        fireEvent.click(screen.getByTitle('add-event-template'));
-      });
-      await act(async () => {
-        fireEvent.input(screen.getByPlaceholderText('New name'), {
-          target: { name: 'name', value: 'Name' }
-        });
-        fireEvent.input(
-          screen.getByPlaceholderText('New event template description'),
-          { target: { name: 'description', value: 'Description' } }
-        );
-        fireEvent.input(screen.getByPlaceholderText('200'), {
-          target: { name: 'capacity', value: 25 }
-        });
-      });
-      await act(async () => {
-        fireEvent.submit(screen.getByText('Save'));
-      });
+      await fillEventTemplatesForm();
 
       expect(poster).toHaveBeenCalledTimes(1);
       expect(poster).toHaveBeenCalledWith('/event-templates', {
@@ -422,21 +479,26 @@ describe('Events page', () => {
       expect(onSuccess).toHaveBeenCalledWith('Event template created!');
     });
 
-    it('should call onError if fetching event templates fails', async () => {
+    it('should call onError if posting an event template fails', async () => {
+      const mutateSpy = jest.fn().mockImplementation();
       swrSpy.mockImplementation((key) => {
         if (key === '/event-types') {
           return eventTypesResponse as any;
         } else if (key === '/event-templates') {
-          return { error: 'Error thrown' } as any;
+          return { ...eventTemplatesResponse, mutate: mutateSpy } as any;
         }
 
         return {};
       });
+      poster.mockRejectedValue('Error thrown');
 
       await act(async () => {
         renderPage();
       });
+      await fillEventTemplatesForm();
 
+      expect(poster).toHaveBeenCalledTimes(1);
+      expect(mutateSpy).toHaveBeenCalledTimes(0);
       expect(onError).toHaveBeenCalledTimes(1);
       expect(onError).toHaveBeenCalledWith('Error thrown');
     });

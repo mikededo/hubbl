@@ -45,6 +45,11 @@ const GymZoneGridItem = ({
 
 export type GymZoneGridProps = {
   /**
+   * Title passed to the add button of the grid
+   */
+  addButtonTitle: string;
+
+  /**
    * Gym zones to render in the grid.
    */
   gymZones: Array<GymZoneDTO | GymZone>;
@@ -78,6 +83,7 @@ export type GymZoneGridProps = {
 };
 
 const GymZoneGrid = ({
+  addButtonTitle,
   gymZones,
   header,
   href,
@@ -102,7 +108,7 @@ const GymZoneGrid = ({
     )}
 
     <AddItemPlaceholder
-      title="add-gym-zone"
+      title={addButtonTitle}
       height={25}
       width={44}
       onClick={onAddGymZone}
