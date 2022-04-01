@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo } from 'react';
+import { ReactElement, useEffect, useMemo, useState } from 'react';
 
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
@@ -8,23 +8,46 @@ import {
   useLoadingContext,
   useToastContext
 } from '@hubbl/data-access/contexts';
-import { VirtualGymDTO } from '@hubbl/shared/models/dto';
-import { GymZoneGrid, PageHeader } from '@hubbl/ui/components';
+import { GymZoneDTO, VirtualGymDTO } from '@hubbl/shared/models/dto';
+import {
+  GymZoneDialog,
+  GymZoneFormFields,
+  GymZoneGrid,
+  PageHeader
+} from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages } from '../../../components';
+import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
+
+type GymZoneDialogState = {
+  /**
+   * Whether the gym to be created is of class type or not
+   */
+  isClassType: boolean;
+
+  /**
+   * Default selected virtual gym, which equals to the router
+   * id
+   */
+  virtualGym: number;
+};
 
 const VirtualGym = () => {
   const router = useRouter();
   const { loading, onPopLoading, onPushLoading } = useLoadingContext();
-  const { onError } = useToastContext();
+  const { onError, onSuccess } = useToastContext();
   const {
+    user,
     token,
-    API: { fetcher }
+    API: { fetcher, poster }
   } = useAppContext();
-  const { data, error } = useSWR<VirtualGymDTO>(
+  const { data, error, mutate } = useSWR<VirtualGymDTO>(
     token.parsed ? `/virtual-gyms/${router.query.id}` : null,
     fetcher
   );
+
+  // Gym zone dialog
+  const [gymZoneDialog, setGymZoneDialog] = useState<GymZoneDialogState>(null);
 
   const classGymZones = useMemo(() => {
     if (!data) {
@@ -42,6 +65,51 @@ const VirtualGym = () => {
     return data.gymZones.filter(({ isClassType }) => !isClassType);
   }, [data]);
 
+  /* Handlers */
+
+  const handleOnAddGymZone: SingleHandler<boolean, EmptyHandler> =
+    (classType) => () => {
+      setGymZoneDialog({
+        isClassType: classType,
+        virtualGym: +router.query.id
+      });
+    };
+
+  const handleOnCloseDialog: EmptyHandler = () => {
+    setGymZoneDialog(null);
+  };
+
+  const handleOnSubmitGymZone: SingleHandler<GymZoneFormFields> = async (
+    formData
+  ) => {
+    setGymZoneDialog(null);
+    onPushLoading();
+
+    try {
+      // The data should include the gym
+      const created = await poster<GymZoneDTO>(
+        `/virtual-gyms/${formData.virtualGym}/gym-zones`,
+        { ...formData, gym: user.gym.id }
+      );
+
+      // Mutate the state once the virtual gym has been created
+      await mutate(
+        { ...data, gymZones: [...data.gymZones, created] } as VirtualGymDTO,
+        false
+      );
+
+      onSuccess('Gym zone created!');
+    } catch (e) {
+      onError(`${e}`);
+    }
+
+    onPopLoading();
+  };
+
+  if (error) {
+    onError(`${error}`);
+  }
+
   useEffect(() => {
     if (!data && !loading) {
       onPushLoading();
@@ -49,10 +117,6 @@ const VirtualGym = () => {
       onPopLoading();
     }
   }, [data, loading, onPopLoading, onPushLoading]);
-
-  if (error) {
-    onError(`${error}`);
-  }
 
   return (
     <>
@@ -65,12 +129,27 @@ const VirtualGym = () => {
       />
 
       <GymZoneGrid
+        addButtonTitle="add-class-gym-zone"
         header="Class gym zones"
         href={`/virtual-gyms/${router.query.id}/gym-zones`}
         gymZones={classGymZones}
+        onAddGymZone={handleOnAddGymZone(true)}
       />
 
-      <GymZoneGrid header="Non-class gym zones" gymZones={nonClassGymZones} />
+      <GymZoneGrid
+        addButtonTitle="add-non-class-gym-zone"
+        header="Non-class gym zones"
+        gymZones={nonClassGymZones}
+        onAddGymZone={handleOnAddGymZone(false)}
+      />
+
+      <GymZoneDialog
+        open={!!gymZoneDialog}
+        title="Create gym zone"
+        defaultValues={gymZoneDialog ?? {}}
+        onClose={handleOnCloseDialog}
+        onSubmit={handleOnSubmitGymZone}
+      />
     </>
   );
 };

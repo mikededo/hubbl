@@ -27,6 +27,7 @@ const Component = ({
 }: Partial<GymZoneGridProps>) => (
   <ThemeProvider theme={createTheme()}>
     <GymZoneGrid
+      addButtonTitle="add-gym-zone"
       gymZones={gymZones as any}
       header="Gym zones"
       href={href}
