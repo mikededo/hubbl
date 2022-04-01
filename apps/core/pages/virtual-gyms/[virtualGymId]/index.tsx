@@ -42,7 +42,7 @@ const VirtualGym = () => {
     API: { fetcher, poster }
   } = useAppContext();
   const { data, error, mutate } = useSWR<VirtualGymDTO>(
-    token.parsed ? `/virtual-gyms/${router.query.id}` : null,
+    token.parsed ? `/virtual-gyms/${router.query.virtualGymId}` : null,
     fetcher
   );
 
@@ -71,7 +71,7 @@ const VirtualGym = () => {
     (classType) => () => {
       setGymZoneDialog({
         isClassType: classType,
-        virtualGym: +router.query.id
+        virtualGym: +router.query.virtualGymId
       });
     };
 
@@ -124,14 +124,17 @@ const VirtualGym = () => {
         title="Virtual gym"
         breadcrumbs={[
           { href: '/virtual-gyms', label: 'Virtual gyms' },
-          { href: '/virtual-gyms/id', label: 'Virtual gym name' }
+          {
+            href: `/virtual-gyms/${router.query.virtualGymId}`,
+            label: 'Virtual gym name'
+          }
         ]}
       />
 
       <GymZoneGrid
         addButtonTitle="add-class-gym-zone"
         header="Class gym zones"
-        href={`/virtual-gyms/${router.query.id}/gym-zones`}
+        href={`/virtual-gyms/${router.query.virtualGymId}/gym-zones`}
         gymZones={classGymZones}
         onAddGymZone={handleOnAddGymZone(true)}
       />
