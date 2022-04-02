@@ -80,6 +80,7 @@ describe('Calendar controller', () => {
       leftJoinAndSelect: jest.fn().mockReturnThis(),
       loadAllRelationIds: jest.fn().mockReturnThis(),
       loadRelationCountAndMap: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
       getMany: jest.fn()
     };
     const mockEventService = {
@@ -207,6 +208,12 @@ describe('Calendar controller', () => {
         'p'
       );
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith({
+        'e.date.year': 'ASC',
+        'e.date.month': 'ASC',
+        'e.date.day': 'ASC'
+      });
       expect(mockEventList.map).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledWith(mockRes, eventList);
@@ -291,6 +298,7 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(2);
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
       failSpyAsserts(failSpy);
     });
   });
