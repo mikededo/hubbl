@@ -51,6 +51,7 @@ class IEventCreateController extends BaseController {
       result.covidPassport = template.covidPassport;
       result.maskRequired = template.maskRequired;
       result.difficulty = template.difficulty;
+      result.color = json.color;
       result.startTime = json.startTime;
       result.endTime = json.endTime;
       result.date = json.date;
