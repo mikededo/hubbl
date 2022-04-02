@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsEnum,
   IsInstance,
   IsNumber,
   IsOptional,
@@ -18,6 +19,7 @@ import {
 } from '@hubbl/shared/models/entities';
 import {
   booleanError,
+  enumError,
   instanceError,
   maxError,
   minError,
@@ -30,6 +32,7 @@ import DTO from '../Base';
 import CalendarDateDTO from '../CalendarDate';
 import TrainerDTO from '../Trainer';
 import { DTOGroups } from '../util';
+import { AppPalette } from '@hubbl/shared/types';
 
 export default class EventDTO implements DTO<Event> {
   @IsNumber(
@@ -92,6 +95,9 @@ export default class EventDTO implements DTO<Event> {
   })
   endTime!: string;
 
+  @IsEnum({}, { message: enumError('AppPalette', 'color') })
+  color!: AppPalette;
+
   @IsNumber(
     {},
     {
@@ -142,6 +148,7 @@ export default class EventDTO implements DTO<Event> {
     result.difficulty = from.difficulty;
     result.startTime = from.startTime;
     result.endTime = from.endTime;
+    result.color = from.color;
     result.trainer = from.trainer;
     result.calendar = from.calendar;
     result.gym = from.gym;
@@ -221,6 +228,7 @@ export default class EventDTO implements DTO<Event> {
     result.difficulty = this.difficulty;
     result.startTime = this.startTime;
     result.endTime = this.endTime;
+    result.color = this.color;
     result.calendar = this.calendar;
     result.gym = this.gym as number;
     result.trainer = this.trainer as number;

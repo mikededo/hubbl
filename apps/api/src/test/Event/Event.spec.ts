@@ -1,3 +1,4 @@
+import { AppPalette } from '@hubbl/shared/types';
 import request = require('superagent');
 import supertest = require('supertest');
 
@@ -17,6 +18,7 @@ const createChecks = (createRes: request.Response, template?: false) => {
   util.toBeString(createRes.body.startTime);
   util.toBeString(createRes.body.endTime);
   util.toBeNumber(createRes.body.difficulty);
+  util.toBeString(createRes.body.color);
   util.toBeNumber(createRes.body.trainer);
   util.toBeNumber(createRes.body.calendar);
   expect(createRes.body.date).toBeDefined();
@@ -66,6 +68,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
       maskRequired: false,
       startTime: '18:00:00',
       endTime: '20:00:00',
+      color: AppPalette.ORANGE,
       trainer: ENTITY_IDENTIFIERS.TRAINER,
       difficulty: 1,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
@@ -102,6 +105,7 @@ export const createNoTemplate = async (by: 'owner' | 'worker') => {
       maskRequired: true,
       startTime: '16:00:00',
       endTime: '16:30:00',
+      color: AppPalette.RED,
       trainer: ENTITY_IDENTIFIERS.TRAINER,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
       gym: ENTITY_IDENTIFIERS.GYM,
