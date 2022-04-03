@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 import { EventDTO } from '@hubbl/shared/models/dto';
 import { AppPalette, Hour } from '@hubbl/shared/types';
-import { notForwardOne } from '@hubbl/utils';
+import { notForwardAny } from '@hubbl/utils';
 import { lighten, Stack, styled, Typography, useTheme } from '@mui/material';
 
 const EventContent = styled(Stack)({ height: '100%' });
@@ -27,12 +27,21 @@ export type CalendarEventProps = {
 };
 
 type MotionLiProps = {
+  /**
+   * Color of the event
+   */
   color: AppPalette;
+
+  /**
+   * Height of the element, which will be passed to the theme
+   * spacing
+   */
+  height: number;
 };
 
 const MotionLi = styled(motion.li, {
-  shouldForwardProp: notForwardOne('color')
-})<MotionLiProps>(({ theme, color }) => ({
+  shouldForwardProp: notForwardAny(['color', 'height'])
+})<MotionLiProps>(({ theme, color, height }) => ({
   position: 'absolute',
   left: theme.spacing(0.5),
   right: theme.spacing(0.5),
@@ -42,7 +51,8 @@ const MotionLi = styled(motion.li, {
   )}, ${color})`,
   borderRadius: theme.spacing(1),
   padding: theme.spacing(0.5, 1, 0.25),
-  cursor: 'pointer'
+  cursor: 'pointer',
+  height: theme.spacing(height)
 }));
 
 const CalendarEvent = ({
@@ -74,22 +84,15 @@ const CalendarEvent = ({
   return (
     <MotionLi
       color={event.color}
-      initial={{
-        top: theme.spacing(topPosition - 4),
-        height: theme.spacing(0),
-        opacity: 0
-      }}
-      animate={{
-        top: theme.spacing(topPosition),
-        height: theme.spacing(height),
-        opacity: 1
-      }}
+      height={height}
+      initial={{ top: theme.spacing(topPosition - 4), opacity: 0 }}
+      animate={{ top: theme.spacing(topPosition), opacity: 1 }}
       transition={{
-        delay: 0.25 + index * 0.1,
-        duration: 0.3,
+        delay: 0.25 + index * 0.05,
+        duration: 0.5,
         type: 'spring',
         damping: 50,
-        stiffness: 400
+        stiffness: 700
       }}
     >
       <EventContent justifyContent="space-between">
