@@ -4,6 +4,7 @@ import {
   GymZoneCreateController,
   GymZoneDeleteController,
   GymZoneFetchController,
+  GymZoneFetchSingleController,
   GymZoneUpdateController
 } from '../controllers';
 import middlewares from '../middlewares';
@@ -16,6 +17,13 @@ const GymZoneRouter: Router = Router();
  */
 GymZoneRouter.get('', middlewares.auth, (req, res) => {
   GymZoneFetchController.execute(req, res);
+});
+
+/**
+ * @description Fetches a single gym zone
+ */
+GymZoneRouter.get('/:id', middlewares.auth, (req, res) => {
+  GymZoneFetchSingleController.execute(req, res);
 });
 
 /**
