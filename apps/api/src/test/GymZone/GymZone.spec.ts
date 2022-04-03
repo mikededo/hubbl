@@ -6,6 +6,20 @@ import { ENTITY_IDENTIFIERS } from '../util';
 
 const baseUrl = `/virtual-gyms/${ENTITY_IDENTIFIERS.VIRTUAL_GYM}/gym-zones`;
 
+const gymZoneFields = (body: any) => {
+  util.toBeNumber(body.id);
+  util.toBeString(body.name);
+  util.toBeString(body.description);
+  util.toBeNumber(body.capacity);
+  util.toBeString(body.openTime);
+  util.toBeString(body.closeTime);
+  util.toBeNumber(body.virtualGym);
+  util.toBeNumber(body.calendar);
+  util.toBeBoolean(body.maskRequired);
+  util.toBeBoolean(body.covidPassport);
+  expect(body.timeIntervals).toBeDefined();
+};
+
 export const fetch = async (by: 'owner' | 'worker' | 'client') => {
   const testApp = supertest(app);
   const loginRes = await util.common.loginByAny(testApp, by);
@@ -17,6 +31,19 @@ export const fetch = async (by: 'owner' | 'worker' | 'client') => {
   expect(fetchRes.statusCode).toBe(200);
   expect(fetchRes.body).toBeDefined();
   expect(fetchRes.body.length).toBe(3);
+};
+
+export const fetchSingle = async (by: 'owner' | 'worker' | 'client') => {
+  const testApp = supertest(app);
+  const loginRes = await util.common.loginByAny(testApp, by);
+
+  const fetchRes = await testApp
+    .get(`${baseUrl}/${ENTITY_IDENTIFIERS.GYM_ZONE_ONE}`)
+    .set('Authorization', `Bearer ${loginRes.body.token}`);
+
+  expect(fetchRes.statusCode).toBe(200);
+  expect(fetchRes.body).toBeDefined();
+  gymZoneFields(fetchRes.body);
 };
 
 export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
@@ -40,17 +67,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
 
   expect(createRes.statusCode).toBe(201);
   expect(createRes.body).toBeDefined();
-  util.toBeNumber(createRes.body.id);
-  util.toBeString(createRes.body.name);
-  util.toBeString(createRes.body.description);
-  util.toBeNumber(createRes.body.capacity);
-  util.toBeString(createRes.body.openTime);
-  util.toBeString(createRes.body.closeTime);
-  util.toBeNumber(createRes.body.virtualGym);
-  util.toBeNumber(createRes.body.calendar);
-  util.toBeBoolean(createRes.body.maskRequired);
-  util.toBeBoolean(createRes.body.covidPassport);
-  expect(createRes.body.timeIntervals).toBeDefined();
+  gymZoneFields(createRes.body)
 
   const updatedRes = await testApp
     .put(baseUrl)

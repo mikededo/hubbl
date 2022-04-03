@@ -48,10 +48,7 @@ class IGymZoneFetchController extends BaseController {
           })
           .getMany();
 
-        return this.ok(
-          res,
-          await Promise.all(result.map(GymZoneDTO.fromClass))
-        );
+        return this.ok(res, result.map(GymZoneDTO.fromClass));
       } catch (e) {
         return this.onFail(res, e, 'fetch');
       }
@@ -64,6 +61,58 @@ class IGymZoneFetchController extends BaseController {
 const fetchInstance = new IGymZoneFetchController();
 
 export const GymZoneFetchController = fetchInstance;
+
+class IGymZoneFetchSingleController extends BaseController {
+  protected service: GymZoneService = undefined;
+  protected personService: PersonService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.service) {
+      this.service = new GymZoneService(getRepository);
+    }
+
+    if (!this.personService) {
+      this.personService = new PersonService(getRepository);
+    }
+
+    const { token } = res.locals;
+
+    try {
+      const person = await this.personService.findOne({ id: token.id });
+
+      if (!person) {
+        return this.clientError(res, 'Person does not exist');
+      }
+
+      try {
+        const result = await this.service
+          .createQueryBuilder({ alias: 'gymZone' })
+          .where('gymZone.id = :id', { id: req.params.id })
+          .leftJoinAndSelect('gymZone.calendar', 'calendar')
+          .leftJoinAndSelect(
+            'gymZone.virtualGym',
+            'virtualGym',
+            'virtualGym.id = :id',
+            { id: req.params.vgId }
+          )
+          .leftJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
+            id: (person.gym as Gym).id
+          })
+          .getOne();
+
+        return this.ok(res, GymZoneDTO.fromClass(result));
+      } catch (e) {
+        return this.onFail(res, e, 'fetch');
+      }
+    } catch (e) {
+      return this.onFail(res, e, 'fetch');
+    }
+  }
+}
+
+const fetchSingleInstance = new IGymZoneFetchSingleController();
+
+export const GymZoneFetchSingleController = fetchSingleInstance;
 
 const createInstance = new CreateByOwnerWorkerController(
   GymZoneService,
