@@ -55,7 +55,7 @@ const CalendarDay = ({
 }: CalendarDayProps): JSX.Element => {
   const hourSpots = useMemo<number[]>(
     () =>
-      Array.from(Array(finalHour - initialHour).keys()).map(
+      Array.from(Array(Math.max(finalHour - initialHour, 9)).keys()).map(
         (hour) => hour + initialHour
       ),
     [initialHour, finalHour]

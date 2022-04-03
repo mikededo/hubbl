@@ -1,10 +1,20 @@
-import { styled } from '@mui/material';
+import { CardActionArea, styled } from '@mui/material';
 
-const CalendarSpot = styled('li')(({ theme }) => ({
+const Li = styled('li')(({ theme }) => ({
   borderBottom: `1px dashed ${theme.palette.divider}`,
+  ':last-of-type': { borderBottom: 'none' },
   width: '100%',
-  height: theme.spacing(8),
-  ':last-of-type': { borderBottom: 'none' }
+  height: theme.spacing(8)
 }));
 
+const CalendarSpotArea = styled(CardActionArea)({
+  width: '100%',
+  height: '100%'
+});
+
+const CalendarSpot = () => (
+  <Li>
+    <CalendarSpotArea />
+  </Li>
+);
 export default CalendarSpot;

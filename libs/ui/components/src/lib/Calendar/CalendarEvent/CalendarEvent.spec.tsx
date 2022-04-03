@@ -51,4 +51,18 @@ describe('<CalendarEvent />', () => {
       top: 6 * 8 + 6 + 0.5
     });
   });
+
+  it('should only render the name', () => {
+    render(
+      <Component
+        event={{ ...event, endTime: '06:30:00' } as any}
+        index={0}
+        initialDayHour={8}
+      />
+    );
+
+    expect(
+      screen.queryByText(`${event.appointmentCount}/${event.capacity}`)
+    ).not.toBeInTheDocument();
+  });
 });

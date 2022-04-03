@@ -100,9 +100,11 @@ const CalendarEvent = ({
           {event.name}
         </Typography>
 
-        <Typography color="white" textAlign="right" variant="subtitle2">
-          {event.appointmentCount}/{event.capacity}
-        </Typography>
+        {height > 3.5 && (
+          <Typography color="white" textAlign="right" variant="subtitle2">
+            {event.appointmentCount}/{event.capacity}
+          </Typography>
+        )}
       </EventContent>
     </MotionLi>
   );

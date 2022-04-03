@@ -45,28 +45,30 @@ const Calendar = ({
   initialHour,
   finalHour
 }: CalendarProps): JSX.Element => {
-  const filteredEvents = useMemo<FilteredEvents>(() => {
-    const today = new Date();
+  const filteredEvents = useMemo<FilteredEvents>(
+    () =>
+      events.reduce<FilteredEvents>(
+        (prev, e) => {
+          const index = new Date(
+            e.date.year,
+            e.date.month - 1,
+            e.date.day
+          ).getDay();
 
-    return events.reduce<FilteredEvents>(
-      (prev, e) => {
-        const diff =
-          new Date(e.date.year, e.date.month - 1, e.date.day).getDate() -
-          today.getDate();
+          prev[index].push(e);
 
-        prev[diff].push(e);
-
-        return prev;
-      },
-      [[], [], [], [], [], [], []]
-    );
-  }, [events]);
+          return prev;
+        },
+        [[], [], [], [], [], [], []]
+      ),
+    [events]
+  );
 
   return (
     <CalendarWeek>
       <CalendarDay
         day="Monday"
-        events={filteredEvents[0]}
+        events={filteredEvents[1]}
         finalHour={finalHour}
         initialHour={initialHour}
         today={new Date().getDay() === 1}
@@ -74,7 +76,7 @@ const Calendar = ({
 
       <CalendarDay
         day="Tuesday"
-        events={filteredEvents[1]}
+        events={filteredEvents[2]}
         finalHour={finalHour}
         initialHour={initialHour}
         today={new Date().getDay() === 2}
@@ -82,7 +84,7 @@ const Calendar = ({
 
       <CalendarDay
         day="Wednesday"
-        events={filteredEvents[2]}
+        events={filteredEvents[3]}
         finalHour={finalHour}
         initialHour={initialHour}
         today={new Date().getDay() === 3}
@@ -90,7 +92,7 @@ const Calendar = ({
 
       <CalendarDay
         day="Tuesday"
-        events={filteredEvents[3]}
+        events={filteredEvents[4]}
         finalHour={finalHour}
         initialHour={initialHour}
         today={new Date().getDay() === 4}
@@ -98,7 +100,7 @@ const Calendar = ({
 
       <CalendarDay
         day="Friday"
-        events={filteredEvents[4]}
+        events={filteredEvents[5]}
         finalHour={finalHour}
         initialHour={initialHour}
         today={new Date().getDay() === 5}
@@ -106,7 +108,7 @@ const Calendar = ({
 
       <CalendarDay
         day="Saturday"
-        events={filteredEvents[5]}
+        events={filteredEvents[6]}
         finalHour={finalHour}
         initialHour={initialHour}
         today={new Date().getDay() === 6}
@@ -114,7 +116,7 @@ const Calendar = ({
 
       <CalendarDay
         day="Sunday"
-        events={filteredEvents[6]}
+        events={filteredEvents[0]}
         finalHour={finalHour}
         initialHour={initialHour}
         today={new Date().getDay() === 0}
