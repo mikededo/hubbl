@@ -87,7 +87,6 @@ class IGymZoneFetchSingleController extends BaseController {
       try {
         const result = await this.service
           .createQueryBuilder({ alias: 'gymZone' })
-          .where('gymZone.id = :id', { id: req.params.id })
           .leftJoinAndSelect('gymZone.calendar', 'calendar')
           .leftJoinAndSelect(
             'gymZone.virtualGym',
@@ -98,6 +97,7 @@ class IGymZoneFetchSingleController extends BaseController {
           .leftJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
             id: (person.gym as Gym).id
           })
+          .where('gymZone.id = :id', { id: req.params.id })
           .getOne();
 
         return this.ok(res, GymZoneDTO.fromClass(result));
