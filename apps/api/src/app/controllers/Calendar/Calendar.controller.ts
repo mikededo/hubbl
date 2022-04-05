@@ -163,7 +163,8 @@ class ICalendarFetchEventsController extends CalendarFetchBase {
         .orderBy({
           'e.date.year': 'ASC',
           'e.date.month': 'ASC',
-          'e.date.day': 'ASC'
+          'e.date.day': 'ASC',
+          'e.startTime': 'ASC'
         })
         .getMany();
 
