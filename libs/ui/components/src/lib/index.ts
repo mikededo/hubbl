@@ -10,8 +10,10 @@ import PageHeader from './PageHeader';
 import SelectInput from './SelectInput';
 import SideNav from './SideNav';
 import VirtualGymList from './VirtualGymList';
+import Calendar from './Calendar';
 
 export {
+  Calendar,
   ColorCircle,
   ColorPicker,
   ContentCard,

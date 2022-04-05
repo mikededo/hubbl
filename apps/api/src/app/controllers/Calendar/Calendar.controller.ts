@@ -160,6 +160,12 @@ class ICalendarFetchEventsController extends CalendarFetchBase {
           'ea',
           (qb) => qb.where('ea.cancelled = false')
         )
+        .orderBy({
+          'e.date.year': 'ASC',
+          'e.date.month': 'ASC',
+          'e.date.day': 'ASC',
+          'e.startTime': 'ASC'
+        })
         .getMany();
 
       return this.ok(

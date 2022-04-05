@@ -86,21 +86,33 @@ const useAppContextValue = ({
   const fetcher = async (url: string) => {
     onPushLoading();
 
-    return ApiFetcher(url, getAuthorizationConfig()).then((res) => {
-      onPopLoading();
+    return ApiFetcher(url, getAuthorizationConfig())
+      .then((res) => {
+        onPopLoading();
 
-      return res.data as never;
-    });
+        return res.data as never;
+      })
+      .catch((e) => {
+        onPopLoading();
+
+        throw e;
+      });
   };
 
   const poster = async <T,>(url: string, data: unknown) => {
     onPushLoading();
 
-    return ApiPoster<T>(url, data, getAuthorizationConfig()).then((res) => {
-      onPopLoading();
+    return ApiPoster<T>(url, data, getAuthorizationConfig())
+      .then((res) => {
+        onPopLoading();
 
-      return res.data as never;
-    });
+        return res.data as never;
+      })
+      .catch((e) => {
+        onPopLoading();
+
+        throw e;
+      });
   };
   /** Updaters **/
   /**

@@ -2,7 +2,8 @@ import {
   isTimeBefore,
   notForwardAny,
   notForwardOne,
-  timeNormalizer
+  timeNormalizer,
+  weekInitialDay
 } from './functions';
 
 describe('functions', () => {
@@ -101,6 +102,48 @@ describe('functions', () => {
       times.map(({ a, b }) => {
         expect(isTimeBefore(a, b)).toBeFalsy();
       });
+    });
+  });
+
+  describe('weekIntialDay', () => {
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(new Date('2022-06-27').getTime());
+    });
+
+    it('should return the first day of the current week', () => {
+      const initial = weekInitialDay(0);
+
+      expect(initial.getDay()).toBe(1);
+    });
+
+    it('should return the first day of the current week if it is sunday', () => {
+      jest.useFakeTimers().setSystemTime(new Date('2022-07-03').getTime());
+
+      const initial = weekInitialDay(0);
+
+      expect(initial.getDay()).toBe(1);
+    });
+
+    it('should return the first day of the previous week', () => {
+      const initial = weekInitialDay(1);
+
+      expect(initial.getDay()).toBe(1);
+      expect(
+        Math.ceil(
+          (new Date().getTime() - initial.getTime()) / (1000 * 3600 * 24)
+        )
+      ).toBe(7);
+    });
+
+    it('should return the first day of the next week', () => {
+      const initial = weekInitialDay(-1);
+
+      expect(initial.getDay()).toBe(1);
+      expect(
+        Math.ceil(
+          (initial.getTime() - new Date().getTime()) / (1000 * 3600 * 24)
+        )
+      ).toBe(7);
     });
   });
 });
