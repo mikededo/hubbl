@@ -65,7 +65,7 @@ const Calendar = ({
   );
 
   return (
-    <CalendarWeek>
+    <CalendarWeek title="calendar">
       <CalendarDay
         day="Monday"
         events={filteredEvents[1]}
