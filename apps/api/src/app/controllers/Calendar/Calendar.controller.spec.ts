@@ -212,7 +212,8 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith({
         'e.date.year': 'ASC',
         'e.date.month': 'ASC',
-        'e.date.day': 'ASC'
+        'e.date.day': 'ASC',
+        'e.startTime': 'ASC'
       });
       expect(mockEventList.map).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledTimes(1);
