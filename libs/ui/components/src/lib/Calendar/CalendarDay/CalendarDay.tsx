@@ -1,5 +1,5 @@
 import { EventDTO } from '@hubbl/shared/models/dto';
-import { Hour } from '@hubbl/shared/types';
+import { EmptyHandler, Hour, SingleHandler } from '@hubbl/shared/types';
 import { Typography } from '@mui/material';
 import { useMemo } from 'react';
 
@@ -44,6 +44,14 @@ export type CalendarDayProps = {
    * @default false
    */
   today?: boolean;
+
+  /**
+   * Callback to run when the card area of the spot is clicked. It passes
+   * the hour of the spot clicked.
+   *
+   * @default undefined
+   */
+  onSpotClick?: SingleHandler<number>;
 };
 
 const CalendarDay = ({
@@ -51,7 +59,8 @@ const CalendarDay = ({
   events = [],
   finalHour,
   initialHour,
-  today = false
+  today = false,
+  onSpotClick
 }: CalendarDayProps): JSX.Element => {
   const hourSpots = useMemo<number[]>(
     () =>
@@ -61,8 +70,13 @@ const CalendarDay = ({
     [initialHour, finalHour]
   );
 
+  const handleOnSpotClick: SingleHandler<number, EmptyHandler> =
+    (hour) => () => {
+      onSpotClick?.(hour);
+    };
+
   return (
-    <CalendarDayColumn>
+    <CalendarDayColumn title={day}>
       <CalendarSpotHeader>
         <Typography
           color={today ? 'primary' : 'textPrimary'}
@@ -73,7 +87,7 @@ const CalendarDay = ({
       </CalendarSpotHeader>
 
       {hourSpots.map((hour) => (
-        <CalendarSpot key={hour} />
+        <CalendarSpot key={hour} onClick={handleOnSpotClick(hour)} />
       ))}
 
       {events.map((event, i) => (

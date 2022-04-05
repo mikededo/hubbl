@@ -1,6 +1,6 @@
 import { AppPalette } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import CalendarDay, { CalendarDayProps } from './CalendarDay';
 
@@ -116,6 +116,26 @@ describe('<CalendarDay />', () => {
 
     events.forEach(({ name }) => {
       expect(screen.getByText(name)).toBeInTheDocument();
+    });
+  });
+
+  describe('onSpotClick', () => {
+    it('should call onSpotClick with the hour of the spot', () => {
+      const onClickSpy = jest.fn();
+
+      render(
+        <Component
+          day="Monday"
+          events={[]}
+          initialHour={8}
+          finalHour={17}
+          onSpotClick={onClickSpy}
+        />
+      );
+      fireEvent.click(screen.getAllByTestId('calendar-spot')[0]);
+
+      expect(onClickSpy).toHaveBeenCalledTimes(1);
+      expect(onClickSpy).toHaveBeenCalledWith(8);
     });
   });
 });

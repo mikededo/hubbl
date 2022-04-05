@@ -1,3 +1,4 @@
+import { EmptyHandler } from '@hubbl/shared/types';
 import { CardActionArea, styled } from '@mui/material';
 
 const Li = styled('li')(({ theme }) => ({
@@ -12,9 +13,18 @@ const CalendarSpotArea = styled(CardActionArea)({
   height: '100%'
 });
 
-const CalendarSpot = () => (
+type CalendarSpotProps = {
+  /**
+   * Callback to run when the card area of the spot is clicked
+   *
+   * @default undefined
+   */
+  onClick?: EmptyHandler;
+};
+
+const CalendarSpot = ({ onClick }: CalendarSpotProps) => (
   <Li>
-    <CalendarSpotArea />
+    <CalendarSpotArea data-testid="calendar-spot" onClick={onClick} />
   </Li>
 );
 export default CalendarSpot;

@@ -1,5 +1,6 @@
 import { AppPalette } from '@hubbl/shared/types';
-import { screen, render } from '@testing-library/react';
+import { createTheme, ThemeProvider } from '@mui/material';
+import { fireEvent, screen, render } from '@testing-library/react';
 
 import Calendar from './Calendar';
 
@@ -95,6 +96,54 @@ describe('<Calendar />', () => {
       expect(
         screen.getByText(`${e.appointmentCount}/${e.capacity}`)
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('currentWeek', () => {
+    it.each([
+      { day: 1, name: 'Monday' },
+      { day: 2, name: 'Tuesday' },
+      { day: 3, name: 'Wednesday' },
+      { day: 4, name: 'Thursday' },
+      { day: 5, name: 'Friday' },
+      { day: 6, name: 'Saturday' },
+      { day: 0, name: 'Sunday' }
+    ])('should render each day as selected ($day)', ({ day, name }) => {
+      // 01/01/2018 was a monday
+      jest
+        .useFakeTimers()
+        .setSystemTime(new Date(`2018-01-0${day === 0 ? 7 : day}`));
+
+      const theme = createTheme();
+
+      render(
+        <ThemeProvider theme={theme}>
+          <Calendar events={[]} initialHour={8} finalHour={17} currentWeek />
+        </ThemeProvider>
+      );
+
+      expect(screen.getByText(name)).toHaveStyle({
+        color: theme.palette.primary.main
+      });
+    });
+  });
+
+  describe('onSpotClick', () => {
+    it('should call onSpotClick with the hour and the day', () => {
+      const onClickSpy = jest.fn();
+
+      render(
+        <Calendar
+          events={[]}
+          initialHour={8}
+          finalHour={17}
+          onSpotClick={onClickSpy}
+        />
+      );
+      fireEvent.click(screen.getAllByTestId('calendar-spot')[0]);
+
+      expect(onClickSpy).toHaveBeenCalledTimes(1);
+      expect(onClickSpy).toHaveBeenCalledWith({ hour: 8, day: 1 });
     });
   });
 });
