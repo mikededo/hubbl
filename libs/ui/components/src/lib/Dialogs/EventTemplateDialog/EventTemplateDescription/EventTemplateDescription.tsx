@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import Input from '../../../Input';
 import { EventTemplateFormFields } from '../../types';
 
-const EventTemplateName = (): JSX.Element => {
+const EventTemplateDescription = (): JSX.Element => {
   const {
     register,
     formState: { errors }
@@ -27,4 +27,4 @@ const EventTemplateName = (): JSX.Element => {
   );
 };
 
-export default EventTemplateName;
+export default EventTemplateDescription;
