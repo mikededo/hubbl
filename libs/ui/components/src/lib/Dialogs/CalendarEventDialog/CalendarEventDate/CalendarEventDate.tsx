@@ -19,7 +19,6 @@ const CalendarEventDate = (): JSX.Element => (
           title="calendar-event-date"
           value={value}
           onChangeDate={onChange}
-          error
         />
       )}
     />
