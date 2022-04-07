@@ -83,6 +83,7 @@ const DatePicker = ({
             ...renderProps.InputProps,
             ...props,
           }}
+          error={props.error}
           inputProps={{ placeholder: 'dd/mm/yyyy', ...renderProps.inputProps }}
           variant="standard"
           fullWidth
