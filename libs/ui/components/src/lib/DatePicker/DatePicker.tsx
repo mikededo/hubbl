@@ -81,10 +81,10 @@ const DatePicker = ({
           InputProps={{
             disableUnderline: true,
             ...renderProps.InputProps,
-            ...props,
+            ...props
           }}
-          error={props.error}
           inputProps={{ placeholder: 'dd/mm/yyyy', ...renderProps.inputProps }}
+          error={props.error}
           variant="standard"
           fullWidth
         />

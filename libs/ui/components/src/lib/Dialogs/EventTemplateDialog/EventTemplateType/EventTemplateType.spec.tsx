@@ -38,7 +38,7 @@ describe('<EventTemplateType />', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('should display the virtual gyms on clicking the select', () => {
+  it('should display the event types on clicking the select', () => {
     render(
       <MockComponent
         eventTypes={[
