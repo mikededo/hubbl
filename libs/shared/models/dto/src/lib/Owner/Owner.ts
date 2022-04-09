@@ -109,6 +109,7 @@ export default class OwnerDTO<T extends Gym | number>
 
     // Set person into owner
     owner.person = person;
+    owner.personId = this.id;
 
     return owner;
   }
