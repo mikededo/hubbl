@@ -5,6 +5,7 @@ import {
   JoinColumn,
   OneToMany,
   OneToOne,
+  PrimaryColumn,
   UpdateDateColumn
 } from 'typeorm';
 
@@ -18,10 +19,15 @@ import Worker from './Worker';
 @Entity()
 export default class Owner {
   /**
+   * Primary column of the `Person` relationship
+   */
+  @PrimaryColumn()
+  personId!: number;
+
+  /**
    * Personal information of the owner
    */
   @OneToOne(() => Person, {
-    primary: true,
     cascade: true,
     eager: true,
     nullable: false

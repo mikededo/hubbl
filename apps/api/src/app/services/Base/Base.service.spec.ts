@@ -74,7 +74,7 @@ describe('BaseService', () => {
   });
 
   describe('#findOne', () => {
-    it('should find one item by id', async () => {
+    it('should find one item', async () => {
       const mockRepository = {
         findOne: jest.fn().mockImplementation(() =>
           Promise.resolve({
@@ -87,14 +87,16 @@ describe('BaseService', () => {
       const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
 
       const service = new BaseService(Mock, mockRepoAccessor);
-      await service.findOne({ id: 1, options: {} as any });
+      await service.findOne({ where: { id: 1 } });
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith(1, {});
+      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
     });
+  });
 
+  describe('#findOneBy', () => {
     it('should find one item by id', async () => {
       const mockRepository = {
-        findOne: jest.fn().mockImplementation(() =>
+        findOneBy: jest.fn().mockImplementation(() =>
           Promise.resolve({
             id: 1,
             email: 'found@user.com',
@@ -105,9 +107,9 @@ describe('BaseService', () => {
       const mockRepoAccessor = jest.fn().mockReturnValue(mockRepository) as any;
 
       const service = new BaseService(Mock, mockRepoAccessor);
-      await service.findOne({ options: {} as any });
+      await service.findOneBy({ id: 1 } as any);
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({});
+      expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
     });
   });
 

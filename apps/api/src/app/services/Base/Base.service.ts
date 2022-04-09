@@ -1,9 +1,9 @@
 import {
   DeepPartial,
   DeleteResult,
-  FindCondition,
   FindManyOptions,
   FindOneOptions,
+  FindOptionsWhere,
   QueryRunner,
   Repository,
   SelectQueryBuilder,
@@ -11,11 +11,6 @@ import {
 } from 'typeorm';
 
 import { RepositoryAccessor } from '../util';
-
-type FindOneProps<T> = {
-  id?: number;
-  options?: FindOneOptions<T>;
-};
 
 type CreateQueryBuilderProps = {
   alias?: string;
@@ -44,10 +39,12 @@ export default class BaseService<T> {
     return this.repository.find(options);
   }
 
-  public findOne({ id, options }: FindOneProps<T>): Promise<T> {
-    return id
-      ? this.repository.findOne(id, options)
-      : this.repository.findOne(options);
+  public findOne(options: FindOneOptions<T>): Promise<T> {
+    return this.repository.findOne(options);
+  }
+
+  public findOneBy(options: FindOptionsWhere<T>): Promise<T> {
+    return this.repository.findOneBy(options);
   }
 
   public update(id: number, value: T): Promise<UpdateResult> {
@@ -58,7 +55,7 @@ export default class BaseService<T> {
     return this.repository.delete(criteria);
   }
 
-  public count(args: FindManyOptions<T> | FindCondition<T>): Promise<number> {
+  public count(args: FindManyOptions<T>): Promise<number> {
     return this.repository.count(args);
   }
 
