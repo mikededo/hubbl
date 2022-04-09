@@ -4,7 +4,6 @@ import { sign, verify } from 'jsonwebtoken';
 import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { ParsedToken } from '@hubbl/shared/types';
 
-import { getRepository } from '../../../config';
 import { ClientService, OwnerService, WorkerService } from '../../services';
 import BaseController from '../Base';
 
@@ -15,15 +14,15 @@ class ITokenValidateCookie extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     if (!this.clientService) {
-      this.clientService = new ClientService(getRepository);
+      this.clientService = new ClientService();
     }
 
     // Get the cookie

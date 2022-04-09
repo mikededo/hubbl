@@ -1,6 +1,5 @@
 import { DTOGroups } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import { OwnerService, WorkerService } from '../../services';
 import * as update from '../helpers/update';
 import UpdateByOwnerWorkerController from './UpdateByOwnerWorker.controller';
@@ -50,11 +49,8 @@ describe('UpdateByOwnerWorkerController controller', () => {
     await controller.execute({} as any, {} as any);
 
     expect(mockServiceConstructor).toHaveBeenCalled();
-    expect(mockServiceConstructor).toHaveBeenCalledWith(getRepository);
     expect(OwnerService).toHaveBeenCalled();
-    expect(OwnerService).toHaveBeenCalledWith(getRepository);
     expect(WorkerService).toHaveBeenCalled();
-    expect(WorkerService).toHaveBeenCalledWith(getRepository);
   });
 
   it('should call updatedByOwnerOrWorker', async () => {

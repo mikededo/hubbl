@@ -9,7 +9,6 @@ import {
 } from '@hubbl/shared/models/entities';
 import { ParsedToken } from '@hubbl/shared/types';
 
-import { getRepository } from '../../../../config';
 import { queries } from '../../../constants';
 import { AvailableTimesAppointmentsResult } from '../../../constants/queries';
 import {
@@ -125,23 +124,23 @@ abstract class BaseCalendarAppointmentController extends BaseController {
 
   protected checkServices() {
     if (!this.service) {
-      this.service = new CalendarAppointmentService(getRepository);
+      this.service = new CalendarAppointmentService();
     }
 
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     if (!this.clientService) {
-      this.clientService = new ClientService(getRepository);
+      this.clientService = new ClientService();
     }
   }
 }
@@ -157,15 +156,15 @@ class ICalendarApointmentFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new CalendarAppointmentService(getRepository);
+      this.service = new CalendarAppointmentService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     const { token } = res.locals;

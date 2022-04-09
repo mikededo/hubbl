@@ -3,7 +3,6 @@ import * as log from 'npmlog';
 
 import { ClientDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import {
   ClientService,
   GymService,
@@ -57,9 +56,7 @@ describe('ClientController', () => {
         await ClientFetchController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
-        expect(ClientService).toHaveBeenCalledWith(getRepository);
         expect(PersonService).toHaveBeenCalledTimes(1);
-        expect(PersonService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call fetch', async () => {
@@ -213,9 +210,7 @@ describe('ClientController', () => {
         await ClientRegisterController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
-        expect(ClientService).toHaveBeenCalledWith(getRepository);
         expect(GymService).toHaveBeenCalledTimes(1);
-        expect(GymService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call register if no code given', async () => {
@@ -318,7 +313,6 @@ describe('ClientController', () => {
         await ClientLoginController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
-        expect(ClientService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call clientLogin', async () => {
@@ -351,11 +345,8 @@ describe('ClientController', () => {
         await ClientUpdateController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
-        expect(ClientService).toHaveBeenCalledWith(getRepository);
         expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
         expect(WorkerService).toHaveBeenCalledTimes(1);
-        expect(WorkerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call clientUpdate', async () => {

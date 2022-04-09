@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { ClientDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../config';
 import {
   ClientService,
   GymService,
@@ -21,11 +20,11 @@ class IClientFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new ClientService(getRepository);
+      this.service = new ClientService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -69,11 +68,11 @@ class IClientRegisterController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new ClientService(getRepository);
+      this.service = new ClientService();
     }
 
     if (!this.gymService) {
-      this.gymService = new GymService(getRepository);
+      this.gymService = new GymService();
     }
 
     const { code } = req.query;
@@ -119,7 +118,7 @@ class IClientLoginController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new ClientService(getRepository);
+      this.service = new ClientService();
     }
 
     return clientLogin({
@@ -144,15 +143,15 @@ class IClientUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new ClientService(getRepository);
+      this.service = new ClientService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     return clientUpdate({

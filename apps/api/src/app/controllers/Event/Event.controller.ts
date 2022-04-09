@@ -5,7 +5,6 @@ import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
 import { ParsedToken } from '@hubbl/shared/types';
 
-import { getRepository } from '../../../config';
 import {
   EventService,
   EventTemplateService,
@@ -101,23 +100,23 @@ class IEventCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new EventService(getRepository);
+      this.service = new EventService();
     }
 
     if (!this.templateService) {
-      this.templateService = new EventTemplateService(getRepository);
+      this.templateService = new EventTemplateService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     const maybeEvent = await this.fromTemplate(res, req.body);
@@ -203,15 +202,15 @@ class IEventUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new EventService(getRepository);
+      this.service = new EventService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     let dto: EventDTO;

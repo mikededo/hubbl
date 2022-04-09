@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../config';
 import { GymZoneService, PersonService } from '../../services';
 import BaseController, {
   CreateByOwnerWorkerController,
@@ -17,11 +16,11 @@ class IGymZoneFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new GymZoneService(getRepository);
+      this.service = new GymZoneService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -68,11 +67,11 @@ class IGymZoneFetchSingleController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new GymZoneService(getRepository);
+      this.service = new GymZoneService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;

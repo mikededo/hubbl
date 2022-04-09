@@ -11,7 +11,6 @@ import {
   VirtualGym
 } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../config';
 import {
   EventService,
   EventTemplateService,
@@ -111,31 +110,31 @@ class IFetchDashboardController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     if (!this.gymService) {
-      this.gymService = new GymService(getRepository);
+      this.gymService = new GymService();
     }
 
     if (!this.virtualGymService) {
-      this.virtualGymService = new VirtualGymService(getRepository);
+      this.virtualGymService = new VirtualGymService();
     }
 
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     if (!this.eventService) {
-      this.eventService = new EventService(getRepository);
+      this.eventService = new EventService();
     }
 
     if (!this.eventTemplateService) {
-      this.eventTemplateService = new EventTemplateService(getRepository);
+      this.eventTemplateService = new EventTemplateService();
     }
 
     if (!this.trainerService) {
-      this.trainerService = new TrainerService(getRepository);
+      this.trainerService = new TrainerService();
     }
 
     const { id } = req.params;

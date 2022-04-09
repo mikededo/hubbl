@@ -3,7 +3,6 @@ import * as jwt from 'jsonwebtoken';
 import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { ParsedToken } from '@hubbl/shared/types';
 
-import { getRepository } from '../../../config';
 import { ClientService, OwnerService, WorkerService } from '../../services';
 import { TokenRefresh, TokenValidateCookie } from './Token.controller';
 
@@ -94,11 +93,8 @@ describe('Token controller', () => {
       TokenValidateCookie.execute({} as any, {} as any);
 
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return a new token and the owner user', async () => {

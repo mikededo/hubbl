@@ -4,7 +4,6 @@ import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
 import { AppPalette } from '@hubbl/shared/types';
 
-import { getRepository } from '../../../config';
 import {
   EventService,
   EventTemplateService,
@@ -96,11 +95,8 @@ describe('Event controller', () => {
     await controller.execute({} as any, {} as any);
 
     expect(EventService).toHaveBeenCalledTimes(1);
-    expect(EventService).toHaveBeenCalledWith(getRepository);
     expect(OwnerService).toHaveBeenCalledTimes(1);
-    expect(OwnerService).toHaveBeenCalledWith(getRepository);
     expect(WorkerService).toHaveBeenCalledTimes(1);
-    expect(WorkerService).toHaveBeenCalledWith(getRepository);
   };
 
   const fromJsonFailAsserts = async (
@@ -360,9 +356,7 @@ describe('Event controller', () => {
       await servicesAsserts(EventCreateController);
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(EventTemplateService).toHaveBeenCalledTimes(1);
-      expect(EventTemplateService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call createByOwnerOrWorker with template data', async () => {

@@ -2,7 +2,6 @@ import * as log from 'npmlog';
 
 import { WorkerDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import { OwnerService, PersonService, WorkerService } from '../../services';
 import * as helpers from '../helpers';
 import * as personHelpers from './helpers';
@@ -51,9 +50,7 @@ describe('WorkerController', () => {
         await WorkerFetchController.execute({} as any, {} as any);
 
         expect(WorkerService).toHaveBeenCalledTimes(1);
-        expect(WorkerService).toHaveBeenCalledWith(getRepository);
         expect(PersonService).toHaveBeenCalledTimes(1);
-        expect(PersonService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call fetch', async () => {
@@ -189,7 +186,6 @@ describe('WorkerController', () => {
         await WorkerCreateController.execute({} as any, {} as any);
 
         expect(WorkerService).toHaveBeenCalledTimes(1);
-        expect(WorkerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call register', async () => {
@@ -219,7 +215,6 @@ describe('WorkerController', () => {
         await WorkerLoginController.execute({} as any, {} as any);
 
         expect(WorkerService).toHaveBeenCalledTimes(1);
-        expect(WorkerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call workerLogin', async () => {
@@ -251,9 +246,7 @@ describe('WorkerController', () => {
         await WorkerUpdateController.execute({} as any, {} as any);
 
         expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
         expect(WorkerService).toHaveBeenCalledTimes(1);
-        expect(WorkerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call workerUpdate', async () => {

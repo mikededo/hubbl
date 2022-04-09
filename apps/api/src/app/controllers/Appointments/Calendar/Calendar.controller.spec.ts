@@ -5,7 +5,6 @@ import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
 import { CalendarDate, GymZone } from '@hubbl/shared/models/entities';
 import { GymZoneIntervals } from '@hubbl/shared/types';
 
-import { getRepository } from '../../../../config';
 import { queries } from '../../../constants';
 import {
   CalendarAppointmentService,
@@ -467,9 +466,7 @@ describe('Appointments.Calendar controller', () => {
       await CalendarFetchController.execute({} as any, {} as any);
 
       expect(CalendarAppointmentService).toHaveBeenCalledTimes(1);
-      expect(CalendarAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should send ok with the parsed results of the query', async () => {
@@ -662,15 +659,10 @@ describe('Appointments.Calendar controller', () => {
       await CalendarCreateController.execute({} as any, {} as any);
 
       expect(CalendarAppointmentService).toHaveBeenCalledTimes(1);
-      expect(CalendarAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should create a CalendarAppointment by a client', async () => {
@@ -1081,15 +1073,10 @@ describe('Appointments.Calendar controller', () => {
       await CalendarDeleteController.execute({} as any, {} as any);
 
       expect(CalendarAppointmentService).toHaveBeenCalledTimes(1);
-      expect(CalendarAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     describe('owner/worker', () => {

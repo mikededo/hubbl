@@ -4,7 +4,6 @@ import { DTOGroups, EventAppointmentDTO } from '@hubbl/shared/models/dto';
 import { Event, EventAppointment } from '@hubbl/shared/models/entities';
 import { ParsedToken } from '@hubbl/shared/types';
 
-import { getRepository } from '../../../../config';
 import {
   ClientService,
   EventAppointmentService,
@@ -107,23 +106,23 @@ abstract class BaseEventAppointmentController extends BaseController {
 
   protected checkServices() {
     if (!this.service) {
-      this.service = new EventAppointmentService(getRepository);
+      this.service = new EventAppointmentService();
     }
 
     if (!this.eventService) {
-      this.eventService = new EventService(getRepository);
+      this.eventService = new EventService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     if (!this.clientService) {
-      this.clientService = new ClientService(getRepository);
+      this.clientService = new ClientService();
     }
   }
 }

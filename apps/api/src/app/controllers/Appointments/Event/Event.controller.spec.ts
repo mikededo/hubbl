@@ -3,7 +3,6 @@ import npmlog = require('npmlog');
 import { DTOGroups, EventAppointmentDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../../config';
 import {
   ClientService,
   EventAppointmentService,
@@ -398,15 +397,10 @@ describe('Appointments.Event controller', () => {
       await EventCreateController.execute({} as any, {} as any);
 
       expect(EventAppointmentService).toHaveBeenCalledTimes(1);
-      expect(EventAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should create an EventAppointment by a client', async () => {
@@ -692,15 +686,10 @@ describe('Appointments.Event controller', () => {
       await EventCancelController.execute({} as any, {} as any);
 
       expect(EventAppointmentService).toHaveBeenCalledTimes(1);
-      expect(EventAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call updatedByOwnerOrWorker by an owner or worker', async () => {
@@ -898,15 +887,10 @@ describe('Appointments.Event controller', () => {
       await EventDeleteController.execute({} as any, {} as any);
 
       expect(EventAppointmentService).toHaveBeenCalledTimes(1);
-      expect(EventAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call deletedByOwnerOrWorker by an owner or worker', async () => {

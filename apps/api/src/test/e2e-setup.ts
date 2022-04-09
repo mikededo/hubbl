@@ -140,6 +140,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
     });
 
     await em.getRepository(Owner).save({
+      personId: ENTITY_IDENTIFIERS.OWNER,
       person: {
         id: ENTITY_IDENTIFIERS.OWNER,
         firstName: 'Owner',
@@ -218,6 +219,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
     ]);
 
     await em.getRepository(Worker).save({
+      personId: ENTITY_IDENTIFIERS.WORKER,
       person: {
         id: ENTITY_IDENTIFIERS.WORKER,
         email: ENTITY_IDENTIFIERS.WORKER_EMAIL,
@@ -260,6 +262,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
 
     await em.getRepository(Client).save([
       {
+        personId: ENTITY_IDENTIFIERS.CLIENT,
         person: {
           id: ENTITY_IDENTIFIERS.CLIENT,
           email: ENTITY_IDENTIFIERS.CLIENT_EMAIL,
@@ -273,6 +276,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true
       },
       {
+        personId: ENTITY_IDENTIFIERS.CLIENT_TWO,
         person: {
           id: ENTITY_IDENTIFIERS.CLIENT_TWO,
           email: ENTITY_IDENTIFIERS.CLIENT_EMAIL_TWO,
@@ -286,6 +290,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
         covidPassport: true
       },
       {
+        personId: ENTITY_IDENTIFIERS.CLIENT_THREE,
         person: {
           id: ENTITY_IDENTIFIERS.CLIENT_THREE,
           email: ENTITY_IDENTIFIERS.CLIENT_EMAIL_THREE,
@@ -328,6 +333,7 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
     ]);
 
     await em.getRepository(Trainer).save({
+      personId: ENTITY_IDENTIFIERS.TRAINER,
       person: {
         id: ENTITY_IDENTIFIERS.TRAINER,
         email: ENTITY_IDENTIFIERS.TRAINER_EMAIL,

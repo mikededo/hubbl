@@ -14,7 +14,6 @@ import {
   WorkerService
 } from './Person';
 import TrainerTagService from './TrainerTag';
-import { RepositoryAccessor } from './util';
 import VirtualGymService from './VirtualGym';
 
 export {
@@ -29,7 +28,6 @@ export {
   GymZoneService,
   OwnerService,
   PersonService,
-  RepositoryAccessor,
   TrainerService,
   TrainerTagService,
   VirtualGymService,

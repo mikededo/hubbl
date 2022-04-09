@@ -4,7 +4,6 @@ import * as log from 'npmlog';
 
 import { EventDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import {
   CalendarAppointmentService,
   EventAppointmentService,
@@ -21,11 +20,11 @@ abstract class CalendarFetchBase extends BaseController {
 
   protected checkServices() {
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
   }
 
@@ -99,7 +98,7 @@ class ICalendarFetchEventsController extends CalendarFetchBase {
     this.checkServices();
 
     if (!this.eventService) {
-      this.eventService = new EventService(getRepository);
+      this.eventService = new EventService();
     }
 
     const { token } = res.locals;
@@ -189,7 +188,7 @@ class ICalendarFetchEventAppointmentsController extends CalendarFetchBase {
     this.checkServices();
 
     if (!this.eventAppointmentService) {
-      this.eventAppointmentService = new EventAppointmentService(getRepository);
+      this.eventAppointmentService = new EventAppointmentService();
     }
 
     const { token } = res.locals;
@@ -272,9 +271,7 @@ class ICalendarFetchCalenAppointmentsController extends CalendarFetchBase {
     this.checkServices();
 
     if (!this.calenAppointmentService) {
-      this.calenAppointmentService = new CalendarAppointmentService(
-        getRepository
-      );
+      this.calenAppointmentService = new CalendarAppointmentService();
     }
 
     const { token } = res.locals;

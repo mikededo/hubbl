@@ -3,7 +3,6 @@ import * as log from 'npmlog';
 import { EventTemplateDTO } from '@hubbl/shared/models/dto';
 import { EventType } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../config';
 import { EventTemplateService, PersonService } from '../../services';
 import {
   CreateByOwnerWorkerController,
@@ -90,9 +89,7 @@ describe('EventTemplate controller', () => {
       await EventTemplateFetchController.execute({} as any, {} as any);
 
       expect(EventTemplateService).toHaveBeenCalledTimes(1);
-      expect(EventTemplateService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should fetch the event templates', async () => {

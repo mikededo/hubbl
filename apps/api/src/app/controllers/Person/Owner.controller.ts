@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 
 import { OwnerDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import { OwnerService } from '../../services';
 import BaseController from '../Base';
 import { ownerUpdate } from '../helpers';
@@ -13,7 +12,7 @@ class IOwnerRegisterController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new OwnerService(getRepository);
+      this.service = new OwnerService();
     }
 
     return register({
@@ -37,7 +36,7 @@ class IOwnerLoginController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new OwnerService(getRepository);
+      this.service = new OwnerService();
     }
 
     return ownerLogin({
@@ -60,7 +59,7 @@ class IOwnerUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new OwnerService(getRepository);
+      this.service = new OwnerService();
     }
 
     return ownerUpdate({

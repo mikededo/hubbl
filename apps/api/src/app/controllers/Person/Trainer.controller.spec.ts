@@ -2,7 +2,6 @@ import * as log from 'npmlog';
 
 import { TrainerDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import {
   OwnerService,
   PersonService,
@@ -54,9 +53,7 @@ describe('TrainerController', () => {
         await TrainerFetchController.execute({} as any, {} as any);
 
         expect(TrainerService).toHaveBeenCalledTimes(1);
-        expect(TrainerService).toHaveBeenCalledWith(getRepository);
         expect(PersonService).toHaveBeenCalledTimes(1);
-        expect(PersonService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call fetch', async () => {
@@ -193,7 +190,6 @@ describe('TrainerController', () => {
         await TrainerCreateController.execute({} as any, {} as any);
 
         expect(TrainerService).toHaveBeenCalledTimes(1);
-        expect(TrainerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call trainerRegister', async () => {
@@ -226,11 +222,8 @@ describe('TrainerController', () => {
         await TrainerUpdateController.execute({} as any, {} as any);
 
         expect(TrainerService).toHaveBeenCalledTimes(1);
-        expect(TrainerService).toHaveBeenCalledWith(getRepository);
         expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
         expect(WorkerService).toHaveBeenCalledTimes(1);
-        expect(WorkerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call trainerUpdate', async () => {

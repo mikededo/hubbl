@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 
 import { DTOGroups, GymDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import { GymService, OwnerService } from '../../services';
 import BaseController from '../Base';
 import { updatedByOwnerOrWorker } from '../helpers';
@@ -13,11 +12,11 @@ class IGymUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new GymService(getRepository);
+      this.service = new GymService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     const { token } = res.locals;

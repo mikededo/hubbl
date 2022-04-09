@@ -4,7 +4,6 @@ import * as log from 'npmlog';
 import { EventTemplateDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../config';
 import { EventTemplateService, PersonService } from '../../services';
 import BaseController, {
   CreateByOwnerWorkerController,
@@ -18,11 +17,11 @@ class IEventTemplateFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new EventTemplateService(getRepository);
+      this.service = new EventTemplateService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;

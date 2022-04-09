@@ -1,4 +1,3 @@
-import { getRepository } from '../../../config';
 import { OwnerService, WorkerService } from '../../services';
 import * as deleteHelpers from '../helpers/delete';
 import DeleteByOwnerWorkerController from './DeleteByOwnerWorker.controller';
@@ -35,11 +34,8 @@ describe('DeleteByOwnerWorkerController controller', () => {
     await controller.execute({} as any, {} as any);
 
     expect(mockServiceConstructor).toHaveBeenCalled();
-    expect(mockServiceConstructor).toHaveBeenCalledWith(getRepository);
     expect(OwnerService).toHaveBeenCalled();
-    expect(OwnerService).toHaveBeenCalledWith(getRepository);
     expect(WorkerService).toHaveBeenCalled();
-    expect(WorkerService).toHaveBeenCalledWith(getRepository);
   });
 
   it('should call deletedByOwnerOrWorker', async () => {

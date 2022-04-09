@@ -8,12 +8,10 @@ jest.mock('../Base');
 describe('TrainerTagService', () => {
   describe('#constructor', () => {
     it('should call super', () => {
-      const mockRepoAccesser = jest.fn();
-
-      new TrainerTagService(mockRepoAccesser as any);
+      new TrainerTagService();
 
       expect(BaseService).toHaveBeenCalled();
-      expect(BaseService).toHaveBeenCalledWith(TrainerTag, mockRepoAccesser);
+      expect(BaseService).toHaveBeenCalledWith(TrainerTag);
     });
   });
 });

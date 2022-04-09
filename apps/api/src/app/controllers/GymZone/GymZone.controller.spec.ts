@@ -2,7 +2,6 @@ import * as log from 'npmlog';
 
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import { GymZoneService, PersonService } from '../../services';
 import {
   CreateByOwnerWorkerController,
@@ -158,9 +157,7 @@ describe('GymZone controller', () => {
       await GymZoneFetchController.execute({} as any, {} as any);
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should fetch the gym zones', async () => {
@@ -273,9 +270,7 @@ describe('GymZone controller', () => {
       await GymZoneFetchSingleController.execute({} as any, {} as any);
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should fetch a the gym zone', async () => {

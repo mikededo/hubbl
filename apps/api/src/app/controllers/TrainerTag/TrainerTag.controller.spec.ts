@@ -3,7 +3,6 @@ import * as log from 'npmlog';
 import { DTOGroups, TrainerTagDTO } from '@hubbl/shared/models/dto';
 import { AppPalette } from '@hubbl/shared/types';
 
-import { getRepository } from '../../../config';
 import {
   OwnerService,
   PersonService,
@@ -81,9 +80,7 @@ describe('TrainerTag controller', () => {
       await TrainerTagFetchController.execute({} as any, {} as any);
 
       expect(TrainerTagService).toHaveBeenCalledTimes(1);
-      expect(TrainerTagService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return the list of TrainerTags as owner or worker', async () => {
@@ -196,11 +193,8 @@ describe('TrainerTag controller', () => {
       await TrainerTagCreateController.execute({} as any, {} as any);
 
       expect(TrainerTagService).toHaveBeenCalledTimes(1);
-      expect(TrainerTagService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call createdByOwnerOrWorker', async () => {
@@ -277,11 +271,8 @@ describe('TrainerTag controller', () => {
       await TrainerTagUpdateController.execute({} as any, {} as any);
 
       expect(TrainerTagService).toHaveBeenCalledTimes(1);
-      expect(TrainerTagService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call updatedByOwnerOrWorker', async () => {
@@ -375,11 +366,8 @@ describe('TrainerTag controller', () => {
       await TrainerTagDeleteController.execute({} as any, {} as any);
 
       expect(TrainerTagService).toHaveBeenCalledTimes(1);
-      expect(TrainerTagService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call deletedByOwnerOrWorker', async () => {

@@ -4,7 +4,6 @@ import * as log from 'npmlog';
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../config';
 import { OwnerService, PersonService, VirtualGymService } from '../../services';
 import BaseController, { UpdateByOwnerWorkerController } from '../Base';
 import { createdByOwner, deletedByOwner } from '../helpers';
@@ -15,11 +14,11 @@ class IVirtualGymFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new VirtualGymService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -88,11 +87,11 @@ class IVirtualGymFetchSingleController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new VirtualGymService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -140,11 +139,11 @@ class IVirtualGymCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new VirtualGymService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     const { token } = res.locals;
@@ -189,11 +188,11 @@ class IVirtualGymDeleteController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new VirtualGymService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     const { token } = res.locals;

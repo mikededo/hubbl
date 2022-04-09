@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { DTOGroups, TrainerTagDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../config';
 import {
   OwnerService,
   PersonService,
@@ -23,11 +22,11 @@ class ITrainerTagFetchController extends BaseController {
 
   protected async run(_: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerTagService(getRepository);
+      this.service = new TrainerTagService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -75,15 +74,15 @@ class ITrainerTagCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerTagService(getRepository);
+      this.service = new TrainerTagService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;
@@ -118,15 +117,15 @@ class ITrainerTagUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerTagService(getRepository);
+      this.service = new TrainerTagService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;
@@ -165,15 +164,15 @@ class ITrainerTagDeleteController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerTagService(getRepository);
+      this.service = new TrainerTagService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;

@@ -1,6 +1,5 @@
 import { DTOGroups, GymDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import { GymService, OwnerService } from '../../services';
 import * as update from '../helpers/update';
 import { GymUpdateController } from './Gym.controller';
@@ -31,9 +30,7 @@ describe('Gym controller', () => {
       GymUpdateController.execute({} as any, {} as any);
 
       expect(GymService).toHaveBeenCalledTimes(1);
-      expect(GymService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call updatedByOwnerOrWorker if owns the gym', async () => {

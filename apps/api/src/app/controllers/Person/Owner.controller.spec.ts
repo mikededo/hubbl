@@ -1,10 +1,8 @@
-import { getRepository } from '../../../config';
-
 import { OwnerDTO } from '@hubbl/shared/models/dto';
 
 import { OwnerService } from '../../services/Person';
-import * as personHelpers from './helpers';
 import * as helpers from '../helpers';
+import * as personHelpers from './helpers';
 import {
   OwnerLoginController,
   OwnerRegisterController,
@@ -26,7 +24,6 @@ describe('OwnerControllerController', () => {
         await OwnerRegisterController.execute({} as any, {} as any);
 
         expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call register', async () => {
@@ -56,7 +53,6 @@ describe('OwnerControllerController', () => {
         await OwnerLoginController.execute({} as any, {} as any);
 
         expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call ownerLogin', async () => {
@@ -87,7 +83,6 @@ describe('OwnerControllerController', () => {
         await OwnerUpdateController.execute({} as any, {} as any);
 
         expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call ownerUpdate', async () => {

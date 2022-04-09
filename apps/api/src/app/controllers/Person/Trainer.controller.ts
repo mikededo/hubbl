@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { TrainerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
-import { getRepository } from '../../../config';
 import {
   OwnerService,
   PersonService,
@@ -20,11 +19,11 @@ class ITrainerFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerService(getRepository);
+      this.service = new TrainerService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -70,7 +69,7 @@ class ITrainerCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerService(getRepository);
+      this.service = new TrainerService();
     }
 
     return trainerRegister({
@@ -95,15 +94,15 @@ class ITrainerUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerService(getRepository);
+      this.service = new TrainerService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     return trainerUpdate({

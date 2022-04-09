@@ -1,5 +1,4 @@
 import {
-  DataSource,
   DeepPartial,
   DeleteResult,
   FindManyOptions,

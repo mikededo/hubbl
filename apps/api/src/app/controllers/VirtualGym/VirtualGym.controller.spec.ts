@@ -2,7 +2,6 @@ import * as log from 'npmlog';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
 
-import { getRepository } from '../../../config';
 import { OwnerService, PersonService, VirtualGymService } from '../../services';
 import { UpdateByOwnerWorkerController } from '../Base';
 import * as create from '../helpers/create';
@@ -92,9 +91,7 @@ describe('VirtualGym Controller', () => {
       await controller.execute({} as any, {} as any);
 
       expect(VirtualGymService).toHaveBeenCalled();
-      expect(VirtualGymService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalled();
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
     };
 
     const onPersonServiceError = async (controller: Controller) => {
@@ -311,9 +308,7 @@ describe('VirtualGym Controller', () => {
       await VirtualGymCreateController.execute({} as any, {} as any);
 
       expect(VirtualGymService).toHaveBeenCalled();
-      expect(VirtualGymService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalled();
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call createdByOwner', async () => {
@@ -413,9 +408,7 @@ describe('VirtualGym Controller', () => {
       await VirtualGymDeleteController.execute({} as any, {} as any);
 
       expect(VirtualGymService).toHaveBeenCalled();
-      expect(VirtualGymService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalled();
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call deletedByOwner', async () => {
