@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import {
   Event,
@@ -8,6 +7,7 @@ import {
   GymZone
 } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import {
   EventService,
   EventTemplateService,

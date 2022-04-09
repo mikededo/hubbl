@@ -1,16 +1,16 @@
-import { getRepository } from 'typeorm';
-
-import { WorkerDTO } from '@hubbl/shared/models/dto';
 import * as log from 'npmlog';
 
-import { WorkerService, OwnerService, PersonService } from '../../services';
-import * as personHelpers from './helpers';
+import { WorkerDTO } from '@hubbl/shared/models/dto';
+
+import { getRepository } from '../../../config';
+import { OwnerService, PersonService, WorkerService } from '../../services';
 import * as helpers from '../helpers';
+import * as personHelpers from './helpers';
 import {
-  WorkerLoginController,
   WorkerCreateController,
-  WorkerUpdateController,
-  WorkerFetchController
+  WorkerFetchController,
+  WorkerLoginController,
+  WorkerUpdateController
 } from './Worker.controller';
 
 jest.mock('../../services');
@@ -28,7 +28,7 @@ describe('WorkerController', () => {
     const mockReq = { query: { skip: 0 } };
     const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
 
-    const mockPersonService = { findOne: jest.fn() };
+    const mockPersonService = { findOneBy: jest.fn() };
 
     const logSpy = jest.spyOn(log, 'error');
 
@@ -57,13 +57,13 @@ describe('WorkerController', () => {
       });
 
       it('should call fetch', async () => {
-        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+        mockPersonService.findOneBy.mockResolvedValue({ gym: { id: 1 } });
 
         setupServices();
         await WorkerFetchController.execute(mockReq as any, mockRes as any);
 
-        expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockPersonService.findOne).toHaveBeenCalledWith({
+        expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
+        expect(mockPersonService.findOneBy).toHaveBeenCalledWith({
           id: mockRes.locals.token.id
         });
         expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
@@ -79,7 +79,7 @@ describe('WorkerController', () => {
       });
 
       it('should use skip as 0 if not given', async () => {
-        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+        mockPersonService.findOneBy.mockResolvedValue({ gym: { id: 1 } });
 
         setupServices();
         await WorkerFetchController.execute(
@@ -87,7 +87,7 @@ describe('WorkerController', () => {
           mockRes as any
         );
 
-        expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
         expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
         expect(personHelpers.fetch).toHaveBeenCalledWith({
           service: {},
@@ -119,7 +119,7 @@ describe('WorkerController', () => {
       });
 
       it('should call forbidden if person does not exist', async () => {
-        mockPersonService.findOne.mockResolvedValue(undefined);
+        mockPersonService.findOneBy.mockResolvedValue(undefined);
         const unauthorizedSpy = jest
           .spyOn(WorkerFetchController, 'unauthorized')
           .mockImplementation();
@@ -135,7 +135,7 @@ describe('WorkerController', () => {
       });
 
       it('should call fail on personService error', async () => {
-        mockPersonService.findOne.mockRejectedValue('error-thrown');
+        mockPersonService.findOneBy.mockRejectedValue('error-thrown');
         const failSpy = jest
           .spyOn(WorkerFetchController, 'fail')
           .mockImplementation();
@@ -160,7 +160,7 @@ describe('WorkerController', () => {
         (personHelpers.fetch as any).mockImplementation(() => {
           throw 'error-thrown';
         });
-        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+        mockPersonService.findOneBy.mockResolvedValue({ gym: { id: 1 } });
         const failSpy = jest
           .spyOn(WorkerFetchController, 'fail')
           .mockImplementation();

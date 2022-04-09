@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { TrainerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import {
   OwnerService,
   PersonService,
@@ -38,8 +38,8 @@ class ITrainerFetchController extends BaseController {
       // Check if the person exists
       // Get the person, if any
       const person = await this.personService.findOne({
-        id: token.id,
-        options: { select: ['id', 'gym'] }
+        where: { id: token.id },
+        select: ['id', 'gym']
       });
 
       if (!person) {

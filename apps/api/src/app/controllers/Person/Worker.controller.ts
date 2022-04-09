@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { WorkerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import { OwnerService, PersonService, WorkerService } from '../../services';
 import BaseController from '../Base';
 import { workerUpdate } from '../helpers';
@@ -32,7 +32,7 @@ class IWorkerFetchController extends BaseController {
     try {
       // Check if the person exists
       // Get the person, if any
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.unauthorized(res, 'Person does not exist');

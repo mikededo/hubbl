@@ -1,7 +1,6 @@
-import { getRepository } from 'typeorm';
-
 import { DTOGroups } from '@hubbl/shared/models/dto';
 
+import { getRepository } from '../../../config';
 import { OwnerService, WorkerService } from '../../services';
 import * as update from '../helpers/update';
 import UpdateByOwnerWorkerController from './UpdateByOwnerWorker.controller';

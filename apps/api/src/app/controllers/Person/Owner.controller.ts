@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { OwnerDTO } from '@hubbl/shared/models/dto';
 
+import { getRepository } from '../../../config';
 import { OwnerService } from '../../services';
 import BaseController from '../Base';
 import { ownerUpdate } from '../helpers';

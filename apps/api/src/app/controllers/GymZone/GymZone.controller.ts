@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import { GymZoneService, PersonService } from '../../services';
 import BaseController, {
   CreateByOwnerWorkerController,
@@ -27,7 +27,7 @@ class IGymZoneFetchController extends BaseController {
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
@@ -78,7 +78,7 @@ class IGymZoneFetchSingleController extends BaseController {
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');

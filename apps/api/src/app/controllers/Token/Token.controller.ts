@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
 
 import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { ParsedToken } from '@hubbl/shared/types';
 
+import { getRepository } from '../../../config';
 import { ClientService, OwnerService, WorkerService } from '../../services';
 import BaseController from '../Base';
 
@@ -44,7 +44,7 @@ class ITokenValidateCookie extends BaseController {
           : token.user === 'worker'
           ? this.workerService
           : this.clientService
-        ).findOne({ id: token.id });
+        ).findOneBy({ personId: token.id });
 
         if (!user) {
           return this.forbidden(res, 'User not found.');

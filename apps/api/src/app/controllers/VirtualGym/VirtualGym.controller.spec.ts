@@ -1,8 +1,8 @@
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
 
+import { getRepository } from '../../../config';
 import { OwnerService, PersonService, VirtualGymService } from '../../services';
 import { UpdateByOwnerWorkerController } from '../Base';
 import * as create from '../helpers/create';
@@ -47,7 +47,7 @@ describe('VirtualGym Controller', () => {
   const mockRes = { locals: { token: { id: 1, user: 'owner' } } } as any;
 
   const mockService = {
-    findOne: jest.fn(),
+    findOneBy: jest.fn(),
     createQueryBuilder: jest.fn().mockReturnThis(),
     leftJoinAndMapMany: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
@@ -99,14 +99,14 @@ describe('VirtualGym Controller', () => {
 
     const onPersonServiceError = async (controller: Controller) => {
       const failSpy = jest.spyOn(controller, 'fail').mockImplementation();
-      mockService.findOne.mockRejectedValue({});
+      mockService.findOneBy.mockRejectedValue({});
 
       controller['service'] = {} as any;
       controller['personService'] = mockService as any;
 
       await controller.execute(mockReq, mockRes);
 
-      expect(mockService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockService.findOneBy).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       failSpyAsserts(failSpy);
     };
@@ -115,14 +115,14 @@ describe('VirtualGym Controller', () => {
       const clientErrorSpy = jest
         .spyOn(controller, 'clientError')
         .mockImplementation();
-      mockService.findOne.mockResolvedValue(undefined);
+      mockService.findOneBy.mockResolvedValue(undefined);
 
       controller['service'] = {} as any;
       controller['personService'] = mockService as any;
 
       await controller.execute(mockReq, mockRes);
 
-      expect(mockService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockService.findOneBy).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith(
@@ -136,7 +136,7 @@ describe('VirtualGym Controller', () => {
       get: 'getMany' | 'getOne'
     ) => {
       const failSpy = jest.spyOn(controller, 'fail').mockImplementation();
-      mockService.findOne.mockResolvedValue(mockPerson);
+      mockService.findOneBy.mockResolvedValue(mockPerson);
       mockService[get].mockRejectedValue({});
 
       controller['service'] = mockService as any;
@@ -144,7 +144,7 @@ describe('VirtualGym Controller', () => {
 
       await controller.execute(mockReq, mockRes);
 
-      expect(mockService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockService.findOneBy).toHaveBeenCalledTimes(1);
       expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockService.where).toHaveBeenCalledTimes(1);
       expect(mockService[get]).toHaveBeenCalledTimes(1);
@@ -159,7 +159,7 @@ describe('VirtualGym Controller', () => {
 
       it('should search for the list of virtual gyms of the auth user gym', async () => {
         mockService.getMany.mockResolvedValue([mockVirtualGym, mockVirtualGym]);
-        mockService.findOne.mockResolvedValue(mockPerson);
+        mockService.findOneBy.mockResolvedValue(mockPerson);
 
         VirtualGymFetchController['service'] = mockService as any;
         VirtualGymFetchController['personService'] = mockService as any;
@@ -170,8 +170,8 @@ describe('VirtualGym Controller', () => {
 
         await VirtualGymFetchController.execute(mockReq, mockRes);
 
-        expect(mockService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockService.findOne).toHaveBeenCalledWith({
+        expect(mockService.findOneBy).toHaveBeenCalledTimes(1);
+        expect(mockService.findOneBy).toHaveBeenCalledWith({
           id: mockRes.locals.token.id
         });
         expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
@@ -199,7 +199,7 @@ describe('VirtualGym Controller', () => {
 
       it('should not join the gyms if level is 0', async () => {
         mockService.getMany.mockResolvedValue([mockVirtualGym, mockVirtualGym]);
-        mockService.findOne.mockResolvedValue(mockPerson);
+        mockService.findOneBy.mockResolvedValue(mockPerson);
 
         VirtualGymFetchController['service'] = mockService as any;
         VirtualGymFetchController['personService'] = mockService as any;
@@ -216,8 +216,8 @@ describe('VirtualGym Controller', () => {
           mockRes
         );
 
-        expect(mockService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockService.findOne).toHaveBeenCalledWith({
+        expect(mockService.findOneBy).toHaveBeenCalledTimes(1);
+        expect(mockService.findOneBy).toHaveBeenCalledWith({
           id: mockRes.locals.token.id
         });
         expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);
@@ -252,7 +252,7 @@ describe('VirtualGym Controller', () => {
 
       it('should search for a virtual gym of the auth user gym', async () => {
         mockService.getOne.mockResolvedValue(mockVirtualGym);
-        mockService.findOne.mockResolvedValue(mockPerson);
+        mockService.findOneBy.mockResolvedValue(mockPerson);
 
         VirtualGymFetchSingleController['service'] = mockService as any;
         VirtualGymFetchSingleController['personService'] = mockService as any;
@@ -263,8 +263,8 @@ describe('VirtualGym Controller', () => {
 
         await VirtualGymFetchSingleController.execute(mockReq, mockRes);
 
-        expect(mockService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockService.findOne).toHaveBeenCalledWith({
+        expect(mockService.findOneBy).toHaveBeenCalledTimes(1);
+        expect(mockService.findOneBy).toHaveBeenCalledWith({
           id: mockRes.locals.token.id
         });
         expect(mockService.createQueryBuilder).toHaveBeenCalledTimes(1);

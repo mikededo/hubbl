@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository, SelectQueryBuilder } from 'typeorm';
+import { SelectQueryBuilder } from 'typeorm';
 
 import { DashboardDTO } from '@hubbl/shared/models/dto';
 import {
@@ -11,6 +11,7 @@ import {
   VirtualGym
 } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import {
   EventService,
   EventTemplateService,
@@ -145,8 +146,9 @@ class IFetchDashboardController extends BaseController {
     // Check if the gym exists
     try {
       const exists = await this.gymService.findOne({
-        id: +id,
-        options: { select: ['id'], loadEagerRelations: false }
+        where: { id: +id },
+        select: ['id'],
+        loadEagerRelations: false
       });
       if (!exists) {
         return this.forbidden(res, 'Gym does not exist.');
@@ -160,12 +162,9 @@ class IFetchDashboardController extends BaseController {
     // Check if the user has access to the gym
     try {
       const access = await this.personService.findOne({
-        id: token.id,
-        options: {
-          where: { gym: +id },
-          loadEagerRelations: false,
-          select: ['id']
-        }
+        where: { id: token.id, gym: +id },
+        loadEagerRelations: false,
+        select: ['id']
       });
 
       if (!access) {

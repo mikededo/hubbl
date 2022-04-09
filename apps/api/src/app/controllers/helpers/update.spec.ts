@@ -147,7 +147,7 @@ describe('update', () => {
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(service.count).toHaveBeenCalledTimes(1);
     expect(service.count).toHaveBeenCalledWith({
-      person: { id: 1 }
+      where: { personId: 1 }
     });
     expect(controller.unauthorized).toHaveReturnedTimes(1);
     expect(controller.unauthorized).toHaveBeenCalledWith(
@@ -306,7 +306,7 @@ describe('update', () => {
             save: jest.fn()
           } as any;
           const mockWorkerService = {
-            findOne: jest.fn().mockResolvedValue({ any: true })
+            findOneBy: jest.fn().mockResolvedValue({ any: true })
           } as any;
 
           await shouldUpdateBy({
@@ -315,7 +315,7 @@ describe('update', () => {
             user: 'worker'
           });
 
-          expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
+          expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
         });
       });
 
@@ -345,7 +345,7 @@ describe('update', () => {
 
       it('should send unauthorized if worker updating does not exist', async () => {
         const mockWorkerService = {
-          findOne: jest.fn().mockResolvedValue(null)
+          findOneBy: jest.fn().mockResolvedValue(null)
         };
 
         await update.updatedByOwnerOrWorker({
@@ -361,8 +361,8 @@ describe('update', () => {
           workerUpdatePermission: 'any' as any
         });
 
-        expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
+        expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
+        expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({ personId: 1 });
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
           mockWorkerRes,
@@ -372,7 +372,7 @@ describe('update', () => {
 
       it('should send unauthorized if worker does not have permissions to update', async () => {
         const mockWorkerService = {
-          findOne: jest.fn().mockResolvedValue({ update: false })
+          findOneBy: jest.fn().mockResolvedValue({ update: false })
         } as any;
 
         await update.updatedByOwnerOrWorker({
@@ -388,8 +388,8 @@ describe('update', () => {
           workerUpdatePermission: 'update' as any
         });
 
-        expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
+        expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
+        expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({ personId: 1 });
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
           mockWorkerRes,
@@ -416,7 +416,7 @@ describe('update', () => {
 
         expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
         expect(mockOwnerService.count).toHaveBeenCalledWith({
-          person: { id: 1 }
+          where: { personId: 1 }
         });
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
@@ -488,7 +488,7 @@ describe('update', () => {
           res: mockOwnerRes,
           dto: mockDTO,
           entityName: 'Owner',
-          countArgs: { person: { id: mockDTO.id } }
+          countArgs: { where: { personId: mockDTO.id } }
         });
       });
 
@@ -566,7 +566,7 @@ describe('update', () => {
             res: user === 'worker' ? mockWorkerRes : mockOwnerRes,
             dto: mockDTO,
             entityName: 'Worker',
-            countArgs: { person: { id: mockDTO.id } }
+            countArgs: { where: { personId: mockDTO.id } }
           });
         };
 
@@ -598,7 +598,7 @@ describe('update', () => {
 
           expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
           expect(mockOwnerService.count).toHaveBeenCalledWith({
-            person: { id: 1 }
+            where: { personId: 1 }
           });
         });
       });
@@ -711,7 +711,7 @@ describe('update', () => {
             token: mockOwnerRes.locals.token,
             res: mockOwnerRes,
             dto: mockDTO,
-            countArgs: { person: { id: mockDTO.id } },
+            countArgs: { where: { personId: mockDTO.id } },
             entityName: 'Trainer',
             workerUpdatePermission: 'updateTrainers'
           });
@@ -742,7 +742,7 @@ describe('update', () => {
             workerService: {} as any,
             res: mockWorkerRes,
             dto: mockDTO,
-            countArgs: { person: { id: mockDTO.id } },
+            countArgs: { where: { personId: mockDTO.id } },
             entityName: 'Trainer',
             workerUpdatePermission: 'updateTrainers'
           });
@@ -798,7 +798,7 @@ describe('update', () => {
             service: {},
             res: mockClientRes,
             dto: mockDTO,
-            countArgs: { person: { id: mockDTO.id } },
+            countArgs: { where: { personId: mockDTO.id } },
             entityName: 'Client'
           });
         });
@@ -828,7 +828,7 @@ describe('update', () => {
             token: mockOwnerRes.locals.token,
             res: mockOwnerRes,
             dto: mockDTO,
-            countArgs: { person: { id: mockDTO.id } },
+            countArgs: { where: { personId: mockDTO.id } },
             entityName: 'Client',
             workerUpdatePermission: expect.anything()
           });
@@ -859,7 +859,7 @@ describe('update', () => {
             workerService: {} as any,
             res: mockWorkerRes,
             dto: mockDTO,
-            countArgs: { person: { id: mockDTO.id } },
+            countArgs: { where: { personId: mockDTO.id } },
             entityName: 'Client',
             workerUpdatePermission: 'updateClients'
           });

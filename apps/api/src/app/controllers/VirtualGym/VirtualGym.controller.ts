@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import { OwnerService, PersonService, VirtualGymService } from '../../services';
 import BaseController, { UpdateByOwnerWorkerController } from '../Base';
 import { createdByOwner, deletedByOwner } from '../helpers';
@@ -26,7 +26,7 @@ class IVirtualGymFetchController extends BaseController {
 
     try {
       // Get the person, if any
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
@@ -99,7 +99,7 @@ class IVirtualGymFetchSingleController extends BaseController {
 
     try {
       // Get the person, if any
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');

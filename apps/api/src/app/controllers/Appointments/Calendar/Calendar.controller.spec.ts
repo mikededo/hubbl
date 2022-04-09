@@ -1,11 +1,11 @@
 import npmlog = require('npmlog');
-import { getRepository } from 'typeorm';
 
 import { FetchAppointmentInterval } from '@hubbl/shared/models/body-validators';
 import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
 import { CalendarDate, GymZone } from '@hubbl/shared/models/entities';
 import { GymZoneIntervals } from '@hubbl/shared/types';
 
+import { getRepository } from '../../../../config';
 import { queries } from '../../../constants';
 import {
   CalendarAppointmentService,
@@ -98,7 +98,7 @@ describe('Appointments.Calendar controller', () => {
   const mockGymZoneService = {
     findOne: jest.fn()
   };
-  const mockClientService = { findOne: jest.fn() };
+  const mockClientService = { findOneBy: jest.fn() };
 
   const fromJsonSpy = jest.spyOn(CalendarAppointmentDTO, 'fromJson');
   const fromClassSpy = jest.spyOn(CalendarAppointmentDTO, 'fromClass');
@@ -141,7 +141,7 @@ describe('Appointments.Calendar controller', () => {
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
     mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
     mockAppointmentService.count.mockResolvedValue(0);
-    mockClientService.findOne.mockResolvedValue(mockClient);
+    mockClientService.findOneBy.mockResolvedValue(mockClient);
     mockAppointmentService.save.mockResolvedValue(mockAppointment);
 
     setupServices(CalendarCreateController);
@@ -305,7 +305,7 @@ describe('Appointments.Calendar controller', () => {
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
     mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
-    mockClientService.findOne.mockResolvedValue(undefined);
+    mockClientService.findOneBy.mockResolvedValue(undefined);
 
     setupServices(controller);
 
@@ -314,7 +314,7 @@ describe('Appointments.Calendar controller', () => {
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-    expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+    expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
     expect(forbiddenSpy).toHaveBeenCalledTimes(1);
     expect(forbiddenSpy).toHaveBeenCalledWith(
       mockRes,
@@ -333,7 +333,7 @@ describe('Appointments.Calendar controller', () => {
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
     mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
-    mockClientService.findOne.mockResolvedValue({
+    mockClientService.findOneBy.mockResolvedValue({
       covidPassport: false
     });
 
@@ -344,7 +344,7 @@ describe('Appointments.Calendar controller', () => {
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-    expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+    expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
     expect(forbiddenSpy).toHaveBeenCalledTimes(1);
     expect(forbiddenSpy).toHaveBeenCalledWith(
       mockRes,
@@ -362,7 +362,7 @@ describe('Appointments.Calendar controller', () => {
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
     mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
-    mockClientService.findOne.mockRejectedValue('error-thrown');
+    mockClientService.findOneBy.mockRejectedValue('error-thrown');
 
     setupServices(controller);
 
@@ -371,7 +371,7 @@ describe('Appointments.Calendar controller', () => {
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-    expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+    expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
     failAsserts(controller, failSpy, operation, mockRes);
   };
 
@@ -386,7 +386,7 @@ describe('Appointments.Calendar controller', () => {
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
     mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
-    mockClientService.findOne.mockResolvedValue(mockClient);
+    mockClientService.findOneBy.mockResolvedValue(mockClient);
     mockAppointmentService.count.mockResolvedValue(1);
 
     setupServices(controller);
@@ -396,7 +396,7 @@ describe('Appointments.Calendar controller', () => {
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-    expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+    expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
     expect(forbiddenSpy).toHaveBeenCalledTimes(1);
     expect(forbiddenSpy).toHaveBeenCalledWith(
@@ -415,7 +415,7 @@ describe('Appointments.Calendar controller', () => {
     fromJsonSpy.mockResolvedValue(mockAppointment as any);
     mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
     mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
-    mockClientService.findOne.mockResolvedValue(mockClient);
+    mockClientService.findOneBy.mockResolvedValue(mockClient);
     mockAppointmentService.count.mockRejectedValue('error-thrown');
 
     setupServices(controller);
@@ -425,7 +425,7 @@ describe('Appointments.Calendar controller', () => {
     expect(fromJsonSpy).toHaveBeenCalledTimes(1);
     expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-    expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+    expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
     expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
     failAsserts(controller, failSpy, operation, mockRes);
   };
@@ -607,7 +607,7 @@ describe('Appointments.Calendar controller', () => {
       // Event validation
       expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.findOne).toHaveBeenCalledWith({
-        options: { where: { calendar: mockDto.calendar } }
+        where: { calendar: mockDto.calendar }
       });
       expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.manager.query).toHaveBeenCalledWith(
@@ -623,16 +623,18 @@ describe('Appointments.Calendar controller', () => {
       );
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.count).toHaveBeenCalledWith({
-        client: mockAppointment.client,
-        startTime: mockAppointment.startTime,
-        endTime: mockAppointment.endTime,
-        date: mockAppointment.date,
-        cancelled: false
+        where: {
+          client: mockAppointment.client,
+          startTime: mockAppointment.startTime,
+          endTime: mockAppointment.endTime,
+          date: mockAppointment.date,
+          cancelled: false
+        }
       });
       // Client validation
-      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockClientService.findOne).toHaveBeenCalledWith({
-        id: mockDto.client
+      expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOneBy).toHaveBeenCalledWith({
+        personId: mockDto.client
       });
     };
 
@@ -806,7 +808,7 @@ describe('Appointments.Calendar controller', () => {
 
         mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
         mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
-        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockClientService.findOneBy.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockRejectedValue('error-thrown');
 
@@ -817,7 +819,7 @@ describe('Appointments.Calendar controller', () => {
         expect(fromJsonSpy).toHaveBeenCalledTimes(1);
         expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
         expect(fromClassSpy).toHaveBeenCalledTimes(0);
@@ -830,7 +832,7 @@ describe('Appointments.Calendar controller', () => {
 
         mockGymZoneService.findOne.mockResolvedValue(mockGymZone);
         mockAppointmentService.manager.query.mockResolvedValue([{ max: 0 }]);
-        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockClientService.findOneBy.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockImplementation();
 
@@ -847,7 +849,7 @@ describe('Appointments.Calendar controller', () => {
         expect(fromJsonSpy).toHaveBeenCalledTimes(1);
         expect(mockGymZoneService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
-        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
         expect(fromClassSpy).toHaveBeenCalledTimes(1);
@@ -929,11 +931,8 @@ describe('Appointments.Calendar controller', () => {
 
       expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.id,
-        options: {
-          where: { calendar: mockReq.params.cId },
-          loadRelationIds: true
-        }
+        where: { id: mockReq.params.id, calendar: mockReq.params.cId },
+        loadRelationIds: true
       });
       expect(fromClassSpy).toHaveBeenCalledTimes(1);
       expect(fromClassSpy).toHaveBeenCalledWith({
@@ -956,7 +955,7 @@ describe('Appointments.Calendar controller', () => {
     });
 
     it('should cancel an appointment by a client', async () => {
-      mockClientService.findOne.mockResolvedValue(mockClient);
+      mockClientService.findOneBy.mockResolvedValue(mockClient);
       mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
 
       const okSpy = jest
@@ -966,20 +965,18 @@ describe('Appointments.Calendar controller', () => {
 
       await CalendarCancelController.execute(mockReq, mockClientRes);
 
-      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockClientService.findOne).toHaveBeenCalledWith({
-        id: mockClientRes.locals.token.id
+      expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOneBy).toHaveBeenCalledWith({
+        personId: mockClientRes.locals.token.id
       });
       expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.id,
-        options: {
-          where: {
-            calendar: mockReq.params.cId,
-            client: mockClientRes.locals.token.id
-          },
-          loadRelationIds: true
-        }
+        where: {
+          id: mockReq.params.id,
+          calendar: mockReq.params.cId,
+          client: mockClientRes.locals.token.id
+        },
+        loadRelationIds: true
       });
       expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.update).toHaveBeenCalledWith(
@@ -1006,12 +1003,12 @@ describe('Appointments.Calendar controller', () => {
 
     describe('client', () => {
       it('sould send forbidden if client does not exist', async () => {
-        mockClientService.findOne.mockResolvedValue(undefined);
+        mockClientService.findOneBy.mockResolvedValue(undefined);
         setupServices(CalendarCancelController);
 
         await CalendarCancelController.execute(mockReq, mockClientRes);
 
-        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
         expect(forbiddenSpy).toHaveBeenCalledTimes(1);
         expect(forbiddenSpy).toHaveBeenCalledWith(
           mockClientRes,
@@ -1020,7 +1017,7 @@ describe('Appointments.Calendar controller', () => {
       });
 
       it('sould send fail on clientService.findOne error', async () => {
-        mockClientService.findOne.mockRejectedValue('error-thrown');
+        mockClientService.findOneBy.mockRejectedValue('error-thrown');
         const failSpy = jest
           .spyOn(CalendarCancelController, 'fail')
           .mockImplementation();
@@ -1029,30 +1026,30 @@ describe('Appointments.Calendar controller', () => {
 
         await CalendarCancelController.execute(mockReq, mockClientRes);
 
-        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
         failAsserts(CalendarCancelController, failSpy, 'cancel', mockClientRes);
       });
 
       it('should send forbidden if the appointment does not exist', async () => {
-        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockClientService.findOneBy.mockResolvedValue(mockClient);
 
         await appointmentDoesNotExistAsserts(mockClientRes);
       });
 
       it('should send forbidden if the appointment is already cacnelled', async () => {
-        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockClientService.findOneBy.mockResolvedValue(mockClient);
 
         await appointmentCancelledAsserts(mockClientRes);
       });
 
       it('should send fail on service.findOne error', async () => {
-        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockClientService.findOneBy.mockResolvedValue(mockClient);
 
         await serviceFindOneFailAsserts(mockClientRes);
       });
 
       it('should send fail on service.update error', async () => {
-        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockClientService.findOneBy.mockResolvedValue(mockClient);
         mockAppointmentService.findOne.mockResolvedValue(mockAppointment);
         mockAppointmentService.update.mockRejectedValue('error-thrown');
 
@@ -1063,7 +1060,7 @@ describe('Appointments.Calendar controller', () => {
 
         await CalendarCancelController.execute(mockReq, mockClientRes);
 
-        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
         failAsserts(CalendarCancelController, failSpy, 'cancel', mockClientRes);

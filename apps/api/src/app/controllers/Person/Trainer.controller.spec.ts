@@ -1,7 +1,8 @@
-import { getRepository } from 'typeorm';
+import * as log from 'npmlog';
 
 import { TrainerDTO } from '@hubbl/shared/models/dto';
 
+import { getRepository } from '../../../config';
 import {
   OwnerService,
   PersonService,
@@ -10,11 +11,10 @@ import {
 } from '../../services';
 import * as helpers from '../helpers';
 import * as personHelpers from './helpers';
-import * as log from 'npmlog';
 import {
   TrainerCreateController,
-  TrainerUpdateController,
-  TrainerFetchController
+  TrainerFetchController,
+  TrainerUpdateController
 } from './Trainer.controller';
 
 jest.mock('../../services');
@@ -67,8 +67,8 @@ describe('TrainerController', () => {
 
         expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
         expect(mockPersonService.findOne).toHaveBeenCalledWith({
-          id: mockRes.locals.token.id,
-          options: { select: ['id', 'gym'] }
+          where: { id: mockRes.locals.token.id },
+          select: ['id', 'gym']
         });
         expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
         expect(personHelpers.fetch).toHaveBeenCalledWith({

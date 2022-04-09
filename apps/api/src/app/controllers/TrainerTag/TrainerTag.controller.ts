@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, TrainerTagDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import {
   OwnerService,
   PersonService,
@@ -41,8 +41,8 @@ class ITrainerTagFetchController extends BaseController {
       // Check if the person exists
       // Get the person, if any
       const person = await this.personService.findOne({
-        id: token.id,
-        options: { select: ['id', 'gym'] }
+        where: { id: token.id },
+        select: ['id', 'gym']
       });
 
       if (!person) {
@@ -148,7 +148,7 @@ class ITrainerTagUpdateController extends BaseController {
       res,
       dto: await TrainerTagDTO.fromJson(req.body, DTOGroups.UPDATE),
       entityName: 'TrainerTag',
-      countArgs: { id: req.params.id },
+      countArgs: { where: { id: req.params.id } },
       workerUpdatePermission: 'updateTags'
     });
   }
@@ -195,7 +195,7 @@ class ITrainerTagDeleteController extends BaseController {
       token,
       entityId: req.params.id,
       entityName: 'TrainerTag',
-      countArgs: { id: req.params.id },
+      countArgs: { where: { id: req.params.id } },
       workerDeletePermission: 'deleteTags'
     });
   }

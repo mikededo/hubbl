@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { getRepository } from '../../../config';
 
 import { OwnerDTO } from '@hubbl/shared/models/dto';
 

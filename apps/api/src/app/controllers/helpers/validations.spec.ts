@@ -72,8 +72,8 @@ describe('validations', () => {
       // Check person service is called
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
       expect(mockPersonService.findOne).toHaveBeenCalledWith({
-        id: mockPerson.id,
-        options: { loadRelationIds: true }
+        where: { id: mockPerson.id },
+        loadRelationIds: true
       });
       // Check if person can access the calendar
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);

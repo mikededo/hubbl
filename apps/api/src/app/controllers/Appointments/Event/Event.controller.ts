@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventAppointmentDTO } from '@hubbl/shared/models/dto';
 import { Event, EventAppointment } from '@hubbl/shared/models/entities';
 import { ParsedToken } from '@hubbl/shared/types';
 
+import { getRepository } from '../../../../config';
 import {
   ClientService,
   EventAppointmentService,
@@ -37,7 +37,10 @@ abstract class BaseEventAppointmentController extends BaseController {
 
     try {
       // Check if the event exists
-      event = await this.eventService.findOne({ id, options: { cache: true } });
+      event = await this.eventService.findOne({
+        where: { id },
+        cache: true
+      });
 
       if (!event) {
         return this.forbidden(
@@ -77,7 +80,7 @@ abstract class BaseEventAppointmentController extends BaseController {
   ): Promise<Response> | undefined {
     try {
       // Check if the client exists
-      const client = await this.clientService.findOne({ id });
+      const client = await this.clientService.findOneBy({ personId: id });
       if (!client) {
         return this.forbidden(res, 'Person does not exist');
       }
@@ -92,9 +95,7 @@ abstract class BaseEventAppointmentController extends BaseController {
 
       if (
         await this.service.count({
-          client: id,
-          event: event.id,
-          cancelled: false
+          where: { client: id, event: event.id, cancelled: false }
         })
       ) {
         return this.forbidden(res, 'Client has already a place in the event');
@@ -146,7 +147,9 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
 
     try {
       // Check capacity
-      const appointmentCount = await this.service.count({ event: id });
+      const appointmentCount = await this.service.count({
+        where: { event: id }
+      });
       if (appointmentCount >= maybeEvent.capacity) {
         return this.forbidden(res, 'No places left for the seleted event.');
       }
@@ -303,8 +306,8 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
     try {
       // Check if exists any appointment for the selected event and client
       appointment = await this.service.findOne({
-        id: appointmentId,
-        options: { where: { event: eventId }, loadRelationIds: true }
+        where: { id: appointmentId, event: eventId },
+        loadRelationIds: true
       });
 
       if (!appointment) {
@@ -353,11 +356,8 @@ class IEventAppointmentCancelController extends BaseEventAppointmentController {
     try {
       // Check if exists any appointment for the selected event and client
       appointment = await this.service.findOne({
-        id: appointmentId,
-        options: {
-          where: { client: token.id, event: eventId },
-          loadRelationIds: true
-        }
+        where: { id: appointmentId, client: token.id, event: eventId },
+        loadRelationIds: true
       });
 
       if (!appointment) {

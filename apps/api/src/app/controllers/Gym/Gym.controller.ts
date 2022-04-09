@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, GymDTO } from '@hubbl/shared/models/dto';
 
+import { getRepository } from '../../../config';
 import { GymService, OwnerService } from '../../services';
 import BaseController from '../Base';
 import { updatedByOwnerOrWorker } from '../helpers';

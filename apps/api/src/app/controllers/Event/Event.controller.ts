@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
 import { ParsedToken } from '@hubbl/shared/types';
 
+import { getRepository } from '../../../config';
 import {
   EventService,
   EventTemplateService,
@@ -34,8 +34,9 @@ class IEventCreateController extends BaseController {
       if (json.template) {
         // Find the template, and override the json data
         template = await this.templateService.findOne({
-          id: json.template,
-          options: { loadEagerRelations: false, loadRelationIds: true }
+          where: { id: json.template },
+          loadEagerRelations: false,
+          loadRelationIds: true
         });
 
         if (!template) {

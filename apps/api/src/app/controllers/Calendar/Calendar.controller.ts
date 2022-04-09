@@ -1,10 +1,10 @@
+import * as camelCaseKeys from 'camelcase-keys';
 import { Request, Response } from 'express';
 import * as log from 'npmlog';
-import * as camelCaseKeys from 'camelcase-keys';
-import { getRepository } from 'typeorm';
 
 import { EventDTO } from '@hubbl/shared/models/dto';
 
+import { getRepository } from '../../../config';
 import {
   CalendarAppointmentService,
   EventAppointmentService,

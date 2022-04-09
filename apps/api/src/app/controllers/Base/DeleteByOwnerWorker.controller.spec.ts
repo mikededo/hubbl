@@ -1,5 +1,4 @@
-import { getRepository } from 'typeorm';
-
+import { getRepository } from '../../../config';
 import { OwnerService, WorkerService } from '../../services';
 import * as deleteHelpers from '../helpers/delete';
 import DeleteByOwnerWorkerController from './DeleteByOwnerWorker.controller';

@@ -191,7 +191,7 @@ export const updatedByOwnerOrWorker = async ({
       );
     }
 
-    const worker = await workerService.findOne({ id: token.id });
+    const worker = await workerService.findOneBy({ personId: token.id });
 
     if (!worker) {
       return controller.unauthorized(
@@ -205,7 +205,7 @@ export const updatedByOwnerOrWorker = async ({
       );
     }
   } else if (token.user === 'owner') {
-    const count = await ownerService.count({ person: { id: token.id } });
+    const count = await ownerService.count({ where: { personId: token.id } });
 
     if (!count) {
       return controller.unauthorized(
@@ -263,7 +263,7 @@ export const ownerUpdate = async ({
       res,
       dto,
       entityName: 'Owner',
-      countArgs: { person: { id: dto.id } }
+      countArgs: { where: { personId: dto.id } }
     });
   } catch (e) {
     return BaseController.jsonResponse(res, 400, e);
@@ -297,7 +297,7 @@ export const workerUpdate = async ({
         return controller.unauthorized(res);
       }
     } else if (token.user === 'owner') {
-      const count = await ownerService.count({ person: { id: token.id } });
+      const count = await ownerService.count({ where: { personId: token.id } });
 
       if (!count) {
         return controller.unauthorized(
@@ -318,7 +318,7 @@ export const workerUpdate = async ({
       res,
       dto,
       entityName: 'Worker',
-      countArgs: { person: { id: dto.id } }
+      countArgs: { where: { personId: dto.id } }
     });
   } catch (e) {
     return BaseController.jsonResponse(res, 400, e);
@@ -359,7 +359,7 @@ export const trainerUpdate = async ({
       dto,
       entityName: 'Trainer',
       workerUpdatePermission: 'updateTrainers',
-      countArgs: { person: { id: dto.id } }
+      countArgs: { where: { personId: dto.id } }
     });
   } catch (e) {
     return BaseController.jsonResponse(res, 400, e);
@@ -400,7 +400,7 @@ export const clientUpdate = async ({
         service,
         res,
         dto,
-        countArgs: { person: { id: dto.id } },
+        countArgs: { where: { personId: dto.id } },
         entityName: 'Client'
       });
     } else {
@@ -414,7 +414,7 @@ export const clientUpdate = async ({
         dto,
         entityName: 'Client',
         workerUpdatePermission: 'updateClients',
-        countArgs: { person: { id: dto.id } }
+        countArgs: { where: { personId: dto.id } }
       });
     }
   } catch (e) {

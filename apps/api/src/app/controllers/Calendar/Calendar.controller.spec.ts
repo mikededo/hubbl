@@ -1,9 +1,9 @@
-import * as log from 'npmlog';
 import * as camelCaseKeys from 'camelcase-keys';
-import { getRepository } from 'typeorm';
+import * as log from 'npmlog';
 
 import { Event, Person, Trainer } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import {
   CalendarAppointmentService,
   EventAppointmentService,
@@ -13,9 +13,9 @@ import {
 } from '../../services';
 import * as validations from '../helpers/validations';
 import {
+  CalendarFetchCalenAppointmentsController,
   CalendarFetchEventAppointmentsController,
-  CalendarFetchEventsController,
-  CalendarFetchCalenAppointmentsController
+  CalendarFetchEventsController
 } from './Calendar.controller';
 
 jest.mock('../../services');

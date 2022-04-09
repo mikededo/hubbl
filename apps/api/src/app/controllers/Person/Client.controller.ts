@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { ClientDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import {
   ClientService,
   GymService,
@@ -38,7 +38,7 @@ class IClientFetchController extends BaseController {
     try {
       // Check if the person exists
       // Get the person, if any
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.unauthorized(res, 'Person does not exist');
@@ -82,11 +82,9 @@ class IClientRegisterController extends BaseController {
       try {
         // Find the gym if the call has the gym code
         const gym = await this.gymService.findOne({
-          options: {
-            where: { code },
-            select: ['id'],
-            loadEagerRelations: false
-          }
+          where: { code: code as string },
+          select: ['id'],
+          loadEagerRelations: false
         });
 
         if (!gym) {

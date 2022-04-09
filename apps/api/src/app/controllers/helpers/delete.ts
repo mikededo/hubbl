@@ -105,7 +105,7 @@ export const deletedByOwnerOrWorker = async ({
       );
     }
 
-    const worker = await workerService.findOne({ id: token.id });
+    const worker = await workerService.findOneBy({ personId: token.id });
 
     if (!worker) {
       return controller.unauthorized(
@@ -119,7 +119,7 @@ export const deletedByOwnerOrWorker = async ({
       );
     }
   } else if (token.user === 'owner') {
-    const count = await ownerService.count({ person: { id: token.id } });
+    const count = await ownerService.count({ where: { personId: token.id } });
 
     if (!count) {
       return controller.unauthorized(
@@ -211,7 +211,7 @@ export const deletedByClient = async <T>({
   countArgs
 }: DeleteByClient<T>) => {
   try {
-    const count = await clientService.count({ person: { id: clientId } });
+    const count = await clientService.count({ where: { personId: clientId } });
 
     if (!count) {
       return controller.unauthorized(res, 'Client does not exist.');

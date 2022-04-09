@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { EventTypeDTO } from '@hubbl/shared/models/dto';
+import { Gym } from '@hubbl/shared/models/entities';
 
+import { getRepository } from '../../../config';
 import { EventTypeService, PersonService } from '../../services';
 import BaseController, {
   CreateByOwnerWorkerController,
   DeleteByOwnerWorkerController,
   UpdateByOwnerWorkerController
 } from '../Base';
-import { Gym } from '@hubbl/shared/models/entities';
 
 class IEventTypeFetchController extends BaseController {
   protected service: EventTypeService = undefined;
@@ -28,7 +28,7 @@ class IEventTypeFetchController extends BaseController {
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');

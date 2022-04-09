@@ -1,9 +1,10 @@
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
+import { AppPalette } from '@hubbl/shared/types';
 
+import { getRepository } from '../../../config';
 import {
   EventService,
   EventTemplateService,
@@ -19,7 +20,6 @@ import {
   EventDeleteController,
   EventUpdateController
 } from './Event.controller';
-import { AppPalette } from '@hubbl/shared/types';
 
 jest.mock('../../services');
 jest.mock('@hubbl/shared/models/dto');
@@ -377,8 +377,9 @@ describe('Event controller', () => {
       // Event service checks
       expect(mockTemplateService.findOne).toHaveBeenCalledTimes(1);
       expect(mockTemplateService.findOne).toHaveBeenCalledWith({
-        id: mockReq.body.template,
-        options: { loadEagerRelations: false, loadRelationIds: true }
+        where: { id: mockReq.body.template },
+        loadEagerRelations: false,
+        loadRelationIds: true
       });
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
