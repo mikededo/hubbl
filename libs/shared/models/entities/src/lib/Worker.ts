@@ -33,7 +33,7 @@ export default class Worker {
     eager: true,
     nullable: false
   })
-  @JoinColumn({ name: 'worker_person_fk' })
+  @JoinColumn()
   person!: Person;
 
   /**

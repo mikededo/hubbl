@@ -13,7 +13,7 @@ import { token } from './Token';
 import { common } from './util';
 import { virtualGym } from './VirtualGym';
 
-// jest.mock('npmlog');
+jest.mock('npmlog');
 
 describe('Integration tests', () => {
   beforeAll((done) => {
@@ -309,7 +309,7 @@ describe('Integration tests', () => {
       it('should fetch a virtual gym by client', async () => {
         await virtualGym.fetchSingle('client');
       });
-    })
+    });
 
     describe('create, update & delete', () => {
       it('should create, update and delete a virtual gym by an owner', async () => {

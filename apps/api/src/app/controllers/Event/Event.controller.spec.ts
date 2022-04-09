@@ -302,7 +302,7 @@ describe('Event controller', () => {
       );
       expect(mockService.andWhere).toHaveBeenNthCalledWith(
         5,
-        'e.trainer.person.id = :trainer',
+        'e.trainer = :trainer',
         { trainer: mockDto.trainer }
       );
 

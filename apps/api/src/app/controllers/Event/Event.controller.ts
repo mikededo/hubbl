@@ -81,7 +81,7 @@ class IEventCreateController extends BaseController {
       .andWhere('e.date.year = :year', { year: dto.date.year })
       .andWhere('e.date.month = :month', { month: dto.date.month })
       .andWhere('e.date.day = :day', { day: dto.date.day })
-      .andWhere('e.trainer.person.id = :trainer', { trainer: dto.trainer })
+      .andWhere('e.trainer = :trainer', { trainer: dto.trainer })
       .getCount();
   }
 

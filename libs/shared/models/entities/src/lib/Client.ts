@@ -31,7 +31,7 @@ export default class Client {
     eager: true,
     nullable: false
   })
-  @JoinColumn({ name: 'client_person_fk' })
+  @JoinColumn()
   person!: Person;
 
   /**

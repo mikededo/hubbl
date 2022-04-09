@@ -1,9 +1,7 @@
 import { genSalt, hash } from 'bcrypt';
-import { Connection, createConnection } from 'typeorm';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { DataSource } from 'typeorm';
 
 import {
-  Calendar,
   CalendarAppointment,
   CalendarDate,
   Client,
@@ -12,16 +10,14 @@ import {
   EventTemplate,
   EventType,
   Gym,
-  GymZone,
   Owner,
-  Person,
   Trainer,
   TrainerTag,
-  VirtualGym,
   Worker
 } from '@hubbl/shared/models/entities';
 import { AppPalette, Gender } from '@hubbl/shared/types';
 
+import { TestSource } from '../config';
 import { ENTITY_IDENTIFIERS } from './util';
 
 const getDate = (): Partial<CalendarDate> => {
@@ -35,50 +31,21 @@ const getDate = (): Partial<CalendarDate> => {
   };
 };
 
-const createTestDatabase = async (): Promise<Connection> => {
+const createTestDatabase = async (): Promise<DataSource> => {
   try {
-    const cnt = await createConnection({
-      type: 'postgres',
-      name: 'postgres-test',
-      host: process.env.POSTGRES_TEST_HOST,
-      port: +process.env.POSTGRES_TEST_PORT,
-      username: process.env.POSTGRES_TEST_USER,
-      password: process.env.POSTGRES_TEST_PASSWORD,
-      database: process.env.POSTGRES_TEST_DATABASE,
-      entities: [
-        CalendarAppointment,
-        EventAppointment,
-        Calendar,
-        CalendarDate,
-        Client,
-        Event,
-        EventTemplate,
-        EventType,
-        Gym,
-        GymZone,
-        Owner,
-        Person,
-        Trainer,
-        TrainerTag,
-        VirtualGym,
-        Worker
-      ],
-      synchronize: true,
-      namingStrategy: new SnakeNamingStrategy(),
-      dropSchema: true
-    });
+    const source = await TestSource.initialize();
 
-    return cnt;
+    return source;
   } catch (e) {
     console.error(e);
     console.error('Error on initialising the database.');
   }
 };
 
-const seedDatabase = async (cnt: Connection): Promise<void> => {
-  await cnt.synchronize(true);
+const seedDatabase = async (source: DataSource): Promise<void> => {
+  await source.synchronize(true);
 
-  await cnt.transaction(async (em) => {
+  await source.transaction(async (em) => {
     await em.getRepository(Gym).save({
       id: ENTITY_IDENTIFIERS.GYM,
       name: 'TestGym',
@@ -496,22 +463,22 @@ const seedDatabase = async (cnt: Connection): Promise<void> => {
   });
 };
 
-let cnt: Connection;
+let source: DataSource;
 
 export const setup = async () => {
-  cnt = await createTestDatabase();
+  source = await createTestDatabase();
 
-  if (!cnt) {
+  if (!source) {
     return;
   }
 
-  await seedDatabase(cnt);
+  await seedDatabase(source);
 };
 
 export const teardown = async () => {
-  if (!cnt) {
+  if (!source) {
     return;
   }
 
-  cnt.close();
+  source.destroy();
 };

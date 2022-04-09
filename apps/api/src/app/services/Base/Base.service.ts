@@ -10,7 +10,7 @@ import {
   UpdateResult
 } from 'typeorm';
 
-import { Source } from '../../../config';
+import { Source, TestSource } from '../../../config';
 
 type CreateQueryBuilderProps = {
   alias?: string;
@@ -22,7 +22,7 @@ export default class BaseService<T> {
 
   constructor(type: new () => T) {
     this.repository = (
-      process.env.NODE_ENV === 'test' ? Source : Source
+      process.env.NODE_ENV === 'test' ? TestSource : Source
     ).manager.getRepository(type);
   }
 

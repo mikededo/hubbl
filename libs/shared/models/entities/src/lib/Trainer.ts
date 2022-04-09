@@ -38,7 +38,7 @@ export default class Trainer {
     eager: true,
     nullable: false
   })
-  @JoinColumn({ name: 'trainer_person_fk' })
+  @JoinColumn()
   person!: Person;
 
   /**

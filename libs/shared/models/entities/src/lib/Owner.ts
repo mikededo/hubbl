@@ -32,7 +32,7 @@ export default class Owner {
     eager: true,
     nullable: false
   })
-  @JoinColumn({ name: 'owner_person_fk' })
+  @JoinColumn()
   person!: Person;
 
   /**

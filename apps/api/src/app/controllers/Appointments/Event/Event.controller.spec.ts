@@ -216,8 +216,8 @@ describe('Appointments.Event controller', () => {
       });
       expect(mockAppointmentService.count).toHaveBeenNthCalledWith(2, {
         where: {
-          client: mockDto.client,
-          event: mockDto.event,
+          client: { personId: mockDto.client },
+          event: { id: mockDto.event },
           cancelled: false
         }
       });

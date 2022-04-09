@@ -1,3 +1,3 @@
-import Source from './data-source';
+import Source, { TestSource } from './data-source';
 
-export { Source };
+export { Source, TestSource };
