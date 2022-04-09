@@ -1,3 +1,3 @@
-import databaseConfig from './database';
+import Source, { getRepository } from './data-source';
 
-export { databaseConfig };
+export { Source, getRepository };

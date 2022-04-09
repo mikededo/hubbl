@@ -1,4 +1,4 @@
-import { ConnectionOptions } from 'typeorm';
+import { DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import {
@@ -22,7 +22,7 @@ import {
 
 import { DatabaseLogger } from './db.logger';
 
-const config: ConnectionOptions = {
+const config: DataSourceOptions = {
   type: 'postgres',
   name: 'postgres',
   host: process.env.POSTGRES_HOST,
