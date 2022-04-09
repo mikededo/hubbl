@@ -1,4 +1,5 @@
 import {
+  DataSource,
   DeepPartial,
   DeleteResult,
   FindManyOptions,
@@ -10,7 +11,7 @@ import {
   UpdateResult
 } from 'typeorm';
 
-import { RepositoryAccessor } from '../util';
+import { Source } from '../../../config';
 
 type CreateQueryBuilderProps = {
   alias?: string;
@@ -20,11 +21,10 @@ type CreateQueryBuilderProps = {
 export default class BaseService<T> {
   protected repository: Repository<T>;
 
-  constructor(type: new () => T, accessor: RepositoryAccessor<T>) {
-    this.repository = accessor(
-      type,
-      process.env.NODE_ENV === 'test' ? 'postgres-test' : 'postgres'
-    );
+  constructor(type: new () => T) {
+    this.repository = (
+      process.env.NODE_ENV === 'test' ? Source : Source
+    ).manager.getRepository(type);
   }
 
   public get manager() {
