@@ -1,5 +1,4 @@
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { EventTypeDTO } from '@hubbl/shared/models/dto';
 import { AppPalette } from '@hubbl/shared/types';
@@ -65,7 +64,7 @@ describe('EventType controller', () => {
 
   describe('EventTypeFetchController', () => {
     const mockEventTypeService = { find: jest.fn().mockImplementation() };
-    const mockPersonService = { findOne: jest.fn().mockImplementation() };
+    const mockPersonService = { findOneBy: jest.fn().mockImplementation() };
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -79,9 +78,7 @@ describe('EventType controller', () => {
       await EventTypeFetchController.execute({} as any, {} as any);
 
       expect(EventTypeService).toHaveBeenCalledTimes(1);
-      expect(EventTypeService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should fetch the event types', async () => {
@@ -100,7 +97,7 @@ describe('EventType controller', () => {
         .mockImplementation();
       const listSpy = jest.spyOn(resultList, 'map');
 
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
+      mockPersonService.findOneBy.mockResolvedValue(mockPerson);
       mockEventTypeService.find.mockResolvedValue(resultList);
 
       EventTypeFetchController['service'] = mockEventTypeService as any;
@@ -108,8 +105,8 @@ describe('EventType controller', () => {
 
       await EventTypeFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockPersonService.findOne).toHaveBeenCalledWith({
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOneBy).toHaveBeenCalledWith({
         id: mockRes.locals.token.id
       });
       expect(mockEventTypeService.find).toHaveBeenCalledTimes(1);
@@ -128,14 +125,14 @@ describe('EventType controller', () => {
       const failSpy = jest
         .spyOn(EventTypeFetchController, 'fail')
         .mockImplementation();
-      mockPersonService.findOne.mockRejectedValue({});
+      mockPersonService.findOneBy.mockRejectedValue({});
 
       EventTypeFetchController['service'] = {} as any;
       EventTypeFetchController['personService'] = mockPersonService as any;
 
       await EventTypeFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });
@@ -144,14 +141,14 @@ describe('EventType controller', () => {
       const clientErrorSpy = jest
         .spyOn(EventTypeFetchController, 'clientError')
         .mockImplementation();
-      mockPersonService.findOne.mockResolvedValue(undefined);
+      mockPersonService.findOneBy.mockResolvedValue(undefined);
 
       EventTypeFetchController['service'] = {} as any;
       EventTypeFetchController['personService'] = mockPersonService as any;
 
       await EventTypeFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith(
@@ -165,14 +162,14 @@ describe('EventType controller', () => {
         .spyOn(EventTypeFetchController, 'fail')
         .mockImplementation();
       mockEventTypeService.find.mockRejectedValue({});
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
+      mockPersonService.findOneBy.mockResolvedValue(mockPerson);
 
       EventTypeFetchController['service'] = mockEventTypeService as any;
       EventTypeFetchController['personService'] = mockPersonService as any;
 
       await EventTypeFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
       expect(mockEventTypeService.find).toHaveBeenCalledTimes(1);
       expect(mockEventTypeService.find).toHaveBeenCalledWith({
         where: { gym: mockPerson.gym.id }

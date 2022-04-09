@@ -115,6 +115,7 @@ describe('ClientDTO', () => {
       expect(result.person.gym).toBe(dto.gym);
       expect(result.person.gender).toBe(dto.gender);
       expect(result.person.theme).toBe(dto.theme);
+      expect(result.personId).toBe(dto.id);
       expect(result.covidPassport).toBe(dto.covidPassport);
 
       // Password should be hashed

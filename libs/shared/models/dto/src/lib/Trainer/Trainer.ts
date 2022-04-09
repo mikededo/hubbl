@@ -156,6 +156,7 @@ export default class TrainerDTO<T extends Gym | number>
 
     // Set person into trainer
     trainer.person = person;
+    trainer.personId = this.id;
 
     // Set trainer props
     trainer.managerId = this.managerId;

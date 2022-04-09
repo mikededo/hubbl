@@ -1,7 +1,7 @@
 import { Response } from 'express';
+import * as log from 'npmlog';
 
 import { Person } from '@hubbl/shared/models/entities';
-import * as log from 'npmlog';
 
 import { GymZoneService, PersonService } from '../../services';
 import BaseController from '../Base';
@@ -50,8 +50,8 @@ export const userAccessToCalendar = async ({
   let person: Person;
   try {
     person = await personService.findOne({
-      id: personId,
-      options: { loadRelationIds: true }
+      where: { id: personId },
+       loadRelationIds: true 
     });
     if (!person) {
       return controller.unauthorized(res, 'Person does not exist.');

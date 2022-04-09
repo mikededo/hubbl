@@ -1,5 +1,3 @@
-import { getRepository } from 'typeorm';
-
 import { DTOGroups, GymDTO } from '@hubbl/shared/models/dto';
 
 import { GymService, OwnerService } from '../../services';
@@ -32,9 +30,7 @@ describe('Gym controller', () => {
       GymUpdateController.execute({} as any, {} as any);
 
       expect(GymService).toHaveBeenCalledTimes(1);
-      expect(GymService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call updatedByOwnerOrWorker if owns the gym', async () => {
@@ -104,7 +100,10 @@ describe('Gym controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledTimes(1);
-      expect(forbiddenSpy).toHaveBeenCalledWith(mockRes, 'User does not own the gym.');
+      expect(forbiddenSpy).toHaveBeenCalledWith(
+        mockRes,
+        'User does not own the gym.'
+      );
     });
 
     it('should call fail ownerService error', async () => {

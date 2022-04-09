@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
@@ -17,17 +16,17 @@ class IGymZoneFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new GymZoneService(getRepository);
+      this.service = new GymZoneService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
@@ -68,17 +67,17 @@ class IGymZoneFetchSingleController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new GymZoneService(getRepository);
+      this.service = new GymZoneService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');

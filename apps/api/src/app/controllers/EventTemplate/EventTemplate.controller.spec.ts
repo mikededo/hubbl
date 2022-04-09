@@ -1,7 +1,7 @@
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { EventTemplateDTO } from '@hubbl/shared/models/dto';
+import { EventType } from '@hubbl/shared/models/entities';
 
 import { EventTemplateService, PersonService } from '../../services';
 import {
@@ -15,7 +15,6 @@ import {
   EventTemplateFetchController,
   EventTemplateUpdateController
 } from './EventTemplate.controller';
-import { EventType } from '@hubbl/shared/models/entities';
 
 jest.mock('../../services');
 jest.mock('@hubbl/shared/models/dto');
@@ -80,7 +79,7 @@ describe('EventTemplate controller', () => {
       where: jest.fn().mockReturnThis(),
       getMany: jest.fn()
     };
-    const mockPersonService = { findOne: jest.fn().mockImplementation() };
+    const mockPersonService = { findOneBy: jest.fn().mockImplementation() };
 
     it('should create the services if does not have any', async () => {
       jest.spyOn(EventTemplateFetchController, 'fail').mockImplementation();
@@ -90,9 +89,7 @@ describe('EventTemplate controller', () => {
       await EventTemplateFetchController.execute({} as any, {} as any);
 
       expect(EventTemplateService).toHaveBeenCalledTimes(1);
-      expect(EventTemplateService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should fetch the event templates', async () => {
@@ -111,7 +108,7 @@ describe('EventTemplate controller', () => {
         .mockImplementation();
       const listSpy = jest.spyOn(resultList, 'map');
 
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
+      mockPersonService.findOneBy.mockResolvedValue(mockPerson);
       mockEventTemplateService.getMany.mockResolvedValue(resultList);
       mockEventTemplateService.loadRelationCountAndMap.mockImplementation(
         (argOne, argTwo, argThree) => {
@@ -128,8 +125,8 @@ describe('EventTemplate controller', () => {
       EventTemplateFetchController['personService'] = mockPersonService as any;
 
       await EventTemplateFetchController.execute(mockReq, mockRes);
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockPersonService.findOne).toHaveBeenCalledWith({
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOneBy).toHaveBeenCalledWith({
         id: mockRes.locals.token.id
       });
       expect(mockEventTemplateService.createQueryBuilder).toHaveBeenCalledTimes(
@@ -166,14 +163,14 @@ describe('EventTemplate controller', () => {
       const failSpy = jest
         .spyOn(EventTemplateFetchController, 'fail')
         .mockImplementation();
-      mockPersonService.findOne.mockRejectedValue({});
+      mockPersonService.findOneBy.mockRejectedValue({});
 
       EventTemplateFetchController['service'] = {} as any;
       EventTemplateFetchController['personService'] = mockPersonService as any;
 
       await EventTemplateFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       failSpyAsserts(failSpy);
     });
@@ -182,14 +179,14 @@ describe('EventTemplate controller', () => {
       const clientErrorSpy = jest
         .spyOn(EventTemplateFetchController, 'clientError')
         .mockImplementation();
-      mockPersonService.findOne.mockResolvedValue(undefined);
+      mockPersonService.findOneBy.mockResolvedValue(undefined);
 
       EventTemplateFetchController['service'] = {} as any;
       EventTemplateFetchController['personService'] = mockPersonService as any;
 
       await EventTemplateFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
       // Ensure fail is called
       expect(clientErrorSpy).toHaveBeenCalledTimes(1);
       expect(clientErrorSpy).toHaveBeenCalledWith(
@@ -203,14 +200,14 @@ describe('EventTemplate controller', () => {
         .spyOn(EventTemplateFetchController, 'fail')
         .mockImplementation();
       mockEventTemplateService.getMany.mockRejectedValue({});
-      mockPersonService.findOne.mockResolvedValue(mockPerson);
+      mockPersonService.findOneBy.mockResolvedValue(mockPerson);
 
       EventTemplateFetchController['service'] = mockEventTemplateService as any;
       EventTemplateFetchController['personService'] = mockPersonService as any;
 
       await EventTemplateFetchController.execute(mockReq, mockRes);
 
-      expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
       expect(mockEventTemplateService.createQueryBuilder).toHaveBeenCalledTimes(
         1
       );

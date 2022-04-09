@@ -1,6 +1,5 @@
-import * as log from 'npmlog';
 import * as camelCaseKeys from 'camelcase-keys';
-import { getRepository } from 'typeorm';
+import * as log from 'npmlog';
 
 import { Event, Person, Trainer } from '@hubbl/shared/models/entities';
 
@@ -13,9 +12,9 @@ import {
 } from '../../services';
 import * as validations from '../helpers/validations';
 import {
+  CalendarFetchCalenAppointmentsController,
   CalendarFetchEventAppointmentsController,
-  CalendarFetchEventsController,
-  CalendarFetchCalenAppointmentsController
+  CalendarFetchEventsController
 } from './Calendar.controller';
 
 jest.mock('../../services');
@@ -115,11 +114,8 @@ describe('Calendar controller', () => {
       await CalendarFetchEventsController.execute({} as any, {} as any);
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return the list of events for the selected calendar', async () => {
@@ -350,11 +346,8 @@ describe('Calendar controller', () => {
       );
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
       expect(EventAppointmentService).toHaveBeenCalledTimes(1);
-      expect(EventAppointmentService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return the list of users with appointments', async () => {
@@ -525,11 +518,8 @@ describe('Calendar controller', () => {
       );
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
       expect(CalendarAppointmentService).toHaveBeenCalledTimes(1);
-      expect(CalendarAppointmentService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return the list of users with appointments', async () => {

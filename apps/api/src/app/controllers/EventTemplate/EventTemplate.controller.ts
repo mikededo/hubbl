@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as log from 'npmlog';
 
 import { EventTemplateDTO } from '@hubbl/shared/models/dto';
+import { Gym } from '@hubbl/shared/models/entities';
 
 import { EventTemplateService, PersonService } from '../../services';
 import BaseController, {
@@ -9,8 +10,6 @@ import BaseController, {
   DeleteByOwnerWorkerController,
   UpdateByOwnerWorkerController
 } from '../Base';
-import { getRepository } from 'typeorm';
-import { Gym } from '@hubbl/shared/models/entities';
 
 class IEventTemplateFetchController extends BaseController {
   protected service: EventTemplateService = undefined;
@@ -18,17 +17,17 @@ class IEventTemplateFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new EventTemplateService(getRepository);
+      this.service = new EventTemplateService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
 
     try {
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');

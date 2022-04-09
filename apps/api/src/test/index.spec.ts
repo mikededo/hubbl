@@ -309,7 +309,7 @@ describe('Integration tests', () => {
       it('should fetch a virtual gym by client', async () => {
         await virtualGym.fetchSingle('client');
       });
-    })
+    });
 
     describe('create, update & delete', () => {
       it('should create, update and delete a virtual gym by an owner', async () => {

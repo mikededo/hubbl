@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, TrainerTagDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
@@ -23,11 +22,11 @@ class ITrainerTagFetchController extends BaseController {
 
   protected async run(_: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerTagService(getRepository);
+      this.service = new TrainerTagService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -41,8 +40,8 @@ class ITrainerTagFetchController extends BaseController {
       // Check if the person exists
       // Get the person, if any
       const person = await this.personService.findOne({
-        id: token.id,
-        options: { select: ['id', 'gym'] }
+        where: { id: token.id },
+        select: ['id', 'gym']
       });
 
       if (!person) {
@@ -75,15 +74,15 @@ class ITrainerTagCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerTagService(getRepository);
+      this.service = new TrainerTagService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;
@@ -118,15 +117,15 @@ class ITrainerTagUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerTagService(getRepository);
+      this.service = new TrainerTagService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;
@@ -148,7 +147,7 @@ class ITrainerTagUpdateController extends BaseController {
       res,
       dto: await TrainerTagDTO.fromJson(req.body, DTOGroups.UPDATE),
       entityName: 'TrainerTag',
-      countArgs: { id: req.params.id },
+      countArgs: { where: { id: req.params.id } },
       workerUpdatePermission: 'updateTags'
     });
   }
@@ -165,15 +164,15 @@ class ITrainerTagDeleteController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerTagService(getRepository);
+      this.service = new TrainerTagService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;
@@ -195,7 +194,7 @@ class ITrainerTagDeleteController extends BaseController {
       token,
       entityId: req.params.id,
       entityName: 'TrainerTag',
-      countArgs: { id: req.params.id },
+      countArgs: { where: { id: req.params.id } },
       workerDeletePermission: 'deleteTags'
     });
   }

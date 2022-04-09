@@ -114,6 +114,7 @@ export default class ClientDTO<T extends Gym | number>
 
     // Set person into client
     client.person = person;
+    client.personId = this.id;
 
     // Set client props
     client.covidPassport = this.covidPassport;

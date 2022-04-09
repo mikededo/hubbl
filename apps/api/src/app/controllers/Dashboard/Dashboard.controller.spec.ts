@@ -1,5 +1,4 @@
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DashboardDTO } from '@hubbl/shared/models/dto';
 
@@ -155,17 +154,15 @@ describe('DashboardController', () => {
     const successChecks = (res: typeof mockRes | typeof mockClientRes) => {
       expect(mockGymService.findOne).toHaveBeenCalledTimes(1);
       expect(mockGymService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.id,
-        options: { select: ['id'], loadEagerRelations: false }
+        where: { id: mockReq.params.id },
+        select: ['id'],
+        loadEagerRelations: false
       });
       expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
       expect(mockPersonService.findOne).toHaveBeenCalledWith({
-        id: res.locals.token.id,
-        options: {
-          select: ['id'],
-          loadEagerRelations: false,
-          where: { gym: mockReq.params.id }
-        }
+        where: { id: res.locals.token.id, gym: mockReq.params.id },
+        select: ['id'],
+        loadEagerRelations: false
       });
     };
 
@@ -355,19 +352,12 @@ describe('DashboardController', () => {
       await FetchDashboardController.execute({} as any, {} as any);
 
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
       expect(GymService).toHaveBeenCalledTimes(1);
-      expect(GymService).toHaveBeenCalledWith(getRepository);
       expect(VirtualGymService).toHaveBeenCalledTimes(1);
-      expect(VirtualGymService).toHaveBeenCalledWith(getRepository);
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
       expect(TrainerService).toHaveBeenCalledTimes(1);
-      expect(TrainerService).toHaveBeenCalledWith(getRepository);
       expect(EventTemplateService).toHaveBeenCalledTimes(1);
-      expect(EventTemplateService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should fetch all the information for an owner or a worker', async () => {

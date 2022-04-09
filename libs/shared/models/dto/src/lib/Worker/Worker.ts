@@ -256,6 +256,7 @@ export default class WorkerDTO<T extends Gym | number>
 
     // Set person into worker
     worker.person = person;
+    worker.personId = this.id;
 
     // Set worker props
     worker.managerId = this.managerId;

@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import * as log from 'npmlog';
 
 import { TrainerDTO } from '@hubbl/shared/models/dto';
 
@@ -10,11 +10,10 @@ import {
 } from '../../services';
 import * as helpers from '../helpers';
 import * as personHelpers from './helpers';
-import * as log from 'npmlog';
 import {
   TrainerCreateController,
-  TrainerUpdateController,
-  TrainerFetchController
+  TrainerFetchController,
+  TrainerUpdateController
 } from './Trainer.controller';
 
 jest.mock('../../services');
@@ -54,9 +53,7 @@ describe('TrainerController', () => {
         await TrainerFetchController.execute({} as any, {} as any);
 
         expect(TrainerService).toHaveBeenCalledTimes(1);
-        expect(TrainerService).toHaveBeenCalledWith(getRepository);
         expect(PersonService).toHaveBeenCalledTimes(1);
-        expect(PersonService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call fetch', async () => {
@@ -67,8 +64,8 @@ describe('TrainerController', () => {
 
         expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
         expect(mockPersonService.findOne).toHaveBeenCalledWith({
-          id: mockRes.locals.token.id,
-          options: { select: ['id', 'gym'] }
+          where: { id: mockRes.locals.token.id },
+          select: ['id', 'gym']
         });
         expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
         expect(personHelpers.fetch).toHaveBeenCalledWith({
@@ -193,7 +190,6 @@ describe('TrainerController', () => {
         await TrainerCreateController.execute({} as any, {} as any);
 
         expect(TrainerService).toHaveBeenCalledTimes(1);
-        expect(TrainerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call trainerRegister', async () => {
@@ -226,11 +222,8 @@ describe('TrainerController', () => {
         await TrainerUpdateController.execute({} as any, {} as any);
 
         expect(TrainerService).toHaveBeenCalledTimes(1);
-        expect(TrainerService).toHaveBeenCalledWith(getRepository);
         expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
         expect(WorkerService).toHaveBeenCalledTimes(1);
-        expect(WorkerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call trainerUpdate', async () => {

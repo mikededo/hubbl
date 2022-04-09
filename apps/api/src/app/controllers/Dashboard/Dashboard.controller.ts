@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository, SelectQueryBuilder } from 'typeorm';
+import { SelectQueryBuilder } from 'typeorm';
 
 import { DashboardDTO } from '@hubbl/shared/models/dto';
 import {
@@ -110,31 +110,31 @@ class IFetchDashboardController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     if (!this.gymService) {
-      this.gymService = new GymService(getRepository);
+      this.gymService = new GymService();
     }
 
     if (!this.virtualGymService) {
-      this.virtualGymService = new VirtualGymService(getRepository);
+      this.virtualGymService = new VirtualGymService();
     }
 
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     if (!this.eventService) {
-      this.eventService = new EventService(getRepository);
+      this.eventService = new EventService();
     }
 
     if (!this.eventTemplateService) {
-      this.eventTemplateService = new EventTemplateService(getRepository);
+      this.eventTemplateService = new EventTemplateService();
     }
 
     if (!this.trainerService) {
-      this.trainerService = new TrainerService(getRepository);
+      this.trainerService = new TrainerService();
     }
 
     const { id } = req.params;
@@ -145,8 +145,9 @@ class IFetchDashboardController extends BaseController {
     // Check if the gym exists
     try {
       const exists = await this.gymService.findOne({
-        id: +id,
-        options: { select: ['id'], loadEagerRelations: false }
+        where: { id: +id },
+        select: ['id'],
+        loadEagerRelations: false
       });
       if (!exists) {
         return this.forbidden(res, 'Gym does not exist.');
@@ -160,12 +161,9 @@ class IFetchDashboardController extends BaseController {
     // Check if the user has access to the gym
     try {
       const access = await this.personService.findOne({
-        id: token.id,
-        options: {
-          where: { gym: +id },
-          loadEagerRelations: false,
-          select: ['id']
-        }
+        where: { id: token.id, gym: +id },
+        loadEagerRelations: false,
+        select: ['id']
       });
 
       if (!access) {

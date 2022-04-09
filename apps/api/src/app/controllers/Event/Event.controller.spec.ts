@@ -1,8 +1,8 @@
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
+import { AppPalette } from '@hubbl/shared/types';
 
 import {
   EventService,
@@ -19,7 +19,6 @@ import {
   EventDeleteController,
   EventUpdateController
 } from './Event.controller';
-import { AppPalette } from '@hubbl/shared/types';
 
 jest.mock('../../services');
 jest.mock('@hubbl/shared/models/dto');
@@ -96,11 +95,8 @@ describe('Event controller', () => {
     await controller.execute({} as any, {} as any);
 
     expect(EventService).toHaveBeenCalledTimes(1);
-    expect(EventService).toHaveBeenCalledWith(getRepository);
     expect(OwnerService).toHaveBeenCalledTimes(1);
-    expect(OwnerService).toHaveBeenCalledWith(getRepository);
     expect(WorkerService).toHaveBeenCalledTimes(1);
-    expect(WorkerService).toHaveBeenCalledWith(getRepository);
   };
 
   const fromJsonFailAsserts = async (
@@ -306,7 +302,7 @@ describe('Event controller', () => {
       );
       expect(mockService.andWhere).toHaveBeenNthCalledWith(
         5,
-        'e.trainer.person.id = :trainer',
+        'e.trainer = :trainer',
         { trainer: mockDto.trainer }
       );
 
@@ -360,9 +356,7 @@ describe('Event controller', () => {
       await servicesAsserts(EventCreateController);
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(EventTemplateService).toHaveBeenCalledTimes(1);
-      expect(EventTemplateService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call createByOwnerOrWorker with template data', async () => {
@@ -377,8 +371,9 @@ describe('Event controller', () => {
       // Event service checks
       expect(mockTemplateService.findOne).toHaveBeenCalledTimes(1);
       expect(mockTemplateService.findOne).toHaveBeenCalledWith({
-        id: mockReq.body.template,
-        options: { loadEagerRelations: false, loadRelationIds: true }
+        where: { id: mockReq.body.template },
+        loadEagerRelations: false,
+        loadRelationIds: true
       });
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
