@@ -2,7 +2,6 @@ import * as log from 'npmlog';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
-import { AppPalette } from '@hubbl/shared/types';
 
 import {
   EventService,
@@ -34,7 +33,6 @@ describe('Event controller', () => {
     difficulty: 5,
     startTime: '09:00:00',
     endTime: '10:00:00',
-    color: AppPalette.EMERALD,
     gym: 1,
     trainer: 1,
     calendar: 1,
@@ -215,7 +213,6 @@ describe('Event controller', () => {
       result.difficulty = (template ? mockTemplate : mockReq.body).difficulty;
       result.startTime = mockReq.body.startTime;
       result.endTime = mockReq.body.endTime;
-      result.color = mockReq.body.color;
       result.date = mockReq.body.date as any;
       result.trainer = mockReq.body.trainer;
       result.gym = (template ? mockTemplate : mockReq.body).gym;

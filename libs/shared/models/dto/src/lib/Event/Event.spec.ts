@@ -7,13 +7,12 @@ import {
   Trainer
 } from '@hubbl/shared/models/entities';
 import * as helpers from '@hubbl/shared/models/helpers';
-import * as Utils from '../util';
 
 import CalendarDateDTO from '../CalendarDate';
-import EventDTO from './Event';
-import TrainerDTO from '../Trainer';
-import { AppPalette } from '@hubbl/shared/types';
 import EventTypeDTO from '../EventType';
+import TrainerDTO from '../Trainer';
+import * as Utils from '../util';
+import EventDTO from './Event';
 
 jest.mock('@hubbl/shared/models/entities');
 jest.mock('@hubbl/shared/models/helpers');
@@ -28,7 +27,6 @@ const propCompare = (want: Event | EventDTO, got: Event | EventDTO) => {
   expect(got.difficulty).toBe(want.difficulty);
   expect(got.startTime).toBe(want.startTime);
   expect(got.endTime).toBe(want.endTime);
-  expect(got.color).toBe(want.color);
   expect(got.calendar).toBe(want.calendar);
   expect(got.gym).toBe(want.gym);
   expect(got.trainer).toBe(want.trainer);
@@ -56,7 +54,6 @@ const createEvent = (): Event => {
   event.difficulty = 3;
   event.startTime = '09:00:00';
   event.endTime = '10:00:00';
-  event.color = AppPalette.BLUE;
   event.calendar = 1;
   event.gym = 1;
   event.trainer = 1;
@@ -87,7 +84,6 @@ describe('Event', () => {
         difficulty: 3,
         startTime: '09:00:00',
         endTime: '10:00:00',
-        color: AppPalette.RED,
         calendar: 1,
         gym: 1,
         trainer: 1,
@@ -223,7 +219,6 @@ describe('Event', () => {
       dto.difficulty = 3;
       dto.startTime = '09:00:00';
       dto.endTime = '10:00:00';
-      dto.color = AppPalette.EMERALD;
       dto.calendar = 1;
       dto.gym = 1;
       dto.trainer = 1;

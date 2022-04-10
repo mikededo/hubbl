@@ -53,7 +53,6 @@ class IEventCreateController extends BaseController {
       result.maskRequired = template.maskRequired;
       result.difficulty = template.difficulty;
       result.eventType = json.template ? template.type : json.eventType;
-      result.color = json.color;
       result.startTime = json.startTime;
       result.endTime = json.endTime;
       result.date = json.date;

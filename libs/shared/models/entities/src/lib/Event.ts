@@ -15,10 +15,9 @@ import Calendar from './Calendar';
 import CalendarDate from './CalendarDate';
 import EventAppointment from './EventAppointment';
 import EventTemplate from './EventTemplate';
-import Trainer from './Trainer';
-import Gym from './Gym';
-import { AppPalette } from '@hubbl/shared/types';
 import EventType from './EventType';
+import Gym from './Gym';
+import Trainer from './Trainer';
 
 @Entity()
 export default class Event {
@@ -77,16 +76,6 @@ export default class Event {
   @Index('event-end-time-idx')
   @Column('time', { nullable: false })
   endTime!: string;
-
-  /**
-   * Color of the `Event`
-   */
-  @Column('enum', {
-    enum: AppPalette,
-    enumName: 'app_palette',
-    default: AppPalette.BLUE
-  })
-  color!: AppPalette;
 
   /**
    * `Trainer` assigned to the event
