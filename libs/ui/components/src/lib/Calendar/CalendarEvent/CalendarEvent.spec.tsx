@@ -11,14 +11,14 @@ const event = {
   difficulty: 3,
   startTime: '6:00:00',
   endTime: '12:00:00',
-  color: AppPalette.RED,
   calendar: 5,
   date: {
     year: 2022,
     month: 2,
     day: 18
   },
-  appointmentCount: 3
+  appointmentCount: 3,
+  eventType: { id: 1, labelColor: AppPalette.RED }
 };
 
 const Component = (props: CalendarEventProps): JSX.Element => (
