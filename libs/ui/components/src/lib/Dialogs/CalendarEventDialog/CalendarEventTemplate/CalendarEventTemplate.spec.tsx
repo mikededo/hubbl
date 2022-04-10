@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import { CalendarEventFormFields } from '../../types';
 import CalendarEventTemplate from './CalendarEventTemplate';
@@ -71,6 +71,41 @@ describe('<CalendarEventTemplate />', () => {
     expect(
       screen.getByRole('option', { name: 'EventTemplateFour' })
     ).toBeInTheDocument();
+  });
+
+  it('should not reset values if selected template does not exist', async () => {
+    const MockComponent = ({
+      setValueSpy,
+      watchSpy
+    }: {
+      setValueSpy: any;
+      watchSpy: any;
+    }) => {
+      const { control, ...rest } = useForm<CalendarEventFormFields>({
+        defaultValues: { template: 1 }
+      });
+
+      rest.setValue = setValueSpy;
+      rest.watch = watchSpy;
+
+      return (
+        <ThemeProvider theme={createTheme()}>
+          <FormProvider {...{ control, ...rest }}>
+            <CalendarEventTemplate templates={[]} />
+          </FormProvider>
+        </ThemeProvider>
+      );
+    };
+
+    const setValueSpy = jest.fn();
+    const watchSpy = jest.fn().mockReturnValue(1);
+
+    await act(async () => {
+      render(<MockComponent setValueSpy={setValueSpy} watchSpy={watchSpy} />);
+    });
+
+    expect(watchSpy).toHaveBeenCalledWith('template');
+    expect(setValueSpy).not.toHaveBeenCalled();
   });
 
   describe('defaultValues', () => {

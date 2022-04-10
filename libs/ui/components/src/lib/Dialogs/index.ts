@@ -6,6 +6,7 @@ import EventTemplateDialog from './EventTemplateDialog';
 import EventTypeDialog from './EventTypeDialog';
 import GymZoneDialog from './GymZoneDialog';
 import type {
+  CalendarEventFormFields,
   EventTemplateFormFields,
   EventTypeFormFields,
   GymZoneFormFields,
@@ -22,6 +23,7 @@ export {
   VirtualGymDialog
 };
 export type {
+  CalendarEventFormFields,
   EventTemplateFormFields,
   EventTypeFormFields,
   GymZoneFormFields,

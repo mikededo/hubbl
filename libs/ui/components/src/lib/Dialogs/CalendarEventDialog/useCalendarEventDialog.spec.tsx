@@ -65,6 +65,28 @@ describe('useCalendarEventDialog', () => {
     );
   };
 
+  it('should not call fetcher if token is not defined', () => {
+    (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
+      token: {},
+      API: { fetcher }
+    } as any);
+    swrSpy.mockImplementation(() => ({} as any));
+
+    const Component = (): JSX.Element => {
+      useCalendarEventDialog({ virtualGym: 1 });
+
+      return <div />;
+    };
+
+    render(
+      <Wrapper>
+        <Component />
+      </Wrapper>
+    );
+
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
   it('should return OnErrorResult if event types fails', () => {
     swrSpy.mockImplementation((key) => {
       if (key === '/event-types') {
@@ -131,7 +153,7 @@ describe('useCalendarEventDialog', () => {
         eventTypes: [],
         eventTemplates: [],
         gymZones: [],
-        trainers: [] 
+        trainers: []
       });
 
       return <div />;
