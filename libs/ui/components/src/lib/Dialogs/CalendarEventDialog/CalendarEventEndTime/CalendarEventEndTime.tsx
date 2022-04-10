@@ -17,7 +17,7 @@ const CalendarEventEndTime = (): JSX.Element => {
       title="calendar-event-end-time"
       placeholder="10:00"
       type="text"
-      registerResult={register('startTime', {
+      registerResult={register('endTime', {
         required: true,
         validate: (value) => isTimeBefore(value, getValues('startTime'))
       })}
