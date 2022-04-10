@@ -45,12 +45,14 @@ class IEventCreateController extends BaseController {
 
       // Copy the template props to a new DTO
       const result = new Event();
+
       result.name = json.name;
       result.description = json.description;
       result.capacity = template.capacity;
       result.covidPassport = template.covidPassport;
       result.maskRequired = template.maskRequired;
       result.difficulty = template.difficulty;
+      result.eventType = json.template ? template.type : json.eventType;
       result.color = json.color;
       result.startTime = json.startTime;
       result.endTime = json.endTime;

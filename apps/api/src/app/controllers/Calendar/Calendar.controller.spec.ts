@@ -194,14 +194,21 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledWith({
         relations: ['date', 'calendar']
       });
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(3);
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        1,
         'e.trainer',
         't'
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        2,
         't.person',
         'p'
+      );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        3,
+        'e.eventType',
+        'tt'
       );
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
@@ -293,7 +300,7 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(2);
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(3);
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
       failSpyAsserts(failSpy);

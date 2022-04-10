@@ -153,6 +153,7 @@ class ICalendarFetchEventsController extends CalendarFetchBase {
         .loadAllRelationIds({ relations: ['date', 'calendar'] })
         .leftJoinAndSelect('e.trainer', 't')
         .leftJoinAndSelect('t.person', 'p')
+        .leftJoinAndSelect('e.eventType', 'tt')
         .loadRelationCountAndMap(
           'e.appointmentCount',
           'e.appointments',

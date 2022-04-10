@@ -21,6 +21,7 @@ const createChecks = (createRes: request.Response, template?: false) => {
   util.toBeString(createRes.body.color);
   util.toBeNumber(createRes.body.trainer);
   util.toBeNumber(createRes.body.calendar);
+  util.toBeNumber(createRes.body.eventType);
   expect(createRes.body.date).toBeDefined();
   util.toBeNumber(createRes.body.date.year);
   util.toBeNumber(createRes.body.date.month);
@@ -46,6 +47,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
       trainer: ENTITY_IDENTIFIERS.TRAINER,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
       template: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
+      eventType: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE,
       gym: ENTITY_IDENTIFIERS.GYM,
       date: {
         year: new Date().getFullYear(),
@@ -73,6 +75,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
       difficulty: 1,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
       template: ENTITY_IDENTIFIERS.EVENT_TPL_FOUR,
+      eventType: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE,
       gym: ENTITY_IDENTIFIERS.GYM,
       date: {
         year: new Date().getFullYear(),
@@ -106,6 +109,7 @@ export const createNoTemplate = async (by: 'owner' | 'worker') => {
       startTime: '16:00:00',
       endTime: '16:30:00',
       color: AppPalette.RED,
+      eventType: ENTITY_IDENTIFIERS.EVENT_TYPE_ONE,
       trainer: ENTITY_IDENTIFIERS.TRAINER,
       calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
       gym: ENTITY_IDENTIFIERS.GYM,
