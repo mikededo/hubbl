@@ -12,6 +12,7 @@ import { CalendarEventFormFields } from '../types';
 import CalendarEventCapacity from './CalendarEventCapacity';
 import CalendarEventDate from './CalendarEventDate';
 import CalendarEventDescription from './CalendarEventDescription';
+import CalendarEventDifficulty from './CalendarEventDifficulty';
 import CalendarEventEndTime from './CalendarEventEndTime';
 import CalendarEventGymZone from './CalendarEventGymZone';
 import CalendarEventName from './CalendarEventName';
@@ -139,6 +140,8 @@ const CalendarEventDialog = ({
 
                 <CalendarEventType eventTypes={eventTypes ?? []} />
               </Stack>
+
+              <CalendarEventDifficulty />
             </Stack>
           </DialogSection>
 

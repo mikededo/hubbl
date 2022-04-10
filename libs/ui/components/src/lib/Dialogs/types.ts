@@ -198,4 +198,9 @@ export type CalendarEventFormFields = {
    * Event type of the `CalendarEvent`
    */
   type: number | string;
+
+  /**
+   * Difficulty of the `CalendarEvent`
+   */
+  difficulty: number | string;
 };

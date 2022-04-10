@@ -131,6 +131,10 @@ describe('<CalendarEventDialog />', () => {
       expect(
         screen.getByPlaceholderText('Select an event type')
       ).toBeInTheDocument();
+      expect(screen.getByText('Difficulty')).toBeInTheDocument();
+      expect(
+        screen.getByTitle('calendar-event-difficulty')
+      ).toBeInTheDocument();
     });
 
     it('should render with the default values', async () => {
@@ -145,7 +149,8 @@ describe('<CalendarEventDialog />', () => {
         maskRequired: false,
         covidPassport: false,
         capacity: 25,
-        type: 3
+        type: 3,
+        difficulty: 2
       };
 
       await act(async () => {
@@ -230,7 +235,8 @@ describe('<CalendarEventDialog />', () => {
         covidPassport: true,
         startTime: '11:00',
         endTime: '12:00',
-        type: 3
+        type: 3,
+        difficulty: 3
       });
     });
   });
