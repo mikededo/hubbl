@@ -25,7 +25,7 @@ type FilteredEvents = [
 
 type WeekDay = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-type EventSpot = {
+export type EventSpot = {
   /**
    * Hour of the spot that has been clicked
    */

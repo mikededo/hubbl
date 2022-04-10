@@ -17,8 +17,12 @@ export type CalendarEventTrainerProps = {
 const CalendarEventTrainer = ({
   trainers
 }: CalendarEventTrainerProps): JSX.Element => {
-  const { control, getValues, setValue } =
-    useFormContext<CalendarEventFormFields>();
+  const {
+    control,
+    formState: { errors },
+    getValues,
+    setValue
+  } = useFormContext<CalendarEventFormFields>();
 
   // Keep the state
   const [options, setOptions] = useState<TrainerDTO<number>[]>([]);
@@ -49,6 +53,7 @@ const CalendarEventTrainer = ({
       inputProps={{ title: 'calendar-event-trainer' }}
       options={mapTrainers()}
       disabled={!trainers}
+      error={!!errors.trainer}
       required
     />
   );

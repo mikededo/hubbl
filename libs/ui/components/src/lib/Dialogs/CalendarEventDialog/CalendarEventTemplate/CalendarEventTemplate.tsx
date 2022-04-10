@@ -23,20 +23,20 @@ const CalendarEventTemplate = ({
   // Keep the state
   const [options, setOptions] = useState<EventTemplateDTO[]>([]);
 
-  const mapTemplates = (): SelectItem[] =>
-    (templates?.length ? templates : options).map((gz) => ({
+  const mapTemplates = (): SelectItem[] => {
+    const values = (templates?.length ? templates : options).map((gz) => ({
       key: gz.id,
       value: gz.id,
       label: gz.name
     }));
 
+    // Add null value
+    return [{ key: 'empty', value: '', label: 'None' }, ...values];
+  };
+
   useEffect(() => {
     if (templates?.length) {
       setOptions(templates);
-      setValue(
-        'template',
-        getValues('template') ? getValues('template') : templates[0].id
-      );
     }
   }, [templates, getValues, setValue]);
 
@@ -49,7 +49,6 @@ const CalendarEventTemplate = ({
       inputProps={{ title: 'calendar-event-template' }}
       options={mapTemplates()}
       disabled={!templates}
-      required
     />
   );
 };

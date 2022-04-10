@@ -65,6 +65,7 @@ const SelectInput = <T extends FieldValues, J extends SelectItem[]>({
   labelVariant = 'h6',
   formName,
   options,
+  required,
   ...props
 }: InputBaseProps & SelectInputProps<T, J>): JSX.Element => (
   <Stack direction="column" gap={1} width="100%">
@@ -75,7 +76,7 @@ const SelectInput = <T extends FieldValues, J extends SelectItem[]>({
     <Controller
       control={control}
       name={formName}
-      rules={{ required: props.required }}
+      rules={{ required }}
       render={({
         field: { onChange, value, name, ref },
         fieldState: { error }
