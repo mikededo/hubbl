@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useFormContext } from 'react-hook-form';
 
-import { EventTemplateDTO } from '@hubbl/shared/models/dto';
+import { EventTemplateDTO, EventTypeDTO } from '@hubbl/shared/models/dto';
 
 import SelectInput, { SelectItem } from '../../../SelectInput';
 import { CalendarEventFormFields } from '../../types';
@@ -17,11 +17,14 @@ export type CalendarEventTemplateProps = {
 const CalendarEventTemplate = ({
   templates
 }: CalendarEventTemplateProps): JSX.Element => {
-  const { control, getValues, setValue } =
+  const { control, setValue, watch } =
     useFormContext<CalendarEventFormFields>();
 
   // Keep the state
   const [options, setOptions] = useState<EventTemplateDTO[]>([]);
+
+  // Watch the input
+  const selected = watch('template');
 
   const mapTemplates = (): SelectItem[] => {
     const values = (templates?.length ? templates : options).map((gz) => ({
@@ -35,10 +38,25 @@ const CalendarEventTemplate = ({
   };
 
   useEffect(() => {
+    if (selected) {
+      const template = templates?.find(({ id }) => selected === id);
+
+      if (template) {
+        setValue('name', template.name);
+        setValue('description', template.description);
+        setValue('capacity', template.capacity);
+        setValue('maskRequired', template.maskRequired);
+        setValue('covidPassport', template.covidPassport);
+        setValue('type', (template.type as EventTypeDTO).id);
+      }
+    }
+  }, [selected, templates, setValue]);
+
+  useEffect(() => {
     if (templates?.length) {
       setOptions(templates);
     }
-  }, [templates, getValues, setValue]);
+  }, [templates]);
 
   return (
     <SelectInput
