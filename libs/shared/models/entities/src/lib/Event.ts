@@ -18,6 +18,7 @@ import EventTemplate from './EventTemplate';
 import Trainer from './Trainer';
 import Gym from './Gym';
 import { AppPalette } from '@hubbl/shared/types';
+import EventType from './EventType';
 
 @Entity()
 export default class Event {
@@ -111,6 +112,7 @@ export default class Event {
     nullable: false
   })
   gym!: number;
+
   /**
    * `EventTemplate` from which has been created
    */
@@ -119,6 +121,15 @@ export default class Event {
     onDelete: 'SET NULL'
   })
   template!: number;
+
+  /**
+   * `EventType` to which the `Event` belongs
+   */
+  @ManyToOne(() => EventType, (et) => et.events, {
+    eager: true,
+    onDelete: 'SET NULL'
+  })
+  eventType!: EventType | number;
 
   /**
    * `Appointment`'s set for the `Event`

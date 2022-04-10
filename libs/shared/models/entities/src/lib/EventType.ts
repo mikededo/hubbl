@@ -11,6 +11,7 @@ import {
 
 import { AppPalette } from '@hubbl/shared/types';
 
+import Event from './Event';
 import EventTemplate from './EventTemplate';
 import Gym from './Gym';
 
@@ -41,8 +42,17 @@ export default class EventType {
   })
   labelColor!: AppPalette;
 
+  /**
+   * `EventTemplate`'s which are linked to the `EventType`
+   */
   @OneToMany(() => EventTemplate, (et) => et.type)
   eventTemplates!: EventTemplate[];
+
+  /**
+   * `Event`'s which are linked to the `EventType`
+   */
+  @OneToMany(() => EventTemplate, (et) => et.type)
+  events!: Event[];
 
   /**
    * `Gym` to which the `EventType` belongs
