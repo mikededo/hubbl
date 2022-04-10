@@ -39,6 +39,7 @@ describe('Event controller', () => {
     trainer: 1,
     calendar: 1,
     template: 1,
+    eventType: 1,
     date: { day: 29, month: 6, year: 2000 }
   };
   const mockDto = {
@@ -196,6 +197,7 @@ describe('Event controller', () => {
       covidPassport: true,
       maskRequired: true,
       difficulty: 1,
+      type: 1,
       gym: 2
     };
     const mockCreatedEvent = (template = true): Event => {
@@ -217,6 +219,7 @@ describe('Event controller', () => {
       result.date = mockReq.body.date as any;
       result.trainer = mockReq.body.trainer;
       result.gym = (template ? mockTemplate : mockReq.body).gym;
+      result.eventType = template ? mockTemplate.type : mockReq.body.eventType;
       result.calendar = mockReq.body.calendar;
 
       return result;
