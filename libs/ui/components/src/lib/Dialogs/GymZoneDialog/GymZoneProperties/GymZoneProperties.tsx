@@ -4,7 +4,7 @@ import { Checkbox, FormControlLabel, Stack, Typography } from '@mui/material';
 
 import { GymZoneFormFields } from '../../types';
 
-const GymZonePhone = (): JSX.Element => (
+const GymZoneProperties = (): JSX.Element => (
   <Stack gap={1.5}>
     <Typography variant="h6">Properties</Typography>
 
@@ -69,4 +69,4 @@ const GymZonePhone = (): JSX.Element => (
   </Stack>
 );
 
-export default GymZonePhone;
+export default GymZoneProperties;

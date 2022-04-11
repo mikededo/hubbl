@@ -121,7 +121,7 @@ describe('create', () => {
           save: jest.fn()
         } as any;
         const mockWorkerService = {
-          findOne: jest.fn().mockResolvedValue({ any: true })
+          findOneBy: jest.fn().mockResolvedValue({ any: true })
         } as any;
 
         await shouldCreateBy({
@@ -130,12 +130,12 @@ describe('create', () => {
           user: 'worker'
         });
 
-        expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
       });
     });
 
     it('should send fail if no workerCreatePermission passed', async () => {
-      const mockWorkerService = { findOne: jest.fn() };
+      const mockWorkerService = { findOneBy: jest.fn() };
 
       await create.createdByOwnerOrWorker({
         controller: mockController,
@@ -155,12 +155,12 @@ describe('create', () => {
         {},
         'Internal server error. If the problem persists, contact our team.'
       );
-      expect(mockWorkerService.findOne).not.toHaveBeenCalled();
+      expect(mockWorkerService.findOneBy).not.toHaveBeenCalled();
     });
 
     it('should send unauthorized if worker updating does not exist', async () => {
       const mockWorkerService = {
-        findOne: jest.fn().mockResolvedValue(null)
+        findOneBy: jest.fn().mockResolvedValue(null)
       };
 
       await create.createdByOwnerOrWorker({
@@ -176,8 +176,8 @@ describe('create', () => {
         workerCreatePermission: 'any' as any
       });
 
-      expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
+      expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({ personId: 1 });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
@@ -187,7 +187,7 @@ describe('create', () => {
 
     it('should send unauthorized if worker does not have permissions to create', async () => {
       const mockWorkerService = {
-        findOne: jest.fn().mockResolvedValue({ create: false })
+        findOneBy: jest.fn().mockResolvedValue({ create: false })
       } as any;
 
       await create.createdByOwnerOrWorker({
@@ -203,8 +203,8 @@ describe('create', () => {
         workerCreatePermission: 'create' as any
       });
 
-      expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
+      expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({ personId: 1 });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
@@ -231,7 +231,7 @@ describe('create', () => {
 
       expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
       expect(mockOwnerService.count).toHaveBeenCalledWith({
-        person: { id: 1 }
+        where: { personId: 1 }
       });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(

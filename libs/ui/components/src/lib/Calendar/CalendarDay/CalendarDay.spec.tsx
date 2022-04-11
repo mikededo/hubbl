@@ -1,6 +1,6 @@
 import { AppPalette } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import CalendarDay, { CalendarDayProps } from './CalendarDay';
 
@@ -12,7 +12,7 @@ const events = [
     difficulty: 3,
     startTime: '6:00:00',
     endTime: '12:00:00',
-    color: AppPalette.RED,
+    eventType: { id: 1, labelColor: AppPalette.RED },
     calendar: 5,
     date: {
       year: 2022,
@@ -28,7 +28,7 @@ const events = [
     difficulty: 3,
     startTime: '6:00:00',
     endTime: '7:00:00',
-    color: AppPalette.EMERALD,
+    eventType: { id: 2, labelColor: AppPalette.EMERALD },
     calendar: 5,
     date: {
       year: 2022,
@@ -44,7 +44,7 @@ const events = [
     difficulty: 3,
     startTime: '7:00:00',
     endTime: '8:30:00',
-    color: AppPalette.BLUE,
+    eventType: { id: 3, labelColor: AppPalette.BLUE },
     calendar: 5,
     date: {
       year: 2022,
@@ -60,7 +60,7 @@ const events = [
     difficulty: 3,
     startTime: '9:00:00',
     endTime: '10:00:00',
-    color: AppPalette.PURPLE,
+    eventType: { id: 4, labelColor: AppPalette.PURPLE },
     calendar: 5,
     date: {
       year: 2022,
@@ -116,6 +116,26 @@ describe('<CalendarDay />', () => {
 
     events.forEach(({ name }) => {
       expect(screen.getByText(name)).toBeInTheDocument();
+    });
+  });
+
+  describe('onSpotClick', () => {
+    it('should call onSpotClick with the hour of the spot', () => {
+      const onClickSpy = jest.fn();
+
+      render(
+        <Component
+          day="Monday"
+          events={[]}
+          initialHour={8}
+          finalHour={17}
+          onSpotClick={onClickSpy}
+        />
+      );
+      fireEvent.click(screen.getAllByTestId('calendar-spot')[0]);
+
+      expect(onClickSpy).toHaveBeenCalledTimes(1);
+      expect(onClickSpy).toHaveBeenCalledWith(8);
     });
   });
 });

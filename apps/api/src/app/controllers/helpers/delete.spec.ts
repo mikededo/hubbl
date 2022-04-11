@@ -124,7 +124,7 @@ describe('delete', () => {
           delete: jest.fn()
         } as any;
         const mockWorkerService = {
-          findOne: jest.fn().mockResolvedValue({ any: true })
+          findOneBy: jest.fn().mockResolvedValue({ any: true })
         } as any;
 
         await shouldDeleteBy({
@@ -133,7 +133,7 @@ describe('delete', () => {
           user: 'worker'
         });
 
-        expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -168,7 +168,7 @@ describe('delete', () => {
 
     it('should send unauthorized if worker updating does not exist', async () => {
       const mockWorkerService = {
-        findOne: jest.fn().mockResolvedValue(null)
+        findOneBy: jest.fn().mockResolvedValue(null)
       };
 
       await deleteHelpers.deletedByOwnerOrWorker({
@@ -184,8 +184,8 @@ describe('delete', () => {
         workerDeletePermission: 'any' as any
       });
 
-      expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
+      expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({ personId: 1 });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
@@ -195,7 +195,7 @@ describe('delete', () => {
 
     it('should send unauthorized if worker does not have permissions to delete', async () => {
       const mockWorkerService = {
-        findOne: jest.fn().mockResolvedValue({ delete: false })
+        findOneBy: jest.fn().mockResolvedValue({ delete: false })
       } as any;
 
       await deleteHelpers.deletedByOwnerOrWorker({
@@ -211,8 +211,8 @@ describe('delete', () => {
         workerDeletePermission: 'delete' as any
       });
 
-      expect(mockWorkerService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockWorkerService.findOne).toHaveBeenCalledWith({ id: 1 });
+      expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({ personId: 1 });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
         {},
@@ -239,7 +239,7 @@ describe('delete', () => {
 
       expect(mockOwnerService.count).toHaveBeenCalledTimes(1);
       expect(mockOwnerService.count).toHaveBeenCalledWith({
-        person: { id: 1 }
+        where: { personId: 1 }
       });
       expect(mockController.unauthorized).toHaveReturnedTimes(1);
       expect(mockController.unauthorized).toHaveBeenCalledWith(
@@ -394,7 +394,7 @@ describe('delete', () => {
 
       expect(mockClientService.count).toHaveBeenCalledTimes(1);
       expect(mockClientService.count).toHaveBeenCalledWith({
-        person: { id: 1 }
+        where: { personId: 1 }
       });
       expect(mockService.count).toHaveBeenCalledTimes(1);
       expect(mockService.count).toHaveBeenCalledWith({ id: mockEntity.id });

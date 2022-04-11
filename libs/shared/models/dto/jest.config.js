@@ -11,5 +11,6 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/libs/shared/models/dto',
-  collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts']
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts'],
+  coverageReporters: ['text', 'html']
 };

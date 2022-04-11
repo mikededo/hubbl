@@ -11,6 +11,7 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
+  PrimaryColumn,
   UpdateDateColumn
 } from 'typeorm';
 
@@ -26,13 +27,18 @@ import TrainerTag from './TrainerTag';
  */
 @Entity()
 export default class Trainer {
+  /**
+   * Primary column of the `Person` relationship
+   */
+  @PrimaryColumn()
+  personId!: number;
+
   @OneToOne(() => Person, {
-    primary: true,
     cascade: true,
     eager: true,
     nullable: false
   })
-  @JoinColumn({ name: 'trainer_person_fk' })
+  @JoinColumn()
   person!: Person;
 
   /**

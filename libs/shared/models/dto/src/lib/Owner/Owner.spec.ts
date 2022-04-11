@@ -151,6 +151,7 @@ describe('OwnerDTO', () => {
       expect(result.person.theme).toBe(dto.theme);
       expect(result.person.gym).toBe(dto.gym);
       expect(result.person.gender).toBe(dto.gender);
+      expect(result.personId).toBe(dto.id);
       // Password should be hashed
       expect(await compare('testpwd00', result.person.password)).toBeTruthy();
     });

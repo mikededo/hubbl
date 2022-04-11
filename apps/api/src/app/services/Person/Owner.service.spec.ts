@@ -1,18 +1,17 @@
-import OwnerService from './Owner.service';
-import BaseService from '../Base';
 import { Owner } from '@hubbl/shared/models/entities';
+
+import BaseService from '../Base';
+import OwnerService from './Owner.service';
 
 jest.mock('../Base');
 
 describe('OwnerService', () => {
   describe('#constructor', () => {
     it('should call super', () => {
-      const mockRepoAccesser = jest.fn();
-
-      new OwnerService(mockRepoAccesser as any);
+      new OwnerService();
 
       expect(BaseService).toHaveBeenCalled();
-      expect(BaseService).toHaveBeenCalledWith(Owner, mockRepoAccesser);
+      expect(BaseService).toHaveBeenCalledWith(Owner);
     });
   });
 });

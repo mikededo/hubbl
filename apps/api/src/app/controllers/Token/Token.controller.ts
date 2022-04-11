@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
 
 import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { ParsedToken } from '@hubbl/shared/types';
@@ -15,15 +14,15 @@ class ITokenValidateCookie extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     if (!this.clientService) {
-      this.clientService = new ClientService(getRepository);
+      this.clientService = new ClientService();
     }
 
     // Get the cookie
@@ -44,7 +43,7 @@ class ITokenValidateCookie extends BaseController {
           : token.user === 'worker'
           ? this.workerService
           : this.clientService
-        ).findOne({ id: token.id });
+        ).findOneBy({ personId: token.id });
 
         if (!user) {
           return this.forbidden(res, 'User not found.');

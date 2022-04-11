@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { nanoid } from 'nanoid';
 import * as log from 'npmlog';
 
 import { ClientDTO } from '@hubbl/shared/models/dto';
@@ -11,14 +11,13 @@ import {
   WorkerService
 } from '../../services';
 import * as helpers from '../helpers';
+import { ClientFetchController } from './';
 import {
   ClientLoginController,
   ClientRegisterController,
   ClientUpdateController
 } from './Client.controller';
 import * as personHelpers from './helpers';
-import { ClientFetchController } from '.';
-import { nanoid } from 'nanoid';
 
 jest.mock('../../services');
 jest.mock('./helpers');
@@ -34,7 +33,7 @@ describe('ClientController', () => {
     const mockReq = { query: { skip: 0 } };
     const mockRes = { locals: { token: { id: 1, user: 'owner' } } };
 
-    const mockPersonService = { findOne: jest.fn() };
+    const mockPersonService = { findOneBy: jest.fn() };
 
     const logSpy = jest.spyOn(log, 'error');
 
@@ -57,19 +56,17 @@ describe('ClientController', () => {
         await ClientFetchController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
-        expect(ClientService).toHaveBeenCalledWith(getRepository);
         expect(PersonService).toHaveBeenCalledTimes(1);
-        expect(PersonService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call fetch', async () => {
-        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+        mockPersonService.findOneBy.mockResolvedValue({ gym: { id: 1 } });
 
         setupServices();
         await ClientFetchController.execute(mockReq as any, mockRes as any);
 
-        expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
-        expect(mockPersonService.findOne).toHaveBeenCalledWith({
+        expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
+        expect(mockPersonService.findOneBy).toHaveBeenCalledWith({
           id: mockRes.locals.token.id
         });
         expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
@@ -85,7 +82,7 @@ describe('ClientController', () => {
       });
 
       it('should use skip as 0 if not given', async () => {
-        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+        mockPersonService.findOneBy.mockResolvedValue({ gym: { id: 1 } });
 
         setupServices();
         await ClientFetchController.execute(
@@ -93,7 +90,7 @@ describe('ClientController', () => {
           mockRes as any
         );
 
-        expect(mockPersonService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
         expect(personHelpers.fetch).toHaveBeenCalledTimes(1);
         expect(personHelpers.fetch).toHaveBeenCalledWith({
           service: {},
@@ -125,7 +122,7 @@ describe('ClientController', () => {
       });
 
       it('should call forbidden if person does not exist', async () => {
-        mockPersonService.findOne.mockResolvedValue(undefined);
+        mockPersonService.findOneBy.mockResolvedValue(undefined);
         const unauthorizedSpy = jest
           .spyOn(ClientFetchController, 'unauthorized')
           .mockImplementation();
@@ -141,7 +138,7 @@ describe('ClientController', () => {
       });
 
       it('should call fail on personService error', async () => {
-        mockPersonService.findOne.mockRejectedValue('error-thrown');
+        mockPersonService.findOneBy.mockRejectedValue('error-thrown');
         const failSpy = jest
           .spyOn(ClientFetchController, 'fail')
           .mockImplementation();
@@ -166,7 +163,7 @@ describe('ClientController', () => {
         (personHelpers.fetch as any).mockImplementation(() => {
           throw 'error-thrown';
         });
-        mockPersonService.findOne.mockResolvedValue({ gym: { id: 1 } });
+        mockPersonService.findOneBy.mockResolvedValue({ gym: { id: 1 } });
         const failSpy = jest
           .spyOn(ClientFetchController, 'fail')
           .mockImplementation();
@@ -213,9 +210,7 @@ describe('ClientController', () => {
         await ClientRegisterController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
-        expect(ClientService).toHaveBeenCalledWith(getRepository);
         expect(GymService).toHaveBeenCalledTimes(1);
-        expect(GymService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call register if no code given', async () => {
@@ -253,11 +248,9 @@ describe('ClientController', () => {
 
         expect(mockGymService.findOne).toHaveBeenCalledTimes(1);
         expect(mockGymService.findOne).toHaveBeenCalledWith({
-          options: {
-            where: { code: mockReq.query.code },
-            select: ['id'],
-            loadEagerRelations: false
-          }
+          where: { code: mockReq.query.code },
+          select: ['id'],
+          loadEagerRelations: false
         });
         expect(registerSpy).toHaveBeenCalledWith({
           service: {},
@@ -320,7 +313,6 @@ describe('ClientController', () => {
         await ClientLoginController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
-        expect(ClientService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call clientLogin', async () => {
@@ -353,11 +345,8 @@ describe('ClientController', () => {
         await ClientUpdateController.execute({} as any, {} as any);
 
         expect(ClientService).toHaveBeenCalledTimes(1);
-        expect(ClientService).toHaveBeenCalledWith(getRepository);
         expect(OwnerService).toHaveBeenCalledTimes(1);
-        expect(OwnerService).toHaveBeenCalledWith(getRepository);
         expect(WorkerService).toHaveBeenCalledTimes(1);
-        expect(WorkerService).toHaveBeenCalledWith(getRepository);
       });
 
       it('should call clientUpdate', async () => {

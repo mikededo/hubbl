@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { motion } from 'framer-motion';
 
-import { EventDTO } from '@hubbl/shared/models/dto';
+import { EventDTO, EventTypeDTO } from '@hubbl/shared/models/dto';
 import { AppPalette, Hour } from '@hubbl/shared/types';
 import { notForwardAny } from '@hubbl/utils';
 import { lighten, Stack, styled, Typography, useTheme } from '@mui/material';
@@ -83,7 +83,7 @@ const CalendarEvent = ({
 
   return (
     <MotionLi
-      color={event.color}
+      color={(event.eventType as EventTypeDTO).labelColor}
       height={height}
       initial={{ top: theme.spacing(topPosition - 4), opacity: 0 }}
       animate={{ top: theme.spacing(topPosition), opacity: 1 }}

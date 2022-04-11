@@ -1,3 +1,3 @@
-import databaseConfig from './database';
+import Source, { TestSource } from './data-source';
 
-export { databaseConfig };
+export { Source, TestSource };

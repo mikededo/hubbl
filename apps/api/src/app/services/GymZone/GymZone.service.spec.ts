@@ -8,12 +8,10 @@ jest.mock('../Base');
 describe('GymZoneService', () => {
   describe('#constructor', () => {
     it('should call super', () => {
-      const mockRepoAccesser = jest.fn();
-
-      new GymZoneService(mockRepoAccesser as any);
+      new GymZoneService();
 
       expect(BaseService).toHaveBeenCalled();
-      expect(BaseService).toHaveBeenCalledWith(GymZone, mockRepoAccesser);
+      expect(BaseService).toHaveBeenCalledWith(GymZone);
     });
   });
 });

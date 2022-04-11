@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, VirtualGymDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
@@ -15,18 +14,18 @@ class IVirtualGymFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new VirtualGymService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
 
     try {
       // Get the person, if any
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
@@ -88,18 +87,18 @@ class IVirtualGymFetchSingleController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new VirtualGymService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
 
     try {
       // Get the person, if any
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.clientError(res, 'Person does not exist');
@@ -140,11 +139,11 @@ class IVirtualGymCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new VirtualGymService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     const { token } = res.locals;
@@ -189,11 +188,11 @@ class IVirtualGymDeleteController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new VirtualGymService(getRepository);
+      this.service = new VirtualGymService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     const { token } = res.locals;

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import {
   DTOGroups,
@@ -9,13 +8,6 @@ import {
   GymZoneDTO,
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
-import {
-  Event,
-  EventTemplate,
-  EventType,
-  GymZone,
-  VirtualGym
-} from '@hubbl/shared/models/entities';
 
 import {
   EventService,
@@ -23,7 +15,6 @@ import {
   EventTypeService,
   GymZoneService,
   OwnerService,
-  RepositoryAccessor,
   VirtualGymService,
   WorkerService
 } from '../../services';
@@ -44,12 +35,6 @@ type WorkerUpdatePermissions =
   | 'updateGymZones'
   | 'updateVirtualGyms';
 
-type UpdatableEntities =
-  | Event
-  | EventTemplate
-  | EventType
-  | GymZone
-  | VirtualGym;
 
 type UpdatableFromJson =
   | BaseFromJsonCallable<EventDTO>
@@ -71,9 +56,7 @@ export default class UpdateByOwnerWorkerController extends BaseController {
   protected workerService: WorkerService = undefined;
 
   constructor(
-    private serviceCtr: new (
-      accessor: RepositoryAccessor<UpdatableEntities>
-    ) => UpdatableServices,
+    private serviceCtr: new () => UpdatableServices,
     private fromJson: UpdatableFromJson,
     private entityName: UpdatableEntityNames,
     private workerUpdatePermission: WorkerUpdatePermissions
@@ -83,15 +66,15 @@ export default class UpdateByOwnerWorkerController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new this.serviceCtr(getRepository);
+      this.service = new this.serviceCtr();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;

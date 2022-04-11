@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { TrainerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
@@ -20,11 +19,11 @@ class ITrainerFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerService(getRepository);
+      this.service = new TrainerService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -38,8 +37,8 @@ class ITrainerFetchController extends BaseController {
       // Check if the person exists
       // Get the person, if any
       const person = await this.personService.findOne({
-        id: token.id,
-        options: { select: ['id', 'gym'] }
+        where: { id: token.id },
+        select: ['id', 'gym']
       });
 
       if (!person) {
@@ -70,7 +69,7 @@ class ITrainerCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerService(getRepository);
+      this.service = new TrainerService();
     }
 
     return trainerRegister({
@@ -95,15 +94,15 @@ class ITrainerUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new TrainerService(getRepository);
+      this.service = new TrainerService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     return trainerUpdate({

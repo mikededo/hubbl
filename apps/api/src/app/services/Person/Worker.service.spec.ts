@@ -8,12 +8,10 @@ jest.mock('../Base');
 describe('WorkerService', () => {
   describe('#constructor', () => {
     it('should call super', () => {
-      const mockRepoAccesser = jest.fn();
-
-      new WorkerService(mockRepoAccesser as any);
+      new WorkerService();
 
       expect(BaseService).toHaveBeenCalled();
-      expect(BaseService).toHaveBeenCalledWith(Worker, mockRepoAccesser);
+      expect(BaseService).toHaveBeenCalledWith(Worker);
     });
   });
 });

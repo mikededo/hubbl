@@ -15,9 +15,9 @@ import Calendar from './Calendar';
 import CalendarDate from './CalendarDate';
 import EventAppointment from './EventAppointment';
 import EventTemplate from './EventTemplate';
-import Trainer from './Trainer';
+import EventType from './EventType';
 import Gym from './Gym';
-import { AppPalette } from '@hubbl/shared/types';
+import Trainer from './Trainer';
 
 @Entity()
 export default class Event {
@@ -78,16 +78,6 @@ export default class Event {
   endTime!: string;
 
   /**
-   * Color of the `Event`
-   */
-  @Column('enum', {
-    enum: AppPalette,
-    enumName: 'app_palette',
-    default: AppPalette.BLUE
-  })
-  color!: AppPalette;
-
-  /**
    * `Trainer` assigned to the event
    */
   @ManyToOne(() => Trainer, (t) => t.events, {
@@ -111,6 +101,7 @@ export default class Event {
     nullable: false
   })
   gym!: number;
+
   /**
    * `EventTemplate` from which has been created
    */
@@ -119,6 +110,15 @@ export default class Event {
     onDelete: 'SET NULL'
   })
   template!: number;
+
+  /**
+   * `EventType` to which the `Event` belongs
+   */
+  @ManyToOne(() => EventType, (et) => et.events, {
+    eager: true,
+    onDelete: 'SET NULL'
+  })
+  eventType!: EventType | number;
 
   /**
    * `Appointment`'s set for the `Event`

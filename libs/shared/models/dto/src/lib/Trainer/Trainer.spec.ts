@@ -222,6 +222,7 @@ describe('TrainerDTO', () => {
       expect(result.person.gym).toBe(dto.gym);
       expect(result.person.gender).toBe(dto.gender);
       expect(result.person.theme).toBe(dto.theme);
+      expect(result.personId).toBe(dto.id);
       expect(result.managerId).toBe(dto.managerId);
       expect(result.workerCode).toBe(dto.workerCode);
       expect(result.tags).toBe(dto.tags);

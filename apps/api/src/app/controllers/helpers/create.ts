@@ -128,7 +128,7 @@ export const createdByOwnerOrWorker = async ({
       );
     }
 
-    const worker = await workerService.findOne({ id: token.id });
+    const worker = await workerService.findOneBy({ personId: token.id });
 
     if (!worker) {
       return controller.unauthorized(
@@ -142,7 +142,7 @@ export const createdByOwnerOrWorker = async ({
       );
     }
   } else if (token.user === 'owner') {
-    const count = await ownerService.count({ person: { id: token.id } });
+    const count = await ownerService.count({ where: { personId: token.id } });
 
     if (!count) {
       return controller.unauthorized(

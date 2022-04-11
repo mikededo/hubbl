@@ -102,17 +102,105 @@ export type EventTypeFormFields = {
 };
 
 export type EventTemplateFormFields = {
+  /**
+   * Name of the `EventTemplate`
+   */
   name: string;
 
+  /**
+   * Description of the `EventTemplate`
+   */
   description: string;
 
+  /**
+   * Capacity of the `EventTemplate`
+   */
   capacity: number;
 
+  /**
+   * Whether the mask is required in the `EventTemplate`
+   */
   maskRequired: boolean;
 
+  /**
+   * Whether the covid passport is required in the `EventTemplate`
+   */
   covidPassport: boolean;
 
+  /**
+   * Difficulty of the `EventTemplate`
+   */
   difficulty: number;
 
+  /**
+   * Event type of the `EventTemplate`
+   */
   eventType: number | string;
-}
+};
+
+export type CalendarEventFormFields = {
+  /**
+   * Name of the `CalendarEvent`
+   */
+  name: string;
+
+  /**
+   * Description of the `CalendarEvent`
+   */
+  description: string;
+
+  /**
+   * Gym zone of the `CalendarEvent`
+   */
+  gymZone: number | string;
+
+  /**
+   * Trainer of the `CalendarEvent`
+   */
+  trainer: number | string;
+
+  /**
+   * Template of the `CalendarEvent`
+   */
+  template: number | string;
+
+  /**
+   * Date of the `CalendarEvent`
+   */
+  date: Date;
+
+  /**
+   * Whether the mask is required in the `CalendarEvent`
+   */
+  maskRequired: boolean;
+
+  /**
+   * Whether the covid passport is required in the `CalendarEvent`
+   */
+  covidPassport: boolean;
+
+  /**
+   * Start time of the `CalendarEvent`
+   */
+  startTime: string;
+
+  /**
+   * End time of the `CalendarEvent`
+   */
+  endTime: string;
+
+  /**
+   * Capacity of the `CalendarEvent`
+   */
+  capacity: number;
+
+  /**
+   * Event type of the `CalendarEvent`
+   */
+  type: number | string;
+
+  /**
+   * Difficulty of the `CalendarEvent`
+   */
+  difficulty: number | string;
+};

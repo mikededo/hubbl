@@ -1,12 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
-
-import {
-  Event,
-  EventTemplate,
-  EventType,
-  GymZone
-} from '@hubbl/shared/models/entities';
 
 import {
   EventService,
@@ -14,7 +6,6 @@ import {
   EventTypeService,
   GymZoneService,
   OwnerService,
-  RepositoryAccessor,
   WorkerService
 } from '../../services';
 import { deletedByOwnerOrWorker } from '../helpers';
@@ -28,8 +19,6 @@ type WorkerDeletePermissions =
   | 'deleteEventTypes'
   | 'deleteGymZones';
 
-type DeletableEntities = Event | EventTemplate | EventType | GymZone;
-
 type DeletableServices =
   | EventService
   | EventTemplateService
@@ -42,9 +31,7 @@ export default class DeleteByOwnerWorkerController extends BaseController {
   protected workerService: WorkerService = undefined;
 
   constructor(
-    private serviceCtr: new (
-      accessor: RepositoryAccessor<DeletableEntities>
-    ) => DeletableServices,
+    private serviceCtr: new () => DeletableServices,
     private entityName: DeletableEntityNames,
     private workerDeletePermission: WorkerDeletePermissions
   ) {
@@ -53,15 +40,15 @@ export default class DeleteByOwnerWorkerController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new this.serviceCtr(getRepository);
+      this.service = new this.serviceCtr();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;

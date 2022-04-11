@@ -8,15 +8,10 @@ jest.mock('../Base');
 describe('CalendarAppointmentService', () => {
   describe('#constructor', () => {
     it('should call super', () => {
-      const mockRepoAccesser = jest.fn();
-
-      new CalendarAppointmentService(mockRepoAccesser as any);
+      new CalendarAppointmentService();
 
       expect(BaseService).toHaveBeenCalled();
-      expect(BaseService).toHaveBeenCalledWith(
-        CalendarAppointment,
-        mockRepoAccesser
-      );
+      expect(BaseService).toHaveBeenCalledWith(CalendarAppointment);
     });
   });
 });

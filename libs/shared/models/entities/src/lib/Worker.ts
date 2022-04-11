@@ -8,6 +8,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
+  PrimaryColumn,
   UpdateDateColumn
 } from 'typeorm';
 
@@ -21,13 +22,18 @@ import Person from './Person';
  */
 @Entity()
 export default class Worker {
+  /**
+   * Primary column of the `Person` relationship
+   */
+  @PrimaryColumn()
+  personId!: number;
+
   @OneToOne(() => Person, {
-    primary: true,
     cascade: true,
     eager: true,
     nullable: false
   })
-  @JoinColumn({ name: 'worker_person_fk' })
+  @JoinColumn()
   person!: Person;
 
   /**

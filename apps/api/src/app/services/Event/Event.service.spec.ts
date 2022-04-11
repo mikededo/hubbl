@@ -8,12 +8,10 @@ jest.mock('../Base');
 describe('EventService', () => {
   describe('#constructor', () => {
     it('should call super', () => {
-      const mockRepoAccesser = jest.fn();
-
-      new EventService(mockRepoAccesser as any);
+      new EventService();
 
       expect(BaseService).toHaveBeenCalled();
-      expect(BaseService).toHaveBeenCalledWith(Event, mockRepoAccesser);
+      expect(BaseService).toHaveBeenCalledWith(Event);
     });
   });
 });
