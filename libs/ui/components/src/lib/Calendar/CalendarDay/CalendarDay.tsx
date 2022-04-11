@@ -22,6 +22,13 @@ export type CalendarDayProps = {
     | 'Sunday';
 
   /**
+   * Whether the day spots are disabled
+   *
+   * @default fale
+   */
+  disabled?: boolean;
+
+  /**
    * Events of the given date
    *
    * @default []
@@ -56,6 +63,7 @@ export type CalendarDayProps = {
 
 const CalendarDay = ({
   day,
+  disabled,
   events = [],
   finalHour,
   initialHour,
@@ -75,6 +83,9 @@ const CalendarDay = ({
       onSpotClick?.(hour);
     };
 
+  const disabledSpot = (hour: number) =>
+    new Date().getHours() + 1 > hour && today;
+
   return (
     <CalendarDayColumn title={day}>
       <CalendarSpotHeader>
@@ -87,7 +98,11 @@ const CalendarDay = ({
       </CalendarSpotHeader>
 
       {hourSpots.map((hour) => (
-        <CalendarSpot key={hour} onClick={handleOnSpotClick(hour)} />
+        <CalendarSpot
+          key={hour}
+          disabled={disabled || disabledSpot(hour)}
+          onClick={handleOnSpotClick(hour)}
+        />
       ))}
 
       {events.map((event, i) => (

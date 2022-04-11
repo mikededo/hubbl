@@ -47,6 +47,14 @@ export type CalendarProps = {
   currentWeek?: boolean;
 
   /**
+   * Whether the week that is being displayed is a past
+   * week
+   *
+   * @default false
+   */
+  pastWeek?: boolean;
+
+  /**
    * List of events to display in the calenda
    */
   events: EventDTO[];
@@ -72,6 +80,7 @@ export type CalendarProps = {
 
 const Calendar = ({
   currentWeek,
+  pastWeek,
   events,
   initialHour,
   finalHour,
@@ -101,6 +110,8 @@ const Calendar = ({
       onSpotClick?.({ hour, day });
     };
 
+  const today = new Date();
+
   return (
     <CalendarWeek title="calendar">
       <CalendarDay
@@ -108,7 +119,8 @@ const Calendar = ({
         events={filteredEvents[1]}
         finalHour={finalHour}
         initialHour={initialHour}
-        today={new Date().getDay() === 1 && currentWeek}
+        today={today.getDay() === 1 && currentWeek}
+        disabled={pastWeek || (today.getDay() > 1 && currentWeek)}
         onSpotClick={handleOnSpotClick(1)}
       />
 
@@ -117,7 +129,8 @@ const Calendar = ({
         events={filteredEvents[2]}
         finalHour={finalHour}
         initialHour={initialHour}
-        today={new Date().getDay() === 2 && currentWeek}
+        today={today.getDay() === 2 && currentWeek}
+        disabled={pastWeek || (today.getDay() > 2 && currentWeek)}
         onSpotClick={handleOnSpotClick(2)}
       />
 
@@ -126,7 +139,8 @@ const Calendar = ({
         events={filteredEvents[3]}
         finalHour={finalHour}
         initialHour={initialHour}
-        today={new Date().getDay() === 3 && currentWeek}
+        today={today.getDay() === 3 && currentWeek}
+        disabled={pastWeek || (today.getDay() > 3 && currentWeek)}
         onSpotClick={handleOnSpotClick(3)}
       />
 
@@ -135,7 +149,8 @@ const Calendar = ({
         events={filteredEvents[4]}
         finalHour={finalHour}
         initialHour={initialHour}
-        today={new Date().getDay() === 4 && currentWeek}
+        today={today.getDay() === 4 && currentWeek}
+        disabled={pastWeek || (today.getDay() > 4 && currentWeek)}
         onSpotClick={handleOnSpotClick(4)}
       />
 
@@ -144,7 +159,8 @@ const Calendar = ({
         events={filteredEvents[5]}
         finalHour={finalHour}
         initialHour={initialHour}
-        today={new Date().getDay() === 5 && currentWeek}
+        today={today.getDay() === 5 && currentWeek}
+        disabled={pastWeek || (today.getDay() > 5 && currentWeek)}
         onSpotClick={handleOnSpotClick(5)}
       />
 
@@ -153,7 +169,8 @@ const Calendar = ({
         events={filteredEvents[6]}
         finalHour={finalHour}
         initialHour={initialHour}
-        today={new Date().getDay() === 6 && currentWeek}
+        today={today.getDay() === 6 && currentWeek}
+        disabled={pastWeek || (today.getDay() === 0 && currentWeek)}
         onSpotClick={handleOnSpotClick(6)}
       />
 
@@ -162,7 +179,8 @@ const Calendar = ({
         events={filteredEvents[0]}
         finalHour={finalHour}
         initialHour={initialHour}
-        today={new Date().getDay() === 0 && currentWeek}
+        today={today.getDay() === 0 && currentWeek}
+        disabled={pastWeek}
         onSpotClick={handleOnSpotClick(0)}
       />
     </CalendarWeek>

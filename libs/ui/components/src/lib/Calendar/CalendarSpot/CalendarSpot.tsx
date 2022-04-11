@@ -15,6 +15,13 @@ const CalendarSpotArea = styled(CardActionArea)({
 
 type CalendarSpotProps = {
   /**
+   * Whether the card action is disabled
+   * 
+   * @default false
+   */
+  disabled?: boolean;
+
+  /**
    * Callback to run when the card area of the spot is clicked
    *
    * @default undefined
@@ -22,9 +29,9 @@ type CalendarSpotProps = {
   onClick?: EmptyHandler;
 };
 
-const CalendarSpot = ({ onClick }: CalendarSpotProps) => (
+const CalendarSpot = ({ disabled = false, onClick }: CalendarSpotProps) => (
   <Li>
-    <CalendarSpotArea data-testid="calendar-spot" onClick={onClick} />
+    <CalendarSpotArea data-testid="calendar-spot" disabled={disabled} onClick={onClick} />
   </Li>
 );
 export default CalendarSpot;
