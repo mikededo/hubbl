@@ -3,13 +3,20 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 import { EventDTO, EventTypeDTO } from '@hubbl/shared/models/dto';
-import { AppPalette, Hour } from '@hubbl/shared/types';
+import { AppPalette, Hour, SingleHandler } from '@hubbl/shared/types';
 import { notForwardAny } from '@hubbl/utils';
 import { lighten, Stack, styled, Typography, useTheme } from '@mui/material';
 
 const EventContent = styled(Stack)({ height: '100%' });
 
 export type CalendarEventProps = {
+  /**
+   * Whether the event is disabled (past) or not.
+   *
+   * @default false
+   */
+  disabled?: boolean;
+
   /**
    * Event that will be rendered
    */
@@ -24,6 +31,14 @@ export type CalendarEventProps = {
    * Initial hour of the column in which the event is located
    */
   initialDayHour: Hour;
+
+  /**
+   * Callback to run when an event of the calendar has been clicked. It
+   * only works if the event is not disabled.
+   *
+   * @default undefined
+   */
+  onClick?: SingleHandler<EventDTO>;
 };
 
 type MotionLiProps = {
@@ -33,6 +48,13 @@ type MotionLiProps = {
   color: AppPalette;
 
   /**
+   * Whether the event is disabled (past) or not.
+   *
+   * @default false
+   */
+  disabled?: boolean;
+
+  /**
    * Height of the element, which will be passed to the theme
    * spacing
    */
@@ -40,8 +62,8 @@ type MotionLiProps = {
 };
 
 const MotionLi = styled(motion.li, {
-  shouldForwardProp: notForwardAny(['color', 'height'])
-})<MotionLiProps>(({ theme, color, height }) => ({
+  shouldForwardProp: notForwardAny(['color', 'disabled', 'height'])
+})<MotionLiProps>(({ theme, color, disabled, height }) => ({
   position: 'absolute',
   left: theme.spacing(0.5),
   right: theme.spacing(0.5),
@@ -51,14 +73,16 @@ const MotionLi = styled(motion.li, {
   )}, ${color})`,
   borderRadius: theme.spacing(1),
   padding: theme.spacing(0.5, 1, 0.25),
-  cursor: 'pointer',
+  cursor: disabled ? 'default' : 'pointer',
   height: theme.spacing(height)
 }));
 
 const CalendarEvent = ({
+  disabled,
   event,
   initialDayHour,
-  index
+  index,
+  onClick
 }: CalendarEventProps): JSX.Element => {
   const theme = useTheme();
 
@@ -81,6 +105,12 @@ const CalendarEvent = ({
     return (endValue - startValue) * 8 - 1;
   }, [event]);
 
+  const handleOnClickEvent = () => {
+    if (!disabled) {
+      onClick?.(event);
+    }
+  };
+
   return (
     <MotionLi
       color={(event.eventType as EventTypeDTO).labelColor}
@@ -94,6 +124,8 @@ const CalendarEvent = ({
         damping: 50,
         stiffness: 700
       }}
+      disabled={disabled}
+      onClick={handleOnClickEvent}
     >
       <EventContent justifyContent="space-between">
         <Typography color="white" variant="calendarHeader" noWrap>

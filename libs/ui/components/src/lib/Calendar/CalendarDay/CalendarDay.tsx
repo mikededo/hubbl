@@ -53,6 +53,14 @@ export type CalendarDayProps = {
   today?: boolean;
 
   /**
+   * Callback to run when an event of the calendar has been clicked. It
+   * only works with non disabled days.
+   *
+   * @default undefined
+   */
+  onEventClick?: SingleHandler<EventDTO>;
+
+  /**
    * Callback to run when the card area of the spot is clicked. It passes
    * the hour of the spot clicked.
    *
@@ -68,6 +76,7 @@ const CalendarDay = ({
   finalHour,
   initialHour,
   today = false,
+  onEventClick,
   onSpotClick
 }: CalendarDayProps): JSX.Element => {
   const hourSpots = useMemo<number[]>(
@@ -108,9 +117,11 @@ const CalendarDay = ({
       {events.map((event, i) => (
         <CalendarEvent
           key={event.id}
+          disabled={disabled}
           initialDayHour={initialHour}
           event={event}
           index={i}
+          onClick={onEventClick}
         />
       ))}
     </CalendarDayColumn>

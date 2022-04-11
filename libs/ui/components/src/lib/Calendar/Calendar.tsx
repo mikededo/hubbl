@@ -70,6 +70,14 @@ export type CalendarProps = {
   finalHour: Hour;
 
   /**
+   * Callback to run when an event of the calendar has been clicked. It
+   * only works with non disabled days.
+   * 
+   * @default undefined
+   */
+  onEventClick?: SingleHandler<EventDTO>;
+
+  /**
    * Callback run when a spot of the calendar it is clicked. The day and
    * hour of the calendar is passed as props
    *
@@ -84,6 +92,7 @@ const Calendar = ({
   events,
   initialHour,
   finalHour,
+  onEventClick,
   onSpotClick
 }: CalendarProps): JSX.Element => {
   const filteredEvents = useMemo<FilteredEvents>(
@@ -121,6 +130,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 1 && currentWeek}
         disabled={pastWeek || (today.getDay() > 1 && currentWeek)}
+        onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(1)}
       />
 
@@ -131,6 +141,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 2 && currentWeek}
         disabled={pastWeek || (today.getDay() > 2 && currentWeek)}
+        onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(2)}
       />
 
@@ -141,6 +152,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 3 && currentWeek}
         disabled={pastWeek || (today.getDay() > 3 && currentWeek)}
+        onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(3)}
       />
 
@@ -151,6 +163,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 4 && currentWeek}
         disabled={pastWeek || (today.getDay() > 4 && currentWeek)}
+        onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(4)}
       />
 
@@ -161,6 +174,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 5 && currentWeek}
         disabled={pastWeek || (today.getDay() > 5 && currentWeek)}
+        onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(5)}
       />
 
@@ -171,6 +185,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 6 && currentWeek}
         disabled={pastWeek || (today.getDay() === 0 && currentWeek)}
+        onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(6)}
       />
 
@@ -181,6 +196,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 0 && currentWeek}
         disabled={pastWeek}
+        onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(0)}
       />
     </CalendarWeek>
