@@ -59,6 +59,7 @@ class IEventCreateController extends BaseController {
       result.gym = template.gym;
       result.trainer = json.trainer;
       result.calendar = json.calendar;
+      result.template = json.template;
 
       return result;
     } catch (e) {

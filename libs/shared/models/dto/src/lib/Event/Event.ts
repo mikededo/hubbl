@@ -13,6 +13,7 @@ import {
   CalendarDate,
   Event,
   EventAppointment,
+  EventTemplate,
   EventType,
   Gym,
   Trainer
@@ -32,6 +33,7 @@ import CalendarDateDTO from '../CalendarDate';
 import EventTypeDTO from '../EventType';
 import TrainerDTO from '../Trainer';
 import { DTOGroups } from '../util';
+import EventTemplateDTO from '../EventTemplate';
 
 export default class EventDTO implements DTO<Event> {
   @IsNumber(
@@ -122,7 +124,7 @@ export default class EventDTO implements DTO<Event> {
   gym!: number | Gym;
 
   @IsOptional()
-  template!: number;
+  template!: EventTemplateDTO | number;
 
   @IsNumber(
     {},
@@ -215,6 +217,11 @@ export default class EventDTO implements DTO<Event> {
       result.eventType = EventTypeDTO.fromClass(event.eventType);
     }
 
+    // When from class, parse the event template
+    if (event.template instanceof EventTemplate) {
+      result.template = EventTemplateDTO.fromClass(event.template);
+    }
+
     result.appointments = event.appointments;
     // When events are fetched, they return the amount of appointments
     result.appointmentCount = event.appointmentCount;
@@ -241,7 +248,7 @@ export default class EventDTO implements DTO<Event> {
     result.calendar = this.calendar;
     result.gym = this.gym as number;
     result.trainer = this.trainer as number;
-    result.template = this.template;
+    result.template = this.template as number;
     result.eventType = this.eventType as number;
     result.date = this.date;
 

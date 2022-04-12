@@ -39,6 +39,7 @@ const createEvent = () => {
   event.startTime = '09:00:00';
   event.endTime = '10:00:00';
   event.appointmentCount = 5;
+  event.template = 1;
   event.date = { year: 2022, month: 6, day: 29 } as any;
 };
 
@@ -194,7 +195,7 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledWith({
         relations: ['date', 'calendar']
       });
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(3);
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
       expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
         1,
         'e.trainer',
@@ -209,6 +210,11 @@ describe('Calendar controller', () => {
         3,
         'e.eventType',
         'tt'
+      );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        4,
+        'e.template',
+        'tpl'
       );
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
@@ -300,7 +306,7 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(3);
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
       failSpyAsserts(failSpy);
