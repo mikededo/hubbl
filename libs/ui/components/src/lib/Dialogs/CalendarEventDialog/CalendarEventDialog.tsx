@@ -65,6 +65,8 @@ const CalendarEventDialog = ({
     shouldFocusError: false
   });
 
+  console.log(methods.formState.errors)
+
   const handleOnSubmit = (data: CalendarEventFormFields) => {
     onSubmit?.(data);
   };
