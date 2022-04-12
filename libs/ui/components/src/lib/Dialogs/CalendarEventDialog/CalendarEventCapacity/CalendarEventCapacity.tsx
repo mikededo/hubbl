@@ -9,7 +9,8 @@ import { CalendarEventFormFields } from '../../types';
 const CalendarEventCapacity = (): JSX.Element => {
   const {
     register,
-    formState: { errors }
+    formState: { errors },
+    watch
   } = useFormContext<CalendarEventFormFields>();
 
   return (
@@ -27,6 +28,7 @@ const CalendarEventCapacity = (): JSX.Element => {
           <Person />
         </InputAdornment>
       }
+      disabled={!!watch('template')}
       error={!!errors.capacity}
     />
   );

@@ -14,7 +14,7 @@ export type CalendarEventTypeProps = {
 const CalendarEventType = ({
   eventTypes
 }: CalendarEventTypeProps): JSX.Element => {
-  const { control, getValues, setValue } =
+  const { control, getValues, setValue, watch } =
     useFormContext<CalendarEventFormFields>();
 
   const [options, setOptions] = useState<EventTypeDTO[]>([]);
@@ -45,7 +45,7 @@ const CalendarEventType = ({
       placeholder="Select an event type"
       inputProps={{ title: 'calendar-event-type' }}
       options={mapEventTypes()}
-      disabled={!eventTypes?.length}
+      disabled={!eventTypes?.length || !!watch('template')}
       required
     />
   );

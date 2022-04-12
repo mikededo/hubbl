@@ -6,7 +6,8 @@ import { CalendarEventFormFields } from '../../types';
 const CalendarEventName = (): JSX.Element => {
   const {
     register,
-    formState: { errors }
+    formState: { errors },
+    watch
   } = useFormContext<CalendarEventFormFields>();
 
   return (
@@ -17,6 +18,7 @@ const CalendarEventName = (): JSX.Element => {
       type="text"
       registerResult={register('name', { required: true })}
       error={!!errors.name}
+      disabled={!!watch('template')}
       fullWidth
     />
   );

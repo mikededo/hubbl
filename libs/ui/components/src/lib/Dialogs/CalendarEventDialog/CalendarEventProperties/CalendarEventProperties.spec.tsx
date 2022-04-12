@@ -5,15 +5,16 @@ import { render, screen } from '@testing-library/react';
 import { CalendarEventFormFields } from '../../types';
 import CalendarEventProperties from './CalendarEventProperties';
 
-const Component = () => (
+const Component = ({ watch }: { watch: any }) => (
   <FormProvider {...useForm<CalendarEventFormFields>()}>
-    <CalendarEventProperties />
+    <CalendarEventProperties watch={watch} />
   </FormProvider>
 );
 
 describe('<CalendarEventProperties />', () => {
   it('should render properly', () => {
-    const { container } = render(<Component />);
+    const watch = () => null;
+    const { container } = render(<Component watch={watch} />);
 
     expect(container).toBeInTheDocument();
     expect(
@@ -22,5 +23,18 @@ describe('<CalendarEventProperties />', () => {
     expect(
       screen.getByTitle('calendar-event-covid-passport')
     ).toBeInTheDocument();
+  });
+
+  it('should render disabled', () => {
+    const watch = () => 1;
+    const { container } = render(<Component watch={watch} />);
+
+    expect(container).toBeInTheDocument();
+    expect(
+      screen.getByTitle('calendar-event-mask-required').firstChild
+    ).toBeDisabled();
+    expect(
+      screen.getByTitle('calendar-event-covid-passport').firstChild
+    ).toBeDisabled();
   });
 });

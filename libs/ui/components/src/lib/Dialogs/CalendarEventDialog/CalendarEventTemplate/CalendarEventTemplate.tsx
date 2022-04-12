@@ -48,6 +48,7 @@ const CalendarEventTemplate = ({
         setValue('maskRequired', template.maskRequired);
         setValue('covidPassport', template.covidPassport);
         setValue('type', (template.type as EventTypeDTO).id);
+        setValue('difficulty', template.difficulty);
       }
     }
   }, [selected, templates, setValue]);
