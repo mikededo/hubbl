@@ -191,6 +191,7 @@ describe('Event controller', () => {
 
   describe('EventCreateController', () => {
     const mockTemplate = {
+      id: 1,
       capacity: 10,
       covidPassport: true,
       maskRequired: true,
@@ -217,6 +218,7 @@ describe('Event controller', () => {
       result.trainer = mockReq.body.trainer;
       result.gym = (template ? mockTemplate : mockReq.body).gym;
       result.eventType = template ? mockTemplate.type : mockReq.body.eventType;
+      result.template = template ? mockTemplate.id : undefined;
       result.calendar = mockReq.body.calendar;
 
       return result;
