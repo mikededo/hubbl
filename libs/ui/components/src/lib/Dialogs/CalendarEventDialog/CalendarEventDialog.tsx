@@ -71,7 +71,6 @@ const CalendarEventDialog = ({
 
   useEffect(() => {
     if (props.open) {
-      console.log({defaultValues})
       methods.reset({
         ...defaultValues,
         type: defaultValues?.type ?? '',
