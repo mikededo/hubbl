@@ -63,15 +63,21 @@ const eventsResponse = (week: number): any[] => [
   {
     id: 1,
     name: 'EventOne',
+    description: 'EventOne description',
     capacity: 5,
     startTime: '10:00:00',
     endTime: '12:00:00',
-    eventType: { id: 1, name: 'Event type', labelColor: AppPalette.RED },
+    eventType: { id: 1, name: 'EventTypeOne', labelColor: AppPalette.RED },
     date: {
       year: initialWeekDate(week).getFullYear(),
       month: initialWeekDate(week).getMonth(),
       day: initialWeekDate(week).getDate()
     },
+    maskRequired: true,
+    covidPassport: true,
+    difficulty: 3,
+    template: null,
+    trainer: { id: 1, name: 'Trainer' },
     appointmentCount: 1
   },
   {
@@ -81,7 +87,7 @@ const eventsResponse = (week: number): any[] => [
     capacity: 5,
     startTime: '12:00:00',
     endTime: '14:00:00',
-    eventType: { id: 1, name: 'Event type', labelColor: AppPalette.EMERALD },
+    eventType: { id: 2, name: 'EventTypeTwo', labelColor: AppPalette.EMERALD },
     date: {
       year: initialWeekDate(week).getFullYear(),
       month: initialWeekDate(week).getMonth(),
@@ -125,8 +131,8 @@ const dialogEventTypeResponse = {
 };
 const dialogEventTemplatesResponse = {
   data: [
-    { id: 1, name: 'EventTemplateOne' },
-    { id: 2, name: 'EventTemplateTwo' }
+    { id: 1, name: 'EventTemplateOne', type: { id: 1, name: 'EventTypeOne' } },
+    { id: 2, name: 'EventTemplateTwo', type: { id: 1, name: 'EventTypeOne' } }
   ]
 };
 const dialogGymZonesResponse = {
@@ -182,6 +188,7 @@ const renderPage = () =>
 describe('Gym zone page', () => {
   const fetcher = jest.fn();
   const poster = jest.fn();
+  const putter = jest.fn();
 
   const swrSpy = jest.spyOn(swr, 'default');
   const mutateSpy = jest.fn();
@@ -198,7 +205,7 @@ describe('Gym zone page', () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       user: { gym: { id: 1 } },
       token: { parsed: {} },
-      API: { fetcher, poster }
+      API: { fetcher, poster, putter }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({
       onError: onErrorSpy,
@@ -389,7 +396,7 @@ describe('Gym zone page', () => {
     expect(mutateSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should call onError if virtual gym creation fails', async () => {
+  it('should call onError if event creation fails', async () => {
     jest.useFakeTimers().setSystemTime(new Date('2022/04/04'));
     poster.mockRejectedValue({
       // Mock axios error response
@@ -406,6 +413,82 @@ describe('Gym zone page', () => {
 
     // Api calls
     expect(poster).toHaveBeenCalledTimes(1);
+    expect(mutateSpy).toHaveBeenCalledTimes(0);
+    expect(onErrorSpy).toHaveBeenCalledTimes(1);
+    expect(onErrorSpy).toHaveBeenCalledWith('Error thrown');
+  });
+
+  it('should update an event', async () => {
+    jest.useFakeTimers().setSystemTime(new Date('2022/04/04'));
+    putter.mockResolvedValue({});
+
+    await act(async () => {
+      renderPage();
+    });
+    await act(async () => {
+      userEvent.click(screen.getByText('EventOne').parentElement.parentElement);
+    });
+
+    expect(screen.getByText('Edit an event')).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.input(screen.getByPlaceholderText('New name'), {
+        target: { name: 'name', value: 'Updated name' }
+      });
+    });
+    await act(async () => {
+      userEvent.click(screen.getByText('Save'));
+    });
+
+    // Api calls
+    expect(putter).toHaveBeenCalledTimes(1);
+    expect(putter).toHaveBeenCalledWith('events', {
+      calendar: 1,
+      capacity: 5,
+      covidPassport: true,
+      date: { day: 11, month: 3, year: 2022 },
+      description: 'EventOne description',
+      difficulty: 3,
+      endTime: '12:00:00',
+      eventType: 1,
+      gym: 1,
+      id: 1,
+      maskRequired: true,
+      startTime: '10:00:00',
+      template: undefined,
+      trainer: 1,
+      name: 'Updated name'
+    });
+    expect(mutateSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onError if event updation fails', async () => {
+    jest.useFakeTimers().setSystemTime(new Date('2022/04/04'));
+    putter.mockRejectedValue({
+      // Mock axios error response
+      response: { data: { message: 'Error thrown' } }
+    });
+
+    await act(async () => {
+      renderPage();
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('EventOne').parentElement.parentElement);
+    });
+
+    expect(screen.getByText('Edit an event')).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.input(screen.getByPlaceholderText('New name'), {
+        target: { name: 'name', value: 'Updated name' }
+      });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Save'));
+    });
+
+    // Api calls
+    expect(putter).toHaveBeenCalledTimes(1);
     expect(mutateSpy).toHaveBeenCalledTimes(0);
     expect(onErrorSpy).toHaveBeenCalledTimes(1);
     expect(onErrorSpy).toHaveBeenCalledWith('Error thrown');

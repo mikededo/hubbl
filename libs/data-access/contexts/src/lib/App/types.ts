@@ -51,6 +51,11 @@ export type FetcherType = Fetcher<never, string>;
  */
 export type PosterType = <T>(url: string, data: unknown) => Promise<T>;
 
+/**
+ * Function type that defines the putter of the application
+ */
+export type PutterType = <T>(url: string, data: unknown) => Promise<T>;
+
 export type UserApiType = {
   update: (data: UserUpdatableFields) => void;
 };
@@ -72,6 +77,7 @@ export type AppContextValue = {
     login: LogInType;
     fetcher: FetcherType;
     poster: PosterType;
+    putter: PutterType;
     user: UserApiType;
     gym: GymApiType;
   };

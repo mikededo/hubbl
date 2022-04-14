@@ -109,7 +109,7 @@ export default class Event {
     eager: true,
     onDelete: 'SET NULL'
   })
-  template!: number;
+  template!: EventTemplate | number;
 
   /**
    * `EventType` to which the `Event` belongs

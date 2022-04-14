@@ -125,6 +125,7 @@ describe('<CalendarEventTemplate />', () => {
                 maskRequired: true,
                 covidPassport: true,
                 capacity: 25,
+                difficulty: 4,
                 type: { id: 1 }
               }
             ] as any
@@ -134,7 +135,7 @@ describe('<CalendarEventTemplate />', () => {
       );
 
       expect(screen.getByText('EventTemplateTwo')).toBeInTheDocument();
-      expect(setValueSpy).toHaveBeenCalledTimes(6);
+      expect(setValueSpy).toHaveBeenCalledTimes(7);
 
       expect(setValueSpy).toHaveBeenNthCalledWith(
         1,
@@ -150,6 +151,7 @@ describe('<CalendarEventTemplate />', () => {
       expect(setValueSpy).toHaveBeenNthCalledWith(4, 'maskRequired', true);
       expect(setValueSpy).toHaveBeenNthCalledWith(5, 'covidPassport', true);
       expect(setValueSpy).toHaveBeenNthCalledWith(6, 'type', 1);
+      expect(setValueSpy).toHaveBeenNthCalledWith(7, 'difficulty', 4);
     });
   });
 

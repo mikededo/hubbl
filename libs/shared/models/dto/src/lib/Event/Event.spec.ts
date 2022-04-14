@@ -3,6 +3,7 @@ import * as ClassValidator from 'class-validator';
 import {
   CalendarDate,
   Event,
+  EventTemplate,
   EventType,
   Trainer
 } from '@hubbl/shared/models/entities';
@@ -13,6 +14,7 @@ import EventTypeDTO from '../EventType';
 import TrainerDTO from '../Trainer';
 import * as Utils from '../util';
 import EventDTO from './Event';
+import EventTemplateDTO from '../EventTemplate';
 
 jest.mock('@hubbl/shared/models/entities');
 jest.mock('@hubbl/shared/models/helpers');
@@ -203,6 +205,21 @@ describe('Event', () => {
 
       expect(eventTypeSpy).toHaveBeenCalledTimes(1);
       expect(eventTypeSpy).toHaveBeenCalledWith(type);
+    });
+
+    it('should call EventTemplateDTO#fromClass', () => {
+      const eventTypeSpy = jest
+        .spyOn(EventTemplateDTO, 'fromClass')
+        .mockImplementation();
+      const event = createEvent();
+
+      const template = new EventTemplate();
+      event.template = template;
+
+      EventDTO.fromClass(event);
+
+      expect(eventTypeSpy).toHaveBeenCalledTimes(1);
+      expect(eventTypeSpy).toHaveBeenCalledWith(template);
     });
   });
 

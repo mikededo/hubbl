@@ -10,8 +10,10 @@ import {
 } from '@hubbl/data-access/contexts';
 import {
   EventDTO,
+  EventTemplateDTO,
   EventTypeDTO,
   GymZoneDTO,
+  TrainerDTO,
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import { EmptyHandler, Hour, SingleHandler } from '@hubbl/shared/types';
@@ -44,6 +46,13 @@ type HourRange = {
 
 type EventDialogState = {
   /**
+   * Whether the modal is opened or not
+   */
+  status: 'create' | 'edit' | undefined;
+
+  // Fields required for every instance
+
+  /**
    * Date clicked
    */
   date: Date;
@@ -58,14 +67,61 @@ type EventDialogState = {
    */
   endTime: string;
 
+  // Fields required when editing
+
   /**
-   * Whether the modal is opened or not
+   * Id of the clicked event
    */
-  open: boolean;
+  id?: number;
+
+  /**
+   * Name of the clicked event
+   */
+  name?: string;
+
+  /**
+   * Description of the clicked event
+   */
+  description?: string;
+
+  /**
+   * Whether the event requires mask
+   */
+  maskRequired?: boolean;
+
+  /**
+   * Difficulty of the event
+   */
+  capacity?: number;
+
+  /**
+   * Difficulty of the event
+   */
+  difficulty?: number;
+
+  /**
+   * Whether the event requires to have the covid passport
+   */
+  covidPassport?: boolean;
+
+  /**
+   * Event type identifier of the event
+   */
+  type?: number;
+
+  /**
+   * Event template identifier of the event
+   */
+  template?: number;
+
+  /**
+   * Trainer identifier of the event
+   */
+  trainer?: number;
 };
 
 const InitialEventDialogState: EventDialogState = {
-  open: false,
+  status: null,
   date: null,
   startTime: null,
   endTime: null
@@ -95,14 +151,36 @@ const getStartDateParam = (iteration: number): string => {
   }`.padStart(2, '0')}-${`${initial.getDate()}`.padStart(2, '0')}`;
 };
 
+const parseFormDataFields = (
+  formData: CalendarEventFormFields
+): Record<string, unknown> => ({
+  name: formData.name,
+  description: formData.description,
+  capacity: formData.capacity,
+  maskRequired: formData.maskRequired,
+  covidPassport: formData.covidPassport,
+  startTime: formData.startTime,
+  endTime: formData.endTime,
+  trainer: formData.trainer,
+  difficulty: formData.difficulty,
+  // Fields that need to be parsed
+  template: formData.template ? formData.template : undefined,
+  date: {
+    year: formData.date.getFullYear(),
+    month: formData.date.getMonth() + 1,
+    day: formData.date.getDate()
+  },
+  eventType: formData.type
+});
+
 const GymZone = () => {
   const router = useRouter();
   const { onPopLoading, onPushLoading } = useLoadingContext();
-  const { onError } = useToastContext();
+  const { onError, onSuccess } = useToastContext();
   const {
     user,
     token,
-    API: { fetcher, poster }
+    API: { fetcher, poster, putter }
   } = useAppContext();
 
   const virtualGymHref = `/virtual-gyms/${router.query.virtualGymId}`;
@@ -163,13 +241,25 @@ const GymZone = () => {
     }
 
     return dialogData.eventTypes.reduce(
-      (prev, event) => ({
-        ...prev,
-        [event.id]: event
-      }),
+      (prev, event) => ({ ...prev, [event.id]: event }),
       {}
     );
   }, [dialogData.eventTypes]);
+
+  /**
+   * Maps the event templates to their id in order to make searches
+   * faster
+   */
+  const idToEventTemplate = useMemo<Record<number, EventTemplateDTO>>(() => {
+    if (!dialogData.eventTemplates) {
+      return {};
+    }
+
+    return dialogData.eventTemplates.reduce(
+      (prev, template) => ({ ...prev, [template.id]: template }),
+      {}
+    );
+  }, [dialogData.eventTemplates]);
 
   const calendarDateRange = useCallback(() => {
     const monday = weekInitialDay(weekPage);
@@ -196,12 +286,34 @@ const GymZone = () => {
       setWeekPage((prev) => prev + by);
     };
 
+  const handleOnEventClick: SingleHandler<EventDTO> = (event) => {
+    const { date } = event;
+
+    setEventDialog({
+      status: 'edit',
+      date: new Date(`${date.year}/${date.month}/${date.day}`),
+      startTime: event.startTime,
+      endTime: event.endTime,
+      id: event.id,
+      capacity: event.capacity,
+      covidPassport: event.covidPassport,
+      description: event.description,
+      difficulty: event.difficulty,
+      maskRequired: event.maskRequired,
+      name: event.name,
+      template: (event?.template as EventTemplateDTO)?.id,
+      trainer: (event.trainer as TrainerDTO<number>).id,
+      type: (event.eventType as EventTypeDTO).id
+    });
+  };
+
   const handleOnSpotClick: SingleHandler<EventSpot> = ({ hour, day }) => {
     const clickedDate = weekInitialDay(weekPage);
+
     clickedDate.setDate(clickedDate.getDate() + day - clickedDate.getDay());
 
     setEventDialog({
-      open: true,
+      status: 'create',
       date: clickedDate,
       startTime: `${`${hour}`.padStart(2, '0')}:00`,
       endTime: `${`${hour + 1}`.padStart(2, '0')}:00`
@@ -217,37 +329,68 @@ const GymZone = () => {
   ) => {
     setEventDialog(InitialEventDialogState);
     onPushLoading();
-    console.log({ formData });
+
     try {
       const created = await poster<EventDTO>('events', {
-        // Fields that do not need parse
-        name: formData.name,
-        description: formData.description,
-        capacity: formData.capacity,
-        maskRequired: formData.maskRequired,
-        covidPassport: formData.covidPassport,
-        startTime: formData.startTime,
-        endTime: formData.endTime,
-        trainer: formData.trainer,
-        difficulty: formData.difficulty,
+        ...parseFormDataFields(formData),
         calendar: gymZone.data.calendar,
-        gym: user.gym.id,
-        // Fields that need to be parsed
-        template: formData.template ? formData.template : undefined,
-        date: {
-          year: formData.date.getFullYear(),
-          month: formData.date.getMonth() + 1,
-          day: formData.date.getDate()
-        },
-        eventType: formData.type
+        gym: user.gym.id
       });
 
       // Set appointment count of created event
       created.appointmentCount = 0;
       // Set type from the list of types
       created.eventType = idToEventType[created.eventType as number];
+      // Set template from the list of templates - undefined if none
+      created.template = idToEventTemplate[created.template as number];
 
       await events.mutate([...events.data, created], false);
+
+      onSuccess('Event created successfully!');
+    } catch (e) {
+      // Get message from axios error
+      onError(`${e.response.data.message}`);
+    }
+
+    onPopLoading();
+  };
+
+  const handleOnUpdateEvent: SingleHandler<CalendarEventFormFields> = async (
+    formData
+  ) => {
+    const { id } = eventDialog;
+    setEventDialog(InitialEventDialogState);
+    onPushLoading();
+
+    try {
+      const updated = parseFormDataFields(formData);
+
+      await putter<EventDTO>('events', {
+        ...updated,
+        id,
+        calendar: gymZone.data.calendar,
+        gym: user.gym.id
+      });
+
+      // Find element to update
+      const outdated = {
+        ...events.data.find(({ id: eventId }) => id === eventId),
+        ...updated
+      };
+
+      // Set type from the list of types
+      outdated.eventType = idToEventType[outdated.eventType as number];
+      // Set template from the list of templates - undefined if none
+      outdated.template = idToEventTemplate[outdated.template as number];
+
+      await events.mutate(
+        events.data.map((event) =>
+          event.id === outdated.id ? outdated : event
+        ) as EventDTO[],
+        false
+      );
+
+      onSuccess('Event updated successfully!');
     } catch (e) {
       // Get message from axios error
       onError(`${e.response.data.message}`);
@@ -313,6 +456,7 @@ const GymZone = () => {
               events={events.data ?? []}
               initialHour={hourRange.initial}
               finalHour={hourRange.final}
+              onEventClick={handleOnEventClick}
               onSpotClick={handleOnSpotClick}
             />
           </Stack>
@@ -320,17 +464,32 @@ const GymZone = () => {
       </Stack>
 
       <CalendarEventDialog
-        title="Create an event"
+        title={`${
+          eventDialog.status === 'create' ? 'Create' : 'Edit'
+        } an event`}
         dialogData={dialogData}
         defaultValues={{
           date: eventDialog?.date,
           startTime: eventDialog?.startTime,
           endTime: eventDialog?.endTime,
-          gymZone: router.query.gymZoneId as string
+          gymZone: router.query.gymZoneId as string,
+          capacity: eventDialog?.capacity,
+          covidPassport: eventDialog?.covidPassport,
+          description: eventDialog?.description,
+          difficulty: eventDialog?.difficulty,
+          maskRequired: eventDialog?.maskRequired,
+          name: eventDialog?.name,
+          template: eventDialog?.template,
+          trainer: eventDialog?.trainer,
+          type: eventDialog?.type
         }}
-        open={eventDialog.open}
+        open={!!eventDialog.status}
         onClose={handleOnCloseEventDialog}
-        onSubmit={handleOnSubmitEvent}
+        onSubmit={
+          eventDialog.status === 'create'
+            ? handleOnSubmitEvent
+            : handleOnUpdateEvent
+        }
       />
     </>
   );

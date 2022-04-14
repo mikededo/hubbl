@@ -1,6 +1,6 @@
 import { AppPalette } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import CalendarEvent, { CalendarEventProps } from './CalendarEvent';
 
@@ -64,5 +64,41 @@ describe('<CalendarEvent />', () => {
     expect(
       screen.queryByText(`${event.appointmentCount}/${event.capacity}`)
     ).not.toBeInTheDocument();
+  });
+
+  describe('onClick', () => {
+    it('should call onClick if event clicked', () => {
+      const onClickSpy = jest.fn();
+
+      const { container } = render(
+        <Component
+          event={event as any}
+          index={0}
+          initialDayHour={8}
+          onClick={onClickSpy}
+        />
+      );
+      fireEvent.click(container.firstChild as ChildNode);
+
+      expect(onClickSpy).toHaveBeenCalledTimes(1);
+      expect(onClickSpy).toHaveBeenCalledWith(event);
+    });
+
+    it('should not call onClick if event is disabled', () => {
+      const onClickSpy = jest.fn();
+
+      const { container } = render(
+        <Component
+          event={event as any}
+          index={0}
+          initialDayHour={8}
+          onClick={onClickSpy}
+          disabled
+        />
+      );
+      fireEvent.click(container.firstChild as ChildNode);
+
+      expect(onClickSpy).toHaveBeenCalledTimes(0);
+    });
   });
 });

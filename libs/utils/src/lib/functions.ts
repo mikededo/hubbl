@@ -82,7 +82,9 @@ export const isTimeBefore = (ta: string, tb: string): boolean => {
  * backwards (positive int)
  * @returns The initial date of the week
  */
-export const weekInitialDay: SingleHandler<number, Date> = (iteration): Date => {
+export const weekInitialDay: SingleHandler<number, Date> = (
+  iteration
+): Date => {
   const initial = new Date();
 
   initial.setDate(

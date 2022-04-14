@@ -121,7 +121,7 @@ const CalendarEventDialog = ({
 
           <DialogSection>
             <Stack width="100%" spacing={1.5}>
-              <CalendarEventProperties />
+              <CalendarEventProperties watch={methods.watch} />
 
               <Stack
                 direction={{ xs: 'column', sm: 'column', md: 'row' }}
@@ -141,7 +141,7 @@ const CalendarEventDialog = ({
                 <CalendarEventType eventTypes={eventTypes ?? []} />
               </Stack>
 
-              <CalendarEventDifficulty />
+              <CalendarEventDifficulty watch={methods.watch} />
             </Stack>
           </DialogSection>
 

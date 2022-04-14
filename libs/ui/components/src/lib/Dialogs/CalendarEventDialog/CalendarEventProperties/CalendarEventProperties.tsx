@@ -1,4 +1,4 @@
-import { Controller } from 'react-hook-form';
+import { Controller, UseFormWatch } from 'react-hook-form';
 
 import {
   Checkbox,
@@ -12,7 +12,17 @@ import { CalendarEventFormFields } from '../../types';
 
 const PropertiesStack = styled(Stack)({ '> *': { flex: 1 } });
 
-const CalendarEventProperties = (): JSX.Element => (
+type CalendarEventPropertiesProps = {
+  /**
+   * Watch function used to know if the template field
+   * has been set or not
+   */
+  watch: UseFormWatch<CalendarEventFormFields>;
+};
+
+const CalendarEventProperties = ({
+  watch
+}: CalendarEventPropertiesProps): JSX.Element => (
   <Stack gap={1.5}>
     <Typography variant="h6">Properties</Typography>
 
@@ -33,6 +43,7 @@ const CalendarEventProperties = (): JSX.Element => (
                 title="calendar-event-mask-required"
                 checked={Boolean(value)}
                 value={value}
+                disabled={!!watch('template')}
                 onChange={onChange}
               />
             )}
@@ -52,6 +63,7 @@ const CalendarEventProperties = (): JSX.Element => (
                 title="calendar-event-covid-passport"
                 checked={Boolean(value)}
                 value={value}
+                disabled={!!watch('template')}
                 onChange={onChange}
               />
             )}
