@@ -14,7 +14,8 @@ import * as validations from '../helpers/validations';
 import {
   CalendarFetchCalenAppointmentsController,
   CalendarFetchEventAppointmentsController,
-  CalendarFetchEventsController
+  CalendarFetchEventsController,
+  CalendarFetchTodayEventsController
 } from './Calendar.controller';
 
 jest.mock('../../services');
@@ -718,6 +719,215 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
       expect(mockQueryBuilder.leftJoin).toHaveBeenCalledTimes(2);
       expect(mockQueryBuilder.getRawMany).toHaveBeenCalledTimes(1);
+      failSpyAsserts(failSpy);
+    });
+  });
+
+  describe('CalendarFetchTodayEventsController', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2022/06/29'));
+
+    const eventList = [createEvent(), createEvent(), createEvent()];
+    const mockReq = { headers: { authorization: 'Any token' } } as any;
+
+    const mockQueryBuilder = {
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      loadAllRelationIds: jest.fn().mockReturnThis(),
+      loadRelationCountAndMap: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      cache: jest.fn().mockReturnThis(),
+      getMany: jest.fn()
+    };
+    const mockEventService = {
+      createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder)
+    };
+    const mockPersonService = {
+      findOneBy: jest.fn()
+    };
+
+    const clientErrorSpy = jest.spyOn(
+      CalendarFetchTodayEventsController,
+      'clientError'
+    );
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      clientErrorSpy.mockImplementation();
+    });
+
+    const setupServices = () => {
+      CalendarFetchTodayEventsController['personService'] =
+        mockPersonService as any;
+      CalendarFetchTodayEventsController['eventService'] =
+        mockEventService as any;
+    };
+
+    it('should create the services if does not have any', async () => {
+      jest
+        .spyOn(CalendarFetchTodayEventsController, 'fail')
+        .mockImplementation();
+
+      CalendarFetchTodayEventsController['personService'] = undefined;
+      CalendarFetchTodayEventsController['eventService'] = undefined;
+
+      await CalendarFetchTodayEventsController.execute({} as any, {} as any);
+
+      expect(PersonService).toHaveBeenCalledTimes(1);
+      expect(EventService).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return the list of today events', async () => {
+      const mockEventList = {
+        map: jest.fn().mockImplementation((cb: any) => {
+          expect(cb).toBeDefined();
+
+          return eventList.map(cb);
+        })
+      };
+      mockPersonService.findOneBy.mockResolvedValue({ gym: { id: 1 } });
+
+      mockQueryBuilder.getMany.mockResolvedValue(mockEventList);
+      mockQueryBuilder.loadRelationCountAndMap
+        .mockClear()
+        .mockImplementation((paramOne, paramTwo, paramThree, cb) => {
+          const mockQB = { where: jest.fn() };
+
+          expect(paramOne).toBe('e.appointmentCount');
+          expect(paramTwo).toBe('e.appointments');
+          expect(paramThree).toBe('ea');
+
+          expect(cb).toBeDefined();
+          // Call the callback
+          cb(mockQB);
+          // Check if where is called
+          expect(mockQB.where).toHaveBeenCalledTimes(1);
+          expect(mockQB.where).toHaveBeenCalledWith('ea.cancelled = false');
+
+          return mockQueryBuilder;
+        });
+
+      const okSpy = jest
+        .spyOn(CalendarFetchTodayEventsController, 'ok')
+        .mockImplementation();
+
+      setupServices();
+      await CalendarFetchTodayEventsController.execute(mockReq, mockRes);
+
+      expect(mockPersonService.findOneBy).toHaveBeenCalledWith({
+        id: mockRes.locals.token.id
+      });
+      expect(mockEventService.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(mockEventService.createQueryBuilder).toHaveBeenCalledWith({
+        alias: 'e'
+      });
+      expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith('e.gym.id = :gymId', {
+        gymId: 1
+      });
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(3);
+      expect(mockQueryBuilder.andWhere).toHaveBeenNthCalledWith(
+        1,
+        'e.date.year = :year',
+        { year: 2022 }
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenNthCalledWith(
+        2,
+        'e.date.month = :month',
+        { month: 6 }
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenNthCalledWith(
+        3,
+        'e.date.day = :day',
+        { day: 29 }
+      );
+      expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledWith({
+        relations: ['date', 'calendar']
+      });
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        1,
+        'e.trainer',
+        't'
+      );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        2,
+        't.person',
+        'p'
+      );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        3,
+        'e.eventType',
+        'tt'
+      );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        4,
+        'e.template',
+        'tpl'
+      );
+      expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith({
+        'e.date.year': 'ASC',
+        'e.date.month': 'ASC',
+        'e.date.day': 'ASC',
+        'e.startTime': 'ASC'
+      });
+      expect(mockQueryBuilder.cache).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.cache).toHaveBeenCalledWith(true);
+      expect(mockEventList.map).toHaveBeenCalledTimes(1);
+      expect(okSpy).toHaveBeenCalledTimes(1);
+      expect(okSpy).toHaveBeenCalledWith(mockRes, eventList);
+    });
+
+    it('should send clientError person does not exist', async () => {
+      mockPersonService.findOneBy.mockResolvedValue(undefined);
+
+      setupServices();
+      await CalendarFetchTodayEventsController.execute(mockReq, mockRes);
+
+      expect(clientErrorSpy).toHaveBeenCalledTimes(1);
+      expect(clientErrorSpy).toHaveBeenCalledWith(
+        mockRes,
+        'Person does not exist.'
+      );
+    });
+
+    it('should call faill on person service error', async () => {
+      mockPersonService.findOneBy.mockRejectedValue('error-thrown');
+
+      const failSpy = jest
+        .spyOn(CalendarFetchTodayEventsController, 'fail')
+        .mockImplementation();
+
+      setupServices();
+      await CalendarFetchTodayEventsController.execute(mockReq, mockRes);
+
+      expect(mockPersonService.findOneBy).toHaveBeenCalledTimes(1);
+      failSpyAsserts(failSpy);
+    });
+
+    it('should call fail on getMany error', async () => {
+      mockPersonService.findOneBy.mockResolvedValue({ gym: { id: 1 } });
+      mockQueryBuilder.getMany.mockRejectedValue('error-thrown');
+
+      const failSpy = jest
+        .spyOn(CalendarFetchTodayEventsController, 'fail')
+        .mockImplementation();
+
+      setupServices();
+      await CalendarFetchTodayEventsController.execute(mockReq, mockRes);
+
+      expect(mockEventService.createQueryBuilder).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(3);
+      expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
+      expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.cache).toHaveBeenCalledTimes(1);
       failSpyAsserts(failSpy);
     });
   });
