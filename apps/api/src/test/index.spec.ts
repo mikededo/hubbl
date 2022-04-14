@@ -460,6 +460,20 @@ describe('Integration tests', () => {
         await calendar.fetchCalendarAppointments('worker');
       });
     });
+
+    describe('today appointments', () => {
+      it('should today appointments of a gym by an owner', async () => {
+        await calendar.fetchCalendarTodayEvents('owner');
+      });
+
+      it('should today appointments of a gym by an worker', async () => {
+        await calendar.fetchCalendarTodayEvents('worker');
+      });
+
+      it('should today appointments of a gym by an client', async () => {
+        await calendar.fetchCalendarTodayEvents('client');
+      });
+    });
   });
 
   describe('Appointments', () => {

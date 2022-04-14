@@ -22,9 +22,8 @@ export const fetchEvents = async (by: 'owner' | 'worker' | 'client') => {
 
   expect(fetchRes.statusCode).toBe(200);
   expect(fetchRes.body).toBeDefined();
-  expect(fetchRes.body.length).toBe(3);
+  expect(fetchRes.body.length).toBe(2);
   expect(fetchRes.body.map(({ calendar }) => calendar)).toStrictEqual([
-    ENTITY_IDENTIFIERS.CALENDAR_ONE,
     ENTITY_IDENTIFIERS.CALENDAR_ONE,
     ENTITY_IDENTIFIERS.CALENDAR_ONE
   ]);
@@ -63,4 +62,19 @@ export const fetchCalendarAppointments = async (by: 'owner' | 'worker') => {
   expect(fetchRes.statusCode).toBe(200);
   expect(fetchRes.body).toBeDefined();
   expect(fetchRes.body.length).toBe(3);
+};
+
+export const fetchCalendarTodayEvents = async (
+  by: 'owner' | 'worker' | 'client'
+) => {
+  const testApp = supertest(app);
+  const loginRes = await util.common.loginByAny(testApp, by);
+
+  const fetchRes = await testApp
+    .get('/calendars/today')
+    .set('Authorization', `Bearer ${loginRes.body.token}`);
+
+  expect(fetchRes.statusCode).toBe(200);
+  expect(fetchRes.body).toBeDefined();
+  expect(fetchRes.body.length).toBe(2);
 };

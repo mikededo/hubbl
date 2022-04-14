@@ -20,9 +20,9 @@ import { AppPalette, Gender } from '@hubbl/shared/types';
 import { TestSource } from '../config';
 import { ENTITY_IDENTIFIERS } from './util';
 
-const getDate = (): Partial<CalendarDate> => {
+const getDate = (add: number): Partial<CalendarDate> => {
   const date = new Date();
-  date.setDate(date.getDate() + 1);
+  date.setDate(date.getDate() + add);
 
   return {
     year: date.getFullYear(),
@@ -342,7 +342,7 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         maskRequired: true,
         covidPassport: true,
         difficulty: 1,
-        date: getDate(),
+        date: getDate(0),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
         gym: ENTITY_IDENTIFIERS.GYM
       },
@@ -359,7 +359,7 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         maskRequired: true,
         covidPassport: true,
         difficulty: 2,
-        date: getDate(),
+        date: getDate(0),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO,
         gym: ENTITY_IDENTIFIERS.GYM
       },
@@ -376,7 +376,7 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         maskRequired: true,
         covidPassport: true,
         difficulty: 3,
-        date: getDate(),
+        date: getDate(1),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
         gym: ENTITY_IDENTIFIERS.GYM
       },
@@ -393,7 +393,7 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         maskRequired: true,
         covidPassport: true,
         difficulty: 4,
-        date: getDate(),
+        date: getDate(1),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
         gym: ENTITY_IDENTIFIERS.GYM
       },
@@ -409,7 +409,7 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         maskRequired: true,
         covidPassport: true,
         difficulty: 5,
-        date: getDate(),
+        date: getDate(1),
         calendar: ENTITY_IDENTIFIERS.CALENDAR_TWO,
         gym: ENTITY_IDENTIFIERS.GYM
       }
@@ -446,7 +446,7 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         cancelled: false,
         startTime: '13:00:00',
         endTime: '14:00:00',
-        date: getDate()
+        date: getDate(1)
       },
       {
         calendar: ENTITY_IDENTIFIERS.CALENDAR_THREE,
@@ -454,7 +454,7 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         cancelled: false,
         startTime: '13:00:00',
         endTime: '14:00:00',
-        date: getDate()
+        date: getDate(1)
       },
       {
         calendar: ENTITY_IDENTIFIERS.CALENDAR_ONE,
@@ -462,7 +462,7 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         cancelled: false,
         startTime: '14:00:00',
         endTime: '15:30:00',
-        date: getDate()
+        date: getDate(1)
       }
     ]);
   });
