@@ -1,5 +1,3 @@
-import { getRepository } from 'typeorm';
-
 import { DTOGroups } from '@hubbl/shared/models/dto';
 
 import { OwnerService, WorkerService } from '../../services';
@@ -53,11 +51,8 @@ describe('CreateByOwnerWorkerController controller', () => {
     await controller.execute({} as any, {} as any);
 
     expect(mockServiceConstructor).toHaveBeenCalled();
-    expect(mockServiceConstructor).toHaveBeenCalledWith(getRepository);
     expect(OwnerService).toHaveBeenCalled();
-    expect(OwnerService).toHaveBeenCalledWith(getRepository);
     expect(WorkerService).toHaveBeenCalled();
-    expect(WorkerService).toHaveBeenCalledWith(getRepository);
   });
 
   it('should call createdByOwnerOrWorker', async () => {

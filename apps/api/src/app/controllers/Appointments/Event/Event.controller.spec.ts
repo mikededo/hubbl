@@ -1,5 +1,4 @@
 import npmlog = require('npmlog');
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventAppointmentDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
@@ -79,7 +78,7 @@ describe('Appointments.Event controller', () => {
     findOne: jest.fn()
   };
   const mockEventService = { findOne: jest.fn() };
-  const mockClientService = { findOne: jest.fn() };
+  const mockClientService = { findOneBy: jest.fn() };
 
   const fromJsonSpy = jest.spyOn(EventAppointmentDTO, 'fromJson');
   const fromClassSpy = jest.spyOn(EventAppointmentDTO, 'fromClass');
@@ -208,22 +207,24 @@ describe('Appointments.Event controller', () => {
       // Event validation
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledWith({
-        id: mockDto.event,
-        options: { cache: true }
+        where: { id: mockDto.event },
+        cache: true
       });
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
       expect(mockAppointmentService.count).toHaveBeenNthCalledWith(1, {
-        event: mockDto.event
+        where: { event: mockDto.event }
       });
       expect(mockAppointmentService.count).toHaveBeenNthCalledWith(2, {
-        client: mockDto.client,
-        event: mockDto.event,
-        cancelled: false
+        where: {
+          client: { personId: mockDto.client },
+          event: { id: mockDto.event },
+          cancelled: false
+        }
       });
       // Client validation
-      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockClientService.findOne).toHaveBeenCalledWith({
-        id: mockDto.client
+      expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOneBy).toHaveBeenCalledWith({
+        personId: mockDto.client
       });
     };
 
@@ -231,7 +232,7 @@ describe('Appointments.Event controller', () => {
       fromJsonSpy.mockResolvedValue(mockDto);
       mockEventService.findOne.mockResolvedValue(mockEvent);
       mockAppointmentService.count.mockResolvedValue(0);
-      mockClientService.findOne.mockResolvedValue(mockClient);
+      mockClientService.findOneBy.mockResolvedValue(mockClient);
       mockAppointmentService.save.mockResolvedValue(mockEvent);
 
       setupServices(EventCreateController);
@@ -285,7 +286,7 @@ describe('Appointments.Event controller', () => {
       fromJsonSpy.mockResolvedValue(mockDto);
       mockEventService.findOne.mockResolvedValue(mockEvent);
       mockAppointmentService.count.mockResolvedValue(0);
-      mockClientService.findOne.mockResolvedValue(undefined);
+      mockClientService.findOneBy.mockResolvedValue(undefined);
 
       setupServices(EventCreateController);
 
@@ -294,7 +295,7 @@ describe('Appointments.Event controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
-      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledWith(
         mockRes,
@@ -306,7 +307,7 @@ describe('Appointments.Event controller', () => {
       fromJsonSpy.mockResolvedValue(mockDto);
       mockEventService.findOne.mockResolvedValue(mockEvent);
       mockAppointmentService.count.mockResolvedValue(0);
-      mockClientService.findOne.mockResolvedValue({
+      mockClientService.findOneBy.mockResolvedValue({
         ...mockClient,
         covidPassport: false
       });
@@ -318,7 +319,7 @@ describe('Appointments.Event controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
-      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledWith(
         mockRes,
@@ -330,7 +331,7 @@ describe('Appointments.Event controller', () => {
       fromJsonSpy.mockResolvedValue(mockDto);
       mockEventService.findOne.mockResolvedValue(mockEvent);
       mockAppointmentService.count.mockResolvedValue(0);
-      mockClientService.findOne.mockRejectedValue('error-thrown');
+      mockClientService.findOneBy.mockRejectedValue('error-thrown');
 
       setupServices(EventCreateController);
 
@@ -339,7 +340,7 @@ describe('Appointments.Event controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(1);
-      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
       failAsserts(EventCreateController, failSpy, 'create', mockRes);
     };
 
@@ -349,7 +350,7 @@ describe('Appointments.Event controller', () => {
       mockAppointmentService.count
         .mockResolvedValueOnce(0)
         .mockResolvedValueOnce(1);
-      mockClientService.findOne.mockResolvedValue(mockClient);
+      mockClientService.findOneBy.mockResolvedValue(mockClient);
 
       setupServices(EventCreateController);
 
@@ -358,7 +359,7 @@ describe('Appointments.Event controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
-      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledWith(
         mockRes,
@@ -380,7 +381,7 @@ describe('Appointments.Event controller', () => {
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
-      expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+      expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
       failAsserts(EventCreateController, failSpy, 'create', mockRes);
     };
 
@@ -396,15 +397,10 @@ describe('Appointments.Event controller', () => {
       await EventCreateController.execute({} as any, {} as any);
 
       expect(EventAppointmentService).toHaveBeenCalledTimes(1);
-      expect(EventAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should create an EventAppointment by a client', async () => {
@@ -575,7 +571,7 @@ describe('Appointments.Event controller', () => {
       it('should send fail on service.save error', async () => {
         fromJsonSpy.mockResolvedValue(mockDto);
         mockEventService.findOne.mockResolvedValue(mockEvent);
-        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockClientService.findOneBy.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockRejectedValue('error-thrown');
 
@@ -586,7 +582,7 @@ describe('Appointments.Event controller', () => {
         expect(fromJsonSpy).toHaveBeenCalledTimes(1);
         expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
-        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
         failAsserts(EventCreateController, failSpy, 'create', mockClientRes);
       });
@@ -596,7 +592,7 @@ describe('Appointments.Event controller', () => {
         fromClassSpy.mockReturnValue(mockDto);
 
         mockEventService.findOne.mockResolvedValue(mockEvent);
-        mockClientService.findOne.mockResolvedValue(mockClient);
+        mockClientService.findOneBy.mockResolvedValue(mockClient);
         mockAppointmentService.count.mockResolvedValue(0);
         mockAppointmentService.save.mockImplementation();
 
@@ -613,7 +609,7 @@ describe('Appointments.Event controller', () => {
         expect(fromJsonSpy).toHaveBeenCalledTimes(1);
         expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
-        expect(mockClientService.findOne).toHaveBeenCalledTimes(1);
+        expect(mockClientService.findOneBy).toHaveBeenCalledTimes(1);
         expect(mockAppointmentService.save).toHaveBeenCalledTimes(1);
         expect(fromClassSpy).toHaveBeenCalledTimes(1);
         expect(createdSpy).toHaveBeenCalledTimes(1);
@@ -690,15 +686,10 @@ describe('Appointments.Event controller', () => {
       await EventCancelController.execute({} as any, {} as any);
 
       expect(EventAppointmentService).toHaveBeenCalledTimes(1);
-      expect(EventAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call updatedByOwnerOrWorker by an owner or worker', async () => {
@@ -717,13 +708,13 @@ describe('Appointments.Event controller', () => {
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.eId,
-        options: { cache: true }
+        where: { id: mockReq.params.eId },
+        cache: true
       });
       expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.id,
-        options: { where: { event: mockReq.params.eId }, loadRelationIds: true }
+        where: { id: mockReq.params.id, event: mockReq.params.eId },
+        loadRelationIds: true
       });
       expect(fromClassSpy).toHaveBeenCalledTimes(1);
       expect(fromClassSpy).toHaveBeenCalledWith({
@@ -759,19 +750,17 @@ describe('Appointments.Event controller', () => {
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.eId,
-        options: { cache: true }
+        where: { id: mockReq.params.eId },
+        cache: true
       });
       expect(mockAppointmentService.findOne).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.id,
-        options: {
-          where: {
-            client: mockClientRes.locals.token.id,
-            event: mockReq.params.eId
-          },
-          loadRelationIds: true
-        }
+        where: {
+          id: mockReq.params.id,
+          client: mockClientRes.locals.token.id,
+          event: mockReq.params.eId
+        },
+        loadRelationIds: true
       });
       expect(mockAppointmentService.update).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.update).toHaveBeenCalledWith(
@@ -898,15 +887,10 @@ describe('Appointments.Event controller', () => {
       await EventDeleteController.execute({} as any, {} as any);
 
       expect(EventAppointmentService).toHaveBeenCalledTimes(1);
-      expect(EventAppointmentService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call deletedByOwnerOrWorker by an owner or worker', async () => {
@@ -921,8 +905,8 @@ describe('Appointments.Event controller', () => {
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.eId,
-        options: { cache: true }
+        where: { id: mockReq.params.eId },
+        cache: true
       });
       expect(dboow).toHaveBeenCalledTimes(1);
       expect(dboow).toHaveBeenCalledWith({
@@ -954,8 +938,8 @@ describe('Appointments.Event controller', () => {
 
       expect(mockEventService.findOne).toHaveBeenCalledTimes(1);
       expect(mockEventService.findOne).toHaveBeenCalledWith({
-        id: mockReq.params.eId,
-        options: { cache: true }
+        where: { id: mockReq.params.eId },
+        cache: true
       });
       expect(dbc).toHaveBeenCalledTimes(1);
       expect(dbc).toHaveBeenCalledWith({

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { FetchAppointmentInterval } from '@hubbl/shared/models/body-validators';
 import { CalendarAppointmentDTO, DTOGroups } from '@hubbl/shared/models/dto';
@@ -87,8 +86,8 @@ abstract class BaseCalendarAppointmentController extends BaseController {
   ): Promise<Response> | undefined {
     try {
       // Check if the client exists
-      const client = await this.clientService.findOne({
-        id: appointment.client
+      const client = await this.clientService.findOneBy({
+        personId: appointment.client
       });
       if (!client) {
         return this.forbidden(res, 'Person does not exist.');
@@ -104,11 +103,13 @@ abstract class BaseCalendarAppointmentController extends BaseController {
 
       if (
         await this.service.count({
-          client: appointment.client,
-          startTime: appointment.startTime,
-          endTime: appointment.endTime,
-          date: appointment.date,
-          cancelled: false
+          where: {
+            client: appointment.client,
+            startTime: appointment.startTime,
+            endTime: appointment.endTime,
+            date: appointment.date,
+            cancelled: false
+          }
         })
       ) {
         return this.forbidden(
@@ -123,23 +124,23 @@ abstract class BaseCalendarAppointmentController extends BaseController {
 
   protected checkServices() {
     if (!this.service) {
-      this.service = new CalendarAppointmentService(getRepository);
+      this.service = new CalendarAppointmentService();
     }
 
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     if (!this.clientService) {
-      this.clientService = new ClientService(getRepository);
+      this.clientService = new ClientService();
     }
   }
 }
@@ -155,15 +156,15 @@ class ICalendarApointmentFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new CalendarAppointmentService(getRepository);
+      this.service = new CalendarAppointmentService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     const { token } = res.locals;
@@ -248,7 +249,7 @@ class ICalendarAppointmentCreateController extends BaseCalendarAppointmentContro
     let gymZone: GymZone;
     try {
       gymZone = await this.gymZoneService.findOne({
-        options: { where: { calendar: appointment.calendar } }
+        where: { calendar: appointment.calendar }
       });
     } catch (e) {
       return this.onFail(res, e);
@@ -396,8 +397,8 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
     let appointment: CalendarAppointment;
     try {
       appointment = await this.service.findOne({
-        id: appointmentId,
-        options: { where: { calendar: calendarId }, loadRelationIds: true }
+        where: { id: appointmentId, calendar: calendarId },
+        loadRelationIds: true
       });
 
       if (!appointment) {
@@ -433,8 +434,8 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
 
     try {
       // Check if the client exists
-      const client = await this.clientService.findOne({
-        id: token.id
+      const client = await this.clientService.findOneBy({
+        personId: token.id
       });
       if (!client) {
         return this.forbidden(res, 'Person does not exist.');
@@ -447,11 +448,8 @@ class ICalendarAppointmentCancelController extends BaseCalendarAppointmentContro
     let appointment: CalendarAppointment;
     try {
       appointment = await this.service.findOne({
-        id: appointmentId,
-        options: {
-          where: { calendar: calendarId, client: token.id },
-          loadRelationIds: true
-        }
+        where: { id: appointmentId, calendar: calendarId, client: token.id },
+        loadRelationIds: true
       });
 
       if (!appointment) {

@@ -1,3 +1,5 @@
+import { SingleHandler } from '@hubbl/shared/types';
+
 /**
  * Returns false if `prop` does not equal to `given`. It returns a function
  * since it is intended to be used in `shouldForwardProp`
@@ -71,4 +73,24 @@ export const isTimeBefore = (ta: string, tb: string): boolean => {
     .reduceRight((prev, curr, i) => prev + (i ? +curr * 60 * i : +curr), 0);
 
   return tbv < tav;
+};
+
+/**
+ * Returns the first day as a date of the wanted week
+ *
+ * @param iteration The amount of weeks to go forward (negative int) or
+ * backwards (positive int)
+ * @returns The initial date of the week
+ */
+export const weekInitialDay: SingleHandler<number, Date> = (
+  iteration
+): Date => {
+  const initial = new Date();
+
+  initial.setDate(
+    initial.getDate() - initial.getDay() + (initial.getDay() === 0 ? -6 : 1)
+  );
+  initial.setDate(initial.getDate() - 7 * iteration);
+
+  return initial;
 };

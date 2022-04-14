@@ -12,7 +12,7 @@ import { EventTemplateFormFields } from '../../types';
 
 const PropertiesStack = styled(Stack)({ '> *': { flex: 1 } });
 
-const EventTemplatePhone = (): JSX.Element => (
+const EventTemplateProperties = (): JSX.Element => (
   <Stack gap={1.5}>
     <Typography variant="h6">Properties</Typography>
 
@@ -63,4 +63,4 @@ const EventTemplatePhone = (): JSX.Element => (
   </Stack>
 );
 
-export default EventTemplatePhone;
+export default EventTemplateProperties;

@@ -31,7 +31,6 @@ describe('Database connection config', () => {
 
   it('should create the connection configuration using .env fields', () => {
     expect(config.type).toBe('postgres');
-    expect(config.name).toBe('postgres');
     expect((config as any).host).toBe(process.env.POSTGRES_HOST);
     expect((config as any).port).toBe(Number(process.env.POSTGRES_PORT));
     expect((config as any).username).toBe(process.env.POSTGRES_USER);
@@ -63,6 +62,6 @@ describe('Database connection config', () => {
     expect(config.logging).toBe(true);
 
     expect(loggerSpy).toHaveBeenCalledTimes(1);
-    expect(namingSpy).toHaveBeenCalledTimes(1);
+    expect(namingSpy).toHaveBeenCalledTimes(2);
   });
 });

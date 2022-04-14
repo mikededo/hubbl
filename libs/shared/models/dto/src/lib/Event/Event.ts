@@ -13,6 +13,8 @@ import {
   CalendarDate,
   Event,
   EventAppointment,
+  EventTemplate,
+  EventType,
   Gym,
   Trainer
 } from '@hubbl/shared/models/entities';
@@ -28,8 +30,10 @@ import {
 
 import DTO from '../Base';
 import CalendarDateDTO from '../CalendarDate';
+import EventTypeDTO from '../EventType';
 import TrainerDTO from '../Trainer';
 import { DTOGroups } from '../util';
+import EventTemplateDTO from '../EventTemplate';
 
 export default class EventDTO implements DTO<Event> {
   @IsNumber(
@@ -120,7 +124,16 @@ export default class EventDTO implements DTO<Event> {
   gym!: number | Gym;
 
   @IsOptional()
-  template!: number;
+  template!: EventTemplateDTO | number;
+
+  @IsNumber(
+    {},
+    {
+      message: numberError('eventType'),
+      groups: [DTOGroups.ALL, DTOGroups.CREATE, DTOGroups.UPDATE]
+    }
+  )
+  eventType!: EventTypeDTO | number;
 
   @IsInstance(CalendarDate, { message: instanceError('CalendarDate', 'date') })
   date!: CalendarDate;
@@ -146,6 +159,7 @@ export default class EventDTO implements DTO<Event> {
     result.calendar = from.calendar;
     result.gym = from.gym;
     result.template = from.template;
+    result.eventType = from.eventType;
 
     result.date = new CalendarDate();
     result.date.year = from.date.year;
@@ -198,6 +212,16 @@ export default class EventDTO implements DTO<Event> {
       result.trainer = TrainerDTO.fromClass(event.trainer, 'info');
     }
 
+    // When from class, parse the event type
+    if (event.eventType instanceof EventType) {
+      result.eventType = EventTypeDTO.fromClass(event.eventType);
+    }
+
+    // When from class, parse the event template
+    if (event.template instanceof EventTemplate) {
+      result.template = EventTemplateDTO.fromClass(event.template);
+    }
+
     result.appointments = event.appointments;
     // When events are fetched, they return the amount of appointments
     result.appointmentCount = event.appointmentCount;
@@ -224,7 +248,8 @@ export default class EventDTO implements DTO<Event> {
     result.calendar = this.calendar;
     result.gym = this.gym as number;
     result.trainer = this.trainer as number;
-    result.template = this.template;
+    result.template = this.template as number;
+    result.eventType = this.eventType as number;
     result.date = this.date;
 
     return result;

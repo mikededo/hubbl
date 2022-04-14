@@ -1,5 +1,4 @@
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
@@ -38,6 +37,7 @@ describe('Event controller', () => {
     trainer: 1,
     calendar: 1,
     template: 1,
+    eventType: 1,
     date: { day: 29, month: 6, year: 2000 }
   };
   const mockDto = {
@@ -94,11 +94,8 @@ describe('Event controller', () => {
     await controller.execute({} as any, {} as any);
 
     expect(EventService).toHaveBeenCalledTimes(1);
-    expect(EventService).toHaveBeenCalledWith(getRepository);
     expect(OwnerService).toHaveBeenCalledTimes(1);
-    expect(OwnerService).toHaveBeenCalledWith(getRepository);
     expect(WorkerService).toHaveBeenCalledTimes(1);
-    expect(WorkerService).toHaveBeenCalledWith(getRepository);
   };
 
   const fromJsonFailAsserts = async (
@@ -194,10 +191,12 @@ describe('Event controller', () => {
 
   describe('EventCreateController', () => {
     const mockTemplate = {
+      id: 1,
       capacity: 10,
       covidPassport: true,
       maskRequired: true,
       difficulty: 1,
+      type: 1,
       gym: 2
     };
     const mockCreatedEvent = (template = true): Event => {
@@ -218,6 +217,8 @@ describe('Event controller', () => {
       result.date = mockReq.body.date as any;
       result.trainer = mockReq.body.trainer;
       result.gym = (template ? mockTemplate : mockReq.body).gym;
+      result.eventType = template ? mockTemplate.type : mockReq.body.eventType;
+      result.template = template ? mockTemplate.id : undefined;
       result.calendar = mockReq.body.calendar;
 
       return result;
@@ -303,7 +304,7 @@ describe('Event controller', () => {
       );
       expect(mockService.andWhere).toHaveBeenNthCalledWith(
         5,
-        'e.trainer.person.id = :trainer',
+        'e.trainer = :trainer',
         { trainer: mockDto.trainer }
       );
 
@@ -357,9 +358,7 @@ describe('Event controller', () => {
       await servicesAsserts(EventCreateController);
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(EventTemplateService).toHaveBeenCalledTimes(1);
-      expect(EventTemplateService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should call createByOwnerOrWorker with template data', async () => {
@@ -374,8 +373,9 @@ describe('Event controller', () => {
       // Event service checks
       expect(mockTemplateService.findOne).toHaveBeenCalledTimes(1);
       expect(mockTemplateService.findOne).toHaveBeenCalledWith({
-        id: mockReq.body.template,
-        options: { loadEagerRelations: false, loadRelationIds: true }
+        where: { id: mockReq.body.template },
+        loadEagerRelations: false,
+        loadRelationIds: true
       });
 
       expect(fromJsonSpy).toHaveBeenCalledTimes(1);

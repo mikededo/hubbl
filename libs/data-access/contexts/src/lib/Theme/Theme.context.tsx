@@ -11,16 +11,19 @@ import {
 declare module '@mui/material/styles' {
   interface TypographyVariants {
     placeholder: React.CSSProperties;
+    calendarHeader: React.CSSProperties;
   }
 
   interface TypographyVariantsOptions {
     placeholder?: React.CSSProperties;
+    calendarHeader?: React.CSSProperties;
   }
 }
 
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     placeholder: true;
+    calendarHeader: true;
   }
 }
 
@@ -45,7 +48,8 @@ const AppTheme: Theme = createTheme({
     subtitle1: { fontSize: 14, color: '#666666' },
     subtitle2: { fontSize: 12, fontWeight: 400, color: '#666666' },
     button: { fontSize: 16, textTransform: 'none' },
-    placeholder: { fontSize: 16, fontWeight: 400, color: '#BBB' }
+    placeholder: { fontSize: 16, fontWeight: 400, color: '#BBB' },
+    calendarHeader: { fontSize: 14, fontWeight: 500, color: '#666666' }
   },
   shadows: [
     'none',

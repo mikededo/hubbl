@@ -309,7 +309,7 @@ describe('Integration tests', () => {
       it('should fetch a virtual gym by client', async () => {
         await virtualGym.fetchSingle('client');
       });
-    })
+    });
 
     describe('create, update & delete', () => {
       it('should create, update and delete a virtual gym by an owner', async () => {
@@ -342,25 +342,39 @@ describe('Integration tests', () => {
     });
 
     describe('fetch', () => {
-      it('should fetch event templates by owner', async () => {
+      it('should fetch gym zones by owner', async () => {
         await gymZone.fetch('owner');
       });
 
-      it('should fetch event templates by worker', async () => {
+      it('should fetch gym zones by worker', async () => {
         await gymZone.fetch('worker');
       });
 
-      it('should fetch event templates by client', async () => {
+      it('should fetch gym zones by client', async () => {
         await gymZone.fetch('client');
       });
     });
 
+    describe('fetchSingle', () => {
+      it('should fetch gym zones by owner', async () => {
+        await gymZone.fetchSingle('owner');
+      });
+
+      it('should fetch gym zones by worker', async () => {
+        await gymZone.fetchSingle('worker');
+      });
+
+      it('should fetch gym zones by client', async () => {
+        await gymZone.fetchSingle('client');
+      });
+    });
+
     describe('create, update & delete', () => {
-      it('should create, update and delete a virtual gym by an owner', async () => {
+      it('should create, update and delete a gym zone by an owner', async () => {
         await gymZone.createUpdateAndDelete('owner');
       });
 
-      it('should not allow to create a virtual gym by a worker', async () => {
+      it('should not allow to create a gym zone by a worker', async () => {
         await gymZone.createUpdateAndDelete('worker');
       });
     });
@@ -495,29 +509,29 @@ describe('Integration tests', () => {
       });
 
       describe('create & cancel', () => {
-        it('should create and cancel an event for a client by an owner', async () => {
+        it('should create and cancel an appointment for a client by an owner', async () => {
           await appointments.calendars.createAndCancel('owner');
         });
 
-        it('should create and cancel an event for a client by a worker', async () => {
+        it('should create and cancel an appointment for a client by a worker', async () => {
           await appointments.calendars.createAndCancel('worker');
         });
 
-        it('should create and cancel an event for a client by a client', async () => {
+        it('should create and cancel an appointment for a client by a client', async () => {
           await appointments.calendars.createAndCancel('client');
         });
       });
 
       describe('create, cancel & delete', () => {
-        it('should create and cancel an event for a client by an owner', async () => {
+        it('should create and cancel an appointment for a client by an owner', async () => {
           await appointments.calendars.createCancelAndDelete('owner');
         });
 
-        it('should create and cancel an event for a client by an worker', async () => {
+        it('should create and cancel an appointment for a client by an worker', async () => {
           await appointments.calendars.createCancelAndDelete('worker');
         });
 
-        it('should create and cancel an event for a client by a client', async () => {
+        it('should create and cancel an appointment for a client by a client', async () => {
           await appointments.calendars.createCancelAndDelete('client');
         });
       });

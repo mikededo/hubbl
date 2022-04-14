@@ -1,3 +1,4 @@
+import Calendar from './Calendar';
 import ColorCircle from './ColorCircle';
 import ColorPicker from './ColorPicker';
 import ContentCard from './ContentCard';
@@ -12,6 +13,7 @@ import SideNav from './SideNav';
 import VirtualGymList from './VirtualGymList';
 
 export {
+  Calendar,
   ColorCircle,
   ColorPicker,
   ContentCard,
@@ -32,3 +34,4 @@ export * from './Layout';
 export * from './Settings';
 
 export type { RequiredUserInfoFields, UserPasswordFields } from './Settings';
+export type { EventSpot } from './Calendar';

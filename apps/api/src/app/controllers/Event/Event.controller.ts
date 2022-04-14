@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import * as log from 'npmlog';
-import { getRepository } from 'typeorm';
 
 import { DTOGroups, EventDTO } from '@hubbl/shared/models/dto';
 import { Event } from '@hubbl/shared/models/entities';
@@ -34,8 +33,9 @@ class IEventCreateController extends BaseController {
       if (json.template) {
         // Find the template, and override the json data
         template = await this.templateService.findOne({
-          id: json.template,
-          options: { loadEagerRelations: false, loadRelationIds: true }
+          where: { id: json.template },
+          loadEagerRelations: false,
+          loadRelationIds: true
         });
 
         if (!template) {
@@ -45,18 +45,21 @@ class IEventCreateController extends BaseController {
 
       // Copy the template props to a new DTO
       const result = new Event();
+
       result.name = json.name;
       result.description = json.description;
       result.capacity = template.capacity;
       result.covidPassport = template.covidPassport;
       result.maskRequired = template.maskRequired;
       result.difficulty = template.difficulty;
+      result.eventType = json.template ? template.type : json.eventType;
       result.startTime = json.startTime;
       result.endTime = json.endTime;
       result.date = json.date;
       result.gym = template.gym;
       result.trainer = json.trainer;
       result.calendar = json.calendar;
+      result.template = json.template;
 
       return result;
     } catch (e) {
@@ -80,7 +83,7 @@ class IEventCreateController extends BaseController {
       .andWhere('e.date.year = :year', { year: dto.date.year })
       .andWhere('e.date.month = :month', { month: dto.date.month })
       .andWhere('e.date.day = :day', { day: dto.date.day })
-      .andWhere('e.trainer.person.id = :trainer', { trainer: dto.trainer })
+      .andWhere('e.trainer = :trainer', { trainer: dto.trainer })
       .getCount();
   }
 
@@ -99,23 +102,23 @@ class IEventCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new EventService(getRepository);
+      this.service = new EventService();
     }
 
     if (!this.templateService) {
-      this.templateService = new EventTemplateService(getRepository);
+      this.templateService = new EventTemplateService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     const maybeEvent = await this.fromTemplate(res, req.body);
@@ -201,15 +204,15 @@ class IEventUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new EventService(getRepository);
+      this.service = new EventService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     let dto: EventDTO;

@@ -1,12 +1,20 @@
 import * as ClassValidator from 'class-validator';
 
-import { CalendarDate, Event, Trainer } from '@hubbl/shared/models/entities';
+import {
+  CalendarDate,
+  Event,
+  EventTemplate,
+  EventType,
+  Trainer
+} from '@hubbl/shared/models/entities';
 import * as helpers from '@hubbl/shared/models/helpers';
-import * as Utils from '../util';
 
 import CalendarDateDTO from '../CalendarDate';
-import EventDTO from './Event';
+import EventTypeDTO from '../EventType';
 import TrainerDTO from '../Trainer';
+import * as Utils from '../util';
+import EventDTO from './Event';
+import EventTemplateDTO from '../EventTemplate';
 
 jest.mock('@hubbl/shared/models/entities');
 jest.mock('@hubbl/shared/models/helpers');
@@ -25,6 +33,7 @@ const propCompare = (want: Event | EventDTO, got: Event | EventDTO) => {
   expect(got.gym).toBe(want.gym);
   expect(got.trainer).toBe(want.trainer);
   expect(got.template).toBe(want.template);
+  expect(got.eventType).toBe(want.eventType);
   expect(got.date.year).toBe(want.date.year);
   expect(got.date.month).toBe(want.date.month);
   expect(got.date.day).toBe(want.date.day);
@@ -51,6 +60,7 @@ const createEvent = (): Event => {
   event.gym = 1;
   event.trainer = 1;
   event.template = 1;
+  event.eventType = 1;
   event.date = date;
   event.appointments = [];
   event.appointmentCount = 0;
@@ -80,6 +90,7 @@ describe('Event', () => {
         gym: 1,
         trainer: 1,
         template: 1,
+        eventType: 1,
         date: { day: 29, month: 6, year: 2000 } as CalendarDate
       };
 
@@ -164,7 +175,7 @@ describe('Event', () => {
       expect(result.appointmentCount).toBe(0);
     });
 
-    it('should call Trainer#fromClass', () => {
+    it('should call TrainerDTO#fromClass', () => {
       const trainerSpy = jest
         .spyOn(TrainerDTO, 'fromClass')
         .mockImplementation();
@@ -179,6 +190,36 @@ describe('Event', () => {
 
       expect(trainerSpy).toHaveBeenCalledTimes(1);
       expect(trainerSpy).toHaveBeenCalledWith(trainer, 'info');
+    });
+
+    it('should call EventTypeDTO#fromClass', () => {
+      const eventTypeSpy = jest
+        .spyOn(EventTypeDTO, 'fromClass')
+        .mockImplementation();
+      const event = createEvent();
+
+      const type = new EventType();
+      event.eventType = type;
+
+      EventDTO.fromClass(event);
+
+      expect(eventTypeSpy).toHaveBeenCalledTimes(1);
+      expect(eventTypeSpy).toHaveBeenCalledWith(type);
+    });
+
+    it('should call EventTemplateDTO#fromClass', () => {
+      const eventTypeSpy = jest
+        .spyOn(EventTemplateDTO, 'fromClass')
+        .mockImplementation();
+      const event = createEvent();
+
+      const template = new EventTemplate();
+      event.template = template;
+
+      EventDTO.fromClass(event);
+
+      expect(eventTypeSpy).toHaveBeenCalledTimes(1);
+      expect(eventTypeSpy).toHaveBeenCalledWith(template);
     });
   });
 

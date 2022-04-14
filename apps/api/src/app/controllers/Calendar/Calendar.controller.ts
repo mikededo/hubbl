@@ -1,7 +1,6 @@
+import * as camelCaseKeys from 'camelcase-keys';
 import { Request, Response } from 'express';
 import * as log from 'npmlog';
-import * as camelCaseKeys from 'camelcase-keys';
-import { getRepository } from 'typeorm';
 
 import { EventDTO } from '@hubbl/shared/models/dto';
 
@@ -21,11 +20,11 @@ abstract class CalendarFetchBase extends BaseController {
 
   protected checkServices() {
     if (!this.gymZoneService) {
-      this.gymZoneService = new GymZoneService(getRepository);
+      this.gymZoneService = new GymZoneService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
   }
 
@@ -99,7 +98,7 @@ class ICalendarFetchEventsController extends CalendarFetchBase {
     this.checkServices();
 
     if (!this.eventService) {
-      this.eventService = new EventService(getRepository);
+      this.eventService = new EventService();
     }
 
     const { token } = res.locals;
@@ -154,12 +153,20 @@ class ICalendarFetchEventsController extends CalendarFetchBase {
         .loadAllRelationIds({ relations: ['date', 'calendar'] })
         .leftJoinAndSelect('e.trainer', 't')
         .leftJoinAndSelect('t.person', 'p')
+        .leftJoinAndSelect('e.eventType', 'tt')
+        .leftJoinAndSelect('e.template', 'tpl')
         .loadRelationCountAndMap(
           'e.appointmentCount',
           'e.appointments',
           'ea',
           (qb) => qb.where('ea.cancelled = false')
         )
+        .orderBy({
+          'e.date.year': 'ASC',
+          'e.date.month': 'ASC',
+          'e.date.day': 'ASC',
+          'e.startTime': 'ASC'
+        })
         .getMany();
 
       return this.ok(
@@ -183,7 +190,7 @@ class ICalendarFetchEventAppointmentsController extends CalendarFetchBase {
     this.checkServices();
 
     if (!this.eventAppointmentService) {
-      this.eventAppointmentService = new EventAppointmentService(getRepository);
+      this.eventAppointmentService = new EventAppointmentService();
     }
 
     const { token } = res.locals;
@@ -266,9 +273,7 @@ class ICalendarFetchCalenAppointmentsController extends CalendarFetchBase {
     this.checkServices();
 
     if (!this.calenAppointmentService) {
-      this.calenAppointmentService = new CalendarAppointmentService(
-        getRepository
-      );
+      this.calenAppointmentService = new CalendarAppointmentService();
     }
 
     const { token } = res.locals;

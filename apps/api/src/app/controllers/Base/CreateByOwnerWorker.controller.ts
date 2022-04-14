@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import {
   DTOGroups,
@@ -18,7 +17,6 @@ import {
   EventTypeService,
   GymZoneService,
   OwnerService,
-  RepositoryAccessor,
   WorkerService
 } from '../../services';
 import {
@@ -34,8 +32,6 @@ type WorkerCreatePermissions =
   | 'createEventTemplates'
   | 'createEventTypes'
   | 'createGymZones';
-
-type CreatableEntities = EventTemplate | EventType | GymZone;
 
 type CreatableFromJson =
   | BaseFromJsonCallable<EventTemplateDTO>
@@ -58,9 +54,7 @@ export default class CreateByOwnerWorkerController extends BaseController {
   protected workerService: WorkerService = undefined;
 
   constructor(
-    private serviceCtr: new (
-      accessor: RepositoryAccessor<CreatableEntities>
-    ) => CreatableServices,
+    private serviceCtr: new () => CreatableServices,
     private fromJson: CreatableFromJson,
     private fromClass: CreatableFromClass,
     private entityName: CreatableEntityNames,
@@ -71,15 +65,15 @@ export default class CreateByOwnerWorkerController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new this.serviceCtr(getRepository);
+      this.service = new this.serviceCtr();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     if (!this.workerService) {
-      this.workerService = new WorkerService(getRepository);
+      this.workerService = new WorkerService();
     }
 
     const { token } = res.locals;

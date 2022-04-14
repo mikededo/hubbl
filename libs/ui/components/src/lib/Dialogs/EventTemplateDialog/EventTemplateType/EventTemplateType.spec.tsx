@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { EventTemplateFormFields } from '../../types';
-import EventTemplateEventType from './EventTemplateType';
+import EventTemplateType from './EventTemplateType';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { EventTypeDTO } from '@hubbl/shared/models/dto';
 
@@ -21,13 +21,13 @@ const MockComponent = ({
   return (
     <ThemeProvider theme={createTheme()}>
       <FormProvider {...{ control, ...rest }}>
-        <EventTemplateEventType eventTypes={eventTypes as any} />
+        <EventTemplateType eventTypes={eventTypes as any} />
       </FormProvider>
     </ThemeProvider>
   );
 };
 
-describe('<EventTemplateEventType />', () => {
+describe('<EventTemplateType />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -38,7 +38,7 @@ describe('<EventTemplateEventType />', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('should display the virtual gyms on clicking the select', () => {
+  it('should display the event types on clicking the select', () => {
     render(
       <MockComponent
         eventTypes={[

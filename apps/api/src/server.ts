@@ -1,14 +1,13 @@
 import 'reflect-metadata';
 
 import * as log from 'npmlog';
-import { createConnection } from 'typeorm';
 
-import { databaseConfig } from './config';
+import { Source } from './config';
 import app from './main';
 
 log.enableColor();
 
-createConnection(databaseConfig)
+Source.initialize()
   .then(async (cnt) => {
     log.info('App', 'Connection created');
 

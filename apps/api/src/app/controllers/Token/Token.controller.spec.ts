@@ -1,11 +1,10 @@
 import * as jwt from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
 
+import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { ParsedToken } from '@hubbl/shared/types';
 
 import { ClientService, OwnerService, WorkerService } from '../../services';
 import { TokenRefresh, TokenValidateCookie } from './Token.controller';
-import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 
 jest.mock('../../services');
 jest.mock('npmlog');
@@ -39,7 +38,7 @@ describe('Token controller', () => {
     });
 
     const successExecute = async (by: 'owner' | 'worker' | 'client') => {
-      const mockService = { findOne: jest.fn().mockResolvedValue({ id: 1 }) };
+      const mockService = { findOneBy: jest.fn().mockResolvedValue({ id: 1 }) };
       const fromClassSpy = jest
         .spyOn(
           by === 'owner' ? OwnerDTO : by === 'worker' ? WorkerDTO : ClientDTO,
@@ -72,9 +71,9 @@ describe('Token controller', () => {
         mockPayload,
         process.env.NX_JWT_TOKEN
       );
-      expect(mockService.findOne).toHaveBeenCalledTimes(1);
-      expect(mockService.findOne).toHaveBeenCalledWith({
-        id: mockPayload.id
+      expect(mockService.findOneBy).toHaveBeenCalledTimes(1);
+      expect(mockService.findOneBy).toHaveBeenCalledWith({
+        personId: mockPayload.id
       });
       expect(fromClassSpy).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledTimes(1);
@@ -94,11 +93,8 @@ describe('Token controller', () => {
       TokenValidateCookie.execute({} as any, {} as any);
 
       expect(OwnerService).toHaveBeenCalledTimes(1);
-      expect(OwnerService).toHaveBeenCalledWith(getRepository);
       expect(WorkerService).toHaveBeenCalledTimes(1);
-      expect(WorkerService).toHaveBeenCalledWith(getRepository);
       expect(ClientService).toHaveBeenCalledTimes(1);
-      expect(ClientService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return a new token and the owner user', async () => {
@@ -141,35 +137,35 @@ describe('Token controller', () => {
     });
 
     it('should send forbidden if user not found', async () => {
-      const findOneSpy = jest.fn().mockResolvedValue(undefined);
+      const findOneBySpy = jest.fn().mockResolvedValue(undefined);
       verifySpy.mockReturnValue(mockPayload as any);
 
       const forbiddenSpy = jest
         .spyOn(TokenValidateCookie, 'forbidden')
         .mockImplementation();
 
-      TokenValidateCookie['ownerService'] = { findOne: findOneSpy } as any;
+      TokenValidateCookie['ownerService'] = { findOneBy: findOneBySpy } as any;
       await TokenValidateCookie.execute(mockReq as any, {} as any);
 
       expect(verifySpy).toHaveBeenCalledTimes(1);
-      expect(findOneSpy).toHaveBeenCalledTimes(1);
+      expect(findOneBySpy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledTimes(1);
       expect(forbiddenSpy).toHaveBeenCalledWith({}, 'User not found.');
     });
 
     it('should send fail on service error', async () => {
-      const findOneSpy = jest.fn().mockRejectedValue('error-thrown');
+      const findOneBySpy = jest.fn().mockRejectedValue('error-thrown');
       verifySpy.mockReturnValue(mockPayload as any);
 
       const failSpy = jest
         .spyOn(TokenValidateCookie, 'fail')
         .mockImplementation();
 
-      TokenValidateCookie['ownerService'] = { findOne: findOneSpy } as any;
+      TokenValidateCookie['ownerService'] = { findOneBy: findOneBySpy } as any;
       await TokenValidateCookie.execute(mockReq as any, {} as any);
 
       expect(verifySpy).toHaveBeenCalledTimes(1);
-      expect(findOneSpy).toHaveBeenCalledTimes(1);
+      expect(findOneBySpy).toHaveBeenCalledTimes(1);
       expect(failSpy).toHaveBeenCalledTimes(1);
     });
   });

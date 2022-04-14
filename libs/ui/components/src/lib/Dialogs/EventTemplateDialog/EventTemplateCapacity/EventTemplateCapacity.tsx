@@ -4,13 +4,13 @@ import { Person } from '@mui/icons-material';
 import { InputAdornment } from '@mui/material';
 
 import Input from '../../../Input';
-import { GymZoneFormFields } from '../../types';
+import { EventTemplateFormFields } from '../../types';
 
-const GymZoneCapacity = (): JSX.Element => {
+const EventTemplateCapacity = (): JSX.Element => {
   const {
     register,
     formState: { errors }
-  } = useFormContext<GymZoneFormFields>();
+  } = useFormContext<EventTemplateFormFields>();
 
   return (
     <Input
@@ -32,4 +32,4 @@ const GymZoneCapacity = (): JSX.Element => {
   );
 };
 
-export default GymZoneCapacity;
+export default EventTemplateCapacity;

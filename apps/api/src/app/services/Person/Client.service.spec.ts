@@ -1,18 +1,17 @@
-import ClientService from './Client.service';
-import BaseService from '../Base';
 import { Client } from '@hubbl/shared/models/entities';
+
+import BaseService from '../Base';
+import ClientService from './Client.service';
 
 jest.mock('../Base');
 
 describe('ClientService', () => {
   describe('#constructor', () => {
     it('should call super', () => {
-      const mockRepoAccesser = jest.fn();
-
-      new ClientService(mockRepoAccesser as any);
+      new ClientService();
 
       expect(BaseService).toHaveBeenCalled();
-      expect(BaseService).toHaveBeenCalledWith(Client, mockRepoAccesser);
+      expect(BaseService).toHaveBeenCalledWith(Client);
     });
   });
 });

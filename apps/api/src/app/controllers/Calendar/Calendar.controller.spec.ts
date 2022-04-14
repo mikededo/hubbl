@@ -1,6 +1,5 @@
-import * as log from 'npmlog';
 import * as camelCaseKeys from 'camelcase-keys';
-import { getRepository } from 'typeorm';
+import * as log from 'npmlog';
 
 import { Event, Person, Trainer } from '@hubbl/shared/models/entities';
 
@@ -13,9 +12,9 @@ import {
 } from '../../services';
 import * as validations from '../helpers/validations';
 import {
+  CalendarFetchCalenAppointmentsController,
   CalendarFetchEventAppointmentsController,
-  CalendarFetchEventsController,
-  CalendarFetchCalenAppointmentsController
+  CalendarFetchEventsController
 } from './Calendar.controller';
 
 jest.mock('../../services');
@@ -40,6 +39,7 @@ const createEvent = () => {
   event.startTime = '09:00:00';
   event.endTime = '10:00:00';
   event.appointmentCount = 5;
+  event.template = 1;
   event.date = { year: 2022, month: 6, day: 29 } as any;
 };
 
@@ -80,6 +80,7 @@ describe('Calendar controller', () => {
       leftJoinAndSelect: jest.fn().mockReturnThis(),
       loadAllRelationIds: jest.fn().mockReturnThis(),
       loadRelationCountAndMap: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
       getMany: jest.fn()
     };
     const mockEventService = {
@@ -114,11 +115,8 @@ describe('Calendar controller', () => {
       await CalendarFetchEventsController.execute({} as any, {} as any);
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
       expect(EventService).toHaveBeenCalledTimes(1);
-      expect(EventService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return the list of events for the selected calendar', async () => {
@@ -197,16 +195,35 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledWith({
         relations: ['date', 'calendar']
       });
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        1,
         'e.trainer',
         't'
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        2,
         't.person',
         'p'
       );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        3,
+        'e.eventType',
+        'tt'
+      );
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+        4,
+        'e.template',
+        'tpl'
+      );
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith({
+        'e.date.year': 'ASC',
+        'e.date.month': 'ASC',
+        'e.date.day': 'ASC',
+        'e.startTime': 'ASC'
+      });
       expect(mockEventList.map).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledTimes(1);
       expect(okSpy).toHaveBeenCalledWith(mockRes, eventList);
@@ -289,8 +306,9 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(2);
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
       failSpyAsserts(failSpy);
     });
   });
@@ -341,11 +359,8 @@ describe('Calendar controller', () => {
       );
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
       expect(EventAppointmentService).toHaveBeenCalledTimes(1);
-      expect(EventAppointmentService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return the list of users with appointments', async () => {
@@ -516,11 +531,8 @@ describe('Calendar controller', () => {
       );
 
       expect(GymZoneService).toHaveBeenCalledTimes(1);
-      expect(GymZoneService).toHaveBeenCalledWith(getRepository);
       expect(PersonService).toHaveBeenCalledTimes(1);
-      expect(PersonService).toHaveBeenCalledWith(getRepository);
       expect(CalendarAppointmentService).toHaveBeenCalledTimes(1);
-      expect(CalendarAppointmentService).toHaveBeenCalledWith(getRepository);
     });
 
     it('should return the list of users with appointments', async () => {

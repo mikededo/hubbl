@@ -165,9 +165,11 @@ describe('<AppProvider />', () => {
   });
 
   describe('fetcher', () => {
-    const fetcherSpy = jest.spyOn(Api, 'fetcher').mockResolvedValue({} as any);
-
     it('should be defined', async () => {
+      const fetcherSpy = jest
+        .spyOn(Api, 'fetcher')
+        .mockResolvedValue({} as any);
+
       const Component = () => {
         const { API } = useAppContext();
 
@@ -195,6 +197,43 @@ describe('<AppProvider />', () => {
         headers: { Authorization: 'Bearer null' },
         withCredentials: true
       });
+    });
+
+    it('should throw the error', async () => {
+      const fetcherSpy = jest
+        .spyOn(Api, 'fetcher')
+        .mockRejectedValue('Error thrown');
+
+      const Component = () => {
+        const { API } = useAppContext();
+
+        const handleOnClick = async () => {
+          try {
+            await API.fetcher('/url');
+          } catch (e) {
+            expect(e).toBeDefined();
+          }
+        };
+
+        return <button onClick={handleOnClick}>fetch</button>;
+      };
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText('fetch'));
+      });
+
+      expect(push).toHaveBeenCalledTimes(1);
+      expect(pop).toHaveBeenCalledTimes(1);
+      expect(fetcherSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -235,6 +274,120 @@ describe('<AppProvider />', () => {
           withCredentials: true
         }
       );
+    });
+
+    it('should throw the error', async () => {
+      const posterSpy = jest
+        .spyOn(Api, 'poster')
+        .mockRejectedValue('Error thrown');
+
+      const Component = () => {
+        const { API } = useAppContext();
+
+        const handleOnClick = async () => {
+          try {
+            await API.poster('/url', {});
+          } catch (e) {
+            expect(e).toBeDefined();
+          }
+        };
+
+        return <button onClick={handleOnClick}>fetch</button>;
+      };
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText('fetch'));
+      });
+
+      expect(push).toHaveBeenCalledTimes(1);
+      expect(pop).toHaveBeenCalledTimes(1);
+      expect(posterSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('putter', () => {
+    const putterSpy = jest.spyOn(Api, 'putter').mockResolvedValue({} as any);
+
+    it('should be defined', async () => {
+      const Component = () => {
+        const { API } = useAppContext();
+
+        return (
+          <button onClick={() => API.putter('/url', { id: 1 })}>post</button>
+        );
+      };
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText('post'));
+      });
+
+      expect(push).toHaveBeenCalledTimes(1);
+      expect(pop).toHaveBeenCalledTimes(1);
+      expect(putterSpy).toHaveBeenCalledTimes(1);
+      expect(putterSpy).toHaveBeenCalledWith(
+        '/url',
+        { id: 1 },
+        {
+          // Use null as token is not defined
+          headers: { Authorization: 'Bearer null' },
+          withCredentials: true
+        }
+      );
+    });
+
+    it('should throw the error', async () => {
+      const putterSpy = jest
+        .spyOn(Api, 'putter')
+        .mockRejectedValue('Error thrown');
+
+      const Component = () => {
+        const { API } = useAppContext();
+
+        const handleOnClick = async () => {
+          try {
+            await API.putter('/url', {});
+          } catch (e) {
+            expect(e).toBeDefined();
+          }
+        };
+
+        return <button onClick={handleOnClick}>fetch</button>;
+      };
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText('fetch'));
+      });
+
+      expect(push).toHaveBeenCalledTimes(1);
+      expect(pop).toHaveBeenCalledTimes(1);
+      expect(putterSpy).toHaveBeenCalledTimes(1);
     });
   });
 

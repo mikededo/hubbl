@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
 import { WorkerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
@@ -15,11 +14,11 @@ class IWorkerFetchController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new WorkerService(getRepository);
+      this.service = new WorkerService();
     }
 
     if (!this.personService) {
-      this.personService = new PersonService(getRepository);
+      this.personService = new PersonService();
     }
 
     const { token } = res.locals;
@@ -32,7 +31,7 @@ class IWorkerFetchController extends BaseController {
     try {
       // Check if the person exists
       // Get the person, if any
-      const person = await this.personService.findOne({ id: token.id });
+      const person = await this.personService.findOneBy({ id: token.id });
 
       if (!person) {
         return this.unauthorized(res, 'Person does not exist');
@@ -62,7 +61,7 @@ class IWorkerCreateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new WorkerService(getRepository);
+      this.service = new WorkerService();
     }
 
     return register({
@@ -86,7 +85,7 @@ class IWorkerLoginController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new WorkerService(getRepository);
+      this.service = new WorkerService();
     }
 
     return workerLogin({
@@ -110,11 +109,11 @@ class IWorkerUpdateController extends BaseController {
 
   protected async run(req: Request, res: Response): Promise<Response> {
     if (!this.service) {
-      this.service = new WorkerService(getRepository);
+      this.service = new WorkerService();
     }
 
     if (!this.ownerService) {
-      this.ownerService = new OwnerService(getRepository);
+      this.ownerService = new OwnerService();
     }
 
     return workerUpdate({

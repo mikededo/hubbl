@@ -7,6 +7,7 @@ import {
   fetcher as ApiFetcher,
   GymApi,
   poster as ApiPoster,
+  putter as ApiPutter,
   TokenApi,
   UserApi
 } from '@hubbl/data-access/api';
@@ -86,22 +87,51 @@ const useAppContextValue = ({
   const fetcher = async (url: string) => {
     onPushLoading();
 
-    return ApiFetcher(url, getAuthorizationConfig()).then((res) => {
-      onPopLoading();
+    return ApiFetcher(url, getAuthorizationConfig())
+      .then((res) => {
+        onPopLoading();
 
-      return res.data as never;
-    });
+        return res.data as never;
+      })
+      .catch((e) => {
+        onPopLoading();
+
+        throw e;
+      });
   };
 
   const poster = async <T,>(url: string, data: unknown) => {
     onPushLoading();
 
-    return ApiPoster<T>(url, data, getAuthorizationConfig()).then((res) => {
-      onPopLoading();
+    return ApiPoster<T>(url, data, getAuthorizationConfig())
+      .then((res) => {
+        onPopLoading();
 
-      return res.data as never;
-    });
+        return res.data as never;
+      })
+      .catch((e) => {
+        onPopLoading();
+
+        throw e;
+      });
   };
+
+  const putter = async <T,>(url: string, data: unknown) => {
+    onPushLoading();
+
+    return ApiPutter<T>(url, data, getAuthorizationConfig())
+      .then((res) => {
+        onPopLoading();
+
+        return res.data as never;
+      })
+      .catch((e) => {
+        onPopLoading();
+
+        throw e;
+      });
+  };
+
   /** Updaters **/
   /**
    * Updates the current user information
@@ -198,6 +228,7 @@ const useAppContextValue = ({
       login,
       fetcher,
       poster,
+      putter,
       user: { update: userUpdater },
       gym: { update: gymUpdater }
     }

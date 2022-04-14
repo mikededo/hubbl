@@ -3,15 +3,15 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { render, screen } from '@testing-library/react';
 
 import { EventTemplateFormFields } from '../../types';
-import EventTemplateLocation from './EventTemplateProperties';
+import EventTemplateProperties from './EventTemplateProperties';
 
 const Component = () => (
   <FormProvider {...useForm<EventTemplateFormFields>()}>
-    <EventTemplateLocation />
+    <EventTemplateProperties />
   </FormProvider>
 );
 
-describe('<EventTemplateLocation />', () => {
+describe('<EventTemplateProperties />', () => {
   it('should render properly', () => {
     const { container } = render(<Component />);
 
