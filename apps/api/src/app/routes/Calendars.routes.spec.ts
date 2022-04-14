@@ -45,4 +45,15 @@ describe('Calendar routes', () => {
 
     expect(executeSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('should call CalendarFetchTodayEventsController.execute', async () => {
+    const executeSpy = jest.spyOn(
+      controllers.CalendarFetchTodayEventsController,
+      'execute'
+    );
+
+    await supertest(app).get('/calendars/today');
+
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+  });
 });

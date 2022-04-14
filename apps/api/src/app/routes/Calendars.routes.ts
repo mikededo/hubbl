@@ -3,7 +3,8 @@ import { Router } from 'express';
 import {
   CalendarFetchEventsController,
   CalendarFetchEventAppointmentsController,
-  CalendarFetchCalenAppointmentsController
+  CalendarFetchCalenAppointmentsController,
+  CalendarFetchTodayEventsController
 } from '../controllers';
 import middlewares from '../middlewares';
 
@@ -31,6 +32,10 @@ CalendarRouter.get('/:id/events/:eId', middlewares.auth, (req, res) => {
  */
 CalendarRouter.get('/:id/calendars', middlewares.auth, (req, res) => {
   CalendarFetchCalenAppointmentsController.execute(req, res);
+});
+
+CalendarRouter.get('/today', middlewares.auth, (req, res) => {
+  CalendarFetchTodayEventsController.execute(req, res);
 });
 
 export default CalendarRouter;

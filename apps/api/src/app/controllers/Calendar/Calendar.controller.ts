@@ -13,6 +13,7 @@ import {
 } from '../../services';
 import BaseController from '../Base';
 import { userAccessToCalendar } from '../helpers';
+import { Gym, Person } from '@hubbl/shared/models/entities';
 
 abstract class CalendarFetchBase extends BaseController {
   protected gymZoneService: GymZoneService = undefined;
@@ -339,3 +340,73 @@ const fetchCalenAppointmentsInstance =
 
 export const CalendarFetchCalenAppointmentsController =
   fetchCalenAppointmentsInstance;
+
+class ICalendarFetchTodayEventsController extends BaseController {
+  protected eventService: EventService = undefined;
+  protected personService: PersonService = undefined;
+
+  protected async run(req: Request, res: Response): Promise<Response> {
+    if (!this.eventService) {
+      this.eventService = new EventService();
+    }
+
+    if (!this.personService) {
+      this.personService = new PersonService();
+    }
+
+    const { token } = res.locals;
+
+    let person: Person;
+    try {
+      // Search for the person
+      person = await this.personService.findOneBy({ id: token.id });
+
+      if (!person) {
+        return this.clientError(res, 'Person does not exist.');
+      }
+    } catch (e) {
+      return this.onFail(res, e, 'fetch');
+    }
+
+    try {
+      // Find the events of the gym
+      const today = new Date();
+      const result = await this.eventService
+        .createQueryBuilder({ alias: 'e' })
+        .where('e.gym.id = :gymId', { gymId: (person.gym as Gym).id })
+        .andWhere('e.date.year = :year', { year: today.getFullYear() })
+        .andWhere('e.date.month = :month', { month: today.getMonth() + 1 })
+        .andWhere('e.date.day = :day', { day: today.getDate() })
+        .loadAllRelationIds({ relations: ['date', 'calendar'] })
+        .leftJoinAndSelect('e.trainer', 't')
+        .leftJoinAndSelect('t.person', 'p')
+        .leftJoinAndSelect('e.eventType', 'tt')
+        .leftJoinAndSelect('e.template', 'tpl')
+        .loadRelationCountAndMap(
+          'e.appointmentCount',
+          'e.appointments',
+          'ea',
+          (qb) => qb.where('ea.cancelled = false')
+        )
+        .orderBy({
+          'e.date.year': 'ASC',
+          'e.date.month': 'ASC',
+          'e.date.day': 'ASC',
+          'e.startTime': 'ASC'
+        })
+        .cache(true)
+        .getMany();
+
+      return this.ok(
+        res,
+        result.map((et) => EventDTO.fromClass(et))
+      );
+    } catch (e) {
+      return this.onFail(res, e, 'fetch');
+    }
+  }
+}
+
+const fetchTodayEventsInstance = new ICalendarFetchTodayEventsController();
+
+export const CalendarFetchTodayEventsController = fetchTodayEventsInstance;
