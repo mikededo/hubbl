@@ -67,13 +67,16 @@ const eventsResponse = (week: number): any[] => [
     capacity: 5,
     startTime: '10:00:00',
     endTime: '12:00:00',
-    eventType: { id: 1, name: 'Event type', labelColor: AppPalette.RED },
+    eventType: { id: 1, name: 'EventTypeOne', labelColor: AppPalette.RED },
     date: {
       year: initialWeekDate(week).getFullYear(),
       month: initialWeekDate(week).getMonth(),
       day: initialWeekDate(week).getDate()
     },
-    template: { id: 1 },
+    maskRequired: true,
+    covidPassport: true,
+    difficulty: 3,
+    template: null,
     trainer: { id: 1, name: 'Trainer' },
     appointmentCount: 1
   },
@@ -84,7 +87,7 @@ const eventsResponse = (week: number): any[] => [
     capacity: 5,
     startTime: '12:00:00',
     endTime: '14:00:00',
-    eventType: { id: 1, name: 'Event type', labelColor: AppPalette.EMERALD },
+    eventType: { id: 2, name: 'EventTypeTwo', labelColor: AppPalette.EMERALD },
     date: {
       year: initialWeekDate(week).getFullYear(),
       month: initialWeekDate(week).getMonth(),
@@ -128,8 +131,8 @@ const dialogEventTypeResponse = {
 };
 const dialogEventTemplatesResponse = {
   data: [
-    { id: 1, name: 'EventTemplateOne' },
-    { id: 2, name: 'EventTemplateTwo' }
+    { id: 1, name: 'EventTemplateOne', type: { id: 1, name: 'EventTypeOne' } },
+    { id: 2, name: 'EventTemplateTwo', type: { id: 1, name: 'EventTypeOne' } }
   ]
 };
 const dialogGymZonesResponse = {
@@ -393,7 +396,7 @@ describe('Gym zone page', () => {
     expect(mutateSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should call onError if virtual gym creation fails', async () => {
+  it('should call onError if event creation fails', async () => {
     jest.useFakeTimers().setSystemTime(new Date('2022/04/04'));
     poster.mockRejectedValue({
       // Mock axios error response
@@ -459,7 +462,7 @@ describe('Gym zone page', () => {
     expect(mutateSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should update an event', async () => {
+  it('should call onError if event updation fails', async () => {
     jest.useFakeTimers().setSystemTime(new Date('2022/04/04'));
     putter.mockRejectedValue({
       // Mock axios error response
@@ -470,7 +473,7 @@ describe('Gym zone page', () => {
       renderPage();
     });
     await act(async () => {
-      userEvent.click(screen.getByText('EventOne').parentElement.parentElement);
+      fireEvent.click(screen.getByText('EventOne').parentElement.parentElement);
     });
 
     expect(screen.getByText('Edit an event')).toBeInTheDocument();
@@ -481,7 +484,7 @@ describe('Gym zone page', () => {
       });
     });
     await act(async () => {
-      userEvent.click(screen.getByText('Save'));
+      fireEvent.click(screen.getByText('Save'));
     });
 
     // Api calls

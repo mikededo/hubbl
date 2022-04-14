@@ -65,14 +65,13 @@ const CalendarEventDialog = ({
     shouldFocusError: false
   });
 
-  console.log(methods.formState.errors)
-
   const handleOnSubmit = (data: CalendarEventFormFields) => {
     onSubmit?.(data);
   };
 
   useEffect(() => {
     if (props.open) {
+      console.log({defaultValues})
       methods.reset({
         ...defaultValues,
         type: defaultValues?.type ?? '',
