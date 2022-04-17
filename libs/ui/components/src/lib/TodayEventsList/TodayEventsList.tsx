@@ -16,7 +16,13 @@ const PaddedStack = styled(Stack)(({ theme }) => ({
   overflow: 'auto'
 }));
 
+const EmptyText = styled(Typography)({ textAlign: 'center', margin: 'auto' });
+
 export type TodayEventsListProps = {
+  /**
+   * List of events to display. If empty will display
+   * an empty message
+   */
   events: EventDTO[];
 };
 
@@ -30,7 +36,9 @@ const TodayEventsList = ({ events }: TodayEventsListProps): JSX.Element => (
       {events.length ? (
         events.map((event) => <TodayEventsListItem event={event} />)
       ) : (
-        <Typography>There are no event's left for today!</Typography>
+        <EmptyText textAlign="center" margin="auto">
+          There are no event's left for today!
+        </EmptyText>
       )}
     </PaddedStack>
   </Wrapper>
