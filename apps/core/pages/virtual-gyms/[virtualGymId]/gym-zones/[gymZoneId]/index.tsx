@@ -520,7 +520,7 @@ const GymZone = () => {
 
 GymZone.getLayout = (page: ReactElement) => (
   <GeneralPages>
-    <BaseLayout header="Gym name" selected="virtualGyms" expanded>
+    <BaseLayout header="Gym name" selected="virtualGyms">
       {page}
     </BaseLayout>
   </GeneralPages>

@@ -1,5 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen, fireEvent } from '@testing-library/react';
 
 import TodayEventsList from './TodayEventsList';
 
@@ -79,5 +79,21 @@ describe('<TodayEventsList />', () => {
     expect(
       screen.getByText("There are no event's left for today!")
     ).toBeInTheDocument();
+  });
+
+  it('should hide the list', async () => {
+    render(
+      <ThemeProvider theme={createTheme()}>
+        <TodayEventsList events={[]} />
+      </ThemeProvider>
+    );
+
+    expect(screen.getByLabelText('hide-events-list'));
+
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText('hide-events-list'));
+    });
+
+    expect(screen.getByLabelText('show-events-list'));
   });
 });
