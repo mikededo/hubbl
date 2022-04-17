@@ -25,13 +25,13 @@ jest.mock('@mui/material', () => {
 
 const renderPage = () =>
   render(
-    <AppProvider>
-      <ThemeProvider theme={createTheme()}>
-        <ToastContext>
+    <ToastContext>
+      <AppProvider>
+        <ThemeProvider theme={createTheme()}>
           <Settings />
-        </ToastContext>
-      </ThemeProvider>
-    </AppProvider>
+        </ThemeProvider>
+      </AppProvider>
+    </ToastContext>
   );
 
 describe('Settings page', () => {

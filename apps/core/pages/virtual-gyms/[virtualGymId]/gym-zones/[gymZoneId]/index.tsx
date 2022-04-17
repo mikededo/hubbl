@@ -3,11 +3,7 @@ import { ReactElement, useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-import {
-  useAppContext,
-  useLoadingContext,
-  useToastContext
-} from '@hubbl/data-access/contexts';
+import { useAppContext, useToastContext } from '@hubbl/data-access/contexts';
 import {
   EventDTO,
   EventTemplateDTO,
@@ -16,6 +12,7 @@ import {
   TrainerDTO,
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
+import { CalendarDate } from '@hubbl/shared/models/entities';
 import { EmptyHandler, Hour, SingleHandler } from '@hubbl/shared/types';
 import {
   Calendar,
@@ -24,6 +21,7 @@ import {
   ContentCard,
   EventSpot,
   PageHeader,
+  TodayEventsList,
   useCalendarEventDialog
 } from '@hubbl/ui/components';
 import { weekInitialDay } from '@hubbl/utils';
@@ -173,14 +171,24 @@ const parseFormDataFields = (
   eventType: formData.type
 });
 
+const isToday = ({ year, month, day }: CalendarDate) => {
+  const today = new Date();
+
+  return (
+    today.getFullYear() === year &&
+    today.getMonth() === month - 1 &&
+    today.getDate() === day
+  );
+};
+
 const GymZone = () => {
   const router = useRouter();
-  const { onPopLoading, onPushLoading } = useLoadingContext();
   const { onError, onSuccess } = useToastContext();
   const {
     user,
     token,
-    API: { fetcher, poster, putter }
+    todayEvents,
+    API: { fetcher, poster, putter, todayEvents: todayEventsApi }
   } = useAppContext();
 
   const virtualGymHref = `/virtual-gyms/${router.query.virtualGymId}`;
@@ -286,7 +294,7 @@ const GymZone = () => {
       setWeekPage((prev) => prev + by);
     };
 
-  const handleOnEventClick: SingleHandler<EventDTO> = (event) => {
+  const handleOnEventClick: SingleHandler<EventDTO> = useCallback((event) => {
     const { date } = event;
 
     setEventDialog({
@@ -305,32 +313,34 @@ const GymZone = () => {
       trainer: (event.trainer as TrainerDTO<number>).id,
       type: (event.eventType as EventTypeDTO).id
     });
-  };
+  }, []);
 
-  const handleOnSpotClick: SingleHandler<EventSpot> = ({ hour, day }) => {
-    const clickedDate = weekInitialDay(weekPage);
+  const handleOnSpotClick: SingleHandler<EventSpot> = useCallback(
+    ({ hour, day }) => {
+      const clickedDate = weekInitialDay(weekPage);
 
-    clickedDate.setDate(
-      clickedDate.getDate() + (!day ? 7 : day) - clickedDate.getDay()
-    );
+      clickedDate.setDate(
+        clickedDate.getDate() + (!day ? 7 : day) - clickedDate.getDay()
+      );
 
-    setEventDialog({
-      status: 'create',
-      date: clickedDate,
-      startTime: `${`${hour}`.padStart(2, '0')}:00`,
-      endTime: `${`${hour + 1}`.padStart(2, '0')}:00`
-    });
-  };
+      setEventDialog({
+        status: 'create',
+        date: clickedDate,
+        startTime: `${`${hour}`.padStart(2, '0')}:00`,
+        endTime: `${`${hour + 1}`.padStart(2, '0')}:00`
+      });
+    },
+    [weekPage]
+  );
 
-  const handleOnCloseEventDialog: EmptyHandler = () => {
+  const handleOnCloseEventDialog: EmptyHandler = useCallback(() => {
     setEventDialog(InitialEventDialogState);
-  };
+  }, []);
 
   const handleOnSubmitEvent: SingleHandler<CalendarEventFormFields> = async (
     formData
   ) => {
     setEventDialog(InitialEventDialogState);
-    onPushLoading();
 
     try {
       const created = await poster<EventDTO>('events', {
@@ -338,6 +348,11 @@ const GymZone = () => {
         calendar: gymZone.data.calendar,
         gym: user.gym.id
       });
+
+      // Revalidate if event created is from today
+      if (isToday(created.date)) {
+        todayEventsApi.revalidate();
+      }
 
       // Set appointment count of created event
       created.appointmentCount = 0;
@@ -353,8 +368,6 @@ const GymZone = () => {
       // Get message from axios error
       onError(`${e.response.data.message}`);
     }
-
-    onPopLoading();
   };
 
   const handleOnUpdateEvent: SingleHandler<CalendarEventFormFields> = async (
@@ -362,7 +375,6 @@ const GymZone = () => {
   ) => {
     const { id } = eventDialog;
     setEventDialog(InitialEventDialogState);
-    onPushLoading();
 
     try {
       const updated = parseFormDataFields(formData);
@@ -373,6 +385,11 @@ const GymZone = () => {
         calendar: gymZone.data.calendar,
         gym: user.gym.id
       });
+
+      // Revalidate if event updated is from today
+      if (isToday(updated.date as CalendarDate)) {
+        todayEventsApi.revalidate();
+      }
 
       // Find element to update
       const outdated = {
@@ -397,8 +414,6 @@ const GymZone = () => {
       // Get message from axios error
       onError(`${e.response.data.message}`);
     }
-
-    onPopLoading();
   };
 
   // Use else if so router is only called once
@@ -412,6 +427,8 @@ const GymZone = () => {
     onError(`${events.error}`);
   }
 
+  // FInish today's events testing #time 30m
+
   return (
     <>
       <PageHeader
@@ -423,46 +440,50 @@ const GymZone = () => {
         ]}
       />
 
-      <Stack spacing={1}>
-        <Stack direction="row" justifyContent="flex-end" alignItems="center">
-          <IconButton
-            aria-label="prev-week"
-            size="small"
-            onClick={handleOnChangeWeekPage(1)}
-          >
-            <ChevronLeft fontSize="large" />
-          </IconButton>
+      <Stack direction="row" justifyContent="space-between" spacing={2}>
+        <Stack spacing={1}>
+          <Stack direction="row" justifyContent="flex-end" alignItems="center">
+            <IconButton
+              aria-label="prev-week"
+              size="small"
+              onClick={handleOnChangeWeekPage(1)}
+            >
+              <ChevronLeft fontSize="large" />
+            </IconButton>
 
-          <IconButton
-            aria-label="next-week"
-            size="small"
-            onClick={handleOnChangeWeekPage(-1)}
-          >
-            <ChevronRight fontSize="large" />
-          </IconButton>
+            <IconButton
+              aria-label="next-week"
+              size="small"
+              onClick={handleOnChangeWeekPage(-1)}
+            >
+              <ChevronRight fontSize="large" />
+            </IconButton>
+          </Stack>
+
+          <CalendarContentCard>
+            <Stack spacing={2}>
+              <SidePadded>
+                <Typography variant="h6">
+                  Calendar - {gymZone.data?.name}
+                </Typography>
+
+                <Typography>{calendarDateRange()}</Typography>
+              </SidePadded>
+
+              <Calendar
+                currentWeek={!weekPage}
+                pastWeek={weekPage > 0}
+                events={events.data ?? []}
+                initialHour={hourRange.initial}
+                finalHour={hourRange.final}
+                onEventClick={handleOnEventClick}
+                onSpotClick={handleOnSpotClick}
+              />
+            </Stack>
+          </CalendarContentCard>
         </Stack>
 
-        <CalendarContentCard>
-          <Stack spacing={2}>
-            <SidePadded>
-              <Typography variant="h6">
-                Calendar - {gymZone.data?.name}
-              </Typography>
-
-              <Typography>{calendarDateRange()}</Typography>
-            </SidePadded>
-
-            <Calendar
-              currentWeek={!weekPage}
-              pastWeek={weekPage > 0}
-              events={events.data ?? []}
-              initialHour={hourRange.initial}
-              finalHour={hourRange.final}
-              onEventClick={handleOnEventClick}
-              onSpotClick={handleOnSpotClick}
-            />
-          </Stack>
-        </CalendarContentCard>
+        <TodayEventsList events={todayEvents} />
       </Stack>
 
       <CalendarEventDialog
@@ -499,7 +520,7 @@ const GymZone = () => {
 
 GymZone.getLayout = (page: ReactElement) => (
   <GeneralPages>
-    <BaseLayout header="Gym name" selected="virtualGyms">
+    <BaseLayout header="Gym name" selected="virtualGyms" expanded>
       {page}
     </BaseLayout>
   </GeneralPages>
