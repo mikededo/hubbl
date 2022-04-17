@@ -270,6 +270,36 @@ describe('Gym zone page', () => {
     });
   };
 
+  const createEvent = async (
+    timerDate: string,
+    dateInput: string,
+    spot: number
+  ) => {
+    jest.useFakeTimers().setSystemTime(new Date(timerDate));
+    poster.mockResolvedValue({ ...eventsResponse(0)[0], id: 10 });
+
+    await act(async () => {
+      renderPage();
+    });
+    await act(async () => {
+      console.log({ length: screen.getAllByTestId('calendar-spot').length });
+      fireEvent.click(screen.getAllByTestId('calendar-spot')[spot]);
+    });
+
+    // Check dialog is opened with wanted fields selected
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('dd/mm/yyyy')).toHaveValue(dateInput);
+    expect(screen.getByPlaceholderText('09:00')).toHaveValue('10:00');
+    expect(screen.getByPlaceholderText('10:00')).toHaveValue('11:00');
+
+    // Fill the form
+    await fillEventForm();
+
+    // Api calls
+    expect(poster).toHaveBeenCalledTimes(1);
+    expect(mutateSpy).toHaveBeenCalledTimes(1);
+  };
+
   it('should render successfully', () => {
     const { baseElement } = renderPage();
 
@@ -369,31 +399,12 @@ describe('Gym zone page', () => {
     });
   });
 
-  it('should post a new event', async () => {
-    jest.useFakeTimers().setSystemTime(new Date('2022/04/04'));
-    poster.mockResolvedValue({ ...eventsResponse(0)[0], id: 10 });
+  it('should post a new event (on a non sunday day)', async () => {
+    await createEvent('2022/04/04', '04/04/2022', 1);
+  });
 
-    await act(async () => {
-      renderPage();
-    });
-    await act(async () => {
-      // Select the second so that the placeholder does not match
-      // the hours
-      fireEvent.click(screen.getAllByTestId('calendar-spot')[1]);
-    });
-
-    // Check dialog is opened with wanted fields selected
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('dd/mm/yyyy')).toHaveValue('04/04/2022');
-    expect(screen.getByPlaceholderText('09:00')).toHaveValue('10:00');
-    expect(screen.getByPlaceholderText('10:00')).toHaveValue('11:00');
-
-    // Fill the form
-    await fillEventForm();
-
-    // Api calls
-    expect(poster).toHaveBeenCalledTimes(1);
-    expect(mutateSpy).toHaveBeenCalledTimes(1);
+  it('should post a new event (on a sunday day)', async () => {
+    await createEvent('2022/04/17', '17/04/2022', 73);
   });
 
   it('should call onError if event creation fails', async () => {

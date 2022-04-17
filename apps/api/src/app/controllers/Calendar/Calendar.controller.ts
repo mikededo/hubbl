@@ -394,7 +394,6 @@ class ICalendarFetchTodayEventsController extends BaseController {
           'e.date.day': 'ASC',
           'e.startTime': 'ASC'
         })
-        .cache(true)
         .getMany();
 
       return this.ok(

@@ -310,7 +310,9 @@ const GymZone = () => {
   const handleOnSpotClick: SingleHandler<EventSpot> = ({ hour, day }) => {
     const clickedDate = weekInitialDay(weekPage);
 
-    clickedDate.setDate(clickedDate.getDate() + day - clickedDate.getDay());
+    clickedDate.setDate(
+      clickedDate.getDate() + (!day ? 7 : day) - clickedDate.getDay()
+    );
 
     setEventDialog({
       status: 'create',
