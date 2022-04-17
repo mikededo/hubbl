@@ -25,8 +25,11 @@ describe('<DashboardEvent />', () => {
       screen.getByText(
         `${event.date.day}/${`${event.date.month}`.padStart(2, '0')}/${
           event.date.year
-        } ${event.startTime}-${event.endTime}`
+        }`
       )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`${event.startTime}-${event.endTime}`)
     ).toBeInTheDocument();
     expect(`${event.appointmentCount}/${event.capacity}`);
   });

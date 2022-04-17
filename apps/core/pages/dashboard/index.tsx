@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 
 import { useAppContext } from '@hubbl/data-access/contexts';
-import { PageHeader } from '@hubbl/ui/components';
+import { PageHeader, TodayEventsList } from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages, Pages } from '../../components';
 import { Grid, styled } from '@mui/material';
@@ -14,7 +14,7 @@ const ResponsiveGrid = styled(Grid)(({ theme }) => ({
 }));
 
 const Dashboard = () => {
-  const { user } = useAppContext();
+  const { user, todayEvents } = useAppContext();
 
   return (
     <>
@@ -37,9 +37,11 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item>
-          <Pages.Dashboard.DashboardTrainers />
+          <Pages.Dashboard.DashboardEvents />
         </Grid>
       </ResponsiveGrid>
+
+      <TodayEventsList events={todayEvents} />
     </>
   );
 };
