@@ -13,7 +13,8 @@ import {
   GymZoneDialog,
   GymZoneFormFields,
   GymZoneGrid,
-  PageHeader
+  PageHeader,
+  TodayEventsList
 } from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages } from '../../../components';
@@ -39,6 +40,7 @@ const VirtualGym = () => {
   const {
     user,
     token,
+    todayEvents,
     API: { fetcher, poster }
   } = useAppContext();
   const { data, error, mutate } = useSWR<VirtualGymDTO>(
@@ -145,6 +147,8 @@ const VirtualGym = () => {
         gymZones={nonClassGymZones}
         onAddGymZone={handleOnAddGymZone(false)}
       />
+
+      <TodayEventsList events={todayEvents} />
 
       <GymZoneDialog
         open={!!gymZoneDialog}

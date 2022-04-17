@@ -100,6 +100,7 @@ describe('Virtual gym page', () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       user: { gym: { id: 1 } },
       token: { parsed: {} },
+      todayEvents: [],
       API: { fetcher, poster }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -205,6 +206,7 @@ describe('Virtual gym page', () => {
   it('should not call fetcher if token is null', async () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: undefined },
+      todayEvents: [],
       API: { fetcher }
     });
     swrSpy.mockImplementation(() => ({} as any));
