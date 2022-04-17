@@ -23,6 +23,7 @@ const AnimatedWrapper = styled(motion.div)<PaperProps>(({ theme }) => ({
   height: `calc(100vh - ${theme.spacing(20.5)})`,
   position: 'fixed',
   right: theme.spacing(4),
+  top: theme.spacing(16.5),
   zIndex: theme.zIndex.drawer,
   [theme.breakpoints.down('md')]: { right: theme.spacing(-12) }
 }));
@@ -40,6 +41,7 @@ const IconContentCard = styled(ContentCard)(({ theme }) => ({
   height: theme.spacing(6),
   width: theme.spacing(6),
   right: theme.spacing(4),
+  top: theme.spacing(16.5),
   position: 'fixed',
   display: 'flex',
   alignItems: 'center',

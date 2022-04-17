@@ -440,51 +440,49 @@ const GymZone = () => {
         ]}
       />
 
-      <Stack direction="row" justifyContent="space-between" spacing={2}>
-        <Stack spacing={1}>
-          <Stack direction="row" justifyContent="flex-end" alignItems="center">
-            <IconButton
-              aria-label="prev-week"
-              size="small"
-              onClick={handleOnChangeWeekPage(1)}
-            >
-              <ChevronLeft fontSize="large" />
-            </IconButton>
+      <Stack spacing={1}>
+        <Stack direction="row" justifyContent="flex-end" alignItems="center">
+          <IconButton
+            aria-label="prev-week"
+            size="small"
+            onClick={handleOnChangeWeekPage(1)}
+          >
+            <ChevronLeft fontSize="large" />
+          </IconButton>
 
-            <IconButton
-              aria-label="next-week"
-              size="small"
-              onClick={handleOnChangeWeekPage(-1)}
-            >
-              <ChevronRight fontSize="large" />
-            </IconButton>
-          </Stack>
-
-          <CalendarContentCard>
-            <Stack spacing={2}>
-              <SidePadded>
-                <Typography variant="h6">
-                  Calendar - {gymZone.data?.name}
-                </Typography>
-
-                <Typography>{calendarDateRange()}</Typography>
-              </SidePadded>
-
-              <Calendar
-                currentWeek={!weekPage}
-                pastWeek={weekPage > 0}
-                events={events.data ?? []}
-                initialHour={hourRange.initial}
-                finalHour={hourRange.final}
-                onEventClick={handleOnEventClick}
-                onSpotClick={handleOnSpotClick}
-              />
-            </Stack>
-          </CalendarContentCard>
+          <IconButton
+            aria-label="next-week"
+            size="small"
+            onClick={handleOnChangeWeekPage(-1)}
+          >
+            <ChevronRight fontSize="large" />
+          </IconButton>
         </Stack>
 
-        <TodayEventsList events={todayEvents} />
+        <CalendarContentCard>
+          <Stack spacing={2}>
+            <SidePadded>
+              <Typography variant="h6">
+                Calendar - {gymZone.data?.name}
+              </Typography>
+
+              <Typography>{calendarDateRange()}</Typography>
+            </SidePadded>
+
+            <Calendar
+              currentWeek={!weekPage}
+              pastWeek={weekPage > 0}
+              events={events.data ?? []}
+              initialHour={hourRange.initial}
+              finalHour={hourRange.final}
+              onEventClick={handleOnEventClick}
+              onSpotClick={handleOnSpotClick}
+            />
+          </Stack>
+        </CalendarContentCard>
       </Stack>
+
+      <TodayEventsList events={todayEvents} />
 
       <CalendarEventDialog
         title={`${
