@@ -1,13 +1,13 @@
-import { act } from 'react-dom/test-utils';
 import * as jwt from 'jsonwebtoken';
+import { act } from 'react-dom/test-utils';
 
 import * as Api from '@hubbl/data-access/api';
 import { GymApi, TokenApi, UserApi } from '@hubbl/data-access/api';
 import { fireEvent, render, screen } from '@testing-library/react';
 
+import { LoadingContext, useLoadingContext } from '../Loading';
 import { ToastContext } from '../Toast';
 import { AppProvider, useAppContext } from './App.context';
-import { LoadingContext, useLoadingContext } from '../Loading';
 
 jest.mock('@hubbl/data-access/api');
 jest.mock('../Loading', () => {
@@ -103,12 +103,13 @@ describe('<AppProvider />', () => {
     } as any);
   });
 
-  it('should call validate on mount', async () => {
+  it('should initialise on mount', async () => {
     const decodeSpy = jest.spyOn(jwt, 'decode');
     const validateSpy = jest.spyOn(TokenApi, 'validate').mockResolvedValue({
-      token: '',
-      user: {}
+      token: 'Token',
+      user: { id: 1 }
     });
+    const fetcherSpy = jest.spyOn(Api, 'fetcher').mockResolvedValue([] as any);
 
     await act(async () => {
       render(
@@ -119,8 +120,41 @@ describe('<AppProvider />', () => {
     });
 
     expect(validateSpy).toHaveBeenCalled();
+    expect(fetcherSpy).toHaveBeenCalledTimes(1);
+    // Should be an authorized call
+    expect(fetcherSpy).toHaveBeenCalledWith('/calendars/today', {
+      headers: { Authorization: 'Bearer Token' },
+      withCredentials: true
+    });
     expect(decodeSpy).toHaveBeenCalledTimes(1);
-    expect(decodeSpy).toHaveBeenCalledWith('');
+    expect(decodeSpy).toHaveBeenCalledWith('Token');
+  });
+
+  it('should call onError if fetching today events fails', async () => {
+    const decodeSpy = jest.spyOn(jwt, 'decode');
+    const validateSpy = jest.spyOn(TokenApi, 'validate').mockResolvedValue({
+      token: 'Token',
+      user: { id: 1 }
+    });
+    const fetcherSpy = jest
+      .spyOn(Api, 'fetcher')
+      .mockRejectedValue('Error message');
+
+    await act(async () => {
+      render(
+        <ToastContext>
+          <AppProvider>
+            <div />
+          </AppProvider>
+        </ToastContext>
+      );
+    });
+
+    expect(validateSpy).toHaveBeenCalled();
+    expect(fetcherSpy).toHaveBeenCalledTimes(1);
+    expect(decodeSpy).toHaveBeenCalledTimes(1);
+    expect(decodeSpy).toHaveBeenCalledWith('Token');
+    expect(await screen.findByText('Error message')).toBeInTheDocument();
   });
 
   it('should set state token to null', async () => {
@@ -395,6 +429,8 @@ describe('<AppProvider />', () => {
     describe('updater', () => {
       beforeEach(() => {
         jest.clearAllMocks();
+
+        jest.spyOn(Api, 'fetcher').mockResolvedValue({} as any);
       });
 
       const updaterSuccess = async (by: 'owner' | 'worker' | 'client') => {
@@ -498,7 +534,7 @@ describe('<AppProvider />', () => {
         });
 
         expect(updateSpy).toHaveBeenCalledTimes(1);
-        expect(screen.getByText('Error message')).toBeInTheDocument();
+        expect(await screen.findByText('Error message')).toBeInTheDocument();
       });
 
       it('should not call update if user or token not sets', async () => {
@@ -543,6 +579,8 @@ describe('<AppProvider />', () => {
     describe('update', () => {
       beforeEach(() => {
         jest.clearAllMocks();
+
+        jest.spyOn(Api, 'fetcher').mockResolvedValue({} as any);
       });
 
       it('should update a gym', async () => {

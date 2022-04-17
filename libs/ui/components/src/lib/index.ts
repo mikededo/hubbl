@@ -10,6 +10,7 @@ import LoadingButton from './LoadingButton';
 import PageHeader from './PageHeader';
 import SelectInput from './SelectInput';
 import SideNav from './SideNav';
+import TodayEventsList from './TodayEventsList';
 import VirtualGymList from './VirtualGymList';
 
 export {
@@ -25,6 +26,7 @@ export {
   PageHeader,
   SelectInput,
   SideNav,
+  TodayEventsList,
   VirtualGymList
 };
 
