@@ -1,4 +1,10 @@
-import React, { createContext, memo, useContext, useState } from 'react';
+import React, {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useState
+} from 'react';
 
 import { Alert, Slide, SlideProps, Snackbar } from '@mui/material';
 
@@ -34,37 +40,37 @@ const ToastProvider = ({ children }: ToastContextProps): JSX.Element => {
     success: { value: null, visible: false }
   });
 
-  const onError = (message: string) => {
+  const onError = useCallback((message: string) => {
     setState((prev) => ({
       error: { visible: true, value: message },
       info: { ...prev.info, visible: false },
       success: { ...prev.success, visible: false }
     }));
-  };
+  }, []);
 
-  const onInfo = (message: string) => {
+  const onInfo = useCallback((message: string) => {
     setState((prev) => ({
       error: { ...prev.error, visible: false },
       info: { visible: true, value: message },
       success: { ...prev.success, visible: false }
     }));
-  };
+  }, []);
 
-  const onSuccess = (message: string) => {
+  const onSuccess = useCallback((message: string) => {
     setState((prev) => ({
       error: { ...prev.error, visible: false },
       info: { ...prev.info, visible: false },
       success: { visible: true, value: message }
     }));
-  };
+  }, []);
 
-  const handleOnHide = () => {
+  const handleOnHide = useCallback(() => {
     setState((prev) => ({
       error: { ...prev.error, visible: false },
       info: { ...prev.info, visible: false },
       success: { ...prev.success, visible: false }
     }));
-  };
+  }, []);
 
   return (
     <>

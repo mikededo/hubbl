@@ -3,6 +3,7 @@ import { PartialDeep } from 'type-fest';
 
 import {
   ClientDTO,
+  EventDTO,
   GymDTO,
   OwnerDTO,
   PersonDTO,
@@ -68,9 +69,22 @@ export type GymApiType = {
   update: (data: GymUpdatableFields) => void;
 };
 
+/**
+ * Api functions (helpers) that allow the modification of 
+ * today events of the app state
+ */
+export type TodayEventsApiType = {
+  /**
+   * Revalidates the list of today's events by refetching
+   * such list
+   */
+  revalidate: () => void;
+}
+
 export type AppContextValue = {
   token: TokenType | null;
   user: UserType | null;
+  todayEvents: EventDTO[];
   API: {
     loading: boolean;
     signup: SignUpType;
@@ -80,5 +94,6 @@ export type AppContextValue = {
     putter: PutterType;
     user: UserApiType;
     gym: GymApiType;
+    todayEvents: TodayEventsApiType;
   };
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { AxiosRequestConfig } from 'axios';
 import { decode } from 'jsonwebtoken';
@@ -11,7 +11,12 @@ import {
   TokenApi,
   UserApi
 } from '@hubbl/data-access/api';
-import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
+import {
+  ClientDTO,
+  EventDTO,
+  OwnerDTO,
+  WorkerDTO
+} from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 import { EmptyHandler, ParsedToken } from '@hubbl/shared/types';
 
@@ -45,13 +50,19 @@ const useAppContextValue = ({
   // Current active user
   const [user, setUser] = useState<UserType | null>(null);
 
+  // List of today events
+  const [todayEvents, setTodayEvents] = useState<EventDTO[]>([]);
+
   // Loading state of the application on user/gym calls
   const [loading, setLoading] = useState(false);
 
-  const getAuthorizationConfig = (): AxiosRequestConfig => ({
-    headers: { Authorization: `Bearer ${token}` },
-    withCredentials: true
-  });
+  const getAuthorizationConfig = useCallback(
+    (): AxiosRequestConfig => ({
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true
+    }),
+    [token]
+  );
 
   const signup: SignUpType = async (type, data) => {
     setLoading(true);
@@ -84,21 +95,24 @@ const useAppContextValue = ({
     }
   };
 
-  const fetcher = async (url: string) => {
-    onPushLoading();
+  const fetcher = useCallback(
+    async (url: string) => {
+      onPushLoading();
 
-    return ApiFetcher(url, getAuthorizationConfig())
-      .then((res) => {
-        onPopLoading();
+      return ApiFetcher(url, getAuthorizationConfig())
+        .then((res) => {
+          onPopLoading();
 
-        return res.data as never;
-      })
-      .catch((e) => {
-        onPopLoading();
+          return res.data as never;
+        })
+        .catch((e) => {
+          onPopLoading();
 
-        throw e;
-      });
-  };
+          throw e;
+        });
+    },
+    [getAuthorizationConfig, onPopLoading, onPushLoading]
+  );
 
   const poster = async <T,>(url: string, data: unknown) => {
     onPushLoading();
@@ -199,6 +213,31 @@ const useAppContextValue = ({
   };
 
   /**
+   * Helper that allows the application to update the list of
+   * today events on demand
+   */
+  const validateTodayEvents = useCallback(async () => {
+    try {
+      setTodayEvents(await fetcher('/calendars/today'));
+    } catch (e) {
+      onError(`${e}`);
+    }
+  }, [fetcher, onError]);
+
+  /**
+   * Once the context has been loaded, fetch today's events.
+   * Today's events are kept in the application context in order to
+   * avoid fetching every time a page is accessed
+   */
+  useEffect(() => {
+    if (!user || !token) {
+      return;
+    }
+
+    validateTodayEvents();
+  }, [user, token, validateTodayEvents]);
+
+  /**
    * Load the context on start, in order to check if the user has already signed
    * in
    */
@@ -222,6 +261,7 @@ const useAppContextValue = ({
   return {
     token: { value: token, parsed: parsedToken },
     user,
+    todayEvents,
     API: {
       loading,
       signup,
@@ -230,7 +270,8 @@ const useAppContextValue = ({
       poster,
       putter,
       user: { update: userUpdater },
-      gym: { update: gymUpdater }
+      gym: { update: gymUpdater },
+      todayEvents: { revalidate: validateTodayEvents }
     }
   };
 };

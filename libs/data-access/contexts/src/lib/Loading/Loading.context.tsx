@@ -1,4 +1,10 @@
-import React, { createContext, memo, useContext, useState } from 'react';
+import React, {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useState
+} from 'react';
 
 import { AnimatePresence } from 'framer-motion';
 
@@ -31,13 +37,13 @@ const useLoadingContext = () => useContext(LoadingContext);
 const LoadingProvider = ({ children }: LoadingContextProps): JSX.Element => {
   const [loading, setLoading] = useState<number>(0);
 
-  const onPushLoading = () => {
+  const onPushLoading = useCallback(() => {
     setLoading((prev) => prev + 1);
-  };
+  }, []);
 
-  const onPopLoading = () => {
+  const onPopLoading = useCallback(() => {
     setLoading((prev) => Math.max(0, prev - 1));
-  };
+  }, []);
 
   return (
     <LoadingContext.Provider
