@@ -1,3 +1,4 @@
+import { createTheme, ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
 
 import TodayEventsList from './TodayEventsList';
@@ -55,7 +56,11 @@ const eventsList = [
 
 describe('<TodayEventsList />', () => {
   it('should render properly', () => {
-    render(<TodayEventsList events={eventsList as any} />);
+    render(
+      <ThemeProvider theme={createTheme()}>
+        <TodayEventsList events={eventsList as any} />
+      </ThemeProvider>
+    );
 
     expect(screen.getByText("Today's events")).toBeInTheDocument();
     eventsList.forEach(({ name }) => {
@@ -64,7 +69,11 @@ describe('<TodayEventsList />', () => {
   });
 
   it('should render without events', () => {
-    render(<TodayEventsList events={[]} />);
+    render(
+      <ThemeProvider theme={createTheme()}>
+        <TodayEventsList events={[]} />
+      </ThemeProvider>
+    );
 
     expect(screen.getByText("Today's events")).toBeInTheDocument();
     expect(

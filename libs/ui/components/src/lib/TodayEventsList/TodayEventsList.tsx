@@ -1,5 +1,6 @@
+import { motion } from 'framer-motion';
 import { EventDTO } from '@hubbl/shared/models/dto';
-import { Divider, Stack, styled, Typography } from '@mui/material';
+import { Divider, Stack, styled, Typography, useTheme } from '@mui/material';
 
 import ContentCard from '../ContentCard';
 import TodayEventsListItem from '../TodayEventsListItem';
@@ -26,22 +27,43 @@ export type TodayEventsListProps = {
   events: EventDTO[];
 };
 
-const TodayEventsList = ({ events }: TodayEventsListProps): JSX.Element => (
-  <Wrapper>
-    <PaddedStack direction="column" gap={1.5}>
-      <Typography variant="h5">Today's events</Typography>
+const TodayEventsList = ({ events }: TodayEventsListProps): JSX.Element => {
+  const theme = useTheme();
 
-      <Divider />
+  return (
+    <Wrapper>
+      <PaddedStack direction="column" gap={1.5}>
+        <Typography variant="h5">Today's events</Typography>
 
-      {events.length ? (
-        events.map((event) => <TodayEventsListItem event={event} />)
-      ) : (
-        <EmptyText textAlign="center" margin="auto">
-          There are no event's left for today!
-        </EmptyText>
-      )}
-    </PaddedStack>
-  </Wrapper>
-);
+        <Divider />
+
+        {events.length ? (
+          events.map((event, index) => (
+            <motion.div
+              key={event.id}
+              style={{ overflow: 'hidden' }}
+              initial={{ minHeight: theme.spacing(0) }}
+              animate={{ minHeight: theme.spacing(9) }}
+              exit={{ minHeight: theme.spacing(0) }}
+              transition={{
+                delay: 0.25 + index * 0.05,
+                duration: 0.5,
+                type: 'spring',
+                damping: 50,
+                stiffness: 700
+              }}
+            >
+              <TodayEventsListItem event={event} />
+            </motion.div>
+          ))
+        ) : (
+          <EmptyText textAlign="center" margin="auto">
+            There are no event's left for today!
+          </EmptyText>
+        )}
+      </PaddedStack>
+    </Wrapper>
+  );
+};
 
 export default TodayEventsList;

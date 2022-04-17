@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { EventDTO } from '@hubbl/shared/models/dto';
 import { Hour, SingleHandler } from '@hubbl/shared/types';
@@ -72,7 +72,7 @@ export type CalendarProps = {
   /**
    * Callback to run when an event of the calendar has been clicked. It
    * only works with non disabled days.
-   * 
+   *
    * @default undefined
    */
   onEventClick?: SingleHandler<EventDTO>;
@@ -203,4 +203,4 @@ const Calendar = ({
   );
 };
 
-export default Calendar;
+export default memo(Calendar);
