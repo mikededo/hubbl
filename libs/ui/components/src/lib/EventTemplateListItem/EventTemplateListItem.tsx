@@ -2,13 +2,13 @@ import React from 'react';
 
 import { EventTemplateDTO } from '@hubbl/shared/models/dto';
 import { EventTemplate, EventType } from '@hubbl/shared/models/entities';
-import { CallToAction, Masks } from '@mui/icons-material';
-import { Stack, styled, Tooltip, Typography } from '@mui/material';
+import { Stack, styled, Typography } from '@mui/material';
 
 import ColorCircle from '../ColorCircle';
 import ContentCard from '../ContentCard';
 import DifficultyStack from '../DifficultyStack';
 import EllipsedTypography from '../EllipsedTypography';
+import { CovidPassportIcon, MaskIcon } from '../Icons';
 
 const PaddedContentCard = styled(ContentCard)(({ theme }) => ({
   padding: theme.spacing(2, 3),
@@ -41,36 +41,9 @@ const EventTemplateListItem = React.forwardRef<
             <Typography variant="h6">{eventTemplate.name}</Typography>
 
             <Stack direction="row" spacing={1} alignItems="center">
-              <Tooltip
-                title={`Facial mask${
-                  eventTemplate.maskRequired ? '' : 'not'
-                } required`}
-              >
-                <Masks
-                  sx={{ fontSize: '1.75rem' }}
-                  color={eventTemplate.maskRequired ? 'success' : undefined}
-                  titleAccess={
-                    eventTemplate.maskRequired
-                      ? 'mask-required'
-                      : 'mask-not-required'
-                  }
-                />
-              </Tooltip>
+              <MaskIcon active={eventTemplate.maskRequired} />
 
-              <Tooltip
-                title={`Covid passport${
-                  eventTemplate.covidPassport ? '' : 'not'
-                } required`}
-              >
-                <CallToAction
-                  color={eventTemplate.covidPassport ? 'success' : undefined}
-                  titleAccess={
-                    eventTemplate.covidPassport
-                      ? 'passport-required'
-                      : 'passport-not-required'
-                  }
-                />
-              </Tooltip>
+              <CovidPassportIcon active={eventTemplate.covidPassport} />
             </Stack>
           </Stack>
 

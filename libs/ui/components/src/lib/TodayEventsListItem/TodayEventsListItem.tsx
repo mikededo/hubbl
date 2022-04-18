@@ -1,8 +1,9 @@
 import { EventDTO, EventTypeDTO } from '@hubbl/shared/models/dto';
 import { AppPalette } from '@hubbl/shared/types';
 import { notForwardOne } from '@hubbl/utils';
-import { CallToAction, Masks } from '@mui/icons-material';
-import { Stack, styled, Tooltip, Typography } from '@mui/material';
+import { Stack, styled, Typography } from '@mui/material';
+
+import { CovidPassportIcon, MaskIcon } from '../Icons';
 
 type ColorDecorationProps = {
   /**
@@ -51,30 +52,9 @@ const TodayEventsListItem = ({
         </Typography>
 
         <Stack direction="row" alignItems="center" spacing={1}>
-          <Tooltip
-            title={`Facial mask${event.maskRequired ? '' : 'not'} required`}
-          >
-            <Masks
-              sx={{ fontSize: '1.75rem' }}
-              color={event.maskRequired ? 'success' : undefined}
-              titleAccess={
-                event.maskRequired ? 'mask-required' : 'mask-not-required'
-              }
-            />
-          </Tooltip>
+          <MaskIcon active={event.maskRequired} />
 
-          <Tooltip
-            title={`Covid passport${event.covidPassport ? '' : 'not'} required`}
-          >
-            <CallToAction
-              color={event.covidPassport ? 'success' : undefined}
-              titleAccess={
-                event.covidPassport
-                  ? 'passport-required'
-                  : 'passport-not-required'
-              }
-            />
-          </Tooltip>
+          <CovidPassportIcon active={event.covidPassport} />
         </Stack>
       </Stack>
     </Stack>
