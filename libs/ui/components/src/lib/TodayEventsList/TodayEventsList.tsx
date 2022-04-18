@@ -80,7 +80,7 @@ const TodayEventsList = ({ events }: TodayEventsListProps): JSX.Element => {
       <IconContentCard>
         <motion.span
           animate={{
-            transform: `rotate(${hidden ? '0deg' : '180deg'})`
+            transform: `rotate(${hidden ? '180deg' : '0deg'})`
           }}
         >
           <Tooltip title={`${hidden ? 'Show' : 'Hide'} today events`}>
@@ -95,7 +95,7 @@ const TodayEventsList = ({ events }: TodayEventsListProps): JSX.Element => {
       </IconContentCard>
 
       <AnimatedWrapper
-        animate={{ right: theme.spacing(!hidden ? 3 : -60) }}
+        animate={{ right: theme.spacing(!hidden ? 4 : -60) }}
         transition={{ type: 'spring', stiffness: 700, damping: 50 }}
       >
         <Wrapper>
