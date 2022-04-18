@@ -1,5 +1,4 @@
 import { useAppContext } from '@hubbl/data-access/contexts';
-import { EmptyHandler } from '@hubbl/shared/types';
 import { DashboardEvents as EventsGrid } from '@hubbl/ui/components';
 
 import { useDashboard } from './hooks';
@@ -17,13 +16,7 @@ const DashboardEvents = () => {
     fetcher
   });
 
-  const handleOnAddClick: EmptyHandler = () => {
-    console.log('To be implemented');
-  };
-
-  return data ? (
-    <EventsGrid items={data.events} onAddEvent={handleOnAddClick} />
-  ) : null;
+  return <>{data ? <EventsGrid items={data.events} /> : null}</>;
 };
 
 export default DashboardEvents;
