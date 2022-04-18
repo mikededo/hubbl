@@ -1,6 +1,7 @@
 import { EventDTO, EventTemplateDTO } from '@hubbl/shared/models/dto';
-import { CallToAction, Masks } from '@mui/icons-material';
-import { Stack, Tooltip, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
+
+import { CovidPassportIcon, MaskIcon } from '../../Icons';
 
 export type DashboardCommonEventProps = {
   /**
@@ -16,26 +17,9 @@ const DashboardCommonEvent = ({
     <Typography variant="h6">{event.name}</Typography>
 
     <Stack gap={1} direction="row" alignItems="center">
-      <Tooltip title={`Facial mask${event.maskRequired ? '' : 'not'} required`}>
-        <Masks
-          sx={{ fontSize: '1.75rem' }}
-          color={event.maskRequired ? 'success' : undefined}
-          titleAccess={
-            event.maskRequired ? 'mask-required' : 'mask-not-required'
-          }
-        />
-      </Tooltip>
+      <MaskIcon active={event.maskRequired} />
 
-      <Tooltip
-        title={`Covid passport${event.covidPassport ? '' : 'not'} required`}
-      >
-        <CallToAction
-          color={event.covidPassport ? 'success' : undefined}
-          titleAccess={
-            event.covidPassport ? 'passport-required' : 'passport-not-required'
-          }
-        />
-      </Tooltip>
+      <CovidPassportIcon active={event.covidPassport} />
     </Stack>
   </Stack>
 );
