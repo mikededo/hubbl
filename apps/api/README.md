@@ -58,8 +58,7 @@ It will create the container, install the dependencies in the container and will
 
 ## Testing
 
-The application has two test types: unit and end-to-end (e2e). The unit tests are required in any class or function that is used.  
-In order to run the tests:
+The application has two test types: unit and end-to-end (e2e). The unit tests are required in any class or function that is used. In order to run the tests:
 
 ```sh
 # unit tests
@@ -67,6 +66,7 @@ nx test api
 # e2e tests
 nx run api:test-e2e
 ```
+
 ### Coverage
 
-The project flag inside codecov is `api`.
+The project flag inside CodeCov is `api`.
