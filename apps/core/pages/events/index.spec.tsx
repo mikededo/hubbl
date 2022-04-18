@@ -178,6 +178,7 @@ describe('Events page', () => {
       (ctx.useAppContext as jest.Mock).mockReturnValue({
         token: { parsed: {} },
         user: { gym: { id: 1 } },
+        todayEvents: [],
         API: { fetcher, poster }
       });
       (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -229,6 +230,7 @@ describe('Events page', () => {
     it('should not call fetcher if token is null', async () => {
       (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
         token: { parsed: undefined },
+        todayEvents: [],
         API: { fetcher }
       });
       swrSpy.mockImplementation(() => ({} as any));
@@ -350,6 +352,7 @@ describe('Events page', () => {
       (ctx.useAppContext as jest.Mock).mockReturnValue({
         token: { parsed: {} },
         user: { gym: { id: 1 } },
+        todayEvents: [],
         API: { fetcher, poster }
       });
       (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -401,6 +404,7 @@ describe('Events page', () => {
     it('should not call fetcher if token is null', async () => {
       (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
         token: { parsed: undefined },
+        todayEvents: [],
         API: { fetcher }
       });
       swrSpy.mockImplementation(() => ({} as any));

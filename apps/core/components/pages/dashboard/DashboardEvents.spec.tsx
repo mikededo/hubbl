@@ -136,7 +136,5 @@ describe('<DashboardEvents />', () => {
     response.forEach(({ name }) => {
       expect(screen.getByText(name)).toBeInTheDocument();
     });
-    // Find placeholder
-    expect(screen.getByTitle('add-event')).toBeInTheDocument();
   });
 });

@@ -27,11 +27,11 @@ const DashboardEvent = ({ event }: DashboardEventProps): JSX.Element => (
       <Stack direction="row" justifyContent="space-between">
         <Typography>
           {event.date.day}/{`${event.date.month}`.padStart(2, '0')}/
-          {event.date.year} {event.startTime}-{event.endTime}
+          {event.date.year}
         </Typography>
 
         <Typography>
-          {event.appointmentCount}/{event.capacity}
+          {event.startTime}-{event.endTime}
         </Typography>
       </Stack>
     </ContentStack>

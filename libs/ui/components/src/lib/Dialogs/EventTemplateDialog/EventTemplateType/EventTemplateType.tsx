@@ -23,12 +23,16 @@ const EventTemplateEventType = ({
   // mui console warning
   const [options, setOptions] = useState<EventTypeDTO[]>([]);
 
-  const mapEventTypes = (): SelectItem[] =>
-    (eventTypes?.length ? eventTypes : options).map((et) => ({
+  const mapEventTypes = (): SelectItem[] => {
+    const values = (eventTypes?.length ? eventTypes : options).map((et) => ({
       key: et.id,
       value: et.id,
       label: et.name
     }));
+
+    // Add null value
+    return [{ key: 'empty', value: '', label: 'None' }, ...values];
+  };
 
   useEffect(() => {
     if (eventTypes?.length) {
