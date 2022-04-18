@@ -15,7 +15,8 @@ import {
   EventTemplateGrid,
   PageHeader,
   EventTemplateDialog,
-  EventTemplateFormFields
+  EventTemplateFormFields,
+  TodayEventsList
 } from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages } from '../../components';
@@ -26,6 +27,7 @@ const EventTypes = () => {
   const {
     token,
     user,
+    todayEvents,
     API: { fetcher, poster }
   } = useAppContext();
 
@@ -136,6 +138,8 @@ const EventTypes = () => {
         eventTemplates={eventTemplates.data ?? []}
         onAddEventTemplate={handleOnOpenDialog(setEventTemplateDialog)}
       />
+
+      <TodayEventsList events={todayEvents} />
 
       <EventTypeDialog
         open={eventTypeDialog}
