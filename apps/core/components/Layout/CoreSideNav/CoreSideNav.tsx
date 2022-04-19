@@ -13,7 +13,7 @@ const entries = [
   {
     name: 'PERSONAL',
     entries: {
-      trainers: { label: 'Trainers', href: '#' },
+      trainers: { label: 'Trainers', href: '/trainers' },
       workers: { label: 'Workers', href: '#' },
       clients: { label: 'Clients', href: '#' }
     }
