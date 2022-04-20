@@ -139,6 +139,10 @@ const AppTheme: Theme = createTheme({
           }
         })
       }
+    },
+    MuiTableRow: {
+      defaultProps: { hover: true },
+      styleOverrides: { root: { cursor: 'pointer' } }
     }
   }
 });
