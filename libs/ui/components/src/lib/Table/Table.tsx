@@ -14,6 +14,14 @@ import {
 import ContentCard from '../ContentCard';
 import AddItemPlaceholder from '../AddItemPlaceholder';
 
+const TableContentCard = styled(ContentCard)(({ theme }) => ({
+  overflow: 'hidden',
+  minHeight: theme.spacing(16 * 5.5),
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between'
+}));
+
 const ButtonContentCard = styled(ContentCard)(({ theme }) => ({
   padding: theme.spacing(1),
   width: 'unset'
@@ -89,7 +97,7 @@ const Table = ({
   onPrevPage
 }: TableProps): JSX.Element => (
   <>
-    <ContentCard>
+    <TableContentCard>
       <MuiTable size="small">
         <TableHead>{header}</TableHead>
         <TableBody>{children}</TableBody>
@@ -102,7 +110,7 @@ const Table = ({
           </AddItemPlaceholder>
         </AddTrainerWrapper>
       )}
-    </ContentCard>
+    </TableContentCard>
 
     <Stack
       direction="row"
