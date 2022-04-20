@@ -51,7 +51,7 @@ type TableProps = {
   lastPage?: boolean;
 
   /**
-   * Body of the table. Should be a list of table rows or a 
+   * Body of the table. Should be a list of table rows or a
    * table row
    */
   children: React.ReactNode;
