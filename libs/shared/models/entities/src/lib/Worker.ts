@@ -3,8 +3,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Generated,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToOne,
@@ -42,15 +40,6 @@ export default class Worker {
   @ManyToOne(() => Owner, (o) => o.workers, { nullable: false })
   @JoinColumn({ name: 'manager_id_fk' })
   managerId!: number;
-
-  /**
-   * Unique `Worker` code which can only be changed by their
-   * manager.
-   */
-  @Index('worker-code-idx', { unique: true })
-  @Column('uuid', { nullable: false })
-  @Generated('uuid')
-  workerCode!: string;
 
   /**
    * The `Worker` is allowed or not to UPDATE `VirtualGym`

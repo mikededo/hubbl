@@ -11,7 +11,6 @@ import WorkerDTO from './Worker';
 jest.mock('@hubbl/shared/models/helpers');
 
 const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
-  worker.workerCode = 'some-uuid';
   worker.managerId = 1;
   worker.updateVirtualGyms = false;
   worker.createGymZones = false;

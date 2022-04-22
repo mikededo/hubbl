@@ -33,7 +33,6 @@ const TableRow = ({ trainer }: TableRowProps) => {
       <TableCell>{trainer?.lastName}</TableCell>
       <TableCell>{trainer?.email}</TableCell>
       <GenderCell>{trainer ? genderIcon() : undefined}</GenderCell>
-      <TableCell>{trainer?.workerCode.substring(0, 10)}</TableCell>
       <TableCell>
         <Stack direction="row" gap={0.5} flexWrap="wrap">
           {trainer?.tags.map(({ id, color, name }) => (

@@ -9,7 +9,6 @@ describe('<DashboardTrainer />', () => {
     firstName: 'Test',
     lastName: 'Trainer',
     gender: Gender.OTHER,
-    workerCode: '0101AABB'
   };
 
   it('should render properly', () => {
@@ -29,9 +28,6 @@ describe('<DashboardTrainer />', () => {
       expect(screen.getByText('other-trainer').tagName.toLowerCase()).toBe(
         'title'
       );
-      expect(
-        screen.getByText(trainer.workerCode.substring(0, 10))
-      ).toBeInTheDocument();
     });
 
     it('should render a man trainer icon', () => {

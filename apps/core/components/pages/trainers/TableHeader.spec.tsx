@@ -1,7 +1,7 @@
-import { render } from "@testing-library/react";
-import TableHeader from "./TableHeader";
+import { render } from '@testing-library/react';
+import TableHeader from './TableHeader';
 
-describe('<TableHeader />',  () => {
+describe('<TableHeader />', () => {
   it('should render the header', () => {
     const utils = render(
       <table>
@@ -11,11 +11,10 @@ describe('<TableHeader />',  () => {
       </table>
     );
 
-    expect(utils.getByText('First name')).toBeInTheDocument()
-    expect(utils.getByText('Last name')).toBeInTheDocument()
-    expect(utils.getByText('Email')).toBeInTheDocument()
-    expect(utils.getByText('Gender')).toBeInTheDocument()
-    expect(utils.getByText('Code')).toBeInTheDocument()
-    expect(utils.getByText('Specialities')).toBeInTheDocument()
-  })
-})
+    expect(utils.getByText('First name')).toBeInTheDocument();
+    expect(utils.getByText('Last name')).toBeInTheDocument();
+    expect(utils.getByText('Email')).toBeInTheDocument();
+    expect(utils.getByText('Gender')).toBeInTheDocument();
+    expect(utils.getByText('Specialities')).toBeInTheDocument();
+  });
+});

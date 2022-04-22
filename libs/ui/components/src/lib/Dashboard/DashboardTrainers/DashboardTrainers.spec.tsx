@@ -8,20 +8,17 @@ describe('<DashboardTrainers />', () => {
     {
       id: 1,
       firstName: 'NameOne',
-      lastName: 'Description',
-      workerCode: 'AAA00011-B'
+      lastName: 'Description'
     },
     {
       id: 2,
       firstName: 'NameTwo',
-      lastName: 'Description',
-      workerCode: 'AAA00011-C'
+      lastName: 'Description'
     },
     {
       id: 3,
       firstName: 'NameThree',
-      lastName: 'Description',
-      workerCode: 'AAA00011-D'
+      lastName: 'Description'
     }
   ];
 

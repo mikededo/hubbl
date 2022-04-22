@@ -42,7 +42,6 @@ describe('TrainerDTO', () => {
       expect(result.gym).toBe(json.gym);
       // Trainer fields
       expect(result.managerId).toBe(json.managerId);
-      expect(result.workerCode).toBe(json.workerCode);
       // Tags
       expect(result.tags).toStrictEqual([]);
 
@@ -102,7 +101,6 @@ describe('TrainerDTO', () => {
 
       trainer.person = Util.createPerson(password);
       trainer.managerId = 1;
-      trainer.workerCode = 'some-uuid';
       trainer.events = [];
       trainer.tags = [];
 
@@ -119,7 +117,6 @@ describe('TrainerDTO', () => {
       expect(result.gym).toStrictEqual((trainer.person.gym as Gym).id);
       // Trainer props
       expect(result.managerId).toBe(trainer.managerId);
-      expect(result.workerCode).toBe(trainer.workerCode);
       // Tags
       expect(result.tags).toStrictEqual(trainer.tags);
     });
@@ -132,7 +129,6 @@ describe('TrainerDTO', () => {
       trainer.person = Util.createPerson(password);
       trainer.person.gym = 1;
       trainer.managerId = 1;
-      trainer.workerCode = 'some-uuid';
       trainer.events = [];
       trainer.tags = [];
 
@@ -149,7 +145,6 @@ describe('TrainerDTO', () => {
 
       trainer.person = Util.createPerson(password);
       trainer.managerId = 1;
-      trainer.workerCode = 'some-uuid';
       trainer.events = [];
       trainer.tags = [{}, {}] as any;
 
@@ -166,7 +161,6 @@ describe('TrainerDTO', () => {
 
       trainer.person = Util.createPerson(password);
       trainer.managerId = 1;
-      trainer.workerCode = 'some-uuid';
       trainer.events = [];
       trainer.tags = undefined as any;
 
@@ -183,7 +177,6 @@ describe('TrainerDTO', () => {
 
       trainer.person = Util.createPerson(password);
       trainer.managerId = 1;
-      trainer.workerCode = 'some-uuid';
       trainer.events = [];
 
       const result = TrainerDTO.fromClass(trainer, 'info');
@@ -199,7 +192,6 @@ describe('TrainerDTO', () => {
       expect(result.gender).toBeUndefined();
       expect(result.gym).toBeUndefined();
       expect(result.managerId).toBeUndefined();
-      expect(result.workerCode).toBeUndefined();
     });
   });
 
@@ -209,7 +201,6 @@ describe('TrainerDTO', () => {
       const dto = Util.createPersonDTO<TrainerDTO<Gym | number>>(TrainerDTO);
 
       dto.managerId = 1;
-      dto.workerCode = 'some-uuid';
       dto.tags = [];
 
       const result = await dto.toClass();
@@ -224,7 +215,6 @@ describe('TrainerDTO', () => {
       expect(result.person.theme).toBe(dto.theme);
       expect(result.personId).toBe(dto.id);
       expect(result.managerId).toBe(dto.managerId);
-      expect(result.workerCode).toBe(dto.workerCode);
       expect(result.tags).toBe(dto.tags);
 
       // Password should be hashed

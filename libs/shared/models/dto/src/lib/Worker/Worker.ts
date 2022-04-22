@@ -1,16 +1,10 @@
 import { genSalt, hash } from 'bcrypt';
-import {
-  IsBoolean,
-  IsNumber,
-  IsString,
-  validateOrReject
-} from 'class-validator';
+import { IsBoolean, IsNumber, validateOrReject } from 'class-validator';
 
 import { Gym, Person, Worker } from '@hubbl/shared/models/entities';
 import {
   booleanError,
   numberError,
-  stringError,
   validationParser
 } from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
@@ -36,9 +30,6 @@ export default class WorkerDTO<T extends Gym | number>
     { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
   )
   managerId!: number;
-
-  @IsString({ message: stringError('workerCode'), groups: [DTOGroups.ALL] })
-  workerCode!: string;
 
   @IsBoolean({ message: booleanError('updateVirtualGyms') })
   updateVirtualGyms!: boolean;
@@ -129,7 +120,6 @@ export default class WorkerDTO<T extends Gym | number>
     from: any
   ): void {
     to.managerId = from.managerId;
-    to.workerCode = from.workerCode;
     to.updateVirtualGyms = from.updateVirtualGyms;
     to.createGymZones = from.createGymZones;
     to.updateGymZones = from.updateGymZones;

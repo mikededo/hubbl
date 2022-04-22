@@ -1,5 +1,5 @@
 import { genSalt, hash } from 'bcrypt';
-import { IsNumber, IsString, validateOrReject } from 'class-validator';
+import { IsNumber, validateOrReject } from 'class-validator';
 
 import {
   Gym,
@@ -7,11 +7,7 @@ import {
   Trainer,
   TrainerTag
 } from '@hubbl/shared/models/entities';
-import {
-  numberError,
-  stringError,
-  validationParser
-} from '@hubbl/shared/models/helpers';
+import { numberError, validationParser } from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
@@ -35,9 +31,6 @@ export default class TrainerDTO<T extends Gym | number>
     { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
   )
   managerId!: number;
-
-  @IsString({ message: stringError('workerCode') })
-  workerCode!: string;
 
   /* Non required validation fields */
   tags!: Array<TrainerTag | TrainerTagDTO>;
@@ -66,7 +59,6 @@ export default class TrainerDTO<T extends Gym | number>
     result.gender = json.gender;
     // Trainer props
     result.managerId = json.managerId;
-    result.workerCode = json.workerCode;
     // Tags
     result.tags = json.tags || [];
 
@@ -121,7 +113,6 @@ export default class TrainerDTO<T extends Gym | number>
 
       // Trainer props
       result.managerId = trainer.managerId;
-      result.workerCode = trainer.workerCode;
 
       // Tags
       result.tags =
@@ -160,7 +151,6 @@ export default class TrainerDTO<T extends Gym | number>
 
     // Set trainer props
     trainer.managerId = this.managerId;
-    trainer.workerCode = this.workerCode;
 
     // Set tags
     trainer.tags = this.tags as TrainerTag[];
