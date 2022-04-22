@@ -1,23 +1,19 @@
+import React, { useState } from 'react';
+
 import { useForm } from 'react-hook-form';
 
-import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
+import { SingleHandler } from '@hubbl/shared/types';
 import {
   Save,
   VisibilityOffOutlined,
   VisibilityOutlined
 } from '@mui/icons-material';
-import {
-  IconButton,
-  InputAdornment,
-  Stack,
-  styled,
-  Typography
-} from '@mui/material';
+import { Stack, styled, Typography } from '@mui/material';
 
+import ClickableEndAdornment from '../../ClickableEndAdornment';
 import Input from '../../Input';
 import LoadingButton from '../../LoadingButton';
 import { SettingsCard } from '../Common';
-import React, { useState } from 'react';
 
 export type UserPasswordFields = { password: string };
 
@@ -51,36 +47,6 @@ type SettingsUserPasswordProps = {
    */
   onSubmit?: SingleHandler<UserPasswordFields>;
 };
-
-type EndAdornmentProps = {
-  /**
-   * Aria-label to attach to the icon button
-   */
-  label: string;
-
-  /**
-   * Whether the input is visible or not, which will toggle the icon
-   * being displayed
-   */
-  visible: boolean;
-
-  /**
-   * Handler called when the icon button is clicked
-   */
-  onClick: EmptyHandler;
-};
-
-const EndAdornment = ({
-  label,
-  visible,
-  onClick
-}: EndAdornmentProps): JSX.Element => (
-  <InputAdornment position="end">
-    <IconButton aria-label={label} onClick={onClick}>
-      {visible ? <VisibilityOutlined /> : <VisibilityOffOutlined />}
-    </IconButton>
-  </InputAdornment>
-);
 
 const SettingsUserPassword = ({
   loading = false,
@@ -139,9 +105,11 @@ const SettingsUserPassword = ({
           error={!!errors.password}
           disabled={loading}
           endAdornment={
-            <EndAdornment
+            <ClickableEndAdornment
               label="password visibility"
               visible={firstVisible}
+              visibleIcon={<VisibilityOutlined />}
+              notVisibleIcon={<VisibilityOffOutlined />}
               onClick={handleOnToggleVisibility(setFirstVisible)}
             />
           }
@@ -161,9 +129,11 @@ const SettingsUserPassword = ({
           error={!!errors.passwordConfirmation}
           disabled={loading}
           endAdornment={
-            <EndAdornment
+            <ClickableEndAdornment
               label="confirmation password visibility"
               visible={secondVisible}
+              visibleIcon={<VisibilityOutlined />}
+              notVisibleIcon={<VisibilityOffOutlined />}
               onClick={handleOnToggleVisibility(setSecondVisible)}
             />
           }
