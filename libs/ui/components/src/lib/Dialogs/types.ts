@@ -1,4 +1,4 @@
-import { AppPalette } from '@hubbl/shared/types';
+import { AppPalette, Gender } from '@hubbl/shared/types';
 
 export type VirtualGymFormFields = {
   /**
@@ -204,3 +204,13 @@ export type CalendarEventFormFields = {
    */
   difficulty: number | string;
 };
+
+export type PersonFormFields = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  gender: Gender;
+};
+
+export type TrainerFormFields = PersonFormFields;
