@@ -139,6 +139,17 @@ const AppTheme: Theme = createTheme({
           }
         })
       }
+    },
+    MuiTableRow: {
+      defaultProps: { hover: true },
+      styleOverrides: {
+        root: {
+          cursor: 'pointer',
+          '&:nth-of-type(even)': {
+            backgroundColor: alpha('#000000', 0.02)
+          }
+        }
+      }
     }
   }
 });
