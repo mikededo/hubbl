@@ -10,6 +10,7 @@ import LoadingButton from './LoadingButton';
 import PageHeader from './PageHeader';
 import SelectInput from './SelectInput';
 import SideNav from './SideNav';
+import Table from './Table';
 import TodayEventsList from './TodayEventsList';
 import VirtualGymList from './VirtualGymList';
 
@@ -26,6 +27,7 @@ export {
   PageHeader,
   SelectInput,
   SideNav,
+  Table,
   TodayEventsList,
   VirtualGymList
 };
@@ -34,6 +36,7 @@ export * from './Dashboard';
 export * from './Dialogs';
 export * from './Layout';
 export * from './Settings';
+export * from './Table';
 
 export type { RequiredUserInfoFields, UserPasswordFields } from './Settings';
 export type { EventSpot } from './Calendar';

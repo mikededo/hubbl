@@ -35,7 +35,7 @@ describe('fetch', () => {
     expect(mockService.find).toHaveBeenCalledWith({
       join: { alias: 'e', innerJoin: { person: 'e.person' } },
       where: { person: { gym: 1 } },
-      take: 25,
+      take: 15,
       skip: 0
     });
     expect(mockFromClass).toHaveBeenCalledTimes(2);

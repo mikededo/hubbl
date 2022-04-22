@@ -40,7 +40,7 @@ export const fetch = async <
   const result = await service.find({
     join: { alias, innerJoin: { person: `${alias}.person` } },
     where: { person: { gym: gymId } },
-    take: 25,
+    take: 15,
     skip
   });
 

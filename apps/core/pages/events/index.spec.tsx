@@ -140,17 +140,6 @@ const renderPage = () =>
 describe('Events page', () => {
   const swrSpy = jest.spyOn(swr, 'default');
 
-  it('should have the getLayout prop defined', () => {
-    expect(Events.getLayout).toBeDefined();
-
-    const { container } = render(
-      <ThemeProvider theme={createTheme()}>
-        {Events.getLayout(<div />)}
-      </ThemeProvider>
-    );
-    expect(container).toBeInTheDocument();
-  });
-
   const mockSwr = () => {
     swrSpy.mockClear().mockImplementation((key) => {
       if (key === '/event-types') {
@@ -162,6 +151,17 @@ describe('Events page', () => {
       return {};
     });
   };
+
+  it('should have the getLayout prop defined', () => {
+    expect(Events.getLayout).toBeDefined();
+
+    const { container } = render(
+      <ThemeProvider theme={createTheme()}>
+        {Events.getLayout(<div />)}
+      </ThemeProvider>
+    );
+    expect(container).toBeInTheDocument();
+  });
 
   describe('Event types', () => {
     const fetcher = jest.fn();
