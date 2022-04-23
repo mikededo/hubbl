@@ -14,6 +14,7 @@ import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import TrainerTagDTO from '../TrainerTag';
 import { DTOGroups } from '../util';
+import { nanoid } from 'nanoid';
 
 export default class TrainerDTO<T extends Gym | number>
   extends PersonDTO<T>
@@ -44,7 +45,9 @@ export default class TrainerDTO<T extends Gym | number>
 
     result.id = json.id;
     result.email = json.email;
-    result.password = json.password;
+    // Trainers do not have a password, but it is required, therefore
+    // it is randomly generated here
+    result.password = nanoid(8);
     result.firstName = json.firstName;
     result.lastName = json.lastName;
     result.phone = json.phone;
