@@ -21,7 +21,6 @@ export {
   EventTemplateDialog,
   EventTypeDialog,
   GymZoneDialog,
-  ParsedTrainerFormFields,
   TrainerDialog,
   useCalendarEventDialog,
   VirtualGymDialog
@@ -31,6 +30,7 @@ export type {
   EventTemplateFormFields,
   EventTypeFormFields,
   GymZoneFormFields,
+  ParsedTrainerFormFields,
   UseEventDialogResult,
   VirtualGymFormFields
 };

@@ -48,7 +48,7 @@ const TrainerDialog = ({
   } = useAppContext();
   const { onError } = useToastContext();
   const { data, error } = useSWR<TrainerTagDTO[]>(
-    token?.parsed ? '/tags/trainer' : null,
+    token?.parsed && props.open ? '/tags/trainer' : null,
     fetcher,
     {
       revalidateOnMount: false
@@ -125,8 +125,9 @@ const TrainerDialog = ({
           <Divider />
 
           <DialogSection footer>
-            <Stack alignItems="flex-end">
-              {!data && <CircularProgress />}
+            <Stack direction="row" justifyContent="flex-end">
+              {data?.length === undefined && <CircularProgress />}
+
               <Button type="submit" title="submit" startIcon={<Save />}>
                 Save
               </Button>
