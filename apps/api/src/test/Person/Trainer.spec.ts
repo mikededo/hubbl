@@ -1,4 +1,3 @@
-import { compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import supertest = require('supertest');
 
@@ -30,7 +29,6 @@ export const fetch = async () => {
 export const register = async () => {
   const response = await supertest(app).post('/persons/trainer').send({
     email: 'registered@trainer.com',
-    password: 'registered-password',
     firstName: 'Registerd',
     lastName: 'Trainer',
     phone: '000 000 000',
@@ -54,10 +52,6 @@ export const register = async () => {
   util.toBeString(body.trainer.phone);
   util.toBeString(body.trainer.theme);
   util.toBeString(body.trainer.gender);
-  expect(
-    // Ensure password has been encripted
-    await compare('registered-password', body.trainer.password)
-  ).toBeTruthy();
   util.toBeNumber(body.trainer.gym);
 };
 
