@@ -3,7 +3,6 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn
@@ -11,7 +10,6 @@ import {
 
 import Gym from './Gym';
 import Person from './Person';
-import Worker from './Worker';
 
 /**
  * `Owner` entity, as the main user of the application

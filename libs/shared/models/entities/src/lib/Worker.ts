@@ -4,13 +4,11 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn
 } from 'typeorm';
 
-import Owner from './Owner';
 import Person from './Person';
 
 /**
