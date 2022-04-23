@@ -5,5 +5,10 @@
     "module": "commonjs",
     "types": ["jest", "node"]
   },
-  "include": ["**/*.test.ts", "**/*.spec.ts", "**/*.d.ts", "src/app/routes/Tags.routes.ts"]
+  "include": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.d.ts",
+    "src/app/routes/Tags.routes.ts"
+  ]
 }

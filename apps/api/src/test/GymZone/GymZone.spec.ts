@@ -67,7 +67,7 @@ export const createUpdateAndDelete = async (by: 'owner' | 'worker') => {
 
   expect(createRes.statusCode).toBe(201);
   expect(createRes.body).toBeDefined();
-  gymZoneFields(createRes.body)
+  gymZoneFields(createRes.body);
 
   const updatedRes = await testApp
     .put(baseUrl)
