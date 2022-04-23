@@ -40,7 +40,6 @@ const TrainerTags = ({ tags }: TrainerTagsProps): JSX.Element => {
       options={maptrainerTags()}
       disabled={!tags}
       multiple
-      required
     />
   );
 };
