@@ -42,16 +42,6 @@ export default class Owner {
   @JoinColumn({ name: 'owner_id' })
   gym!: number;
 
-  /**
-   * `Worker`'s that work for the current `Owner`
-   */
-  @OneToMany(() => Worker, (w) => w.managerId, {
-    cascade: false,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  })
-  workers!: Worker[];
-
   @CreateDateColumn()
   createdAt!: Date;
 

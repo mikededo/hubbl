@@ -35,7 +35,6 @@ export const register = async () => {
     lastName: 'Trainer',
     phone: '000 000 000',
     gender: Gender.OTHER,
-    managerId: ENTITY_IDENTIFIERS.OWNER,
     gym: ENTITY_IDENTIFIERS.GYM
   });
 

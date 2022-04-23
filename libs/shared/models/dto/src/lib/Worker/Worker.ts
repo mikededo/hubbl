@@ -25,12 +25,6 @@ export default class WorkerDTO<T extends Gym | number>
   )
   gym!: T;
 
-  @IsNumber(
-    {},
-    { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
-  )
-  managerId!: number;
-
   @IsBoolean({ message: booleanError('updateVirtualGyms') })
   updateVirtualGyms!: boolean;
 
@@ -119,7 +113,6 @@ export default class WorkerDTO<T extends Gym | number>
     to: WorkerDTO<T>,
     from: any
   ): void {
-    to.managerId = from.managerId;
     to.updateVirtualGyms = from.updateVirtualGyms;
     to.createGymZones = from.createGymZones;
     to.updateGymZones = from.updateGymZones;
@@ -249,7 +242,6 @@ export default class WorkerDTO<T extends Gym | number>
     worker.personId = this.id;
 
     // Set worker props
-    worker.managerId = this.managerId;
     worker.updateVirtualGyms = this.updateVirtualGyms;
     worker.createGymZones = this.createGymZones;
     worker.updateGymZones = this.updateGymZones;

@@ -26,12 +26,6 @@ export default class TrainerDTO<T extends Gym | number>
   )
   gym!: T;
 
-  @IsNumber(
-    {},
-    { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
-  )
-  managerId!: number;
-
   /* Non required validation fields */
   tags!: Array<TrainerTag | TrainerTagDTO>;
 
@@ -57,8 +51,6 @@ export default class TrainerDTO<T extends Gym | number>
     result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
-    // Trainer props
-    result.managerId = json.managerId;
     // Tags
     result.tags = json.tags || [];
 
@@ -111,9 +103,6 @@ export default class TrainerDTO<T extends Gym | number>
           : trainer.person.gym;
       result.gender = trainer.person.gender as Gender;
 
-      // Trainer props
-      result.managerId = trainer.managerId;
-
       // Tags
       result.tags =
         trainer.tags?.map((tag) => TrainerTagDTO.fromClass(tag)) || [];
@@ -148,9 +137,6 @@ export default class TrainerDTO<T extends Gym | number>
     // Set person into trainer
     trainer.person = person;
     trainer.personId = this.id;
-
-    // Set trainer props
-    trainer.managerId = this.managerId;
 
     // Set tags
     trainer.tags = this.tags as TrainerTag[];

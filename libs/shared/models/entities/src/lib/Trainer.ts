@@ -5,7 +5,6 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryColumn,
@@ -13,7 +12,6 @@ import {
 } from 'typeorm';
 
 import Event from './Event';
-import Owner from './Owner';
 import Person from './Person';
 import TrainerTag from './TrainerTag';
 
@@ -37,13 +35,6 @@ export default class Trainer {
   })
   @JoinColumn()
   person!: Person;
-
-  /**
-   * References to the manager of this employee
-   */
-  @ManyToOne(() => Owner, (o) => o.workers, { nullable: false })
-  @JoinColumn({ name: 'manager_id_fk' })
-  managerId!: number;
 
   /**
    * `Event`'s of the `Trainer`

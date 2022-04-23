@@ -40,8 +40,6 @@ describe('TrainerDTO', () => {
       expect(result.theme).toBe(json.theme);
       expect(result.gender).toBe(json.gender);
       expect(result.gym).toBe(json.gym);
-      // Trainer fields
-      expect(result.managerId).toBe(json.managerId);
       // Tags
       expect(result.tags).toStrictEqual([]);
 
@@ -100,7 +98,6 @@ describe('TrainerDTO', () => {
       const trainer = new Trainer();
 
       trainer.person = Util.createPerson(password);
-      trainer.managerId = 1;
       trainer.events = [];
       trainer.tags = [];
 
@@ -115,8 +112,6 @@ describe('TrainerDTO', () => {
       expect(result.theme).toBe(trainer.person.theme);
       expect(result.gender).toBe(trainer.person.gender);
       expect(result.gym).toStrictEqual((trainer.person.gym as Gym).id);
-      // Trainer props
-      expect(result.managerId).toBe(trainer.managerId);
       // Tags
       expect(result.tags).toStrictEqual(trainer.tags);
     });
@@ -128,7 +123,6 @@ describe('TrainerDTO', () => {
 
       trainer.person = Util.createPerson(password);
       trainer.person.gym = 1;
-      trainer.managerId = 1;
       trainer.events = [];
       trainer.tags = [];
 
@@ -144,7 +138,6 @@ describe('TrainerDTO', () => {
       const trainer = new Trainer();
 
       trainer.person = Util.createPerson(password);
-      trainer.managerId = 1;
       trainer.events = [];
       trainer.tags = [{}, {}] as any;
 
@@ -160,7 +153,6 @@ describe('TrainerDTO', () => {
       const trainer = new Trainer();
 
       trainer.person = Util.createPerson(password);
-      trainer.managerId = 1;
       trainer.events = [];
       trainer.tags = undefined as any;
 
@@ -176,7 +168,6 @@ describe('TrainerDTO', () => {
       const trainer = new Trainer();
 
       trainer.person = Util.createPerson(password);
-      trainer.managerId = 1;
       trainer.events = [];
 
       const result = TrainerDTO.fromClass(trainer, 'info');
@@ -191,7 +182,6 @@ describe('TrainerDTO', () => {
       expect(result.theme).toBeUndefined();
       expect(result.gender).toBeUndefined();
       expect(result.gym).toBeUndefined();
-      expect(result.managerId).toBeUndefined();
     });
   });
 
@@ -200,7 +190,6 @@ describe('TrainerDTO', () => {
       // Set up class
       const dto = Util.createPersonDTO<TrainerDTO<Gym | number>>(TrainerDTO);
 
-      dto.managerId = 1;
       dto.tags = [];
 
       const result = await dto.toClass();
@@ -214,7 +203,6 @@ describe('TrainerDTO', () => {
       expect(result.person.gender).toBe(dto.gender);
       expect(result.person.theme).toBe(dto.theme);
       expect(result.personId).toBe(dto.id);
-      expect(result.managerId).toBe(dto.managerId);
       expect(result.tags).toBe(dto.tags);
 
       // Password should be hashed

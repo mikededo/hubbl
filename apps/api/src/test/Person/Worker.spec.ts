@@ -73,7 +73,6 @@ export const register = async () => {
     lastName: 'Worker',
     phone: '000 000 000',
     gender: Gender.OTHER,
-    managerId: ENTITY_IDENTIFIERS.OWNER,
     gym: ENTITY_IDENTIFIERS.GYM
   });
 
@@ -89,7 +88,6 @@ export const register = async () => {
   expect(
     await compare('registered-password', body.worker.password)
   ).toBeTruthy();
-  util.toBeNumber(body.worker.managerId);
   util.toBeNumber(body.worker.gym);
   checkWorkerProps(body.worker);
 
