@@ -3,16 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Generated,
-  Index,
   JoinColumn,
-  ManyToOne,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn
 } from 'typeorm';
 
-import Owner from './Owner';
 import Person from './Person';
 
 /**
@@ -35,22 +31,6 @@ export default class Worker {
   })
   @JoinColumn()
   person!: Person;
-
-  /**
-   * References to the manager of this employee.
-   */
-  @ManyToOne(() => Owner, (o) => o.workers, { nullable: false })
-  @JoinColumn({ name: 'manager_id_fk' })
-  managerId!: number;
-
-  /**
-   * Unique `Worker` code which can only be changed by their
-   * manager.
-   */
-  @Index('worker-code-idx', { unique: true })
-  @Column('uuid', { nullable: false })
-  @Generated('uuid')
-  workerCode!: string;
 
   /**
    * The `Worker` is allowed or not to UPDATE `VirtualGym`

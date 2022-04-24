@@ -8,7 +8,6 @@ const trainer = {
   lastName: 'Test',
   email: 'trainer@test.com',
   gender: Gender.OTHER,
-  workerCode: 'some-worker-code',
   tags: [
     { id: 1, name: 'TagOne', color: AppPalette.BLUE },
     { id: 2, name: 'TagTwo', color: AppPalette.GREEN }
@@ -43,9 +42,6 @@ describe('<TableRow />', () => {
       expect(utils.getByText(trainer.lastName)).toBeInTheDocument();
       expect(utils.getByText(trainer.email)).toBeInTheDocument();
       expect(utils.getByTestId('ManIcon')).toBeInTheDocument();
-      expect(
-        utils.getByText(trainer.workerCode.substring(0, 10))
-      ).toBeInTheDocument();
       trainer.tags.forEach(({ name }) => {
         expect(utils.getByText(name)).toBeInTheDocument();
       });

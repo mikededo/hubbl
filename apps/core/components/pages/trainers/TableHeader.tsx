@@ -12,8 +12,7 @@ const TableHeader = () => (
     <HeaderCell width="20%">Last name</HeaderCell>
     <HeaderCell width="20%">Email</HeaderCell>
     <HeaderCell width="1%">Gender</HeaderCell>
-    <HeaderCell width="14%">Code</HeaderCell>
-    <SpecialitiesHeader width="25%">Specialities</SpecialitiesHeader>
+    <SpecialitiesHeader width="39%">Specialities</SpecialitiesHeader>
   </TableRow>
 );
 

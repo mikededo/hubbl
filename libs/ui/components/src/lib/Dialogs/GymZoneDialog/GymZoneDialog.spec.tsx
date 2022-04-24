@@ -1,4 +1,3 @@
-import { act } from 'react-dom/test-utils';
 import * as swr from 'swr';
 
 import * as ctx from '@hubbl/data-access/contexts';
@@ -8,7 +7,7 @@ import {
   ToastContext
 } from '@hubbl/data-access/contexts';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { GymZoneFormFields } from '../types';

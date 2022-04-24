@@ -54,6 +54,13 @@ type SelectInputProps<T extends FieldValues, J extends SelectItem[]> = {
   formName: Path<T>;
 
   /**
+   * Whether the select input is multiple or not
+   * 
+   * @default false
+   */
+  multiple?: boolean;
+
+  /**
    * Options to display in the select input
    */
   options: J;
@@ -64,6 +71,7 @@ const SelectInput = <T extends FieldValues, J extends SelectItem[]>({
   label,
   labelVariant = 'h6',
   formName,
+  multiple = false,
   options,
   required,
   ...props
@@ -87,6 +95,7 @@ const SelectInput = <T extends FieldValues, J extends SelectItem[]>({
           input={<InputBase />}
           error={!!error}
           inputRef={ref}
+          multiple={multiple}
           {...props}
           onChange={onChange}
         >

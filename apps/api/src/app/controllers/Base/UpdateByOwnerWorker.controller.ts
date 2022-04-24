@@ -35,7 +35,6 @@ type WorkerUpdatePermissions =
   | 'updateGymZones'
   | 'updateVirtualGyms';
 
-
 type UpdatableFromJson =
   | BaseFromJsonCallable<EventDTO>
   | BaseFromJsonCallable<EventTemplateDTO>

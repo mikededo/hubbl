@@ -197,7 +197,6 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         gender: Gender.OTHER,
         gym: ENTITY_IDENTIFIERS.GYM
       },
-      managerId: ENTITY_IDENTIFIERS.OWNER,
       createGymZones: true,
       updateGymZones: true,
       deleteGymZones: true,
@@ -311,7 +310,6 @@ const seedDatabase = async (source: DataSource): Promise<void> => {
         gender: Gender.OTHER,
         gym: ENTITY_IDENTIFIERS.GYM
       },
-      managerId: ENTITY_IDENTIFIERS.OWNER,
       tags: [
         {
           id: ENTITY_IDENTIFIERS.TRIANER_TAG_ONE,

@@ -1,1 +1,1 @@
-export * as trainer from './TrainerTags.spec'
+export * as trainer from './TrainerTags.spec';

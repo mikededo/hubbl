@@ -1,14 +1,10 @@
 import {
-  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Generated,
-  Index,
   JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryColumn,
@@ -16,7 +12,6 @@ import {
 } from 'typeorm';
 
 import Event from './Event';
-import Owner from './Owner';
 import Person from './Person';
 import TrainerTag from './TrainerTag';
 
@@ -40,22 +35,6 @@ export default class Trainer {
   })
   @JoinColumn()
   person!: Person;
-
-  /**
-   * References to the manager of this employee
-   */
-  @ManyToOne(() => Owner, (o) => o.workers, { nullable: false })
-  @JoinColumn({ name: 'manager_id_fk' })
-  managerId!: number;
-
-  /**
-   * Unique `Trainer` code which can only be changed by their
-   * manager
-   */
-  @Index('trainer-code-idx', { unique: true })
-  @Column('uuid', { nullable: false })
-  @Generated('uuid')
-  workerCode!: string;
 
   /**
    * `Event`'s of the `Trainer`

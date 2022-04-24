@@ -11,8 +11,6 @@ import WorkerDTO from './Worker';
 jest.mock('@hubbl/shared/models/helpers');
 
 const workerPropsAssign = (worker: WorkerDTO<Gym | number> | Worker) => {
-  worker.workerCode = 'some-uuid';
-  worker.managerId = 1;
   worker.updateVirtualGyms = false;
   worker.createGymZones = false;
   worker.updateGymZones = false;
@@ -47,7 +45,6 @@ const workerPropCompare = (
   want: Worker | WorkerDTO<Gym | number>,
   got: Worker | WorkerDTO<Gym | number>
 ) => {
-  expect(got.managerId).toBe(want.managerId);
   expect(got.updateVirtualGyms).toBe(want.updateVirtualGyms);
   expect(got.createGymZones).toBe(want.createGymZones);
   expect(got.updateGymZones).toBe(want.updateGymZones);
@@ -87,7 +84,6 @@ describe('WorkerDTO', () => {
     it('should create a DTO if json is valid', async () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const json = Util.createPersonJson({
-        managerId: 1,
         gym: 1,
         updateVirtualGyms: false,
         createGymZones: false,

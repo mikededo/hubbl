@@ -3,7 +3,6 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn
@@ -11,7 +10,6 @@ import {
 
 import Gym from './Gym';
 import Person from './Person';
-import Worker from './Worker';
 
 /**
  * `Owner` entity, as the main user of the application
@@ -41,16 +39,6 @@ export default class Owner {
   @OneToOne(() => Gym)
   @JoinColumn({ name: 'owner_id' })
   gym!: number;
-
-  /**
-   * `Worker`'s that work for the current `Owner`
-   */
-  @OneToMany(() => Worker, (w) => w.managerId, {
-    cascade: false,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  })
-  workers!: Worker[];
 
   @CreateDateColumn()
   createdAt!: Date;
