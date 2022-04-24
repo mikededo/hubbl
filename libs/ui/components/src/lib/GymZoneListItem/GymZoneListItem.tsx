@@ -3,17 +3,10 @@ import React from 'react';
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { GymZone } from '@hubbl/shared/models/entities';
 import { notForwardOne } from '@hubbl/utils';
-import { CallToAction, FitnessCenter, Masks } from '@mui/icons-material';
-import {
-  alpha,
-  CardProps,
-  Stack,
-  styled,
-  Tooltip,
-  Typography
-} from '@mui/material';
+import { alpha, CardProps, Stack, styled, Typography } from '@mui/material';
 
 import ContentCard from '../ContentCard';
+import { ClassZoneIcon, CovidPassportIcon, MaskIcon } from '../Icons';
 
 type PaddedContentCardProps = {
   flat?: boolean;
@@ -59,46 +52,11 @@ const GymZoneListItem = React.forwardRef<HTMLDivElement, GymZoneListItemProps>(
             <Typography variant="h6">{gymZone.name.toUpperCase()}</Typography>
 
             <Stack gap={1} direction="row" alignItems="center">
-              <Tooltip
-                title={gymZone.isClassType ? 'Class zone' : 'Non class zone'}
-              >
-                <FitnessCenter
-                  sx={{ transform: 'rotate(-45deg)' }}
-                  color={gymZone.isClassType ? 'success' : undefined}
-                  titleAccess={
-                    gymZone.isClassType ? 'class-zone' : 'non-class-zone'
-                  }
-                />
-              </Tooltip>
+              <ClassZoneIcon active={gymZone.isClassType} />
 
-              <Tooltip
-                title={`Facial mask${
-                  gymZone.maskRequired ? '' : 'not'
-                } required`}
-              >
-                <Masks
-                  sx={{ fontSize: '1.75rem' }}
-                  color={gymZone.maskRequired ? 'success' : undefined}
-                  titleAccess={
-                    gymZone.maskRequired ? 'mask-required' : 'mask-not-required'
-                  }
-                />
-              </Tooltip>
+              <MaskIcon active={gymZone.maskRequired} />
 
-              <Tooltip
-                title={`Covid passport${
-                  gymZone.covidPassport ? '' : 'not'
-                } required`}
-              >
-                <CallToAction
-                  color={gymZone.covidPassport ? 'success' : undefined}
-                  titleAccess={
-                    gymZone.covidPassport
-                      ? 'passport-required'
-                      : 'passport-not-required'
-                  }
-                />
-              </Tooltip>
+              <CovidPassportIcon active={gymZone.covidPassport} />
             </Stack>
           </Stack>
 
