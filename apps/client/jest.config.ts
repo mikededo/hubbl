@@ -1,10 +1,11 @@
 module.exports = {
-  displayName: 'landing',
-  preset: '../../jest.preset.js',
+  displayName: 'client',
+
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nrwl/next/babel'] }]
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/landing'
+  coverageDirectory: '../../coverage/apps/client',
+  preset: '../../jest.preset.ts'
 };

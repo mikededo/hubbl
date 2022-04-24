@@ -1,17 +1,17 @@
 module.exports = {
-  displayName: 'utils',
-  preset: '../../jest.preset.js',
+  displayName: 'data-access-api',
+
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json'
     }
   },
-  testEnvironment: 'node',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/utils',
+  coverageDirectory: '../../../coverage/libs/data-access/api',
   collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts'],
-  coverageReporters: ['text', 'html']
+  coverageReporters: ['text', 'html'],
+  preset: '../../../jest.preset.ts'
 };

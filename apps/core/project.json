@@ -12,7 +12,8 @@
         "outputPath": "dist/apps/core"
       },
       "configurations": {
-        "production": {}
+        "production": {},
+        "development": {}
       }
     },
     "serve": {
@@ -26,8 +27,13 @@
         "production": {
           "buildTarget": "core:build:production",
           "dev": false
+        },
+        "development": {
+          "buildTarget": "core:build:development",
+          "dev": true
         }
-      }
+      },
+      "defaultConfiguration": "development"
     },
     "export": {
       "executor": "@nrwl/next:export",
@@ -39,7 +45,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/core"],
       "options": {
-        "jestConfig": "apps/core/jest.config.js",
+        "jestConfig": "apps/core/jest.config.ts",
         "passWithNoTests": true
       }
     },

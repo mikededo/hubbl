@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/shared/models/body-validators"],
       "options": {
-        "jestConfig": "libs/shared/models/body-validators/jest.config.js",
+        "jestConfig": "libs/shared/models/body-validators/jest.config.ts",
         "passWithNoTests": true
       }
     }

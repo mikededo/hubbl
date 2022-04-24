@@ -9,6 +9,7 @@
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/*.d.ts",
-    "src/app/routes/Tags.routes.ts"
+    "src/app/routes/Tags.routes.ts",
+    "jest.config.ts"
   ]
 }

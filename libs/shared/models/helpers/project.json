@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/shared/models/helpers"],
       "options": {
-        "jestConfig": "libs/shared/models/helpers/jest.config.js",
+        "jestConfig": "libs/shared/models/helpers/jest.config.ts",
         "passWithNoTests": true
       }
     }
