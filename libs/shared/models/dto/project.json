@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/shared/models/dto"],
       "options": {
-        "jestConfig": "libs/shared/models/dto/jest.config.js",
+        "jestConfig": "libs/shared/models/dto/jest.config.ts",
         "passWithNoTests": true
       }
     }

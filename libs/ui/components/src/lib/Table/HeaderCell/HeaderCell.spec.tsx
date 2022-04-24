@@ -4,7 +4,15 @@ import HeaderCell from './HeaderCell';
 
 describe('<HeaderCell />', () => {
   it('should render properly', () => {
-    const { container } = render(<HeaderCell />);
+    const { container } = render(
+      <table>
+        <thead>
+          <tr>
+            <HeaderCell />
+          </tr>
+        </thead>
+      </table>
+    );
 
     expect(container).toBeInTheDocument();
   });

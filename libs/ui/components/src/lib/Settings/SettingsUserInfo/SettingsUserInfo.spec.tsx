@@ -79,14 +79,14 @@ describe('<SettingsUserInfo />', () => {
               gender: Gender.OTHER,
               phone: '000 0000 000'
             }}
-            onSubmit={onSubmitSpy}
           />
         );
-
-        fireEvent.submit(screen.getByText('Save'));
-
-        expect(onSubmitSpy).not.toHaveBeenCalled();
       });
+      await act(async () => {
+        fireEvent.submit(screen.getByText('Save'));
+      });
+
+      expect(onSubmitSpy).not.toHaveBeenCalled();
     });
   });
 
