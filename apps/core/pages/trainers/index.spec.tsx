@@ -1,7 +1,7 @@
 import * as swr from 'swr';
 
 import * as ctx from '@hubbl/data-access/contexts';
-import { Gender } from '@hubbl/shared/types';
+import { AppPalette, Gender } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 
@@ -28,7 +28,7 @@ const trainers = Array(15)
     lastName: `Test-${i}`,
     email: `trainer-${i}@test.com`,
     gender: Gender[i % 2 === 0 ? 'WOMAN' : 'OTHER'],
-    tags: []
+    tags: [{ id: i, name: 'Tag', color: AppPalette.BLUE }]
   }));
 
 const trainersTwo = Array(15)
@@ -52,6 +52,7 @@ describe('Trainers page', () => {
 
   const fetcher = jest.fn();
   const poster = jest.fn();
+  const putter = jest.fn();
 
   const onError = jest.fn();
   const onSuccess = jest.fn();
@@ -63,7 +64,7 @@ describe('Trainers page', () => {
       token: { parsed: {} },
       user: { gym: { id: 1 } },
       todayEvents: [],
-      API: { fetcher, poster }
+      API: { fetcher, poster, putter }
     });
     (ctx.useToastContext as jest.Mock).mockReturnValue({
       onError,
@@ -251,6 +252,60 @@ describe('Trainers page', () => {
       await fillTrainer();
 
       expect(poster).toHaveBeenCalledTimes(1);
+      expect(mutateSpy).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledTimes(1);
+      expect(onError).toHaveBeenCalledWith('Error thrown');
+    });
+  });
+
+  describe('put trainer', () => {
+    const fillTrainer = async () => {
+      await act(async () => {
+        fireEvent.click(screen.getByText(trainers[0].firstName));
+      });
+      await act(async () => {
+        fireEvent.input(screen.getByPlaceholderText('John'), {
+          target: { name: 'firstName', value: 'Updated' }
+        });
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByText('Save'));
+      });
+    };
+
+    it('should update a trainer', async () => {
+      await act(async () => {
+        render(<Trainers />);
+      });
+      await fillTrainer();
+
+      expect(putter).toHaveBeenCalledTimes(1);
+      expect(putter).toHaveBeenCalledWith('/persons/trainer', {
+        id: trainers[0].id,
+        firstName: 'Updated',
+        lastName: trainers[0].lastName,
+        gender: trainers[0].gender,
+        email: trainers[0].email,
+        gym: 1,
+        tags: [{ gym: 1, id: 0, name: 'Tag-0' }]
+      });
+      expect(mutateSpy).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledWith('Trainer updated successfully!');
+    });
+
+    it('should call onError on putter error', async () => {
+      putter.mockRejectedValue({
+        response: { data: { message: 'Error thrown' } }
+      });
+
+      await act(async () => {
+        render(<Trainers />);
+      });
+      await fillTrainer();
+
+      expect(putter).toHaveBeenCalledTimes(1);
       expect(mutateSpy).not.toHaveBeenCalled();
       expect(onError).toHaveBeenCalledTimes(1);
       expect(onError).toHaveBeenCalledWith('Error thrown');

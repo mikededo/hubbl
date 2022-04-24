@@ -5,8 +5,8 @@ import useSWR from 'swr';
 
 import { useAppContext, useToastContext } from '@hubbl/data-access/contexts';
 import { TrainerTagDTO } from '@hubbl/shared/models/dto';
-import { Gender, SingleHandler } from '@hubbl/shared/types';
-import { Save } from '@mui/icons-material';
+import { EmptyHandler, Gender, SingleHandler } from '@hubbl/shared/types';
+import { Delete, Save } from '@mui/icons-material';
 import { Button, CircularProgress, Divider, Stack } from '@mui/material';
 
 import Base, { BaseProps } from '../Base';
@@ -29,6 +29,15 @@ export type TrainerDialogProps = {
   defaultValues?: Partial<TrainerFormFields>;
 
   /**
+   * Callback to run when the delete button has been pressed.
+   * The delete button will only be displayed if such callback
+   * has been passed
+   *
+   * @default undefined
+   */
+  onDelete?: EmptyHandler;
+
+  /**
    * Callback to run when the form has been successfully
    * submitted.
    *
@@ -39,6 +48,7 @@ export type TrainerDialogProps = {
 
 const TrainerDialog = ({
   defaultValues,
+  onDelete,
   onSubmit,
   ...props
 }: TrainerDialogProps): JSX.Element => {
@@ -70,15 +80,22 @@ const TrainerDialog = ({
     // Parse the tags
     const parsedTags = data.tags.map((id) => idToTag[id]);
 
-    onSubmit?.({
-      ...data,
-      tags: parsedTags
-    });
+    onSubmit?.({ ...data, tags: parsedTags });
   };
 
   if (error) {
     onError('An error occurred.');
   }
+
+  useEffect(() => {
+    if (props.open) {
+      methods.reset({
+        ...defaultValues,
+        gender: defaultValues?.gender ?? Gender.OTHER,
+        tags: defaultValues?.tags ?? []
+      });
+    }
+  }, [props.open, defaultValues, methods]);
 
   useEffect(() => {
     if (!data) {
@@ -125,8 +142,19 @@ const TrainerDialog = ({
           <Divider />
 
           <DialogSection footer>
-            <Stack direction="row" justifyContent="flex-end">
-              {data?.length === undefined && <CircularProgress />}
+            <Stack direction="row" justifyContent="flex-end" gap={2}>
+              {!data && <CircularProgress />}
+
+              {onDelete && (
+                <Button
+                  title="delete"
+                  color="error"
+                  startIcon={<Delete />}
+                  onClick={onDelete}
+                >
+                  Delete
+                </Button>
+              )}
 
               <Button type="submit" title="submit" startIcon={<Save />}>
                 Save

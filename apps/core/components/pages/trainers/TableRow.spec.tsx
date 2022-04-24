@@ -1,5 +1,5 @@
 import { AppPalette, Gender } from '@hubbl/shared/types';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 
 import TableRow from './TableRow';
 
@@ -57,6 +57,23 @@ describe('<TableRow />', () => {
       );
 
       expect(utils.getByTestId('WomanIcon')).toBeInTheDocument();
+    });
+  });
+
+  describe('onClick', () => {
+    it('should call onClick with the clicked trainer', () => {
+      const onClickSpy = jest.fn();
+      const utils = render(
+        <table>
+          <tbody>
+            <TableRow trainer={trainer as any} onClick={onClickSpy} />
+          </tbody>
+        </table>
+      );
+
+      fireEvent.click(utils.getByText(trainer.firstName));
+      expect(onClickSpy).toHaveBeenCalledTimes(1);
+      expect(onClickSpy).toHaveBeenCalledWith(trainer);
     });
   });
 });

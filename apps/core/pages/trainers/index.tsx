@@ -8,19 +8,47 @@ import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
 import {
   PageHeader,
   ParsedTrainerFormFields,
+  TrainerFormFields,
   Table,
   TrainerDialog
 } from '@hubbl/ui/components';
 
 import { BaseLayout, Pages, PersonnelPages } from '../../components';
 
+/**
+ * Parses the given trainer to the default values of the form
+ */
+const trainerToDefaultValues = (
+  trainer: TrainerDTO<number>
+): Partial<TrainerFormFields> => ({
+  ...trainer,
+  tags: trainer.tags.map(({ id }) => id)
+});
+
 type PosterResponse = { trainer: TrainerDTO<number> };
+
+type TrainerDialogState = {
+  /**
+   * Whether the modal is opened or not
+   */
+  status: 'create' | 'edit' | undefined;
+
+  /**
+   * Trainer selected if editing
+   */
+  trainer?: TrainerDTO<number>;
+};
+
+const InitialTrainerDialogState: TrainerDialogState = {
+  status: null,
+  trainer: null
+};
 
 const Trainers = () => {
   const {
     token,
     user,
-    API: { fetcher, poster }
+    API: { fetcher, poster, putter }
   } = useAppContext();
   const { onSuccess, onError } = useToastContext();
 
@@ -40,20 +68,26 @@ const Trainers = () => {
     setPage((prev) => Math.max(prev - 1, 0));
   };
 
-  const [trainerDialog, setTrainerDialog] = useState(false);
+  const [trainerDialog, setTrainerDialog] = useState<TrainerDialogState>(
+    InitialTrainerDialogState
+  );
 
   const handleOnOpenTrainerDialog: EmptyHandler = () => {
-    setTrainerDialog(true);
+    setTrainerDialog({ status: 'create', trainer: null });
+  };
+
+  const handleOnTrainerClick: SingleHandler<TrainerDTO<number>> = (trainer) => {
+    setTrainerDialog({ status: 'edit', trainer });
   };
 
   const handleOnCloseTrainerDialog: EmptyHandler = () => {
-    setTrainerDialog(false);
+    setTrainerDialog(InitialTrainerDialogState);
   };
 
   const handleOnSumbitTrainerDialog: SingleHandler<
     ParsedTrainerFormFields
   > = async (formData) => {
-    setTrainerDialog(false);
+    setTrainerDialog(InitialTrainerDialogState);
 
     try {
       const { trainer: created } = await poster<PosterResponse>(
@@ -76,6 +110,37 @@ const Trainers = () => {
     }
   };
 
+  const handleOnUpdateTrainer: SingleHandler<ParsedTrainerFormFields> = async (
+    formData
+  ) => {
+    const { id } = trainerDialog.trainer;
+    setTrainerDialog(InitialTrainerDialogState);
+
+    try {
+      // Find element to update
+      const updated = {
+        ...data.find(({ id: trainerId }) => id === trainerId),
+        ...formData,
+        id,
+        tags: formData.tags.map((tag) => ({ ...tag, gym: user.gym.id })),
+        gym: user.gym.id
+      };
+
+      await putter<TrainerDTO<number>>('/persons/trainer', updated);
+
+      await mutate(
+        data.map((trainer) =>
+          trainer.id === id ? updated : trainer
+        ) as TrainerDTO<number>[],
+        false
+      );
+
+      onSuccess('Trainer updated successfully!');
+    } catch (e) {
+      onError(`${e.response.data.message}`);
+    }
+  };
+
   return (
     <>
       <PageHeader
@@ -92,15 +157,30 @@ const Trainers = () => {
         onAddItem={handleOnOpenTrainerDialog}
       >
         {data?.map((trainer) => (
-          <Pages.Trainers.TableRow key={trainer.id} trainer={trainer} />
+          <Pages.Trainers.TableRow
+            key={trainer.id}
+            trainer={trainer}
+            onClick={handleOnTrainerClick}
+          />
         ))}
       </Table>
 
       <TrainerDialog
-        title="Create a trainer"
-        open={trainerDialog}
+        title={`${
+          trainerDialog.status === 'create' ? 'Create' : 'Edit'
+        } a trainer`}
+        open={!!trainerDialog.status}
+        defaultValues={
+          trainerDialog.trainer
+            ? trainerToDefaultValues(trainerDialog.trainer)
+            : undefined
+        }
         onClose={handleOnCloseTrainerDialog}
-        onSubmit={handleOnSumbitTrainerDialog}
+        onSubmit={
+          trainerDialog.status === 'create'
+            ? handleOnSumbitTrainerDialog
+            : handleOnUpdateTrainer
+        }
       />
     </>
   );

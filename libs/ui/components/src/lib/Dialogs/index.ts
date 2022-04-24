@@ -12,6 +12,7 @@ import type {
   EventTypeFormFields,
   GymZoneFormFields,
   ParsedTrainerFormFields,
+  TrainerFormFields,
   VirtualGymFormFields
 } from './types';
 import VirtualGymDialog from './VirtualGymDialog';
@@ -31,6 +32,7 @@ export type {
   EventTypeFormFields,
   GymZoneFormFields,
   ParsedTrainerFormFields,
+  TrainerFormFields,
   UseEventDialogResult,
   VirtualGymFormFields
 };
