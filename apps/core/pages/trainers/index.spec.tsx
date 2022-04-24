@@ -146,7 +146,7 @@ describe('Trainers page', () => {
   });
 
   describe('post trainer', () => {
-    const fillTrainer = async () => {
+    const fillTrainer = async (withTags = false) => {
       await act(async () => {
         fireEvent.click(screen.getByTitle('add-trainer'));
       });
@@ -161,6 +161,21 @@ describe('Trainers page', () => {
           target: { name: 'email', value: 'test@trainer.com' }
         });
       });
+
+      if (withTags) {
+        fireEvent.mouseDown(
+          screen
+            .getAllByRole('button')
+            .filter((element) => element.id === 'mui-component-select-tags')[0]
+        );
+        /* Extracted from mui select library */
+        act(() => {
+          const options = screen.getAllByRole('option');
+          fireEvent.mouseDown(options[0]);
+          options[0].click();
+        });
+      }
+
       await act(async () => {
         fireEvent.click(screen.getByText('Save'));
       });
@@ -206,9 +221,17 @@ describe('Trainers page', () => {
       await act(async () => {
         render(<Trainers />);
       });
-      await fillTrainer();
+      await fillTrainer(true);
 
       expect(poster).toHaveBeenCalledTimes(1);
+      expect(poster).toHaveBeenCalledWith('/persons/trainer', {
+        firstName: 'Test',
+        lastName: 'Trainer',
+        gender: Gender.OTHER,
+        email: 'test@trainer.com',
+        gym: 1,
+        tags: [{ gym: 1, id: 0, name: 'Tag-0' }]
+      });
       // It should not call mutate as trainers length === 15
       expect(mutateSpy).toHaveBeenCalledTimes(1);
       expect(mutateSpy).toHaveBeenCalledWith(
@@ -219,7 +242,7 @@ describe('Trainers page', () => {
       expect(onSuccess).toHaveBeenCalledWith('Trainer created!');
     });
 
-    it('should call onError on poster erro', async () => {
+    it('should call onError on poster error', async () => {
       poster.mockRejectedValue('Error thrown');
 
       await act(async () => {
