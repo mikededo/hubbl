@@ -4,13 +4,11 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn
 } from 'typeorm';
 
-import Owner from './Owner';
 import Person from './Person';
 
 /**
@@ -33,13 +31,6 @@ export default class Worker {
   })
   @JoinColumn()
   person!: Person;
-
-  /**
-   * References to the manager of this employee.
-   */
-  @ManyToOne(() => Owner, (o) => o.workers, { nullable: false })
-  @JoinColumn({ name: 'manager_id_fk' })
-  managerId!: number;
 
   /**
    * The `Worker` is allowed or not to UPDATE `VirtualGym`

@@ -51,7 +51,7 @@ export const userAccessToCalendar = async ({
   try {
     person = await personService.findOne({
       where: { id: personId },
-       loadRelationIds: true 
+      loadRelationIds: true
     });
     if (!person) {
       return controller.unauthorized(res, 'Person does not exist.');

@@ -14,6 +14,7 @@ import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import TrainerTagDTO from '../TrainerTag';
 import { DTOGroups } from '../util';
+import { nanoid } from 'nanoid';
 
 export default class TrainerDTO<T extends Gym | number>
   extends PersonDTO<T>
@@ -25,12 +26,6 @@ export default class TrainerDTO<T extends Gym | number>
     { message: numberError('gym'), groups: [PersonDTOGroups.REGISTER] }
   )
   gym!: T;
-
-  @IsNumber(
-    {},
-    { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
-  )
-  managerId!: number;
 
   /* Non required validation fields */
   tags!: Array<TrainerTag | TrainerTagDTO>;
@@ -50,15 +45,15 @@ export default class TrainerDTO<T extends Gym | number>
 
     result.id = json.id;
     result.email = json.email;
-    result.password = json.password;
+    // Trainers do not have a password, but it is required, therefore
+    // it is randomly generated here
+    result.password = nanoid(8);
     result.firstName = json.firstName;
     result.lastName = json.lastName;
     result.phone = json.phone;
     result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
-    // Trainer props
-    result.managerId = json.managerId;
     // Tags
     result.tags = json.tags || [];
 
@@ -111,9 +106,6 @@ export default class TrainerDTO<T extends Gym | number>
           : trainer.person.gym;
       result.gender = trainer.person.gender as Gender;
 
-      // Trainer props
-      result.managerId = trainer.managerId;
-
       // Tags
       result.tags =
         trainer.tags?.map((tag) => TrainerTagDTO.fromClass(tag)) || [];
@@ -148,9 +140,6 @@ export default class TrainerDTO<T extends Gym | number>
     // Set person into trainer
     trainer.person = person;
     trainer.personId = this.id;
-
-    // Set trainer props
-    trainer.managerId = this.managerId;
 
     // Set tags
     trainer.tags = this.tags as TrainerTag[];
