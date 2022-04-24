@@ -1,4 +1,5 @@
-import { AppPalette } from '@hubbl/shared/types';
+import { TrainerTagDTO } from '@hubbl/shared/models/dto';
+import { AppPalette, Gender } from '@hubbl/shared/types';
 
 export type VirtualGymFormFields = {
   /**
@@ -204,3 +205,44 @@ export type CalendarEventFormFields = {
    */
   difficulty: number | string;
 };
+
+export type PersonFormFields = {
+  /**
+   * `Person`'s first name
+   */
+  firstName: string;
+
+  /**
+   * `Person`'s last name
+   */
+  lastName: string;
+
+  /**
+   * `Person`'s email
+   */
+  email: string;
+
+  /**
+   * `Person`'s password
+   */
+  password: string;
+
+  /**
+   * `Person`'s Gender
+   */
+  gender: Gender;
+};
+
+export type TrainerFormFields = {
+  /**
+   * Identifiers of the selected trainer tags
+   */
+  tags: number[];
+} & PersonFormFields;
+
+export type ParsedTrainerFormFields = {
+  /**
+   * List of trainer tags that have been selected
+   */
+  tags: TrainerTagDTO[];
+} & PersonFormFields;

@@ -26,36 +26,31 @@ const response = [
     id: 1,
     firstName: 'One',
     lastName: 'Trainer',
-    gender: Gender.OTHER,
-    workerCode: 'SomeCode'
+    gender: Gender.OTHER
   },
   {
     id: 2,
     firstName: 'Two',
     lastName: 'Trainer',
-    gender: Gender.OTHER,
-    workerCode: 'SomeCode'
+    gender: Gender.OTHER
   },
   {
     id: 3,
     firstName: 'Three',
     lastName: 'Trainer',
-    gender: Gender.OTHER,
-    workerCode: 'SomeCode'
+    gender: Gender.OTHER
   },
   {
     id: 4,
     firstName: 'Four',
     lastName: 'Trainer',
-    gender: Gender.OTHER,
-    workerCode: 'SomeCode'
+    gender: Gender.OTHER
   },
   {
     id: 5,
     firstName: 'Five',
     lastName: 'Trainer',
-    gender: Gender.OTHER,
-    workerCode: 'SomeCode'
+    gender: Gender.OTHER
   }
 ] as TrainerDTO<number>[];
 

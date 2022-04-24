@@ -1,5 +1,5 @@
 import { genSalt, hash } from 'bcrypt';
-import { IsNumber, IsString, validateOrReject } from 'class-validator';
+import { IsNumber, validateOrReject } from 'class-validator';
 
 import {
   Gym,
@@ -7,17 +7,14 @@ import {
   Trainer,
   TrainerTag
 } from '@hubbl/shared/models/entities';
-import {
-  numberError,
-  stringError,
-  validationParser
-} from '@hubbl/shared/models/helpers';
+import { numberError, validationParser } from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
 
 import DTO from '../Base';
 import PersonDTO, { PersonDTOGroups } from '../Person';
 import TrainerTagDTO from '../TrainerTag';
 import { DTOGroups } from '../util';
+import { nanoid } from 'nanoid';
 
 export default class TrainerDTO<T extends Gym | number>
   extends PersonDTO<T>
@@ -29,15 +26,6 @@ export default class TrainerDTO<T extends Gym | number>
     { message: numberError('gym'), groups: [PersonDTOGroups.REGISTER] }
   )
   gym!: T;
-
-  @IsNumber(
-    {},
-    { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
-  )
-  managerId!: number;
-
-  @IsString({ message: stringError('workerCode') })
-  workerCode!: string;
 
   /* Non required validation fields */
   tags!: Array<TrainerTag | TrainerTagDTO>;
@@ -57,16 +45,15 @@ export default class TrainerDTO<T extends Gym | number>
 
     result.id = json.id;
     result.email = json.email;
-    result.password = json.password;
+    // Trainers do not have a password, but it is required, therefore
+    // it is randomly generated here
+    result.password = nanoid(8);
     result.firstName = json.firstName;
     result.lastName = json.lastName;
     result.phone = json.phone;
     result.theme = json.theme;
     result.gym = json.gym;
     result.gender = json.gender;
-    // Trainer props
-    result.managerId = json.managerId;
-    result.workerCode = json.workerCode;
     // Tags
     result.tags = json.tags || [];
 
@@ -119,10 +106,6 @@ export default class TrainerDTO<T extends Gym | number>
           : trainer.person.gym;
       result.gender = trainer.person.gender as Gender;
 
-      // Trainer props
-      result.managerId = trainer.managerId;
-      result.workerCode = trainer.workerCode;
-
       // Tags
       result.tags =
         trainer.tags?.map((tag) => TrainerTagDTO.fromClass(tag)) || [];
@@ -157,10 +140,6 @@ export default class TrainerDTO<T extends Gym | number>
     // Set person into trainer
     trainer.person = person;
     trainer.personId = this.id;
-
-    // Set trainer props
-    trainer.managerId = this.managerId;
-    trainer.workerCode = this.workerCode;
 
     // Set tags
     trainer.tags = this.tags as TrainerTag[];

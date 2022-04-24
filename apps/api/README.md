@@ -24,8 +24,8 @@ The application is built using the `@nrlw/express` generator. It is build in Typ
 Once the repository has been cloned, install the dependencies of the project.
 
 ```sh
-# with npm 
-npm install 
+# with npm
+npm install
 ```
 
 ### Execution

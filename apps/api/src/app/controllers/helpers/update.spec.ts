@@ -362,7 +362,9 @@ describe('update', () => {
         });
 
         expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
-        expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({ personId: 1 });
+        expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({
+          personId: 1
+        });
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
           mockWorkerRes,
@@ -389,7 +391,9 @@ describe('update', () => {
         });
 
         expect(mockWorkerService.findOneBy).toHaveBeenCalledTimes(1);
-        expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({ personId: 1 });
+        expect(mockWorkerService.findOneBy).toHaveBeenCalledWith({
+          personId: 1
+        });
         expect(mockController.unauthorized).toHaveReturnedTimes(1);
         expect(mockController.unauthorized).toHaveBeenCalledWith(
           mockWorkerRes,

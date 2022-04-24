@@ -18,13 +18,6 @@ const ContentContainer = ({ children }: ContentContainerProps): JSX.Element => (
   <ContainerStack
     direction="row"
     justifyContent="stretch"
-    gap={{
-      xs: 0,
-      sm: 0,
-      md: 2,
-      lg: 4,
-      xl: 4
-    }}
     sx={{ transition: 'gap 0.25s ease-in-out' }}
   >
     {children}

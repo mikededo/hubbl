@@ -42,8 +42,6 @@ const DashboardTrainer = ({ trainer }: DashboardTrainerProps): JSX.Element => (
           <Woman titleAccess="woman-trainer" />
         )}
       </Stack>
-
-      <Typography>{trainer.workerCode.substring(0, 10)}</Typography>
     </ContentStack>
   </PaddedContentCard>
 );

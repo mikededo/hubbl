@@ -1,16 +1,10 @@
 import { genSalt, hash } from 'bcrypt';
-import {
-  IsBoolean,
-  IsNumber,
-  IsString,
-  validateOrReject
-} from 'class-validator';
+import { IsBoolean, IsNumber, validateOrReject } from 'class-validator';
 
 import { Gym, Person, Worker } from '@hubbl/shared/models/entities';
 import {
   booleanError,
   numberError,
-  stringError,
   validationParser
 } from '@hubbl/shared/models/helpers';
 import { Gender } from '@hubbl/shared/types';
@@ -30,15 +24,6 @@ export default class WorkerDTO<T extends Gym | number>
     { message: numberError('gym'), groups: [PersonDTOGroups.REGISTER] }
   )
   gym!: T;
-
-  @IsNumber(
-    {},
-    { message: numberError('managerId'), groups: [PersonDTOGroups.REGISTER] }
-  )
-  managerId!: number;
-
-  @IsString({ message: stringError('workerCode'), groups: [DTOGroups.ALL] })
-  workerCode!: string;
 
   @IsBoolean({ message: booleanError('updateVirtualGyms') })
   updateVirtualGyms!: boolean;
@@ -128,8 +113,6 @@ export default class WorkerDTO<T extends Gym | number>
     to: WorkerDTO<T>,
     from: any
   ): void {
-    to.managerId = from.managerId;
-    to.workerCode = from.workerCode;
     to.updateVirtualGyms = from.updateVirtualGyms;
     to.createGymZones = from.createGymZones;
     to.updateGymZones = from.updateGymZones;
@@ -259,7 +242,6 @@ export default class WorkerDTO<T extends Gym | number>
     worker.personId = this.id;
 
     // Set worker props
-    worker.managerId = this.managerId;
     worker.updateVirtualGyms = this.updateVirtualGyms;
     worker.createGymZones = this.createGymZones;
     worker.updateGymZones = this.updateGymZones;
