@@ -139,6 +139,22 @@ describe('<TrainerDialog />', () => {
     });
   });
 
+  describe('onDelete', () => {
+    it('should call onDelete', async () => {
+      const onDeleteSpy = jest.fn();
+
+      await act(async () => {
+        render(
+          <TrainerDialog title="Edit a trainer" onDelete={onDeleteSpy} open />
+        );
+      });
+      fireEvent.click(screen.getByText('Delete'));
+
+      expect(screen.getByText('Delete')).toBeInTheDocument();
+      expect(onDeleteSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('should call onError', async () => {
     swrSpy
       .mockClear()
@@ -150,7 +166,6 @@ describe('<TrainerDialog />', () => {
       render(<TrainerDialog title="Create a trainer" open />);
     });
 
-    expect(onError).toHaveBeenCalledTimes(1);
     expect(onError).toHaveBeenCalledWith('An error occurred.');
   });
 });
