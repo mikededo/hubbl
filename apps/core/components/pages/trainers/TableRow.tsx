@@ -1,5 +1,5 @@
 import { TrainerDTO } from '@hubbl/shared/models/dto';
-import { AppPalette, Gender } from '@hubbl/shared/types';
+import { AppPalette, Gender, SingleHandler } from '@hubbl/shared/types';
 import { GenderCell, TableBodyRow } from '@hubbl/ui/components';
 import { notForwardOne } from '@hubbl/utils';
 import { Man, Woman } from '@mui/icons-material';
@@ -20,15 +20,29 @@ const TagChip = styled(Chip, {
 }));
 
 type TableRowProps = {
+  /**
+   * Trainer to display
+   */
   trainer?: TrainerDTO<number>;
+
+  /**
+   * Callback to run when the row has been clicledk
+   *
+   * @default undefined
+   */
+  onClick?: SingleHandler<TrainerDTO<number>>;
 };
 
-const TableRow = ({ trainer }: TableRowProps) => {
+const TableRow = ({ trainer, onClick }: TableRowProps) => {
   const genderIcon = () =>
     trainer?.gender === Gender.WOMAN ? <Woman /> : <Man />;
 
+  const handleOnClick = () => {
+    onClick?.(trainer);
+  };
+
   return (
-    <TableBodyRow>
+    <TableBodyRow onClick={handleOnClick}>
       <TableCell>{trainer?.firstName}</TableCell>
       <TableCell>{trainer?.lastName}</TableCell>
       <TableCell>{trainer?.email}</TableCell>
