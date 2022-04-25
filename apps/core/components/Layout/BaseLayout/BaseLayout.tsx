@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-import { HeaderNavWrapper, SideNavWrapper } from '@hubbl/ui/components';
+import {
+  ContentContainer,
+  HeaderNavWrapper,
+  SideNavWrapper
+} from '@hubbl/ui/components';
 import { notForwardOne } from '@hubbl/utils';
 import { Menu } from '@mui/icons-material';
 import {
@@ -13,7 +17,6 @@ import {
   useTheme
 } from '@mui/material';
 
-import ContentContainer from '../ContentContainer';
 import CoreSideNav, { CoreSideNavProps } from '../CoreSideNav';
 
 type MainContentContainerProps = {
