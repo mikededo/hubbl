@@ -1,16 +1,47 @@
-import { AppProps } from 'next/app';
+import '../styles/styles.css';
+
+import type { ReactElement, ReactNode } from 'react';
+
+import type { NextPage } from 'next';
+import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
-const CustomApp = ({ Component, pageProps }: AppProps) => (
-  <>
-    <Head>
-      <title>Welcome to client!</title>
-    </Head>
+import {
+  AppProvider,
+  LoadingContext,
+  ThemeProvider,
+  ToastContext
+} from '@hubbl/data-access/contexts';
 
-    <main className="app">
-      <Component {...pageProps} />
-    </main>
-  </>
-);
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
-export default CustomApp;
+type LayoutAppProps = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+const App = ({ Component, pageProps }: LayoutAppProps) => {
+  const getLayout = Component.getLayout ?? ((page) => page);
+
+  return (
+    <>
+      <Head>
+        <title>Welcome to Hubbl!</title>
+      </Head>
+
+      <LoadingContext>
+        <ThemeProvider>
+          <ToastContext>
+            <AppProvider>
+              {/* TODO: Add auth guard */}
+              {getLayout(<Component {...pageProps} />)}
+            </AppProvider>
+          </ToastContext>
+        </ThemeProvider>
+      </LoadingContext>
+    </>
+  );
+};
+
+export default App;
