@@ -226,6 +226,33 @@ describe('update', () => {
         );
       });
 
+      it('should send forbidden on duplicate person email', async () => {
+        const mockService = {
+          count: jest.fn().mockResolvedValue(1),
+          save: jest
+            .fn()
+            .mockRejectedValue('Duplicate query constraint "person-email-idx"')
+        } as any;
+
+        await update.findAndUpdateEntity({
+          controller: mockController,
+          service: mockService,
+          res: mockRes,
+          dto: mockDTO,
+          entityName: 'Any' as any,
+          countArgs: { entityId: mockDTO.id }
+        });
+
+        expect(mockService.count).toHaveBeenCalledTimes(1);
+        expect(mockService.save).toHaveBeenCalledTimes(1);
+        expect(mockService.save).toHaveBeenCalledWith(mockPerson);
+        expect(mockController.forbidden).toHaveReturnedTimes(1);
+        expect(mockController.forbidden).toHaveBeenCalledWith(
+          mockRes,
+          'Email is already in use!'
+        );
+      });
+
       it('should send a fail on update error', async () => {
         const mockService = {
           count: jest.fn().mockResolvedValue(1),

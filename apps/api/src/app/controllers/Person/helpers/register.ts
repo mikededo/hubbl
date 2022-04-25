@@ -103,6 +103,11 @@ export const register = async <
         [alias]: fromClass(result)
       });
     } catch (_) {
+      // Check if the error is related with a repeated email error
+      if (/person-email-idx/.test(_.toString())) {
+        return controller.forbidden(res, 'Email is already in use!');
+      }
+
       log.error(
         `Controller [${controller.constructor.name}]`,
         '"register" handler',
@@ -148,6 +153,11 @@ export const trainerRegister = async ({
         trainer: fromClass(result)
       });
     } catch (_) {
+      // Check if the error is related with a repeated email error
+      if (/person-email-idx/.test(_.toString())) {
+        return controller.forbidden(res, 'Email is already in use!');
+      }
+
       log.error(
         `Controller [${controller.constructor.name}]`,
         '"register" handler',
