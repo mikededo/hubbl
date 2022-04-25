@@ -290,6 +290,41 @@ describe('register', () => {
       );
     });
 
+    it('should send forbidden if email already in use', async () => {
+      const mockRes = { cookie: jest.fn() } as any;
+
+      const mockService = {
+        manager: {
+          transaction: jest.fn().mockImplementation((cb) => {
+            cb(mockManager);
+            return mockPerson;
+          })
+        }
+      } as any;
+      const signSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token as any);
+
+      mockController.created.mockImplementation(() => {
+        throw 'Duplicate query constraint "person-email-idx"';
+      });
+
+      await register({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: mockRes,
+        alias: 'any' as any
+      });
+
+      expect(signSpy).toHaveBeenCalledTimes(2);
+      expect(mockController.forbidden).toHaveReturnedTimes(1);
+      expect(mockController.forbidden).toHaveBeenCalledWith(
+        mockRes,
+        'Email is already in use!'
+      );
+    });
+
     it('should send a fail on created error', async () => {
       const mockRes = { cookie: jest.fn() } as any;
 
@@ -381,6 +416,31 @@ describe('register', () => {
           res: {} as any
         });
       });
+    });
+
+    it('should send forbidden if email already in use', async () => {
+      const mockService = {
+        save: jest
+          .fn()
+          .mockRejectedValue('Duplicate query constraint "person-email-idx"')
+      } as any;
+      jsonResSpy.mockImplementation();
+
+      await trainerRegister({
+        service: mockService,
+        controller: mockController,
+        fromJson: mockFromJson,
+        fromClass: mockFromClass,
+        req: mockReq,
+        res: {} as any
+      });
+
+      expect(mockFromJson).toHaveBeenCalledTimes(1);
+      expect(mockController.forbidden).toHaveBeenCalledTimes(1);
+      expect(mockController.forbidden).toHaveBeenCalledWith(
+        {} as any,
+        'Email is already in use!'
+      );
     });
 
     it('should send a fail on service error', async () => {

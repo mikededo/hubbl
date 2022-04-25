@@ -100,6 +100,11 @@ export const findAndUpdateEntity = async ({
     // Return ok
     return controller.ok(res);
   } catch (_) {
+    // Special case for person entities
+    if (/person-email-idx/.test(_.toString())) {
+      return controller.forbidden(res, 'Email is already in use!');
+    }
+
     log.error(
       `Controller [${controller.constructor.name}]`,
       '"update" handler',
