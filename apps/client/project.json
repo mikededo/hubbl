@@ -20,7 +20,8 @@
       "executor": "@nrwl/next:server",
       "options": {
         "buildTarget": "client:build",
-        "dev": true
+        "dev": true,
+        "hostname": "client.hubbl.local"
       },
       "configurations": {
         "production": {
