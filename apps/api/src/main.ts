@@ -9,7 +9,7 @@ const app: express.Application = express();
 
 app.use(
   cors({
-    origin: 'http://core.hubbl.local:4200',
+    origin: ['http://core.hubbl.local:4200', 'http://client.hubbl.local:4201'],
     credentials: true,
     allowedHeaders:
       'Origin, X-Requested-With, Content-Type, Accept, Authorization',
@@ -17,6 +17,7 @@ app.use(
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'
   })
 );
+
 app.use(json());
 app.use(cookieParser());
 
