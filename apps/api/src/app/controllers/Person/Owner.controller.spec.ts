@@ -13,7 +13,7 @@ jest.mock('../../services/Person/Owner.service');
 jest.mock('./helpers');
 jest.mock('../helpers');
 
-describe('OwnerControllerController', () => {
+describe('OwnerController', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
