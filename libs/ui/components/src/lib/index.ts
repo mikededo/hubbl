@@ -2,6 +2,7 @@ import Calendar from './Calendar';
 import ColorCircle from './ColorCircle';
 import ColorPicker from './ColorPicker';
 import ContentCard from './ContentCard';
+import ContentContainer from './ContentContainer';
 import EventTemplateGrid from './EventTemplateGrid';
 import EventTypeGrid from './EventTypeGrid';
 import GymZoneGrid from './GymZoneGrid';
@@ -19,6 +20,7 @@ export {
   ColorCircle,
   ColorPicker,
   ContentCard,
+  ContentContainer,
   EventTemplateGrid,
   EventTypeGrid,
   GymZoneGrid,

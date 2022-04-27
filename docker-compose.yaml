@@ -1,6 +1,17 @@
 version: '3.9'
 
 services:
+  # Nginx proxy to serve applications
+  nginx-proxy:
+    image: jwilder/nginx-proxy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certs:/etc/nginx/certs
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    restart: unless-stopped
+
   # Backend
   test-db:
     container_name: test-db
@@ -36,7 +47,7 @@ services:
   # Api
   api-dev:
     container_name: hubbl-api-dev
-    image: node:16.10.0-alpine3.14
+    image: node:16.14.2-alpine3.14
     volumes:
       - .:/app
     command:
@@ -54,8 +65,63 @@ services:
     mem_limit: 1G
     restart: unless-stopped
     profiles: ['all', 'dev']
+    
+  # Core
+  core-dev:
+    container_name: hubbl-core-dev
+    image: node:16.14.2-alpine3.14
+    volumes:
+      - .:/app
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add git
+        cd /app
+        npm install
+        npx nx serve core
+    ports:
+      - 4200:4200
+    expose:
+      - 4200
+    networks:
+      - postgres
+    environment:
+      VIRTUAL_HOST: core.hubbl.local
+      VIRTUAL_PORT: 4200
+    restart: unless-stopped
+    mem_limit: 2G
+    profiles: ['all', 'dev']
+    
+  client-dev:
+    container_name: hubbl-client-dev
+    image: node:16.14.2-alpine3.14
+    volumes:
+      - .:/app
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add git
+        cd /app
+        npm install
+        npx nx serve client
+    ports:
+      - 4201:4201
+    expose:
+      - 4201
+    networks:
+      - postgres
+    environment:
+      VIRTUAL_HOST: client.hubbl.local
+      VIRTUAL_PORT: 4201
+    restart: unless-stopped
+    mem_limit: 2G
+    profiles: ['all', 'dev']
 
 networks:
+  default:
+    name: nginx-proxy
   postgres:
     driver: bridge
 

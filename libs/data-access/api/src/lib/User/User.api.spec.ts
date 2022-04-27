@@ -36,7 +36,25 @@ describe('User API', () => {
         { withCredentials: true }
       );
 
-      expect(result.owner.id).toBe(1);
+      expect((result as any).owner.id).toBe(1);
+      expect(result.token).toBe('token');
+    });
+
+    it('should post to /persons/register/client and return the registered client', async () => {
+      (Base.axios.post as any).mockResolvedValue({
+        data: { client: { id: 1 }, token: 'token' }
+      });
+
+      const result = await signup('client', mockPerson);
+
+      expect(Base.axios.post).toHaveBeenCalledTimes(1);
+      expect(Base.axios.post).toHaveBeenCalledWith(
+        '/persons/register/client',
+        { ...mockPerson, gender: Gender.OTHER },
+        { withCredentials: true }
+      );
+
+      expect((result as any).client.id).toBe(1);
       expect(result.token).toBe('token');
     });
   });

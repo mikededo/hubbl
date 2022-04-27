@@ -155,6 +155,19 @@ describe('Person routes', () => {
     });
   });
 
+  describe('LogOut', () => {
+    it('should call PersonLogOutController.execute', async () => {
+      const executeSpy = jest.spyOn(
+        controllers.PersonLogOutController,
+        'execute'
+      );
+
+      await supertest(app).post('/persons/logout');
+
+      expect(executeSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('Fetch', () => {
     it('should call WorkerFetchController.execute', async () => {
       const executeSpy = jest.spyOn(

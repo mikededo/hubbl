@@ -4,8 +4,10 @@ import { AxiosRequestConfig } from 'axios';
 import { decode } from 'jsonwebtoken';
 
 import {
+  ClientSignUpResponse,
   fetcher as ApiFetcher,
   GymApi,
+  OwnerSignUpResponse,
   poster as ApiPoster,
   putter as ApiPutter,
   TokenApi,
@@ -68,8 +70,23 @@ const useAppContextValue = ({
     setLoading(true);
 
     try {
-      const { owner, token } = await UserApi.signup(type, data);
-      setUser(owner);
+      let owner: OwnerDTO<Gym> | undefined = undefined;
+      let client: ClientDTO<Gym> | undefined = undefined;
+      let token: string;
+
+      if (type === 'owner') {
+        ({ owner, token } = (await UserApi.signup(
+          type,
+          data
+        )) as OwnerSignUpResponse);
+      } else {
+        ({ client, token } = (await UserApi.signup(
+          type,
+          data
+        )) as ClientSignUpResponse);
+      }
+
+      setUser((owner ?? client ) as UserType);
       setToken(token);
       setParsedToken(decode(token) as ParsedToken);
     } catch (e) {
