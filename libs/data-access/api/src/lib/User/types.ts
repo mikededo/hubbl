@@ -1,8 +1,8 @@
+import { AxiosRequestConfig } from 'axios';
 import { PartialDeep } from 'type-fest';
 
 import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
-import { AxiosRequestConfig } from 'axios';
 
 export type OwnerSignUpResponse = {
   owner: OwnerDTO<Gym>;
@@ -22,11 +22,12 @@ export type SignUpType = {
 };
 
 export type LoginResult = Promise<{ owner: OwnerDTO<Gym>; token: string }> &
-  Promise<{ worker: WorkerDTO<Gym>; token: string }>;
+  Promise<{ worker: WorkerDTO<Gym>; token: string }> &
+  Promise<{ client: ClientDTO<Gym>; token: string }>;
 
 export type LoginType = {
   (
-    type: 'owner' | 'worker',
+    type: 'owner' | 'worker' | 'client',
     data: { email: string; password: string }
   ): LoginResult;
 };

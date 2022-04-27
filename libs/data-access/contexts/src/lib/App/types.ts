@@ -42,7 +42,10 @@ export type SignUpType = {
  * Function type to log in both an owner and a user
  */
 export type LogInType = {
-  (type: 'owner' | 'worker', data: { email: string; password: string }): void;
+  (
+    type: 'owner' | 'worker' | 'client',
+    data: { email: string; password: string }
+  ): void;
 };
 
 /**
