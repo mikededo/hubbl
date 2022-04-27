@@ -1,8 +1,7 @@
-import React from 'react';
-
 import { AppProvider, useAppContext } from '@hubbl/data-access/contexts';
-import { render } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
+import LogIn from './index';
 import SignUp from './index';
 
 jest.mock('next/router', () => ({
@@ -48,5 +47,38 @@ describe('<SignUp />', () => {
     );
 
     expect(utils.container).toBeInTheDocument();
+  });
+
+  it('should fill the form', async () => {
+    const loginSpy = jest.fn();
+    (useAppContext as any).mockReturnValue({
+      user: undefined,
+      API: { login: loginSpy }
+    });
+
+    render(
+      <AppProvider>
+        <LogIn />
+      </AppProvider>
+    );
+
+    // Fill form
+    await act(async () => {
+      fireEvent.input(screen.getByPlaceholderText('john.doe@domain.com'), {
+        target: { name: 'email', value: 'test@email.com' }
+      });
+      fireEvent.input(screen.getByPlaceholderText('At least 8 characters!'), {
+        target: { name: 'password', value: 'eightCharsPwd' }
+      });
+    });
+    await act(async () => {
+      fireEvent.submit(screen.getByTitle('submit'));
+    });
+
+    expect(loginSpy).toHaveBeenCalledTimes(1);
+    expect(loginSpy).toHaveBeenCalledWith('client', {
+      email: 'test@email.com',
+      password: 'eightCharsPwd'
+    });
   });
 });
