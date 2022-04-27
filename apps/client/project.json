@@ -21,7 +21,7 @@
       "options": {
         "buildTarget": "client:build",
         "dev": true,
-        "hostname": "client.hubbl.local"
+        "port": 4201
       },
       "configurations": {
         "production": {
@@ -30,6 +30,7 @@
         },
         "development": {
           "buildTarget": "client:build:development",
+          "hostname": "client.hubbl.local",
           "dev": true
         }
       },

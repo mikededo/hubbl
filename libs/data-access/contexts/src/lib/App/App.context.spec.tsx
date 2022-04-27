@@ -17,7 +17,7 @@ jest.mock('../Loading', () => {
 });
 jest.mock('jsonwebtoken');
 
-const onApiSuccess = async (method: 'signup' | 'login') => {
+const onOwnerApiSuccess = async (method: 'signup' | 'login') => {
   const methodSpy = jest.spyOn(UserApi, method).mockResolvedValue({
     owner: { email: 'test@email.com' }
   } as any);
@@ -31,6 +31,43 @@ const onApiSuccess = async (method: 'signup' | 'login') => {
         <button
           onClick={() => {
             API[method]('owner', {} as any);
+          }}
+        >
+          fetch
+        </button>
+      </>
+    );
+  };
+
+  await act(async () => {
+    render(
+      <AppProvider>
+        <Component />
+      </AppProvider>
+    );
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByText('fetch'));
+  });
+
+  expect(methodSpy).toHaveBeenCalled();
+  expect(screen.getByText('test@email.com')).toBeDefined();
+};
+
+const onClientApiSuccess = async (method: 'signup') => {
+  const methodSpy = jest.spyOn(UserApi, method).mockResolvedValue({
+    client: { email: 'test@email.com' }
+  } as any);
+
+  const Component = () => {
+    const { user, API } = useAppContext();
+
+    return (
+      <>
+        {user && <p>{user?.email}</p>}
+        <button
+          onClick={() => {
+            API[method]('client', {} as any);
           }}
         >
           fetch
@@ -179,8 +216,12 @@ describe('<AppProvider />', () => {
   });
 
   describe('signup', () => {
-    it('should keep the user in the state on signup', async () => {
-      await onApiSuccess('signup');
+    it('[owner] should keep the user in the state on signup', async () => {
+      await onOwnerApiSuccess('signup');
+    });
+
+    it('[client] should keep the user in the state on signup', async () => {
+      await onClientApiSuccess('signup');
     });
 
     it('should appear a snackbar on an error', async () => {
@@ -190,7 +231,7 @@ describe('<AppProvider />', () => {
 
   describe('login', () => {
     it('should keep the user in the state on login', async () => {
-      await onApiSuccess('login');
+      await onOwnerApiSuccess('login');
     });
 
     it('should appear a snackbar on an error', async () => {

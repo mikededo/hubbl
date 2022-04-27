@@ -4,11 +4,21 @@ import { ClientDTO, OwnerDTO, WorkerDTO } from '@hubbl/shared/models/dto';
 import { Gym } from '@hubbl/shared/models/entities';
 import { AxiosRequestConfig } from 'axios';
 
+export type OwnerSignUpResponse = {
+  owner: OwnerDTO<Gym>;
+  token: string;
+};
+
+export type ClientSignUpResponse = {
+  client: ClientDTO<Gym>;
+  token: string;
+};
+
 export type SignUpType = {
-  (type: 'owner', data: PartialDeep<OwnerDTO<Gym>>): Promise<{
-    owner: OwnerDTO<Gym>;
-    token: string;
-  }>;
+  (
+    type: 'owner' | 'client',
+    data: PartialDeep<OwnerDTO<Gym> | ClientDTO<Gym>>
+  ): Promise<OwnerSignUpResponse | ClientSignUpResponse>;
 };
 
 export type LoginResult = Promise<{ owner: OwnerDTO<Gym>; token: string }> &

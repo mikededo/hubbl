@@ -32,7 +32,10 @@ export type GymUpdatableFields = Partial<
  * Function type to signup an Owner
  */
 export type SignUpType = {
-  (type: 'owner', data: PartialDeep<OwnerDTO<Gym>>): void;
+  (
+    type: 'owner' | 'client',
+    data: PartialDeep<OwnerDTO<Gym>> | PartialDeep<ClientDTO<Gym>>
+  ): void;
 };
 
 /**
@@ -70,7 +73,7 @@ export type GymApiType = {
 };
 
 /**
- * Api functions (helpers) that allow the modification of 
+ * Api functions (helpers) that allow the modification of
  * today events of the app state
  */
 export type TodayEventsApiType = {
@@ -79,7 +82,7 @@ export type TodayEventsApiType = {
    * such list
    */
   revalidate: () => void;
-}
+};
 
 export type AppContextValue = {
   token: TokenType | null;

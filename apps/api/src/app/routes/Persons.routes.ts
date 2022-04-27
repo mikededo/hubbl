@@ -8,6 +8,7 @@ import {
   OwnerLoginController,
   OwnerRegisterController,
   OwnerUpdateController,
+  PersonLogOutController,
   TrainerCreateController,
   TrainerFetchController,
   TrainerUpdateController,
@@ -122,6 +123,15 @@ UpdateRouter.put('/client', middlewares.auth, (req, res) =>
 );
 
 const PersonRouter: Router = Router();
+
+/* LOGOUT */
+/**
+ * @description Logs out the user making the call, by removing the auth cookie,
+ * if any
+ */
+PersonRouter.post('/logout', (req, res) => {
+  PersonLogOutController.execute(req, res);
+});
 
 /* FETCH */
 /**

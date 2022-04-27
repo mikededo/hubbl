@@ -9,15 +9,16 @@ import {
   OwnerRegisterController,
   OwnerUpdateController
 } from './Owner.controller';
+import { PersonLogOutController } from './Person.controller';
 import {
-  TrainerFetchController,
   TrainerCreateController,
+  TrainerFetchController,
   TrainerUpdateController
 } from './Trainer.controller';
 import {
+  WorkerCreateController,
   WorkerFetchController,
   WorkerLoginController,
-  WorkerCreateController,
   WorkerUpdateController
 } from './Worker.controller';
 
@@ -29,11 +30,12 @@ export {
   OwnerLoginController,
   OwnerRegisterController,
   OwnerUpdateController,
-  TrainerFetchController,
+  PersonLogOutController,
   TrainerCreateController,
+  TrainerFetchController,
   TrainerUpdateController,
+  WorkerCreateController,
   WorkerFetchController,
   WorkerLoginController,
-  WorkerCreateController,
   WorkerUpdateController
 };
