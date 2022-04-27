@@ -3,7 +3,14 @@ import { AxiosResponse } from 'axios';
 import { Gender } from '@hubbl/shared/types';
 
 import { axios } from '../Base';
-import { ClientApi, LoginType, OwnerApi, SignUpType, WorkerApi } from './types';
+import {
+  ClientApi,
+  LoginType,
+  LogOutType,
+  OwnerApi,
+  SignUpType,
+  WorkerApi
+} from './types';
 
 /* GENERICS */
 
@@ -26,6 +33,12 @@ export const login: LoginType = async (type, data) => {
   );
 
   return response.data;
+};
+
+export const logout: LogOutType = async () => {
+  await axios.post('/persons/logout', undefined, {
+    withCredentials: true
+  });
 };
 
 /* SPECIFICS */

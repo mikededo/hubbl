@@ -1,5 +1,7 @@
 import { ReactElement } from 'react';
 
+import { useRouter } from 'next/router';
+
 import { useAppContext } from '@hubbl/data-access/contexts';
 import {
   PageHeader,
@@ -15,6 +17,7 @@ import { BaseLayout, Pages, SettingsPages } from '../../components';
 const { SettingsGymInfo } = Pages.Settings;
 
 const Settings = () => {
+  const router = useRouter();
   const {
     token: { parsed },
     user,
@@ -57,6 +60,11 @@ const Settings = () => {
     color: user.gym.color
   });
 
+  const handleOnLogOut = async () => {
+    await API.logout();
+    router.push('/auth/login');
+  };
+
   return (
     <>
       <PageHeader
@@ -64,7 +72,11 @@ const Settings = () => {
         breadcrumbs={[{ href: '/', label: 'Settings' }]}
       />
 
-      <SettingsLogout header="User full name" subtitle="Gym owner" />
+      <SettingsLogout
+        header="User full name"
+        subtitle="Gym owner"
+        onLogOut={handleOnLogOut}
+      />
 
       <SettingsUserInfo
         defaultValues={mapUserToValues()}

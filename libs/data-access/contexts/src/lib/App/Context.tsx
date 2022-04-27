@@ -27,6 +27,7 @@ import {
   AppContextValue,
   GymUpdatableFields,
   LogInType,
+  LogOutType,
   SignUpType,
   UserType,
   UserUpdatableFields
@@ -86,7 +87,7 @@ const useAppContextValue = ({
         )) as ClientSignUpResponse);
       }
 
-      setUser((owner ?? client ) as UserType);
+      setUser((owner ?? client) as UserType);
       setToken(token);
       setParsedToken(decode(token) as ParsedToken);
     } catch (e) {
@@ -104,6 +105,22 @@ const useAppContextValue = ({
       setUser(result[type]);
       setToken(token);
       setParsedToken(decode(result.token) as ParsedToken);
+    } catch (e) {
+      // Check different errors
+      onError('An error occurred. Try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout: LogOutType = async () => {
+    setLoading(true);
+
+    try {
+      await UserApi.logout();
+      setUser(null);
+      setToken(null);
+      setParsedToken(null);
     } catch (e) {
       // Check different errors
       onError('An error occurred. Try again.');
@@ -283,6 +300,7 @@ const useAppContextValue = ({
       loading,
       signup,
       login,
+      logout,
       fetcher,
       poster,
       putter,
