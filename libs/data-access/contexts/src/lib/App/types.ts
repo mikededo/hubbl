@@ -48,7 +48,7 @@ export type LogInType = {
 /**
  * Function type to log out any user
  */
-export type LogOutType = () => void;
+export type LogOutType = () => Promise<void>;
 
 /**
  * Function type that defines the fetcher of the application

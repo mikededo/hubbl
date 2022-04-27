@@ -107,7 +107,7 @@ describe('User API', () => {
     it('should post to /persons/logout', async () => {
       (Base.axios.post as any).mockResolvedValue();
 
-      logout();
+      await logout();
 
       expect(Base.axios.post).toHaveBeenCalledTimes(1);
       expect(Base.axios.post).toHaveBeenCalledWith(

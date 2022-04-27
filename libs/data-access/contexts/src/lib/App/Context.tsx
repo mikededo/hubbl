@@ -117,7 +117,7 @@ const useAppContextValue = ({
     setLoading(true);
 
     try {
-      UserApi.logout();
+      await UserApi.logout();
       setUser(null);
       setToken(null);
       setParsedToken(null);

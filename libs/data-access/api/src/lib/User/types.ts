@@ -31,7 +31,7 @@ export type LoginType = {
   ): LoginResult;
 };
 
-export type LogOutType = () => void;
+export type LogOutType = () => Promise<void>;
 
 export type UpdateType<
   T extends OwnerDTO<Gym> | WorkerDTO<Gym> | ClientDTO<Gym>
