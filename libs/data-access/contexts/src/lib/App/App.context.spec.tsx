@@ -239,6 +239,51 @@ describe('<AppProvider />', () => {
     });
   });
 
+  describe('logout', () => {
+    it('should logout the user', async () => {
+      jest.spyOn(jwt, 'decode');
+      jest.spyOn(TokenApi, 'validate').mockResolvedValueOnce({
+        token: 'Token',
+        user: { id: 1, email: 'user@email.com' }
+      });
+      jest.spyOn(Api, 'fetcher').mockResolvedValueOnce([] as any);
+      jest.spyOn(UserApi, 'logout').mockResolvedValueOnce({} as never);
+
+      const Component = () => {
+        const { user, API } = useAppContext();
+
+        return (
+          <>
+            {user && <p>{user?.email}</p>}
+            <button
+              onClick={() => {
+                API.logout();
+              }}
+            >
+              logout
+            </button>
+          </>
+        );
+      };
+
+      await act(async () => {
+        render(
+          <AppProvider>
+            <Component />
+          </AppProvider>
+        );
+      });
+
+      expect(screen.getByText('user@email.com')).toBeDefined();
+
+      await act(async () => {
+        fireEvent.click(screen.getByText('logout'));
+      });
+
+      expect(screen.queryByText('user@email.com')).not.toBeInTheDocument();
+    });
+  });
+
   describe('fetcher', () => {
     it('should be defined', async () => {
       const fetcherSpy = jest

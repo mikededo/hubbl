@@ -31,6 +31,8 @@ export type LoginType = {
   ): LoginResult;
 };
 
+export type LogOutType = () => void;
+
 export type UpdateType<
   T extends OwnerDTO<Gym> | WorkerDTO<Gym> | ClientDTO<Gym>
 > = (data: T, config?: AxiosRequestConfig) => Promise<void>;

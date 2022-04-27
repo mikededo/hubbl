@@ -1,7 +1,7 @@
 import { Gender } from '@hubbl/shared/types';
 
 import * as Base from '../Base';
-import { client, login, owner, signup, worker } from './User.api';
+import { client, login, logout, owner, signup, worker } from './User.api';
 
 jest.mock('../Base', () => {
   const actual = jest.requireActual('../Base');
@@ -100,6 +100,21 @@ describe('User API', () => {
 
       expect(result.worker.id).toBe(1);
       expect(result.token).toBe('token');
+    });
+  });
+
+  describe('logout', () => {
+    it('should post to /persons/logout', async () => {
+      (Base.axios.post as any).mockResolvedValue();
+
+      logout();
+
+      expect(Base.axios.post).toHaveBeenCalledTimes(1);
+      expect(Base.axios.post).toHaveBeenCalledWith(
+        '/persons/logout',
+        undefined,
+        { withCredentials: true }
+      );
     });
   });
 

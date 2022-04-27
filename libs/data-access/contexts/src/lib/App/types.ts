@@ -46,6 +46,11 @@ export type LogInType = {
 };
 
 /**
+ * Function type to log out any user
+ */
+export type LogOutType = () => void;
+
+/**
  * Function type that defines the fetcher of the application
  */
 export type FetcherType = Fetcher<never, string>;
@@ -92,6 +97,7 @@ export type AppContextValue = {
     loading: boolean;
     signup: SignUpType;
     login: LogInType;
+    logout: LogOutType;
     fetcher: FetcherType;
     poster: PosterType;
     putter: PutterType;
