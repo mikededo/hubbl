@@ -30,6 +30,7 @@
         },
         "development": {
           "buildTarget": "client:build:development",
+          "hostname": "client.hubbl.local",
           "dev": true
         }
       },

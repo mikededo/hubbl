@@ -16,7 +16,7 @@ export default class ClientDTO<T extends Gym | number>
 {
   @IsBoolean({
     message: booleanError('covidPassport'),
-    groups: [PersonDTOGroups.REGISTER]
+    groups: [DTOGroups.UPDATE]
   })
   covidPassport!: boolean;
 
