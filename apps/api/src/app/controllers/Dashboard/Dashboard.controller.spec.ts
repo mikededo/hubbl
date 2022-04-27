@@ -41,7 +41,7 @@ describe('DashboardController', () => {
       getMany: jest.fn()
     };
     const gymZoneQueryBuilder = {
-      leftJoin: jest.fn().mockReturnThis(),
+      innerJoin: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
       loadAllRelationIds: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
@@ -191,8 +191,8 @@ describe('DashboardController', () => {
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'gz'
       });
-      expect(gymZoneQueryBuilder.leftJoin).toHaveBeenCalledTimes(1);
-      expect(gymZoneQueryBuilder.leftJoin).toHaveBeenCalledWith(
+      expect(gymZoneQueryBuilder.innerJoin).toHaveBeenCalledTimes(1);
+      expect(gymZoneQueryBuilder.innerJoin).toHaveBeenCalledWith(
         'gz.virtualGym',
         'vg',
         'vg.gym = :gymId',

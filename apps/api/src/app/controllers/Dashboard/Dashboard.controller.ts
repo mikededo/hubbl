@@ -52,7 +52,7 @@ class IFetchDashboardController extends BaseController {
   private gymZonesQuery(id: number): SelectQueryBuilder<GymZone> {
     return this.gymZoneService
       .createQueryBuilder({ alias: 'gz' })
-      .leftJoin('gz.virtualGym', 'vg', 'vg.gym = :gymId', { gymId: +id })
+      .innerJoin('gz.virtualGym', 'vg', 'vg.gym = :gymId', { gymId: +id })
       .loadAllRelationIds()
       .limit(5)
       .orderBy('gz.updated_at', 'DESC');
