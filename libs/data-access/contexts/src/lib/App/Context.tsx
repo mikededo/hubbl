@@ -87,7 +87,7 @@ const useAppContextValue = ({
         )) as ClientSignUpResponse);
       }
 
-      setUser((owner ?? client ) as UserType);
+      setUser((owner ?? client) as UserType);
       setToken(token);
       setParsedToken(decode(token) as ParsedToken);
     } catch (e) {

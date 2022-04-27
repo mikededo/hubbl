@@ -7,6 +7,7 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import Settings from './index';
+import { useRouter } from 'next/router';
 
 jest.mock('@hubbl/data-access/api');
 jest.mock('jsonwebtoken', () => {
@@ -20,6 +21,27 @@ jest.mock('@mui/material', () => {
   return {
     ...actual,
     useMediaQuery: jest.fn(() => false)
+  };
+});
+jest.mock('next/router', () => {
+  const result = {
+    route: '/',
+    pathname: '',
+    query: '',
+    asPath: '',
+    push: jest.fn(),
+    events: {
+      on: jest.fn(),
+      off: jest.fn()
+    },
+    beforePopState: jest.fn(() => null),
+    prefetch: jest.fn(() => null)
+  };
+
+  return {
+    useRouter() {
+      return result;
+    }
   };
 });
 
@@ -76,6 +98,25 @@ describe('Settings page', () => {
     });
 
     expect(container).toBeInTheDocument();
+  });
+
+  describe('logout', () => {
+    it('should logout the user', async () => {
+      jest.spyOn(jwt, 'decode').mockReturnValue({ user: 'owner' });
+      jest.spyOn(TokenApi, 'validate').mockResolvedValue(validateRes);
+      const callSpy = jest.spyOn(UserApi, 'logout').mockResolvedValue();
+
+      await act(async () => {
+        renderPage();
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText('Log out'));
+      });
+
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(useRouter().push).toHaveBeenCalledTimes(1);
+      expect(useRouter().push).toHaveBeenCalledWith('/auth/login');
+    });
   });
 
   describe('User info', () => {
