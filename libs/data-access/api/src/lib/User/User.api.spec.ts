@@ -101,6 +101,27 @@ describe('User API', () => {
       expect(result.worker.id).toBe(1);
       expect(result.token).toBe('token');
     });
+
+    it('should post to /persons/login/client and return the logged client', async () => {
+      (Base.axios.post as any).mockResolvedValue({
+        data: { client: { id: 1 }, token: 'token' }
+      });
+
+      const result = await login('client', {
+        email: mockPerson.email,
+        password: mockPerson.password
+      });
+
+      expect(Base.axios.post).toHaveBeenCalledTimes(1);
+      expect(Base.axios.post).toHaveBeenCalledWith(
+        '/persons/login/client',
+        { email: mockPerson.email, password: mockPerson.password },
+        { withCredentials: true }
+      );
+
+      expect(result.client.id).toBe(1);
+      expect(result.token).toBe('token');
+    });
   });
 
   describe('logout', () => {
