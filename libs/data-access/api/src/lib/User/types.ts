@@ -17,7 +17,8 @@ export type ClientSignUpResponse = {
 export type SignUpType = {
   (
     type: 'owner' | 'client',
-    data: PartialDeep<OwnerDTO<Gym> | ClientDTO<Gym>>
+    data: PartialDeep<OwnerDTO<Gym> | ClientDTO<Gym>>,
+    params?: unknown
   ): Promise<OwnerSignUpResponse | ClientSignUpResponse>;
 };
 

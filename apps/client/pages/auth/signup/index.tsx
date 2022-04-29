@@ -23,8 +23,8 @@ const SignUp = () => {
   const { user, API } = useAppContext();
   const router = useRouter();
 
-  const handleOnSubmit = (data: Pages.SignUp.SignUpFormFields) => {
-    API.signup('client', data);
+  const handleOnSubmit = ({ code, ...data }: Pages.SignUp.SignUpFormFields) => {
+    API.signup('client', data, { code });
   };
 
   useEffect(() => {

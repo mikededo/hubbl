@@ -67,7 +67,7 @@ const useAppContextValue = ({
     [token]
   );
 
-  const signup: SignUpType = async (type, data) => {
+  const signup: SignUpType = async (type, data, params) => {
     setLoading(true);
 
     try {
@@ -78,12 +78,14 @@ const useAppContextValue = ({
       if (type === 'owner') {
         ({ owner, token } = (await UserApi.signup(
           type,
-          data
+          data,
+          params
         )) as OwnerSignUpResponse);
       } else {
         ({ client, token } = (await UserApi.signup(
           type,
-          data
+          data,
+          params
         )) as ClientSignUpResponse);
       }
 
@@ -122,7 +124,6 @@ const useAppContextValue = ({
       setToken(null);
       setParsedToken(null);
     } catch (e) {
-      // Check different errors
       onError('An error occurred. Try again.');
     } finally {
       setLoading(false);

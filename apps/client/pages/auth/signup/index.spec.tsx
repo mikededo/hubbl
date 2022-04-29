@@ -93,12 +93,15 @@ describe('<SignUp />', () => {
     });
 
     expect(signupSpy).toHaveBeenCalledTimes(1);
-    expect(signupSpy).toHaveBeenCalledWith('client', {
-      firstName: 'TestFirstName',
-      lastName: 'TestLastName',
-      email: 'test@email.com',
-      password: 'eightCharsPwd',
-      code: 'AABBCCDD00'
-    });
+    expect(signupSpy).toHaveBeenCalledWith(
+      'client',
+      {
+        firstName: 'TestFirstName',
+        lastName: 'TestLastName',
+        email: 'test@email.com',
+        password: 'eightCharsPwd'
+      },
+      { code: 'AABBCCDD00' }
+    );
   });
 });

@@ -45,13 +45,15 @@ describe('User API', () => {
         data: { client: { id: 1 }, token: 'token' }
       });
 
-      const result = await signup('client', mockPerson);
+      const result = await signup('client', mockPerson, {
+        gymCode: 'Gym-Code'
+      });
 
       expect(Base.axios.post).toHaveBeenCalledTimes(1);
       expect(Base.axios.post).toHaveBeenCalledWith(
         '/persons/register/client',
         { ...mockPerson, gender: Gender.OTHER },
-        { withCredentials: true }
+        { withCredentials: true, params: { gymCode: 'Gym-Code' } }
       );
 
       expect((result as any).client.id).toBe(1);

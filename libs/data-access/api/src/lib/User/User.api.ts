@@ -14,12 +14,12 @@ import {
 
 /* GENERICS */
 
-export const signup: SignUpType = async (type, data) => {
+export const signup: SignUpType = async (type, data, params) => {
   const response: AxiosResponse = await axios.post(
     `/persons/register/${type}`,
     // Set gender by default
     { ...data, gender: Gender.OTHER },
-    { withCredentials: true }
+    { withCredentials: true, params }
   );
 
   return response.data;

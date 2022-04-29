@@ -34,7 +34,8 @@ export type GymUpdatableFields = Partial<
 export type SignUpType = {
   (
     type: 'owner' | 'client',
-    data: PartialDeep<OwnerDTO<Gym>> | PartialDeep<ClientDTO<Gym>>
+    data: PartialDeep<OwnerDTO<Gym>> | PartialDeep<ClientDTO<Gym>>,
+    params?: unknown
   ): void;
 };
 
