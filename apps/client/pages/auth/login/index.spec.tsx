@@ -1,12 +1,7 @@
-import React from 'react';
-
-import {
-  ThemeProvider,
-  AppProvider,
-  useAppContext
-} from '@hubbl/data-access/contexts';
+import { AppProvider, useAppContext } from '@hubbl/data-access/contexts';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 
+import LogIn from './index';
 import SignUp from './index';
 
 jest.mock('next/router', () => ({
@@ -55,53 +50,35 @@ describe('<SignUp />', () => {
   });
 
   it('should fill the form', async () => {
-    const signupSpy = jest.fn();
+    const loginSpy = jest.fn();
     (useAppContext as any).mockReturnValue({
       user: undefined,
-      API: { signup: signupSpy }
+      API: { login: loginSpy }
     });
 
     render(
-      <ThemeProvider>
-        <AppProvider>
-          <SignUp />
-        </AppProvider>
-      </ThemeProvider>
+      <AppProvider>
+        <LogIn />
+      </AppProvider>
     );
 
-    // First form
+    // Fill form
     await act(async () => {
-      fireEvent.input(screen.getByPlaceholderText('John'), {
-        target: { name: 'firstName', value: 'TestFirstName' }
-      });
-      fireEvent.input(screen.getByPlaceholderText('Doe'), {
-        target: { name: 'lastName', value: 'TestLastName' }
-      });
       fireEvent.input(screen.getByPlaceholderText('john.doe@domain.com'), {
         target: { name: 'email', value: 'test@email.com' }
       });
       fireEvent.input(screen.getByPlaceholderText('At least 8 characters!'), {
         target: { name: 'password', value: 'eightCharsPwd' }
       });
-      fireEvent.input(
-        screen.getByPlaceholderText('Your gym should provide you this code!'),
-        { target: { name: 'code', value: 'AABBCCDD00' } }
-      );
     });
     await act(async () => {
-      fireEvent.submit(screen.getByText('Register'));
+      fireEvent.submit(screen.getByTitle('submit'));
     });
 
-    expect(signupSpy).toHaveBeenCalledTimes(1);
-    expect(signupSpy).toHaveBeenCalledWith(
-      'client',
-      {
-        firstName: 'TestFirstName',
-        lastName: 'TestLastName',
-        email: 'test@email.com',
-        password: 'eightCharsPwd'
-      },
-      { code: 'AABBCCDD00' }
-    );
+    expect(loginSpy).toHaveBeenCalledTimes(1);
+    expect(loginSpy).toHaveBeenCalledWith('client', {
+      email: 'test@email.com',
+      password: 'eightCharsPwd'
+    });
   });
 });

@@ -282,6 +282,44 @@ describe('<AppProvider />', () => {
 
       expect(screen.queryByText('user@email.com')).not.toBeInTheDocument();
     });
+
+    it('should call onError if logout fails', async () => {
+      const methodSpy = jest.spyOn(UserApi, 'logout').mockRejectedValue({});
+
+      const Component = () => {
+        const { API } = useAppContext();
+
+        return (
+          <button
+            onClick={() => {
+              API.logout();
+            }}
+          >
+            logout
+          </button>
+        );
+      };
+
+      await act(async () => {
+        render(
+          <LoadingContext>
+            <ToastContext>
+              <AppProvider>
+                <Component />
+              </AppProvider>
+            </ToastContext>
+          </LoadingContext>
+        );
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText('logout'));
+      });
+
+      expect(methodSpy).toHaveBeenCalled();
+      expect(
+        screen.getByText('An error occurred. Try again.')
+      ).toBeInTheDocument();
+    });
   });
 
   describe('fetcher', () => {

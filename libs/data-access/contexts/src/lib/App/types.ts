@@ -34,7 +34,8 @@ export type GymUpdatableFields = Partial<
 export type SignUpType = {
   (
     type: 'owner' | 'client',
-    data: PartialDeep<OwnerDTO<Gym>> | PartialDeep<ClientDTO<Gym>>
+    data: PartialDeep<OwnerDTO<Gym>> | PartialDeep<ClientDTO<Gym>>,
+    params?: unknown
   ): void;
 };
 
@@ -42,7 +43,10 @@ export type SignUpType = {
  * Function type to log in both an owner and a user
  */
 export type LogInType = {
-  (type: 'owner' | 'worker', data: { email: string; password: string }): void;
+  (
+    type: 'owner' | 'worker' | 'client',
+    data: { email: string; password: string }
+  ): void;
 };
 
 /**

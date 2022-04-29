@@ -1,3 +1,3 @@
-import { Auth, SignUp } from './auth';
+import { Auth, LogIn, SignUp } from './auth';
 
-export { Auth, SignUp };
+export { Auth, LogIn, SignUp };
