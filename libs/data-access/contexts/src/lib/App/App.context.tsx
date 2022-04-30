@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { useLoadingContext } from '../Loading';
+import { ThemeProvider } from '../Theme';
 
 import { useAppContextValue } from './Context';
 import { AppContextValue } from './types';
@@ -16,7 +17,13 @@ const AppProvider = ({ children }: AppContextProps): JSX.Element => {
   // If used insde the function, it throws an error and page does not load
   const value = useAppContextValue({ onPopLoading, onPushLoading });
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={value}>
+      <ThemeProvider primaryColor={value.user?.gym?.color}>
+        {children}
+      </ThemeProvider>
+    </AppContext.Provider>
+  );
 };
 
 export { AppProvider, useAppContext };
