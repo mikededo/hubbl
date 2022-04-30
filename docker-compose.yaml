@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_TEST_USER:-test}
       POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD:-test}
-      POSTGRES_DB: ${POSTGRES_TEST_ATABASE:-test-hubbl-db}
+      POSTGRES_DB: ${POSTGRES_TEST_DATABASE:-test-hubbl-db}
       PGDATA: /data/postgres
     # Volume should not be persisted
     ports:
@@ -21,9 +21,9 @@ services:
     container_name: dev-db
     image: postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${POSTGRES_DATABASE:-hubbl-db}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
@@ -36,7 +36,7 @@ services:
   # Api
   api-dev:
     container_name: hubbl-api-dev
-    image: node:16.14.2-alpine3.14
+    image: node:16.10.0-alpine3.14
     volumes:
       - .:/app
     command:
@@ -50,13 +50,10 @@ services:
       - 3333:3333
     networks:
       - postgres
-    mem_limit: 1G
-    restart: unless-stopped
     profiles: ['all', 'dev']
-    
+    restart: unless-stopped
+
 networks:
-  default:
-    name: nginx-proxy
   postgres:
     driver: bridge
 
