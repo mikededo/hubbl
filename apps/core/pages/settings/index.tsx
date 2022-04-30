@@ -24,16 +24,6 @@ const Settings = () => {
     API
   } = useAppContext();
 
-  const handleOnUpdateUser = (
-    data: RequiredUserInfoFields | UserPasswordFields
-  ) => {
-    API.user.update(data);
-  };
-
-  const handleOnUpdateGym = (data: Pages.Settings.RequiredGymInfoFields) => {
-    API.gym.update(data);
-  };
-
   const mapUserToValues = (): RequiredUserInfoFields => {
     if (!user) {
       return undefined;
@@ -59,6 +49,16 @@ const Settings = () => {
     phone: user.gym.phone,
     color: user.gym.color
   });
+
+  const handleOnUpdateUser = (
+    data: RequiredUserInfoFields | UserPasswordFields
+  ) => {
+    API.user.update(data);
+  };
+
+  const handleOnUpdateGym = (data: Pages.Settings.RequiredGymInfoFields) => {
+    API.gym.update(data);
+  };
 
   const handleOnLogOut = async () => {
     await API.logout();
