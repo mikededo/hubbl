@@ -9,7 +9,6 @@ import Head from 'next/head';
 import {
   AppProvider,
   LoadingContext,
-  ThemeProvider,
   ToastContext
 } from '@hubbl/data-access/contexts';
 
@@ -32,14 +31,12 @@ const App = ({ Component, pageProps }: LayoutAppProps) => {
       </Head>
 
       <LoadingContext>
-        <ThemeProvider>
-          <ToastContext>
-            <AppProvider>
-              {/* TODO: Add auth guard */}
-              {getLayout(<Component {...pageProps} />)}
-            </AppProvider>
-          </ToastContext>
-        </ThemeProvider>
+        <ToastContext>
+          <AppProvider>
+            {/* TODO: Add auth guard */}
+            {getLayout(<Component {...pageProps} />)}
+          </AppProvider>
+        </ToastContext>
       </LoadingContext>
     </>
   );
