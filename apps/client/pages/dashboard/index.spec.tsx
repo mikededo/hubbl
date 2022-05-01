@@ -7,6 +7,7 @@ import {
   LoadingContext,
   ToastContext
 } from '@hubbl/data-access/contexts';
+import { AppPalette } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { render, screen } from '@testing-library/react';
 
@@ -49,6 +50,24 @@ const response = {
   error: null
 };
 
+const todayEvents = [
+  {
+    id: 1,
+    name: 'EventOne',
+    eventType: { id: 1, labelColor: AppPalette.BLUE }
+  },
+  {
+    id: 2,
+    name: 'EventTwo',
+    eventType: { id: 1, labelColor: AppPalette.BLUE }
+  },
+  {
+    id: 3,
+    name: 'EventThree',
+    eventType: { id: 1, labelColor: AppPalette.BLUE }
+  }
+];
+
 const renderPage = () =>
   render(
     <AppProvider>
@@ -72,6 +91,7 @@ describe('Dashboard page', () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: {} },
       user: { gym: { id: 1 } },
+      todayEvents,
       API: { fetcher }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -95,6 +115,7 @@ describe('Dashboard page', () => {
   it('should not call fetcher if token is null', async () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: undefined },
+      todayEvents,
       API: { fetcher }
     });
     swrSpy.mockImplementation(() => ({} as any));
@@ -119,7 +140,9 @@ describe('Dashboard page', () => {
     response.data.gymZones.forEach(({ name }) => {
       expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
     });
-
+    todayEvents.forEach(({ name }) => {
+      expect(screen.getByText(name)).toBeInTheDocument();
+    });
     // Check api calls
     expect(swrSpy).toHaveBeenCalledTimes(1);
     expect(swrSpy).toHaveBeenCalledWith('/dashboards/1', fetcher, {
