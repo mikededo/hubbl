@@ -39,6 +39,11 @@ const response = {
       { id: 1, name: 'VirtualGymOne' },
       { id: 2, name: 'VirtualGymTwo' },
       { id: 3, name: 'VirtualGymThree' }
+    ],
+    gymZones: [
+      { id: 1, name: 'GymZonesOne' },
+      { id: 2, name: 'GymZonesTwo' },
+      { id: 3, name: 'GymZonesThree' }
     ]
   },
   error: null
@@ -110,11 +115,31 @@ describe('Dashboard page', () => {
     response.data.virtualGyms.forEach(({ name }) => {
       expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
     });
+    expect(screen.getByText('Gym zones'.toUpperCase())).toBeInTheDocument();
+    response.data.gymZones.forEach(({ name }) => {
+      expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
+    });
 
     // Check api calls
     expect(swrSpy).toHaveBeenCalledTimes(1);
     expect(swrSpy).toHaveBeenCalledWith('/dashboards/1', fetcher, {
       revalidateOnFocus: false
     });
+  });
+
+  it('should call onError if fetch fails', async () => {
+    swrSpy.mockImplementation(() => ({ error: 'Error thrown' } as any));
+
+    await act(async () => {
+      renderPage();
+    });
+
+    // Check api calls
+    expect(swrSpy).toHaveBeenCalledTimes(1);
+    expect(swrSpy).toHaveBeenCalledWith('/dashboards/1', fetcher, {
+      revalidateOnFocus: false
+    });
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith('Error thrown');
   });
 });

@@ -1,6 +1,10 @@
 import { DashboardResponse } from '@hubbl/data-access/api';
-import { useAppContext } from '@hubbl/data-access/contexts';
-import { DashboardVirtualGyms, PageHeader } from '@hubbl/ui/components';
+import { useAppContext, useToastContext } from '@hubbl/data-access/contexts';
+import {
+  DashboardGymZones,
+  DashboardVirtualGyms,
+  PageHeader
+} from '@hubbl/ui/components';
 import { ReactElement } from 'react';
 import useSWR from 'swr';
 
@@ -12,11 +16,16 @@ const Dashboard = (): JSX.Element => {
     user,
     API: { fetcher }
   } = useAppContext();
-  const { data } = useSWR<DashboardResponse>(
+  const { onError } = useToastContext();
+  const { data, error } = useSWR<DashboardResponse>(
     token?.parsed ? `/dashboards/${user?.gym.id}` : null,
     fetcher,
     { revalidateOnFocus: false }
   );
+
+  if (error) {
+    onError(error);
+  }
 
   return (
     <>
@@ -26,6 +35,8 @@ const Dashboard = (): JSX.Element => {
       />
 
       <DashboardVirtualGyms items={data?.virtualGyms ?? []} />
+
+      <DashboardGymZones items={data?.gymZones ?? []} />
     </>
   );
 };
