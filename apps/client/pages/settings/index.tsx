@@ -1,8 +1,5 @@
 import { ReactElement } from 'react';
 
-import { useRouter } from 'next/router';
-
-import { useAppContext } from '@hubbl/data-access/contexts';
 import {
   PageHeader,
   RequiredUserInfoFields,
@@ -11,18 +8,14 @@ import {
   SettingsUserPassword,
   UserPasswordFields
 } from '@hubbl/ui/components';
+import { useAppContext } from '@hubbl/data-access/contexts';
 
-import { BaseLayout, Pages, SettingsPages } from '../../components';
+import { BaseLayout, SettingsPages } from '../../components';
+import { useRouter } from 'next/router';
 
-const { SettingsGymInfo } = Pages.Settings;
-
-const Settings = () => {
+const Settings = (): JSX.Element => {
   const router = useRouter();
-  const {
-    token: { parsed },
-    user,
-    API
-  } = useAppContext();
+  const { user, API } = useAppContext();
 
   const mapUserToValues = (): RequiredUserInfoFields => {
     if (!user) {
@@ -38,30 +31,14 @@ const Settings = () => {
     };
   };
 
-  /**
-   * Since we can ensure that, if the prop `parsed` is `undefined`
-   * there's no user, we do not have to return undefined as in
-   * `mapUserToValues` if such user is `undefined`
-   */
-  const mapGymToValues = (): Pages.Settings.RequiredGymInfoFields => ({
-    name: user.gym.name,
-    email: user.gym.email,
-    phone: user.gym.phone,
-    color: user.gym.color
-  });
-
-  const handleOnUpdateUser = (
+  const handleOnUpdateUser = async (
     data: RequiredUserInfoFields | UserPasswordFields
   ) => {
     API.user.update(data);
   };
 
-  const handleOnUpdateGym = (data: Pages.Settings.RequiredGymInfoFields) => {
-    API.gym.update(data);
-  };
-
   const handleOnLogOut = async () => {
-    await API.logout();
+    API.logout();
     router.push('/auth/login');
   };
 
@@ -73,8 +50,8 @@ const Settings = () => {
       />
 
       <SettingsLogout
-        header="User full name"
-        subtitle="Gym owner"
+        header={`${user?.firstName} ${user?.lastName}`}
+        subtitle="Gym client"
         onLogOut={handleOnLogOut}
       />
 
@@ -84,13 +61,6 @@ const Settings = () => {
       />
 
       <SettingsUserPassword onSubmit={handleOnUpdateUser} />
-
-      {parsed?.user === 'owner' && (
-        <SettingsGymInfo
-          defaultValues={mapGymToValues()}
-          onSubmit={handleOnUpdateGym}
-        />
-      )}
     </>
   );
 };
@@ -99,7 +69,7 @@ export default Settings;
 
 Settings.getLayout = (page: ReactElement) => (
   <SettingsPages>
-    <BaseLayout header="Gym name" selected="settings">
+    <BaseLayout header="Settings" selected="settings">
       {page}
     </BaseLayout>
   </SettingsPages>
