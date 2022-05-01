@@ -48,7 +48,7 @@ describe('DashboardController', () => {
       getMany: jest.fn()
     };
     const trainerQueryBuilder = {
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
@@ -56,7 +56,7 @@ describe('DashboardController', () => {
     };
     const todayEventsQueryBuilder = {
       andWhere: jest.fn().mockReturnThis(),
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
       loadRelationCountAndMap: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
@@ -64,7 +64,7 @@ describe('DashboardController', () => {
     };
     const eventQueryBuilder = {
       andWhere: jest.fn().mockReturnThis(),
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
       limit: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
@@ -214,8 +214,8 @@ describe('DashboardController', () => {
       expect(mockTrainerService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 't'
       });
-      expect(trainerQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(1);
-      expect(trainerQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(trainerQueryBuilder.innerJoinAndSelect).toHaveBeenCalledTimes(1);
+      expect(trainerQueryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
         't.person',
         'p'
       );
@@ -239,8 +239,8 @@ describe('DashboardController', () => {
     ) => {
       const date = getDate();
 
-      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(1);
-      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(queryBuilder.innerJoinAndSelect).toHaveBeenCalledTimes(1);
+      expect(queryBuilder.innerJoinAndSelect).toHaveBeenCalledWith(
         'e.date',
         'd'
       );
