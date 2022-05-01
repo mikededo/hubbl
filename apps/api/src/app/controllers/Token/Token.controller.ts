@@ -35,6 +35,17 @@ class ITokenValidateCookie extends BaseController {
     try {
       // Parse the token
       const token = verify(cookie, process.env.NX_JWT_TOKEN) as ParsedToken;
+      const origin = req.get('origin');
+      const clientSite = /client\.hubbl\./.test(origin);
+      const coreSite = /core\.hubbl\./.test(origin);
+
+      if (coreSite && token.user !== 'owner' && token.user !== 'worker') {
+        return this.forbidden(res, 'Invalid refresh token.');
+      }
+      
+      if (clientSite && token.user !== 'client') {
+        return this.forbidden(res, 'Invalid refresh token.')
+      }
 
       try {
         // Find the user

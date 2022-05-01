@@ -17,7 +17,6 @@ const checkWorkerProps = (worker: any) => {
   util.toBeString(worker.phone);
   util.toBeString(worker.theme);
   util.toBeString(worker.gender);
-  util.toBeString(worker.workerCode);
   util.toBeBoolean(worker.createGymZones);
   util.toBeBoolean(worker.updateGymZones);
   util.toBeBoolean(worker.deleteGymZones);
