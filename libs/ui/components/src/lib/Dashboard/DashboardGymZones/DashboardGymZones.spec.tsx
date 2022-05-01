@@ -53,7 +53,7 @@ describe('<DashboardGymZones />', () => {
       items.forEach(({ name }) => {
         expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
       });
-      expect(screen.getByTitle('add-gym-zone')).toBeInTheDocument();
+      expect(screen.queryByTitle('add-gym-zone')).not.toBeInTheDocument();
     });
 
     it('should only render 5 items', () => {

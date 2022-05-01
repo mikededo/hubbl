@@ -44,7 +44,8 @@ describe('<DashboardVirtualGyms />', () => {
       items.forEach(({ name }) => {
         expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
       });
-      expect(screen.getByTitle('add-virtual-gym')).toBeInTheDocument();
+      // Should not be in the document if onAddClick no passed
+      expect(screen.queryByTitle('add-virtual-gym')).not.toBeInTheDocument();
     });
 
     it('should only render 5 items', () => {

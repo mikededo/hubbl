@@ -53,18 +53,20 @@ const DashboardVirtualGyms = ({
         </Grid>
       ))}
 
-      <Grid item>
-        <AddItemPlaceholder
-          title="add-virtual-gym"
-          height={25}
-          width={44}
-          onClick={onAddVirtualGym}
-        >
-          <PlaceholderText variant="placeholder">
-            Click me to create a new virtual gym!
-          </PlaceholderText>
-        </AddItemPlaceholder>
-      </Grid>
+      {onAddVirtualGym && (
+        <Grid item>
+          <AddItemPlaceholder
+            title="add-virtual-gym"
+            height={25}
+            width={44}
+            onClick={onAddVirtualGym}
+          >
+            <PlaceholderText variant="placeholder">
+              Click me to create a new virtual gym!
+            </PlaceholderText>
+          </AddItemPlaceholder>
+        </Grid>
+      )}
     </ResponseiveGrid>
   </Stack>
 );

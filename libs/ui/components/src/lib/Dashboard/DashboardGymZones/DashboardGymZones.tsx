@@ -52,18 +52,20 @@ const DashboardGymZones = ({
         </Grid>
       ))}
 
-      <Grid item>
-        <AddItemPlaceholder
-          title="add-gym-zone"
-          height={25}
-          width={44}
-          onClick={onAddGymZone}
-        >
-          <PlaceholderText variant="placeholder">
-            Click me to create a new gym zone!
-          </PlaceholderText>
-        </AddItemPlaceholder>
-      </Grid>
+      {onAddGymZone && (
+        <Grid item>
+          <AddItemPlaceholder
+            title="add-gym-zone"
+            height={25}
+            width={44}
+            onClick={onAddGymZone}
+          >
+            <PlaceholderText variant="placeholder">
+              Click me to create a new gym zone!
+            </PlaceholderText>
+          </AddItemPlaceholder>
+        </Grid>
+      )}
     </ResponseiveGrid>
   </Stack>
 );
