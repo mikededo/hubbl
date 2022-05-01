@@ -1,12 +1,15 @@
+import { ReactElement } from 'react';
+
+import useSWR from 'swr';
+
 import { DashboardResponse } from '@hubbl/data-access/api';
 import { useAppContext, useToastContext } from '@hubbl/data-access/contexts';
 import {
   DashboardGymZones,
   DashboardVirtualGyms,
-  PageHeader
+  PageHeader,
+  TodayEventsList
 } from '@hubbl/ui/components';
-import { ReactElement } from 'react';
-import useSWR from 'swr';
 
 import { BaseLayout, GeneralPages } from '../../components';
 
@@ -14,6 +17,7 @@ const Dashboard = (): JSX.Element => {
   const {
     token,
     user,
+    todayEvents,
     API: { fetcher }
   } = useAppContext();
   const { onError } = useToastContext();
@@ -37,6 +41,8 @@ const Dashboard = (): JSX.Element => {
       <DashboardVirtualGyms items={data?.virtualGyms ?? []} />
 
       <DashboardGymZones items={data?.gymZones ?? []} />
+
+      <TodayEventsList events={todayEvents} />
     </>
   );
 };
