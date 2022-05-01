@@ -65,7 +65,7 @@ describe('login', () => {
 
       mockService = {
         createQueryBuilder: jest.fn().mockReturnThis(),
-        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        innerJoinAndSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         getOne: jest.fn()
       };
@@ -82,15 +82,15 @@ describe('login', () => {
         alias: entityAlias
       });
       // Joined with person and gym
-      expect(mockService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockService.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockService.innerJoinAndSelect).toHaveBeenCalledTimes(2);
+      expect(mockService.innerJoinAndSelect).toHaveBeenNthCalledWith(
         1,
         `${entityAlias}.person`,
         personAlias
       );
       // The second call has to be done with the person alias, since the entity
       // entity does not have a gym
-      expect(mockService.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockService.innerJoinAndSelect).toHaveBeenNthCalledWith(
         2,
         `${personAlias}.gym`,
         'gym'

@@ -51,7 +51,7 @@
     "test-e2e": {
       "executor": "@nrwl/jest:jest",
       "options": {
-        "jestConfig": "apps/api/jest.config.js",
+        "jestConfig": "apps/api/jest.config.ts",
         "testPathPattern": ["apps/api/src/test/index.spec.ts"],
         "setupFiles": ["dotenv/config"]
       }

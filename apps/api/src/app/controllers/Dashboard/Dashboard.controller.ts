@@ -61,7 +61,7 @@ class IFetchDashboardController extends BaseController {
   private trainersQuery(id: number): SelectQueryBuilder<Trainer> {
     return this.trainerService
       .createQueryBuilder({ alias: 't' })
-      .leftJoinAndSelect('t.person', 'p')
+      .innerJoinAndSelect('t.person', 'p')
       .where('p.gym = :gymId', { gymId: +id })
       .limit(5)
       .orderBy('t.updated_at', 'DESC');
@@ -72,7 +72,7 @@ class IFetchDashboardController extends BaseController {
 
     return this.eventService
       .createQueryBuilder({ alias: 'e' })
-      .leftJoinAndSelect('e.date', 'd')
+      .innerJoinAndSelect('e.date', 'd')
       .where('e.gym = :gymId', { gymId: +id })
       .andWhere('d.year = :year', { year: date.year })
       .andWhere('d.month = :month', { month: date.month })
@@ -91,7 +91,7 @@ class IFetchDashboardController extends BaseController {
 
     return this.eventService
       .createQueryBuilder({ alias: 'e' })
-      .leftJoinAndSelect('e.date', 'd')
+      .innerJoinAndSelect('e.date', 'd')
       .where('e.gym = :gymId', { gymId: +id })
       .andWhere('d.year >= :year', { year: date.year })
       .andWhere('d.month >= :month', { month: date.month })

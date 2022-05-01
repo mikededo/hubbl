@@ -105,7 +105,7 @@ const useAppContextValue = ({
     try {
       const result = await UserApi.login(type, data);
       setUser(result[type]);
-      setToken(token);
+      setToken(result.token);
       setParsedToken(decode(result.token) as ParsedToken);
     } catch (e) {
       // Check different errors

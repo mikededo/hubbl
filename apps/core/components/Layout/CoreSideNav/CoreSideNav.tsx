@@ -15,7 +15,7 @@ const entries = [
     entries: {
       trainers: { label: 'Trainers', href: '/trainers' },
       workers: { label: 'Workers', href: '#' },
-      clients: { label: 'Clients', href: '#' }
+      clients: { label: 'Clients', href: '/clients' }
     }
   },
   {

@@ -13,7 +13,7 @@ describe('validations', () => {
     const mockGymZoneQueryBuilder = {
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
-      leftJoin: jest.fn().mockReturnThis(),
+      innerJoin: jest.fn().mockReturnThis(),
       getCount: jest.fn()
     };
     const mockGymZoneService = {
@@ -38,7 +38,7 @@ describe('validations', () => {
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockGymZoneQueryBuilder.where).toHaveBeenCalledTimes(1);
       expect(mockGymZoneQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenCalledTimes(3);
+      expect(mockGymZoneQueryBuilder.innerJoin).toHaveBeenCalledTimes(3);
       expect(mockGymZoneQueryBuilder.getCount).toHaveBeenCalledTimes(1);
     };
 
@@ -96,18 +96,18 @@ describe('validations', () => {
         'p.id = :personId',
         { personId: mockPerson.id }
       );
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenCalledTimes(3);
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
+      expect(mockGymZoneQueryBuilder.innerJoin).toHaveBeenCalledTimes(3);
+      expect(mockGymZoneQueryBuilder.innerJoin).toHaveBeenNthCalledWith(
         1,
         'gz.virtualGym',
         'vg'
       );
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
+      expect(mockGymZoneQueryBuilder.innerJoin).toHaveBeenNthCalledWith(
         2,
         'vg.gym',
         'gym'
       );
-      expect(mockGymZoneQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
+      expect(mockGymZoneQueryBuilder.innerJoin).toHaveBeenNthCalledWith(
         3,
         Person,
         'p'

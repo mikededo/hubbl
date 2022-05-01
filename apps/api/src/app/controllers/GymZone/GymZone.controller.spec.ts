@@ -137,8 +137,8 @@ describe('GymZone controller', () => {
   describe('GymZoneFetchController', () => {
     const mockGymZoneService = {
       createQueryBuilder: jest.fn().mockReturnThis(),
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
-      leftJoin: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoin: jest.fn().mockReturnThis(),
       getMany: jest.fn().mockImplementation()
     };
     const mockPersonService = {
@@ -191,21 +191,21 @@ describe('GymZone controller', () => {
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'gymZone'
       });
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenCalledTimes(2);
+      expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenNthCalledWith(
         1,
         'gymZone.calendar',
         'calendar'
       );
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenNthCalledWith(
         2,
         'gymZone.virtualGym',
         'virtualGym',
         'virtualGym.id = :id',
         { id: mockReq.params.vgId }
       );
-      expect(mockGymZoneService.leftJoin).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.leftJoin).toHaveBeenCalledWith(
+      expect(mockGymZoneService.innerJoin).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.innerJoin).toHaveBeenCalledWith(
         'virtualGym.gym',
         'gym',
         'gym.id = :id',
@@ -240,8 +240,8 @@ describe('GymZone controller', () => {
       );
 
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockGymZoneService.leftJoin).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenCalledTimes(2);
+      expect(mockGymZoneService.innerJoin).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.getMany).toHaveBeenCalledTimes(1);
     });
   });
@@ -249,8 +249,8 @@ describe('GymZone controller', () => {
   describe('GymZoneFetchSingleController', () => {
     const mockGymZoneService = {
       createQueryBuilder: jest.fn().mockReturnThis(),
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
-      leftJoin: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoin: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
       getOne: jest.fn().mockImplementation()
     };
@@ -301,21 +301,21 @@ describe('GymZone controller', () => {
         'gymZone.id = :id',
         { id: mockReq.params.id }
       );
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenCalledTimes(2);
+      expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenNthCalledWith(
         1,
         'gymZone.calendar',
         'calendar'
       );
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenNthCalledWith(
         2,
         'gymZone.virtualGym',
         'virtualGym',
         'virtualGym.id = :id',
         { id: mockReq.params.vgId }
       );
-      expect(mockGymZoneService.leftJoin).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.leftJoin).toHaveBeenCalledWith(
+      expect(mockGymZoneService.innerJoin).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.innerJoin).toHaveBeenCalledWith(
         'virtualGym.gym',
         'gym',
         'gym.id = :id',
@@ -349,8 +349,8 @@ describe('GymZone controller', () => {
 
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.where).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.leftJoinAndSelect).toHaveBeenCalledTimes(2);
-      expect(mockGymZoneService.leftJoin).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenCalledTimes(2);
+      expect(mockGymZoneService.innerJoin).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.getOne).toHaveBeenCalledTimes(1);
     });
   });
