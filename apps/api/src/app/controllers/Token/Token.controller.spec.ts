@@ -24,20 +24,27 @@ describe('Token controller', () => {
   });
 
   describe('TokenValidateCookie', () => {
+    const reqGetSpy = jest.fn();
+
     const mockReq = {
       cookies: {
         '__hubbl-refresh__': jwt.sign(
           { id: 1, email: 'test@email.com', user: 'owner' },
           process.env.NX_JWT_TOKEN || 'super-secret-key'
         )
-      }
+      },
+      get: reqGetSpy
     };
 
     beforeEach(() => {
+      jest.clearAllMocks();
       mockPayload.user = 'owner';
     });
 
     const successExecute = async (by: 'owner' | 'worker' | 'client') => {
+      reqGetSpy.mockReturnValue(
+        by === 'client' ? 'http://client.hubbl.test' : 'http://core.hubbl.test'
+      );
       const mockService = { findOneBy: jest.fn().mockResolvedValue({ id: 1 }) };
       const fromClassSpy = jest
         .spyOn(
@@ -136,7 +143,50 @@ describe('Token controller', () => {
       expect(forbiddenSpy).toHaveBeenCalledWith({}, 'Session expired.');
     });
 
+    it('should send forbidden if requesting from core as a non worker or non owner', async () => {
+      reqGetSpy.mockReturnValue('http://core.hubbl.test');
+      verifySpy.mockReturnValue({
+        id: 1,
+        user: 'client',
+        email: 'test@email.com'
+      } as any);
+
+      const forbiddenSpy = jest
+        .spyOn(TokenValidateCookie, 'forbidden')
+        .mockImplementation();
+
+      await TokenValidateCookie.execute(mockReq as any, {} as any);
+
+      expect(verifySpy).toHaveBeenCalledTimes(1);
+      expect(reqGetSpy).toHaveBeenCalledTimes(1);
+      expect(reqGetSpy).toHaveBeenCalledWith('origin');
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith({}, 'Invalid refresh token.');
+    });
+
+    it('should send forbidden if requesting from client as a non client', async () => {
+      reqGetSpy.mockReturnValue('http://client.hubbl.test');
+      verifySpy.mockReturnValue({
+        id: 1,
+        user: 'owner',
+        email: 'test@email.com'
+      } as any);
+
+      const forbiddenSpy = jest
+        .spyOn(TokenValidateCookie, 'forbidden')
+        .mockImplementation();
+
+      await TokenValidateCookie.execute(mockReq as any, {} as any);
+
+      expect(verifySpy).toHaveBeenCalledTimes(1);
+      expect(reqGetSpy).toHaveBeenCalledTimes(1);
+      expect(reqGetSpy).toHaveBeenCalledWith('origin');
+      expect(forbiddenSpy).toHaveBeenCalledTimes(1);
+      expect(forbiddenSpy).toHaveBeenCalledWith({}, 'Invalid refresh token.');
+    });
+
     it('should send forbidden if user not found', async () => {
+      reqGetSpy.mockReturnValue('http://core.hubbl.test');
       const findOneBySpy = jest.fn().mockResolvedValue(undefined);
       verifySpy.mockReturnValue(mockPayload as any);
 
