@@ -78,7 +78,7 @@ describe('Calendar controller', () => {
     const mockQueryBuilder = {
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
       loadAllRelationIds: jest.fn().mockReturnThis(),
       loadRelationCountAndMap: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
@@ -196,23 +196,23 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledWith({
         relations: ['date', 'calendar']
       });
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledTimes(4);
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
         1,
         'e.trainer',
         't'
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
         2,
         't.person',
         'p'
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
         3,
         'e.eventType',
         'tt'
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
         4,
         'e.template',
         'tpl'
@@ -307,7 +307,7 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledTimes(4);
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
       failSpyAsserts(failSpy);
@@ -325,7 +325,7 @@ describe('Calendar controller', () => {
     const mockQueryBuilder = {
       select: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
-      leftJoin: jest.fn().mockReturnThis(),
+      innerJoin: jest.fn().mockReturnThis(),
       getRawMany: jest.fn()
     };
     const mockEvAppService = {
@@ -413,13 +413,13 @@ describe('Calendar controller', () => {
         'ea.event = :eventId',
         { eventId: mockReq.params.eId }
       );
-      expect(mockQueryBuilder.leftJoin).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoin).toHaveBeenCalledTimes(2);
+      expect(mockQueryBuilder.innerJoin).toHaveBeenNthCalledWith(
         1,
         'ea.client',
         'c'
       );
-      expect(mockQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoin).toHaveBeenNthCalledWith(
         2,
         'c.person',
         'p',
@@ -476,7 +476,7 @@ describe('Calendar controller', () => {
       expect(mockEvAppService.createQueryBuilder).toBeCalledTimes(1);
       expect(mockQueryBuilder.select).toBeCalledTimes(1);
       expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.leftJoin).toHaveBeenCalledTimes(2);
+      expect(mockQueryBuilder.innerJoin).toHaveBeenCalledTimes(2);
       expect(mockQueryBuilder.getRawMany).toHaveBeenCalledTimes(1);
       failSpyAsserts(failSpy);
     });
@@ -494,7 +494,7 @@ describe('Calendar controller', () => {
       select: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
-      leftJoin: jest.fn().mockReturnThis(),
+      innerJoin: jest.fn().mockReturnThis(),
       getRawMany: jest.fn()
     };
     const mockCalAppService = {
@@ -602,13 +602,13 @@ describe('Calendar controller', () => {
         'ca.date.day = :day',
         { day: +mockReq.query.date.split('-')[2] }
       );
-      expect(mockQueryBuilder.leftJoin).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoin).toHaveBeenCalledTimes(2);
+      expect(mockQueryBuilder.innerJoin).toHaveBeenNthCalledWith(
         1,
         'ca.client',
         'c'
       );
-      expect(mockQueryBuilder.leftJoin).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoin).toHaveBeenNthCalledWith(
         2,
         'c.person',
         'p',
@@ -717,7 +717,7 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.select).toBeCalledTimes(1);
       expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
-      expect(mockQueryBuilder.leftJoin).toHaveBeenCalledTimes(2);
+      expect(mockQueryBuilder.innerJoin).toHaveBeenCalledTimes(2);
       expect(mockQueryBuilder.getRawMany).toHaveBeenCalledTimes(1);
       failSpyAsserts(failSpy);
     });
@@ -732,7 +732,7 @@ describe('Calendar controller', () => {
     const mockQueryBuilder = {
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
       loadAllRelationIds: jest.fn().mockReturnThis(),
       loadRelationCountAndMap: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
@@ -846,23 +846,23 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledWith({
         relations: ['date', 'calendar']
       });
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledTimes(4);
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
         1,
         'e.trainer',
         't'
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
         2,
         't.person',
         'p'
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
         3,
         'e.eventType',
         'tt'
       );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
         4,
         'e.template',
         'tpl'
@@ -924,7 +924,7 @@ describe('Calendar controller', () => {
       expect(mockQueryBuilder.where).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(3);
       expect(mockQueryBuilder.loadAllRelationIds).toHaveBeenCalledTimes(1);
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledTimes(4);
+      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenCalledTimes(4);
       expect(mockQueryBuilder.loadRelationCountAndMap).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.orderBy).toHaveBeenCalledTimes(1);
       expect(mockQueryBuilder.cache).toHaveBeenCalledTimes(1);

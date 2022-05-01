@@ -68,9 +68,9 @@ export const userAccessToCalendar = async ({
       .where('gz.calendar = :calendarId', { calendarId })
       .andWhere('gym.id = :gymId', { gymId: person.gym })
       .andWhere('p.id = :personId', { personId: person.id })
-      .leftJoin('gz.virtualGym', 'vg')
-      .leftJoin('vg.gym', 'gym')
-      .leftJoin(Person, 'p')
+      .innerJoin('gz.virtualGym', 'vg')
+      .innerJoin('vg.gym', 'gym')
+      .innerJoin(Person, 'p')
       .getCount();
 
     if (!count) {

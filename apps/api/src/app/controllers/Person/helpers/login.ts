@@ -60,8 +60,8 @@ export const login = async ({
       // Find the entity
       const entityFound = await service
         .createQueryBuilder({ alias })
-        .leftJoinAndSelect(`${alias}.person`, 'person')
-        .leftJoinAndSelect('person.gym', 'gym')
+        .innerJoinAndSelect(`${alias}.person`, 'person')
+        .innerJoinAndSelect('person.gym', 'gym')
         .where('person.email = :email', { email: entityDTO.email })
         .getOne();
 

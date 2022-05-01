@@ -75,7 +75,7 @@ describe('EventTemplate controller', () => {
     const mockEventTemplateService = {
       createQueryBuilder: jest.fn().mockReturnThis(),
       loadRelationCountAndMap: jest.fn().mockReturnThis(),
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
       getMany: jest.fn()
     };
@@ -138,10 +138,10 @@ describe('EventTemplate controller', () => {
       expect(
         mockEventTemplateService.loadRelationCountAndMap
       ).toHaveBeenCalledTimes(1);
-      expect(mockEventTemplateService.leftJoinAndSelect).toHaveBeenCalledTimes(
+      expect(mockEventTemplateService.innerJoinAndSelect).toHaveBeenCalledTimes(
         1
       );
-      expect(mockEventTemplateService.leftJoinAndSelect).toHaveBeenCalledWith(
+      expect(mockEventTemplateService.innerJoinAndSelect).toHaveBeenCalledWith(
         'evTpl.type',
         'event_type'
       );

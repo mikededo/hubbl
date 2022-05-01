@@ -39,7 +39,7 @@ class IEventTemplateFetchController extends BaseController {
         .createQueryBuilder({ alias: 'evTpl' })
         .loadRelationCountAndMap('evTpl.eventCount', 'evTpl.events', 'event')
         // Join the type
-        .leftJoinAndSelect('evTpl.type', 'event_type')
+        .innerJoinAndSelect('evTpl.type', 'event_type')
         .where('evTpl.gym = :gym', { gym: gymId })
         .getMany();
 

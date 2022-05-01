@@ -40,7 +40,7 @@ class IVirtualGymFetchController extends BaseController {
         if (+level !== 0) {
           query
             .where('virtualGym.gym = :gym', { gym: (person.gym as Gym).id })
-            .leftJoinAndMapMany(
+            .innerJoinAndMapMany(
               'virtualGym.gymZones',
               'virtualGym.gymZones',
               'gz'
@@ -112,7 +112,7 @@ class IVirtualGymFetchSingleController extends BaseController {
             id: +req.params.id,
             gym: (person.gym as Gym).id
           })
-          .leftJoinAndMapMany(
+          .innerJoinAndMapMany(
             'virtualGym.gymZones',
             'virtualGym.gymZones',
             'gz'

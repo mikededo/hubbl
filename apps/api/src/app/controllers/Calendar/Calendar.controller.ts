@@ -152,10 +152,10 @@ class ICalendarFetchEventsController extends CalendarFetchBase {
           }
         )
         .loadAllRelationIds({ relations: ['date', 'calendar'] })
-        .leftJoinAndSelect('e.trainer', 't')
-        .leftJoinAndSelect('t.person', 'p')
-        .leftJoinAndSelect('e.eventType', 'tt')
-        .leftJoinAndSelect('e.template', 'tpl')
+        .innerJoinAndSelect('e.trainer', 't')
+        .innerJoinAndSelect('t.person', 'p')
+        .innerJoinAndSelect('e.eventType', 'tt')
+        .innerJoinAndSelect('e.template', 'tpl')
         .loadRelationCountAndMap(
           'e.appointmentCount',
           'e.appointments',
@@ -229,8 +229,8 @@ class ICalendarFetchEventAppointmentsController extends CalendarFetchBase {
           'ea.cancelled as cancelled'
         ])
         .where('ea.event = :eventId', { eventId })
-        .leftJoin('ea.client', 'c')
-        .leftJoin('c.person', 'p', 'ea.client = p.id')
+        .innerJoin('ea.client', 'c')
+        .innerJoin('c.person', 'p', 'ea.client = p.id')
         .getRawMany();
 
       return this.ok(
@@ -321,8 +321,8 @@ class ICalendarFetchCalenAppointmentsController extends CalendarFetchBase {
         .where('ca.date.year = :year', { year: date.getFullYear() })
         .andWhere('ca.date.month = :month', { month: date.getMonth() + 1 })
         .andWhere('ca.date.day = :day', { day: date.getDate() })
-        .leftJoin('ca.client', 'c')
-        .leftJoin('c.person', 'p', 'ca.client = p.id')
+        .innerJoin('ca.client', 'c')
+        .innerJoin('c.person', 'p', 'ca.client = p.id')
         .getRawMany();
 
       return this.ok(
@@ -378,10 +378,10 @@ class ICalendarFetchTodayEventsController extends BaseController {
         .andWhere('e.date.month = :month', { month: today.getMonth() + 1 })
         .andWhere('e.date.day = :day', { day: today.getDate() })
         .loadAllRelationIds({ relations: ['date', 'calendar'] })
-        .leftJoinAndSelect('e.trainer', 't')
-        .leftJoinAndSelect('t.person', 'p')
-        .leftJoinAndSelect('e.eventType', 'tt')
-        .leftJoinAndSelect('e.template', 'tpl')
+        .innerJoinAndSelect('e.trainer', 't')
+        .innerJoinAndSelect('t.person', 'p')
+        .innerJoinAndSelect('e.eventType', 'tt')
+        .innerJoinAndSelect('e.template', 'tpl')
         .loadRelationCountAndMap(
           'e.appointmentCount',
           'e.appointments',
