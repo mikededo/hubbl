@@ -166,11 +166,7 @@ const ThemeContext = ({
   children,
   primaryColor
 }: ThemeContextProps): JSX.Element => (
-  <ThemeProvider theme={AppTheme({ primaryColor })}>
-    <style>{` .decoration-svg path { fill: ${primaryColor} } `}</style>
-
-    {children}
-  </ThemeProvider>
+  <ThemeProvider theme={AppTheme({ primaryColor })}>{children}</ThemeProvider>
 );
 
 export { ThemeContext as ThemeProvider };
