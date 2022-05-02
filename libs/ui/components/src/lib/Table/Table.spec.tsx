@@ -30,7 +30,7 @@ const TableBodyTwo = () => (
 describe('<Table />', () => {
   it('should render properly', () => {
     const { container } = render(
-      <Table header={<TableHeader />}>
+      <Table addItemTitle="add-title" header={<TableHeader />}>
         <TableBodyOne />
         <TableBodyTwo />
       </Table>
@@ -57,7 +57,7 @@ describe('<Table />', () => {
   describe('firstPage', () => {
     it('should render the button disabled', () => {
       render(
-        <Table header={<TableHeader />} firstPage>
+        <Table addItemTitle="add-title" header={<TableHeader />} firstPage>
           <TableBodyOne />
           <TableBodyTwo />
         </Table>
@@ -70,7 +70,7 @@ describe('<Table />', () => {
   describe('lastPage', () => {
     it('should render the button disabled', () => {
       render(
-        <Table header={<TableHeader />} lastPage>
+        <Table addItemTitle="add-title" header={<TableHeader />} lastPage>
           <TableBodyOne />
           <TableBodyTwo />
         </Table>
@@ -83,27 +83,31 @@ describe('<Table />', () => {
   describe('onAddItem', () => {
     it('should not render the button if the callback is not provided', () => {
       render(
-        <Table header={<TableHeader />}>
+        <Table addItemTitle="add-title" header={<TableHeader />}>
           <TableBodyOne />
           <TableBodyTwo />
         </Table>
       );
 
-      expect(screen.queryByTitle('add-trainer')).not.toBeInTheDocument();
+      expect(screen.queryByTitle('add-title')).not.toBeInTheDocument();
     });
 
     it('should render the button and call the callback on add trainer click', () => {
       const onClickSpy = jest.fn();
 
       render(
-        <Table header={<TableHeader />} onAddItem={onClickSpy}>
+        <Table
+          addItemTitle="add-title"
+          header={<TableHeader />}
+          onAddItem={onClickSpy}
+        >
           <TableBodyOne />
           <TableBodyTwo />
         </Table>
       );
-      fireEvent.click(screen.getByTitle('add-trainer'));
+      fireEvent.click(screen.getByTitle('add-title'));
 
-      expect(screen.getByTitle('add-trainer')).toBeInTheDocument();
+      expect(screen.getByTitle('add-title')).toBeInTheDocument();
       expect(onClickSpy).toHaveBeenCalledTimes(1);
     });
   });
@@ -113,7 +117,11 @@ describe('<Table />', () => {
       const onClickSpy = jest.fn();
 
       render(
-        <Table header={<TableHeader />} onNextPage={onClickSpy}>
+        <Table
+          addItemTitle="add-title"
+          header={<TableHeader />}
+          onNextPage={onClickSpy}
+        >
           <TableBodyOne />
           <TableBodyTwo />
         </Table>
@@ -130,7 +138,11 @@ describe('<Table />', () => {
       const onClickSpy = jest.fn();
 
       render(
-        <Table header={<TableHeader />} onPrevPage={onClickSpy}>
+        <Table
+          addItemTitle="add-title"
+          header={<TableHeader />}
+          onPrevPage={onClickSpy}
+        >
           <TableBodyOne />
           <TableBodyTwo />
         </Table>

@@ -27,7 +27,9 @@ const clients = Array(15)
     firstName: `Client-${i}`,
     lastName: `Test-${i}`,
     email: `client-${i}@test.com`,
+    password: `client-pwd-${i}`,
     phone: `${i}`.repeat(9),
+    covidPassport: true,
     gender: Gender[i % 2 === 0 ? 'WOMAN' : 'OTHER']
   }));
 
@@ -38,7 +40,9 @@ const clientsTwo = Array(15)
     firstName: `Client-Two-${i}`,
     lastName: `Test-${i}`,
     email: `client-${i}@test.com`,
+    password: `client-pwd-${i}`,
     phone: `${i}`.repeat(9),
+    covidPassport: true,
     gender: Gender[i % 2 === 0 ? 'WOMAN' : 'OTHER']
   }));
 
@@ -58,7 +62,7 @@ describe('Clients page', () => {
 
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: {} },
-      user: { gym: { id: 1 } },
+      user: { gym: { id: 1, code: 'AABBCCDD' } },
       todayEvents: [],
       API: { fetcher, poster, putter }
     });
@@ -121,22 +125,193 @@ describe('Clients page', () => {
     await act(async () => {
       render(<Clients />);
     });
-    clients.forEach((trainer) => {
-      expect(screen.getByText(trainer.firstName)).toBeInTheDocument();
+    clients.forEach((client) => {
+      expect(screen.getByText(client.firstName)).toBeInTheDocument();
     });
 
     await act(async () => {
       fireEvent.click(screen.getByLabelText('next-page'));
     });
-    clientsTwo.forEach((trainer) => {
-      expect(screen.getByText(trainer.firstName)).toBeInTheDocument();
+    clientsTwo.forEach((client) => {
+      expect(screen.getByText(client.firstName)).toBeInTheDocument();
     });
 
     await act(async () => {
       fireEvent.click(screen.getByLabelText('prev-page'));
     });
-    clients.forEach((trainer) => {
-      expect(screen.getByText(trainer.firstName)).toBeInTheDocument();
+    clients.forEach((client) => {
+      expect(screen.getByText(client.firstName)).toBeInTheDocument();
     });
   });
+
+  describe('post client', () => {
+    const fillClient = async () => {
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('add-client'));
+      });
+      await act(async () => {
+        fireEvent.input(screen.getByPlaceholderText('John'), {
+          target: { name: 'firstName', value: 'Test' }
+        });
+        fireEvent.input(screen.getByPlaceholderText('Doe'), {
+          target: { name: 'lastName', value: 'Client' }
+        });
+        fireEvent.input(screen.getByPlaceholderText('john@doe.com'), {
+          target: { name: 'email', value: 'test@client.com' }
+        });
+        fireEvent.input(screen.getByPlaceholderText('000 000 000'), {
+          target: { name: 'phone', value: '123 123 123' }
+        });
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByText('Save'));
+      });
+    };
+
+    it('should post a new client and not call mutate', async () => {
+      poster.mockResolvedValue({ client: { ...clients[0], id: 10 } });
+
+      await act(async () => {
+        render(<Clients />);
+      });
+      await fillClient();
+
+      expect(poster).toHaveBeenCalledTimes(1);
+      expect(poster).toHaveBeenCalledWith('/persons/client', {
+        firstName: 'Test',
+        lastName: 'Client',
+        gender: Gender.OTHER,
+        email: 'test@client.com',
+        phone: '123 123 123',
+        covidPassport: true,
+        password: 'AABBCCDD', // It is the gym code
+        gym: 1
+      });
+      // It should not call mutate as clients length === 15
+      expect(mutateSpy).not.toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledWith('Client created!');
+    });
+
+    it('should post a new client and call mutate', async () => {
+      swrSpy.mockImplementation((key) => {
+        if (key === '/persons/clients?skip=0') {
+          return { data: [], mutate: mutateSpy } as any;
+        } else if (key === '/persons/clients?skip=15') {
+          return { data: clientsTwo } as any;
+        }
+
+        return {} as any;
+      });
+      poster.mockResolvedValue({ client: { ...clients[0], id: 10 } });
+
+      await act(async () => {
+        render(<Clients />);
+      });
+      await fillClient();
+
+      expect(poster).toHaveBeenCalledTimes(1);
+      expect(poster).toHaveBeenCalledWith('/persons/client', {
+        firstName: 'Test',
+        lastName: 'Client',
+        gender: Gender.OTHER,
+        email: 'test@client.com',
+        phone: '123 123 123',
+        covidPassport: true,
+        password: 'AABBCCDD', // It is the gym code
+        gym: 1
+      });
+      // It should not call mutate as clients length === 15
+      expect(mutateSpy).toHaveBeenCalledTimes(1);
+      expect(mutateSpy).toHaveBeenCalledWith(
+        [{ ...clients[0], id: 10 }],
+        false
+      );
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledWith('Client created!');
+    });
+
+    it('should call onError on poster error', async () => {
+      poster.mockRejectedValue('Error thrown');
+
+      await act(async () => {
+        render(<Clients />);
+      });
+      await fillClient();
+
+      expect(poster).toHaveBeenCalledTimes(1);
+      expect(mutateSpy).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledTimes(1);
+      expect(onError).toHaveBeenCalledWith('Error thrown');
+    });
+  });
+
+  describe('put client', () => {
+    const fillClient = async () => {
+      await act(async () => {
+        fireEvent.click(screen.getByText(clients[0].firstName));
+      });
+      await act(async () => {
+        fireEvent.input(screen.getByPlaceholderText('John'), {
+          target: { name: 'firstName', value: 'Updated' }
+        });
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByText('Save'));
+      });
+    };
+
+    it('should update a client', async () => {
+      await act(async () => {
+        render(<Clients />);
+      });
+      await fillClient();
+
+      expect(putter).toHaveBeenCalledTimes(1);
+      expect(putter).toHaveBeenCalledWith('/persons/client', {
+        id: clients[0].id,
+        firstName: 'Updated',
+        lastName: clients[0].lastName,
+        gender: clients[0].gender,
+        email: clients[0].email,
+        password: clients[0].password,
+        phone: clients[0].phone,
+        covidPassport: true,
+        gym: 1
+      });
+      expect(mutateSpy).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledWith('Client updated successfully!');
+    });
+
+    it('should call onError on putter error', async () => {
+      putter.mockRejectedValue({
+        response: { data: { message: 'Error thrown' } }
+      });
+
+      await act(async () => {
+        render(<Clients />);
+      });
+      await fillClient();
+
+      expect(putter).toHaveBeenCalledTimes(1);
+      expect(mutateSpy).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledTimes(1);
+      expect(onError).toHaveBeenCalledWith('Error thrown');
+    });
+  });
+
+    it('should open and close the dialog', async () => {
+      await act(async () => {
+        render(<Clients />);
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('add-client'));
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('close-dialog'));
+      });
+    });
 });

@@ -52,6 +52,10 @@ const Trainers = () => {
   } = useAppContext();
   const { onSuccess, onError } = useToastContext();
 
+  const [trainerDialog, setTrainerDialog] = useState<TrainerDialogState>(
+    InitialTrainerDialogState
+  );
+
   const [page, setPage] = useState(0);
 
   const { data, mutate } = useSWR<TrainerDTO<number>[]>(
@@ -67,10 +71,6 @@ const Trainers = () => {
   const handleOnPrevPage = () => {
     setPage((prev) => Math.max(prev - 1, 0));
   };
-
-  const [trainerDialog, setTrainerDialog] = useState<TrainerDialogState>(
-    InitialTrainerDialogState
-  );
 
   const handleOnOpenTrainerDialog: EmptyHandler = () => {
     setTrainerDialog({ status: 'create', trainer: null });
@@ -149,6 +149,7 @@ const Trainers = () => {
       />
 
       <Table
+        addItemTitle="add-trainer"
         header={<Pages.Trainers.TableHeader />}
         firstPage={!page || !data}
         lastPage={!data?.length || 15 - data?.length !== 0}
