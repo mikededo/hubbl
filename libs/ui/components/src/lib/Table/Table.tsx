@@ -38,6 +38,11 @@ const AddIcon = styled(Add)(({ theme }) => ({
 
 type TableProps = {
   /**
+   * Title of the add button
+   */
+  addItemTitle: string;
+
+  /**
    * If the table is on the first page, the previous
    * page button will be disabled
    *
@@ -88,6 +93,7 @@ type TableProps = {
 };
 
 const Table = ({
+  addItemTitle,
   firstPage,
   header,
   lastPage,
@@ -105,7 +111,7 @@ const Table = ({
 
       {onAddItem && (
         <AddTrainerWrapper>
-          <AddItemPlaceholder title="add-trainer" onClick={onAddItem}>
+          <AddItemPlaceholder title={addItemTitle} onClick={onAddItem}>
             <AddIcon />
           </AddItemPlaceholder>
         </AddTrainerWrapper>
