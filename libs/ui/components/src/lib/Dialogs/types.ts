@@ -246,3 +246,10 @@ export type ParsedTrainerFormFields = {
    */
   tags: TrainerTagDTO[];
 } & PersonFormFields;
+
+export type ClientFormFields = {
+  /**
+   * Whether the client has the covid passport or not
+   */
+  covidPassport: boolean;
+} & PersonFormFields;
