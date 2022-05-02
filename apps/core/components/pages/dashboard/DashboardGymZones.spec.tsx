@@ -23,8 +23,9 @@ import DashboardGymZones from './DashboardGymZones';
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
   const app = jest.fn();
+  const toast = jest.fn();
 
-  return { ...actual, useAppContext: app };
+  return { ...actual, useAppContext: app, useToastContext: toast };
 });
 jest.mock('axios');
 
@@ -109,9 +110,38 @@ const renderComponent = () =>
     </LoadingContext>
   );
 
+const fillGymZone = async () => {
+  await act(async () => {
+    fireEvent.click(screen.getByTitle('add-gym-zone'));
+  });
+  await act(async () => {
+    fireEvent.input(screen.getByPlaceholderText('New name'), {
+      target: { name: 'name', value: 'Name' }
+    });
+    fireEvent.input(screen.getByPlaceholderText('New gym zone description'), {
+      target: { name: 'description', value: 'Gym zone description' }
+    });
+    fireEvent.input(screen.getByPlaceholderText('200'), {
+      target: { name: 'capacity', value: '25' }
+    });
+    userEvent.type(screen.getByPlaceholderText('09:00'), '10:00');
+    userEvent.type(screen.getByPlaceholderText('23:00'), '22:00');
+  });
+  await act(async () => {
+    userEvent.click(screen.getByText('Save'));
+  });
+};
+
 describe('<DasboardGymZones/>', () => {
+  // Constants have to be used so useEffect is not infinitely triggered
+  const emptyResponse = {};
+  const defaultResponse = { data: [response[0]] };
+
   const fetcher = jest.fn();
   const poster = jest.fn();
+
+  const onSuccess = jest.fn();
+  const onError = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -124,6 +154,7 @@ describe('<DasboardGymZones/>', () => {
       user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
       API: { fetcher, poster }
     } as any);
+    (ctx.useToastContext as jest.Mock).mockReturnValue({ onSuccess, onError });
   });
 
   it('should not fetch without a token', async () => {
@@ -168,16 +199,12 @@ describe('<DasboardGymZones/>', () => {
 
   it('should create a new gym zone', async () => {
     const mutateSpy = jest.fn().mockImplementation();
-    // Constants have to be used so useEffect is not infinitely triggered
-    const emptyResponse = {};
     const virtualGymList = { data: { gymZones: [] }, mutate: mutateSpy };
-    const defaultResponse = { data: [response[0]] };
 
     jest.spyOn(swr, 'default').mockImplementation((key) => {
       if (!key) {
         return emptyResponse as any;
       }
-
       if (key !== '/virtual-gyms?level=0') {
         return virtualGymList as never;
       }
@@ -189,25 +216,7 @@ describe('<DasboardGymZones/>', () => {
     await act(async () => {
       renderComponent();
     });
-    await act(async () => {
-      fireEvent.click(screen.getByTitle('add-gym-zone'));
-    });
-    await act(async () => {
-      fireEvent.input(screen.getByPlaceholderText('New name'), {
-        target: { name: 'name', value: 'Name' }
-      });
-      fireEvent.input(screen.getByPlaceholderText('New gym zone description'), {
-        target: { name: 'description', value: 'Gym zone description' }
-      });
-      fireEvent.input(screen.getByPlaceholderText('200'), {
-        target: { name: 'capacity', value: '25' }
-      });
-      userEvent.type(screen.getByPlaceholderText('09:00'), '10:00');
-      userEvent.type(screen.getByPlaceholderText('23:00'), '22:00');
-    });
-    await act(async () => {
-      userEvent.click(screen.getByText('Save'));
-    });
+    await fillGymZone();
 
     expect(poster).toHaveBeenCalledTimes(1);
     expect(poster).toHaveBeenCalledWith('/virtual-gyms/1/gym-zones', {
@@ -223,7 +232,36 @@ describe('<DasboardGymZones/>', () => {
       virtualGym: 1
     });
     expect(mutateSpy).toHaveBeenCalledTimes(1);
-    expect(mutateSpy).toHaveBeenCalledWith({ gymZones: [response[0]] });
+    expect(mutateSpy).toHaveBeenCalledWith({ gymZones: [response[0]] }, false);
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledWith('Gym zone created!');
+  });
+
+  it('should call on error if ', async () => {
+    const mutateSpy = jest.fn().mockImplementation();
+    const virtualGymList = { data: { gymZones: [] }, mutate: mutateSpy };
+
+    jest.spyOn(swr, 'default').mockImplementation((key) => {
+      if (!key) {
+        return emptyResponse as any;
+      }
+      if (key !== '/virtual-gyms?level=0') {
+        return virtualGymList as never;
+      }
+
+      return defaultResponse as never;
+    });
+    poster.mockRejectedValue('Error thrown');
+
+    await act(async () => {
+      renderComponent();
+    });
+    await fillGymZone();
+
+    expect(poster).toHaveBeenCalledTimes(1);
+    expect(mutateSpy).not.toHaveBeenCalled();
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith('Error thrown');
   });
 
   it('should close the dialog', async () => {

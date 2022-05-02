@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useAppContext, useLoadingContext } from '@hubbl/data-access/contexts';
+import { useAppContext, useToastContext } from '@hubbl/data-access/contexts';
 import { GymZoneDTO } from '@hubbl/shared/models/dto';
 import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
 import {
@@ -17,7 +17,7 @@ const DashboardGymZones = () => {
     user,
     API: { fetcher, poster }
   } = useAppContext();
-  const { onPopLoading, onPushLoading } = useLoadingContext();
+  const { onSuccess, onError } = useToastContext();
 
   const { data, mutate } = useDashboard({
     run: !!token.parsed,
@@ -39,18 +39,21 @@ const DashboardGymZones = () => {
     formData
   ) => {
     setOpenDialog(false);
-    onPushLoading();
 
-    // The data should include the gym
-    const created = await poster<GymZoneDTO>(
-      `/virtual-gyms/${formData.virtualGym}/gym-zones`,
-      { ...formData, gym: user.gym.id }
-    );
+    try {
+      // The data should include the gym
+      const created = await poster<GymZoneDTO>(
+        `/virtual-gyms/${formData.virtualGym}/gym-zones`,
+        { ...formData, gym: user.gym.id }
+      );
 
-    // Mutate the state once the virtual gym has been created
-    await mutate({ ...data, gymZones: [created, ...data.gymZones] });
+      // Mutate the state once the virtual gym has been created
+      await mutate({ ...data, gymZones: [created, ...data.gymZones] }, false);
 
-    onPopLoading();
+      onSuccess('Gym zone created!');
+    } catch (e) {
+      onError(e);
+    }
   };
 
   return (
