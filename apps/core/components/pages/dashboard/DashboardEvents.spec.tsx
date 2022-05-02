@@ -9,7 +9,7 @@ import {
 } from '@hubbl/data-access/contexts';
 import { EventDTO } from '@hubbl/shared/models/dto';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { render, screen, act, RenderResult } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 import DashboardEvents from './DashboardEvents';
 
@@ -141,7 +141,7 @@ describe('<DashboardEvents />', () => {
   it('should render without events', async () => {
     jest.spyOn(swr, 'default').mockImplementation(() => ({} as never));
 
-    let container: RenderResult;
+    let container: any;
     await act(async () => {
       container = renderComponent();
     });

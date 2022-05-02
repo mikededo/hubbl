@@ -8,16 +8,22 @@ import {
   ToastContext
 } from '@hubbl/data-access/contexts';
 import { TrainerDTO } from '@hubbl/shared/models/dto';
+import { Gender } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { render, screen, act } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitForElementToBeRemoved
+} from '@testing-library/react';
 
 import DashboardTrainers from './DashboardTrainers';
-import { Gender } from '@hubbl/shared/types';
 
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
 
-  return { ...actual, useAppContext: jest.fn() };
+  return { ...actual, useAppContext: jest.fn(), useToastContext: jest.fn() };
 });
 jest.mock('axios');
 
@@ -54,6 +60,10 @@ const response = [
   }
 ] as TrainerDTO<number>[];
 
+const tags = Array(3)
+  .fill(undefined)
+  .map((_, i) => ({ id: i, name: `Tag-${i}` }));
+
 const renderComponent = () =>
   render(
     <LoadingContext>
@@ -67,8 +77,33 @@ const renderComponent = () =>
     </LoadingContext>
   );
 
+const fillTrainer = async () => {
+  await act(async () => {
+    fireEvent.click(screen.getByTitle('add-trainer'));
+  });
+  await act(async () => {
+    fireEvent.input(screen.getByPlaceholderText('John'), {
+      target: { name: 'firstName', value: 'Test' }
+    });
+    fireEvent.input(screen.getByPlaceholderText('Doe'), {
+      target: { name: 'lastName', value: 'Trainer' }
+    });
+    fireEvent.input(screen.getByPlaceholderText('john@doe.com'), {
+      target: { name: 'email', value: 'test@trainer.com' }
+    });
+  });
+
+  await act(async () => {
+    fireEvent.click(screen.getByText('Save'));
+  });
+};
+
 describe('<DashboardTrainers />', () => {
   const fetcher = jest.fn();
+  const poster = jest.fn();
+
+  const onSuccess = jest.fn();
+  const onError = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -79,21 +114,32 @@ describe('<DashboardTrainers />', () => {
         value: 'token'
       },
       user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
-      API: { fetcher }
+      API: { fetcher, poster }
     } as any);
+    (ctx.useToastContext as jest.Mock).mockReturnValue({ onError, onSuccess });
+    jest.spyOn(swr, 'default').mockImplementation((key, f) => {
+      if (key === '/dashboards/1') {
+        return { data: { trainers: response } } as never;
+      } else if (key === '/tags/trainer') {
+        return { data: tags } as any;
+      }
+
+      return {} as any;
+    });
   });
 
-  it('should render the list of event templates', async () => {
-    jest.spyOn(swr, 'default').mockImplementation((cb, f, opt) => {
-      expect(f).toBe(fetcher);
-      if (cb) {
-        expect(cb).toBe(`/dashboards/1`);
-      }
-      expect(opt).toStrictEqual({ revalidateOnFocus: false });
+  it('should render the list of trainers', async () => {
+    jest.spyOn(swr, 'default').mockImplementation(() => ({} as any));
 
-      return { data: { trainers: response } } as never;
+    let container: any;
+    await act(async () => {
+      container = renderComponent();
     });
 
+    expect(container).toBeDefined();
+  });
+
+  it('should render without data', async () => {
     await act(async () => {
       renderComponent();
     });
@@ -104,5 +150,79 @@ describe('<DashboardTrainers />', () => {
     });
     // Find placeholder
     expect(screen.getByTitle('add-trainer')).toBeInTheDocument();
+  });
+
+  it('should post a new trainer and call mutate', async () => {
+    const mutateSpy = jest.fn();
+    jest.spyOn(swr, 'default').mockImplementation((key) => {
+      if (key === '/dashboards/1') {
+        return { data: { trainers: [] }, mutate: mutateSpy } as never;
+      } else if (key === '/tags/trainer') {
+        return { data: tags } as any;
+      }
+
+      return {} as never;
+    });
+    poster.mockResolvedValue({ trainer: { ...response[0], id: 10 } });
+
+    await act(async () => {
+      renderComponent();
+    });
+    await fillTrainer();
+
+    expect(poster).toHaveBeenCalledTimes(1);
+    expect(poster).toHaveBeenCalledWith('/persons/trainer', {
+      firstName: 'Test',
+      lastName: 'Trainer',
+      gender: Gender.OTHER,
+      email: 'test@trainer.com',
+      gym: 1,
+      tags: []
+    });
+
+    expect(mutateSpy).toHaveBeenCalledTimes(1);
+    expect(mutateSpy).toHaveBeenCalledWith(
+      { trainers: [{ ...response[0], id: 10 }] },
+      false
+    );
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledWith('Trainer created!');
+  });
+
+  it('should call on error if poster fails', async () => {
+    const mutateSpy = jest.fn();
+    jest.spyOn(swr, 'default').mockImplementation((key) => {
+      if (key === '/dashboards/1') {
+        return { data: { trainers: [] }, mutate: mutateSpy } as never;
+      } else if (key === '/tags/trainer') {
+        return { data: tags } as any;
+      }
+
+      return {} as never;
+    });
+    poster.mockRejectedValue('Error thrown');
+
+    await act(async () => {
+      renderComponent();
+    });
+    await fillTrainer();
+
+    expect(poster).toHaveBeenCalledTimes(1);
+    expect(mutateSpy).not.toHaveBeenCalled();
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith('Error thrown');
+  });
+
+  it('should open and close the dialog', async () => {
+    await act(async () => {
+      renderComponent();
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTitle('add-trainer'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTitle('close-dialog'));
+    });
+    await waitForElementToBeRemoved(screen.queryByRole('dialog'));
   });
 });

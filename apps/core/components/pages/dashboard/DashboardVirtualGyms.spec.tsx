@@ -23,7 +23,7 @@ import DashboardVirtualGyms from './DashboardVirtualGyms';
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
 
-  return { ...actual, useAppContext: jest.fn() };
+  return { ...actual, useAppContext: jest.fn(), useToastContext: jest.fn() };
 });
 jest.mock('axios');
 
@@ -98,9 +98,41 @@ const renderComponent = () =>
     </LoadingContext>
   );
 
+const fillVirtualGym = async () => {
+  await act(async () => {
+    fireEvent.click(screen.getByTitle('add-virtual-gym'));
+  });
+  await act(async () => {
+    fireEvent.input(screen.getByPlaceholderText('New name'), {
+      target: { name: 'name', value: 'Name' }
+    });
+    fireEvent.input(
+      screen.getByPlaceholderText('New virtual gym description'),
+      { target: { name: 'description', value: 'Gym description' } }
+    );
+    fireEvent.input(screen.getByPlaceholderText('Somewhere, There, 90'), {
+      target: { name: 'location', value: 'Some, Location, 90' }
+    });
+    fireEvent.input(screen.getByPlaceholderText('000 000 000'), {
+      target: { name: 'phone', value: '111 222 333' }
+    });
+    fireEvent.input(screen.getByPlaceholderText('200'), {
+      target: { name: 'capacity', value: '25' }
+    });
+    userEvent.type(screen.getByPlaceholderText('09:00'), '10:00');
+    userEvent.type(screen.getByPlaceholderText('23:00'), '22:00');
+  });
+  await act(async () => {
+    userEvent.click(screen.getByText('Save'));
+  });
+};
+
 describe('<DasboardVirtualGyms/>', () => {
   const fetcher = jest.fn();
   const poster = jest.fn();
+
+  const onSuccess = jest.fn();
+  const onError = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -113,6 +145,7 @@ describe('<DasboardVirtualGyms/>', () => {
       user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
       API: { fetcher, poster }
     } as any);
+    (ctx.useToastContext as jest.Mock).mockReturnValue({ onSuccess, onError });
   });
 
   it('should not fetch without a token', async () => {
@@ -153,7 +186,7 @@ describe('<DasboardVirtualGyms/>', () => {
     expect(screen.getByTitle('add-virtual-gym')).toBeInTheDocument();
   });
 
-  it('should create a new gym', async () => {
+  it('should create a new virtual gym', async () => {
     const mutateSpy = jest.fn().mockImplementation();
     jest
       .spyOn(swr, 'default')
@@ -165,32 +198,7 @@ describe('<DasboardVirtualGyms/>', () => {
     await act(async () => {
       renderComponent();
     });
-    await act(async () => {
-      fireEvent.click(screen.getByTitle('add-virtual-gym'));
-    });
-    await act(async () => {
-      fireEvent.input(screen.getByPlaceholderText('New name'), {
-        target: { name: 'name', value: 'Name' }
-      });
-      fireEvent.input(
-        screen.getByPlaceholderText('New virtual gym description'),
-        { target: { name: 'description', value: 'Gym description' } }
-      );
-      fireEvent.input(screen.getByPlaceholderText('Somewhere, There, 90'), {
-        target: { name: 'location', value: 'Some, Location, 90' }
-      });
-      fireEvent.input(screen.getByPlaceholderText('000 000 000'), {
-        target: { name: 'phone', value: '111 222 333' }
-      });
-      fireEvent.input(screen.getByPlaceholderText('200'), {
-        target: { name: 'capacity', value: '25' }
-      });
-      userEvent.type(screen.getByPlaceholderText('09:00'), '10:00');
-      userEvent.type(screen.getByPlaceholderText('23:00'), '22:00');
-    });
-    await act(async () => {
-      userEvent.click(screen.getByText('Save'));
-    });
+    await fillVirtualGym();
 
     expect(poster).toHaveBeenCalledTimes(1);
     expect(poster).toHaveBeenCalledWith('/virtual-gyms', {
@@ -204,7 +212,32 @@ describe('<DasboardVirtualGyms/>', () => {
       gym: 1
     });
     expect(mutateSpy).toHaveBeenCalledTimes(1);
-    expect(mutateSpy).toHaveBeenCalledWith({ virtualGyms: [response[0]] });
+    expect(mutateSpy).toHaveBeenCalledWith(
+      { virtualGyms: [response[0]] },
+      false
+    );
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledWith('Virtual gym created!');
+  });
+
+  it('should call onError if poster fails', async () => {
+    const mutateSpy = jest.fn().mockImplementation();
+    jest
+      .spyOn(swr, 'default')
+      .mockImplementation(
+        () => ({ data: { virtualGyms: [] }, mutate: mutateSpy } as never)
+      );
+    poster.mockRejectedValue('Error thrown');
+
+    await act(async () => {
+      renderComponent();
+    });
+    await fillVirtualGym();
+
+    expect(poster).toHaveBeenCalledTimes(1);
+    expect(mutateSpy).not.toHaveBeenCalled();
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith('Error thrown');
   });
 
   it('should close the dialog', async () => {

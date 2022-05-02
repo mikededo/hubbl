@@ -59,10 +59,7 @@ const TrainerDialog = ({
   const { onError } = useToastContext();
   const { data, error } = useSWR<TrainerTagDTO[]>(
     token?.parsed && props.open ? '/tags/trainer' : null,
-    fetcher,
-    {
-      revalidateOnMount: false
-    }
+    fetcher
   );
 
   const methods = useForm<TrainerFormFields>({
