@@ -6,7 +6,7 @@ import { ClientFormFields } from '../../types';
 
 const ClientPermissions = (): JSX.Element => (
   <Stack gap={1.5}>
-    <Typography variant="h6">Properties</Typography>
+    <Typography variant="h6">Permissions</Typography>
 
     <Stack direction="row" alignItems="center" justifyContent="space-between">
       <FormControlLabel

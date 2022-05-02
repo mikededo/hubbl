@@ -228,6 +228,11 @@ export type PersonFormFields = {
   password: string;
 
   /**
+   * `Person`'s phone
+   */
+  phone: string;
+
+  /**
    * `Person`'s Gender
    */
   gender: Gender;

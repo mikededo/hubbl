@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { EmptyHandler, Gender, SingleHandler } from '@hubbl/shared/types';
 import { Delete, Save } from '@mui/icons-material';
 import { Button, Divider, Stack } from '@mui/material';
+import { ResponsiveStyleValue } from '@mui/system';
 
 import Base, { BaseProps } from '../Base';
 import DialogSection from '../DialogSection';
@@ -12,10 +13,19 @@ import {
   PersonEmail,
   PersonFirstName,
   PersonGender,
-  PersonLastName
+  PersonLastName,
+  PersonPhone
 } from '../Person';
 import { ClientFormFields } from '../types';
 import ClientPermissions from './ClientPermissions';
+
+const StackDirections: ResponsiveStyleValue<'column' | 'row'> = {
+  xs: 'column',
+  sm: 'column',
+  md: 'row',
+  lg: 'row',
+  xl: 'row'
+};
 
 export type ClientDialogProps = {
   /**
@@ -76,17 +86,7 @@ const ClientDialog = ({
         <FormProvider {...methods}>
           <DialogSection>
             <Stack gap={2}>
-              <Stack
-                direction={{
-                  xs: 'column',
-                  sm: 'column',
-                  md: 'row',
-                  lg: 'row',
-                  xl: 'row'
-                }}
-                width="100%"
-                gap={2}
-              >
+              <Stack direction={StackDirections} width="100%" gap={2}>
                 <PersonFirstName />
 
                 <PersonLastName />
@@ -94,7 +94,11 @@ const ClientDialog = ({
 
               <PersonEmail />
 
-              <PersonGender />
+              <Stack direction={StackDirections} width="100%" gap={2}>
+                <PersonPhone />
+
+                <PersonGender />
+              </Stack>
             </Stack>
           </DialogSection>
 

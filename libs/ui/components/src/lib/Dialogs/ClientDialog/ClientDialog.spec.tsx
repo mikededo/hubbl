@@ -58,8 +58,12 @@ describe('<ClientDialog />', () => {
       expect(screen.getByPlaceholderText('Doe')).toBeInTheDocument();
       expect(screen.getByText('Email')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('john@doe.com')).toBeInTheDocument();
+      expect(screen.getByText('Phone')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('000 000 000')).toBeInTheDocument();
       expect(screen.getByText('Gender')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('Other')).toBeInTheDocument();
+      expect(screen.getByText('Permissions')).toBeInTheDocument();
+      expect(screen.getByTitle('client-covid-passport')).toBeInTheDocument();
     });
 
     it('should render with the default values', async () => {
@@ -67,6 +71,7 @@ describe('<ClientDialog />', () => {
         firstName: 'Test',
         lastName: 'Client',
         email: 'test@client.com',
+        phone: '123 123 123',
         gender: Gender.WOMAN,
         covidPassport: false
       };
@@ -89,6 +94,9 @@ describe('<ClientDialog />', () => {
       );
       expect(screen.getByPlaceholderText('john@doe.com')).toHaveValue(
         defaultValues.email
+      );
+      expect(screen.getByPlaceholderText('000 000 000')).toHaveValue(
+        defaultValues.phone
       );
       expect(screen.getByPlaceholderText('Other')).toHaveValue(
         defaultValues.gender
@@ -116,6 +124,9 @@ describe('<ClientDialog />', () => {
         fireEvent.input(screen.getByPlaceholderText('john@doe.com'), {
           target: { name: 'email', value: 'test@client.com' }
         });
+        fireEvent.input(screen.getByPlaceholderText('000 000 000'), {
+          target: { name: 'phone', value: '123 123 123' }
+        });
       });
       await act(async () => {
         userEvent.click(screen.getByText('Save'));
@@ -126,6 +137,7 @@ describe('<ClientDialog />', () => {
         firstName: 'Test',
         lastName: 'Doe',
         email: 'test@client.com',
+        phone: '123 123 123',
         gender: Gender.OTHER,
         covidPassport: true
       });
