@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { EmptyHandler, Gender, SingleHandler } from '@hubbl/shared/types';
 import { Delete, Save } from '@mui/icons-material';
-import { Button, Divider, Stack } from '@mui/material';
+import { Typography, Button, Divider, Stack } from '@mui/material';
 import { ResponsiveStyleValue } from '@mui/system';
 
 import Base, { BaseProps } from '../Base';
@@ -28,6 +28,11 @@ const StackDirections: ResponsiveStyleValue<'column' | 'row'> = {
 };
 
 export type ClientDialogProps = {
+  /**
+   * Code of the gym to display in the information text
+   */
+  code?: string;
+
   /**
    * Default values of the form
    *
@@ -54,6 +59,7 @@ export type ClientDialogProps = {
 } & BaseProps;
 
 const ClientDialog = ({
+  code,
   defaultValues,
   onDelete,
   onSubmit,
@@ -109,6 +115,19 @@ const ClientDialog = ({
           </DialogSection>
 
           <Divider />
+
+          {code && (
+            <>
+              <DialogSection>
+                <Typography variant="body2">
+                  The password of the client will be the gym code, which is:{' '}
+                  {code}
+                </Typography>
+              </DialogSection>
+
+              <Divider />
+            </>
+          )}
 
           <DialogSection footer>
             <Stack direction="row" justifyContent="flex-end" gap={2}>

@@ -33,23 +33,28 @@ describe('<ClientDialog />', () => {
 
   describe('open', () => {
     it('should not render if not open', () => {
-      render(<ClientDialog title="Create a client" />);
+      render(<ClientDialog title="Create a client" code="AABBCCDD" />);
 
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
 
     it('should render if open', () => {
-      render(<ClientDialog title="Create a client" open />);
+      render(<ClientDialog title="Create a client" code="AABBCCDD" open />);
 
       expect(screen.getByRole('dialog')).toBeInTheDocument();
       expect(screen.getByText('Create a client')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'The password of the client will be the gym code, which is: AABBCCDD'
+        )
+      ).toBeInTheDocument();
     });
   });
 
   describe('form', () => {
     it('should render the client form', async () => {
       await act(async () => {
-        render(<ClientDialog title="Create client" open />);
+        render(<ClientDialog title="Create client" code="AABBCCDD" open />);
       });
 
       expect(screen.getByText('First name')).toBeInTheDocument();
@@ -80,6 +85,7 @@ describe('<ClientDialog />', () => {
         render(
           <ClientDialog
             title="Create a client"
+            code="AABBCCDD"
             defaultValues={defaultValues}
             open
           />
@@ -111,7 +117,12 @@ describe('<ClientDialog />', () => {
 
       await act(async () => {
         render(
-          <ClientDialog title="Create a client" onSubmit={onSubmitSpy} open />
+          <ClientDialog
+            title="Create a client"
+            code="AABBCCDD"
+            onSubmit={onSubmitSpy}
+            open
+          />
         );
       });
       await act(async () => {
@@ -154,6 +165,13 @@ describe('<ClientDialog />', () => {
         );
       });
       fireEvent.click(screen.getByText('Delete'));
+
+      // In this case, the code text should not be shown
+      expect(
+        screen.queryByText(
+          /The password of the client will be the gym code, which is:/
+        )
+      ).not.toBeInTheDocument();
 
       expect(screen.getByText('Delete')).toBeInTheDocument();
       expect(onDeleteSpy).toHaveBeenCalledTimes(1);
