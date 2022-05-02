@@ -38,7 +38,7 @@ const TrainerTags = ({ tags }: TrainerTagsProps): JSX.Element => {
       placeholder="Select trainer tags"
       inputProps={{ title: 'trainer-tags' }}
       options={maptrainerTags()}
-      disabled={!tags}
+      disabled={!tags?.length}
       multiple
     />
   );
