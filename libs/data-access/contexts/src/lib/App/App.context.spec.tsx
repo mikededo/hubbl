@@ -9,11 +9,51 @@ import { LoadingContext, useLoadingContext } from '../Loading';
 import { ToastContext } from '../Toast';
 import { AppProvider, useAppContext } from './App.context';
 
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '',
+      query: '',
+      asPath: '',
+      push: jest.fn(),
+      events: {
+        on: jest.fn((event, cb) => {
+          expect(
+            [
+              'routeChangeStart',
+              'routeChangeComplete',
+              'routeChangeError'
+            ].includes(event)
+          ).toBeTruthy();
+          expect(cb).toBeDefined();
+          cb('different');
+        }),
+        off: jest.fn((event, cb) => {
+          expect(
+            [
+              'routeChangeStart',
+              'routeChangeComplete',
+              'routeChangeError'
+            ].includes(event)
+          ).toBeTruthy();
+          expect(cb).toBeDefined();
+          cb('');
+        })
+      },
+      beforePopState: jest.fn(() => null),
+      prefetch: jest.fn(() => null)
+    };
+  }
+}));
 jest.mock('@hubbl/data-access/api');
 jest.mock('../Loading', () => {
   const actual = jest.requireActual('../Loading');
+  const pop = jest.fn();
+  const push = jest.fn();
+  const loading = jest.fn(() => ({ onPopLoading: pop, onPushLoading: push }));
 
-  return { ...actual, useLoadingContext: jest.fn() };
+  return { ...actual, useLoadingContext: loading };
 });
 jest.mock('jsonwebtoken');
 
@@ -347,7 +387,8 @@ describe('<AppProvider />', () => {
         fireEvent.click(screen.getByText('fetch'));
       });
 
-      expect(push).toHaveBeenCalledTimes(1);
+      // Include the router useEffect push/pop calls
+      expect(push).toHaveBeenCalledTimes(2);
       expect(pop).toHaveBeenCalledTimes(1);
       expect(fetcherSpy).toHaveBeenCalledTimes(1);
       expect(fetcherSpy).toHaveBeenCalledWith('/url', {
@@ -389,7 +430,8 @@ describe('<AppProvider />', () => {
         fireEvent.click(screen.getByText('fetch'));
       });
 
-      expect(push).toHaveBeenCalledTimes(1);
+      // Include the router useEffect push/pop calls
+      expect(push).toHaveBeenCalledTimes(2);
       expect(pop).toHaveBeenCalledTimes(1);
       expect(fetcherSpy).toHaveBeenCalledTimes(1);
     });
@@ -420,7 +462,8 @@ describe('<AppProvider />', () => {
         fireEvent.click(screen.getByText('post'));
       });
 
-      expect(push).toHaveBeenCalledTimes(1);
+      // Include the router useEffect push/pop calls
+      expect(push).toHaveBeenCalledTimes(2);
       expect(pop).toHaveBeenCalledTimes(1);
       expect(posterSpy).toHaveBeenCalledTimes(1);
       expect(posterSpy).toHaveBeenCalledWith(
@@ -466,7 +509,8 @@ describe('<AppProvider />', () => {
         fireEvent.click(screen.getByText('fetch'));
       });
 
-      expect(push).toHaveBeenCalledTimes(1);
+      // Include the router useEffect push/pop calls
+      expect(push).toHaveBeenCalledTimes(2);
       expect(pop).toHaveBeenCalledTimes(1);
       expect(posterSpy).toHaveBeenCalledTimes(1);
     });
@@ -497,7 +541,8 @@ describe('<AppProvider />', () => {
         fireEvent.click(screen.getByText('post'));
       });
 
-      expect(push).toHaveBeenCalledTimes(1);
+      // Include the router useEffect push/pop calls
+      expect(push).toHaveBeenCalledTimes(2);
       expect(pop).toHaveBeenCalledTimes(1);
       expect(putterSpy).toHaveBeenCalledTimes(1);
       expect(putterSpy).toHaveBeenCalledWith(
@@ -543,7 +588,8 @@ describe('<AppProvider />', () => {
         fireEvent.click(screen.getByText('fetch'));
       });
 
-      expect(push).toHaveBeenCalledTimes(1);
+      // Include the router useEffect push/pop calls
+      expect(push).toHaveBeenCalledTimes(2);
       expect(pop).toHaveBeenCalledTimes(1);
       expect(putterSpy).toHaveBeenCalledTimes(1);
     });
