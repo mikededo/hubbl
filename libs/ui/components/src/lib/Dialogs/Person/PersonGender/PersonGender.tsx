@@ -22,9 +22,16 @@ type PersonGenderProps = {
    * @default false
    */
   disabled?: boolean;
+
+  /**
+   * Whether to span the input the whole width
+   *
+   * @default false
+   */
+  fullWidth?: boolean;
 };
 
-const Gender = ({ disabled = false }: PersonGenderProps) => {
+const Gender = ({ disabled = false, fullWidth = false }: PersonGenderProps) => {
   const { control } = useFormContext<PersonFormFields>();
 
   return (
@@ -37,7 +44,7 @@ const Gender = ({ disabled = false }: PersonGenderProps) => {
       control={control}
       formName="gender"
       options={GenderOptions}
-      sx={{ width: '50%' }}
+      sx={{ width: fullWidth ? '100%' : '50%' }}
     />
   );
 };

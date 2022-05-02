@@ -97,7 +97,7 @@ const ClientDialog = ({
               <Stack direction={StackDirections} width="100%" gap={2}>
                 <PersonPhone />
 
-                <PersonGender />
+                <PersonGender fullWidth />
               </Stack>
             </Stack>
           </DialogSection>

@@ -7,7 +7,13 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { PersonFormFields } from '../../types';
 import PersonGender from './PersonGender';
 
-const MockComponent = ({ disabled }: { disabled?: boolean }) => {
+const MockComponent = ({
+  disabled,
+  fullWidth
+}: {
+  disabled?: boolean;
+  fullWidth?: boolean;
+}) => {
   const { control, ...rest } = useForm<PersonFormFields>({
     defaultValues: { gender: GenderEnum.OTHER }
   });
@@ -15,7 +21,7 @@ const MockComponent = ({ disabled }: { disabled?: boolean }) => {
   return (
     <ThemeProvider theme={createTheme()}>
       <FormProvider {...{ control, ...rest }}>
-        <PersonGender disabled={disabled} />
+        <PersonGender disabled={disabled} fullWidth={fullWidth} />
       </FormProvider>
     </ThemeProvider>
   );
@@ -39,6 +45,16 @@ describe('<PersonGender />', () => {
     expect(screen.getByRole('option', { name: 'Man' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Woman' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Other' })).toBeInTheDocument();
+  });
+
+  describe('fulWidth', () => {
+    it('should render with fullWidth', () => {
+      render(<MockComponent fullWidth />);
+
+      expect(screen.getByPlaceholderText('Other')).toHaveStyle({
+        width: '100%'
+      });
+    });
   });
 
   describe('disabled', () => {
