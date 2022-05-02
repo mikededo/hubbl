@@ -228,6 +228,11 @@ export type PersonFormFields = {
   password: string;
 
   /**
+   * `Person`'s phone
+   */
+  phone: string;
+
+  /**
    * `Person`'s Gender
    */
   gender: Gender;
@@ -245,4 +250,11 @@ export type ParsedTrainerFormFields = {
    * List of trainer tags that have been selected
    */
   tags: TrainerTagDTO[];
+} & PersonFormFields;
+
+export type ClientFormFields = {
+  /**
+   * Whether the client has the covid passport or not
+   */
+  covidPassport: boolean;
 } & PersonFormFields;

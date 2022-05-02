@@ -48,7 +48,7 @@ describe('VirtualGym Controller', () => {
   const mockService = {
     findOneBy: jest.fn(),
     createQueryBuilder: jest.fn().mockReturnThis(),
-    leftJoinAndMapMany: jest.fn().mockReturnThis(),
+    innerJoinAndMapMany: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
     getMany: jest.fn(),
     getOne: jest.fn()
@@ -175,8 +175,8 @@ describe('VirtualGym Controller', () => {
         expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
           alias: 'virtualGym'
         });
-        expect(mockService.leftJoinAndMapMany).toHaveBeenCalledTimes(1);
-        expect(mockService.leftJoinAndMapMany).toHaveBeenCalledWith(
+        expect(mockService.innerJoinAndMapMany).toHaveBeenCalledTimes(1);
+        expect(mockService.innerJoinAndMapMany).toHaveBeenCalledWith(
           'virtualGym.gymZones',
           'virtualGym.gymZones',
           'gz'
@@ -221,7 +221,7 @@ describe('VirtualGym Controller', () => {
         expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
           alias: 'virtualGym'
         });
-        expect(mockService.leftJoinAndMapMany).not.toHaveBeenCalled();
+        expect(mockService.innerJoinAndMapMany).not.toHaveBeenCalled();
         expect(mockService.where).not.toHaveBeenCalled();
         expect(mockService.getMany).toHaveBeenCalledTimes(1);
         expect(fromClassSpy).toHaveBeenCalledTimes(2);
@@ -268,8 +268,8 @@ describe('VirtualGym Controller', () => {
         expect(mockService.createQueryBuilder).toHaveBeenCalledWith({
           alias: 'virtualGym'
         });
-        expect(mockService.leftJoinAndMapMany).toHaveBeenCalledTimes(1);
-        expect(mockService.leftJoinAndMapMany).toHaveBeenCalledWith(
+        expect(mockService.innerJoinAndMapMany).toHaveBeenCalledTimes(1);
+        expect(mockService.innerJoinAndMapMany).toHaveBeenCalledWith(
           'virtualGym.gymZones',
           'virtualGym.gymZones',
           'gz'

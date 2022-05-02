@@ -39,7 +39,7 @@ export const fetch = async <
 }: FetchProps<T>) => {
   const result = await service.find({
     join: { alias, innerJoin: { person: `${alias}.person` } },
-    where: { person: { gym: gymId } },
+    where: { person: { gym: { id: gymId } } },
     take: 15,
     skip
   });

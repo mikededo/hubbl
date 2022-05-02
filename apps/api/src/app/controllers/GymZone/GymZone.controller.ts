@@ -35,14 +35,14 @@ class IGymZoneFetchController extends BaseController {
       try {
         const result = await this.service
           .createQueryBuilder({ alias: 'gymZone' })
-          .leftJoinAndSelect('gymZone.calendar', 'calendar')
-          .leftJoinAndSelect(
+          .innerJoinAndSelect('gymZone.calendar', 'calendar')
+          .innerJoinAndSelect(
             'gymZone.virtualGym',
             'virtualGym',
             'virtualGym.id = :id',
             { id: req.params.vgId }
           )
-          .leftJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
+          .innerJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
             id: (person.gym as Gym).id
           })
           .getMany();
@@ -86,14 +86,14 @@ class IGymZoneFetchSingleController extends BaseController {
       try {
         const result = await this.service
           .createQueryBuilder({ alias: 'gymZone' })
-          .leftJoinAndSelect('gymZone.calendar', 'calendar')
-          .leftJoinAndSelect(
+          .innerJoinAndSelect('gymZone.calendar', 'calendar')
+          .innerJoinAndSelect(
             'gymZone.virtualGym',
             'virtualGym',
             'virtualGym.id = :id',
             { id: req.params.vgId }
           )
-          .leftJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
+          .innerJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
             id: (person.gym as Gym).id
           })
           .where('gymZone.id = :id', { id: req.params.id })

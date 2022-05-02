@@ -9,7 +9,7 @@ import {
 } from '@hubbl/data-access/contexts';
 import { EventDTO } from '@hubbl/shared/models/dto';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, RenderResult } from '@testing-library/react';
 
 import DashboardEvents from './DashboardEvents';
 
@@ -136,5 +136,16 @@ describe('<DashboardEvents />', () => {
     response.forEach(({ name }) => {
       expect(screen.getByText(name)).toBeInTheDocument();
     });
+  });
+
+  it('should render without events', async () => {
+    jest.spyOn(swr, 'default').mockImplementation(() => ({} as never));
+
+    let container: RenderResult;
+    await act(async () => {
+      container = renderComponent();
+    });
+
+    expect(container).toBeDefined();
   });
 });
