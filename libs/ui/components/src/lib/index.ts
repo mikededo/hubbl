@@ -11,6 +11,7 @@ import LoadingButton from './LoadingButton';
 import PageHeader from './PageHeader';
 import SelectInput from './SelectInput';
 import SideNav from './SideNav';
+import SideToggler from './SideToggler';
 import Table from './Table';
 import TodayEventsList from './TodayEventsList';
 import VirtualGymList from './VirtualGymList';
@@ -29,6 +30,7 @@ export {
   PageHeader,
   SelectInput,
   SideNav,
+  SideToggler,
   Table,
   TodayEventsList,
   VirtualGymList
