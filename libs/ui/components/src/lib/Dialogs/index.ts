@@ -15,9 +15,11 @@ import type {
   GymZoneFormFields,
   ParsedTrainerFormFields,
   TrainerFormFields,
-  VirtualGymFormFields
+  VirtualGymFormFields,
+  WorkerFormFields
 } from './types';
 import VirtualGymDialog from './VirtualGymDialog';
+import WorkerDialog from './WorkerDialog';
 
 export {
   CalendarEventDialog,
@@ -27,7 +29,8 @@ export {
   GymZoneDialog,
   TrainerDialog,
   useCalendarEventDialog,
-  VirtualGymDialog
+  VirtualGymDialog,
+  WorkerDialog
 };
 export type {
   CalendarEventFormFields,
@@ -38,5 +41,6 @@ export type {
   ParsedTrainerFormFields,
   TrainerFormFields,
   UseEventDialogResult,
-  VirtualGymFormFields
+  VirtualGymFormFields,
+  WorkerFormFields
 };

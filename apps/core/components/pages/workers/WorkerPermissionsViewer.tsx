@@ -92,7 +92,7 @@ const WorkerPermissionsViewer = ({
         <AnimatePresence>
           {worker && (
             <motion.div
-              style={{ position: 'absolute', top: '0' }}
+              style={{ position: 'absolute', top: '0', width:'100%' }}
               initial={{ left: '200%' }}
               animate={{ left: '0%' }}
               exit={{ left: '200%' }}

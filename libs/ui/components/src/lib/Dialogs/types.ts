@@ -258,3 +258,145 @@ export type ClientFormFields = {
    */
   covidPassport: boolean;
 } & PersonFormFields;
+
+export type WorkerFormFields = {
+  /**
+   * Whether the worker is allowed or not to UPDATE `VirtualGym`'s
+   */
+  updateVirtualGyms: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `GymZone`'s
+   */
+  createGymZones: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `GymZone`'s
+   */
+  updateGymZones: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `GymZone`'s
+   */
+  deleteGymZones: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `Trainer`'s
+   */
+  createTrainers: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `Trainer`'s
+   */
+  updateTrainers: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `Trainer`'s
+   */
+  deleteTrainers: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `Client`'s
+   */
+  createClients: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `Client`'s
+   */
+  updateClients: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `Client`'s
+   */
+  deleteClients: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `Tag`'s of any kind.
+   */
+  createTags: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `Tag`'s of any kind.
+   */
+  updateTags: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `Tag`'s of any kind.
+   */
+  deleteTags: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `Event`'s
+   */
+  createEvents: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `Event`'s
+   */
+  updateEvents: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `Event`'s
+   */
+  deleteEvents: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `EventType`'s
+   */
+  createEventTypes: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `EventType`'s
+   */
+  updateEventTypes: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `EventType`'s
+   */
+  deleteEventTypes: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `EventTemplates`'s
+   */
+  createEventTemplates: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `EventTemplates`'s
+   */
+  updateEventTemplates: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `EventTemplates`'s
+   */
+  deleteEventTemplates: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `EventAppointment`'s
+   */
+  createEventAppointments: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `EventAppointment`'s
+   */
+  updateEventAppointments: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `EventAppointment`'s
+   */
+  deleteEventAppointments: boolean;
+
+  /**
+   * Whether the worker is allowed or not to CREATE `CalendarAppointment`'s
+   */
+  createCalendarAppointments: boolean;
+
+  /**
+   * Whether the worker is allowed or not to UPDATE `CalendarAppointment`'s
+   */
+  updateCalendarAppointments: boolean;
+
+  /**
+   * Whether the worker is allowed or not to DELETE `CalendarAppointment`'s
+   */
+  deleteCalendarAppointments: boolean;
+} & PersonFormFields;
