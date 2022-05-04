@@ -84,7 +84,7 @@ const Trainers = () => {
     setTrainerDialog(InitialTrainerDialogState);
   };
 
-  const handleOnSumbitTrainerDialog: SingleHandler<
+  const handleOnSumbitTrainer: SingleHandler<
     ParsedTrainerFormFields
   > = async (formData) => {
     setTrainerDialog(InitialTrainerDialogState);
@@ -179,7 +179,7 @@ const Trainers = () => {
         onClose={handleOnCloseTrainerDialog}
         onSubmit={
           trainerDialog.status === 'create'
-            ? handleOnSumbitTrainerDialog
+            ? handleOnSumbitTrainer
             : handleOnUpdateTrainer
         }
       />
