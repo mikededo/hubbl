@@ -38,18 +38,20 @@ const DashboardTrainers = ({
         </Grid>
       ))}
 
-      <Grid item>
-        <AddItemPlaceholder
-          title="add-trainer"
-          height={7}
-          width={44}
-          onClick={onAddTrainer}
-        >
-          <PlaceholderText variant="placeholder">
-            Click me to create a new trainer!
-          </PlaceholderText>
-        </AddItemPlaceholder>
-      </Grid>
+      {onAddTrainer && (
+        <Grid item>
+          <AddItemPlaceholder
+            title="add-trainer"
+            height={7}
+            width={44}
+            onClick={onAddTrainer}
+          >
+            <PlaceholderText variant="placeholder">
+              Click me to create a new trainer!
+            </PlaceholderText>
+          </AddItemPlaceholder>
+        </Grid>
+      )}
     </Stack>
   </Stack>
 );

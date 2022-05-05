@@ -55,7 +55,6 @@ describe('<DashboardEventTemplates />', () => {
       items.forEach(({ name }) => {
         expect(screen.getByText(name)).toBeInTheDocument();
       });
-      expect(screen.getByTitle('add-event-template')).toBeInTheDocument();
     });
 
     it('should only render 5 items', () => {
