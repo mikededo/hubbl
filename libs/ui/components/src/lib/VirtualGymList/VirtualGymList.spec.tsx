@@ -19,10 +19,7 @@ describe('<VirtualGymList />', () => {
 
       virtualGyms.forEach(({ id, name }) => {
         expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
-        expect(screen.getByTitle(`add-gym-zone-${id}`)).toBeInTheDocument();
       });
-
-      expect(screen.getByTitle('add-virtual-gym')).toBeInTheDocument();
     });
   });
 

@@ -45,9 +45,11 @@ const VirtualGymList = ({
       />
     ))}
 
-    <AddItemPlaceholder title="add-virtual-gym" onClick={onAddVirtualGym}>
-      <AddIcon />
-    </AddItemPlaceholder>
+    {onAddVirtualGym && (
+      <AddItemPlaceholder title="add-virtual-gym" onClick={onAddVirtualGym}>
+        <AddIcon />
+      </AddItemPlaceholder>
+    )}
   </>
 );
 

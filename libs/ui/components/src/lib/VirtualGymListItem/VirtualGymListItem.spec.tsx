@@ -46,23 +46,13 @@ describe('<VirtualGymListItem />', () => {
         'href',
         `/virtual-gyms/${emptyVirtualGym.id}`
       );
-      expect(
-        screen.getByTitle(`add-gym-zone-${emptyVirtualGym.id}`)
-      ).toBeInTheDocument();
-      // Ensure there's only the button
-      expect(screen.getByTestId('gym-zone-carousel').childElementCount).toBe(1);
-
-      // Carousel arrows, should be disabled
-      screen.getAllByRole('button').forEach((btn) => {
-        if (btn.title !== `add-gym-zone-${emptyVirtualGym.id}`) {
-          expect(btn).toBeDisabled();
-        }
-      });
     });
 
     it('should render a virtual gym with gym zones', () => {
       const { container } = render(
-        <VirtualGymListItem virtualGym={filledVirtualGym as any} />
+        <VirtualGymListItem
+          virtualGym={filledVirtualGym as any}
+        />
       );
 
       expect(container).toBeInTheDocument();
@@ -73,16 +63,13 @@ describe('<VirtualGymListItem />', () => {
         'href',
         `/virtual-gyms/${filledVirtualGym.id}`
       );
-      expect(
-        screen.getByTitle(`add-gym-zone-${filledVirtualGym.id}`)
-      ).toBeInTheDocument();
       filledVirtualGym.gymZones.forEach(({ name }) => {
         expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
       });
 
       // Ensure there's the button all all the children
       expect(screen.getByTestId('gym-zone-carousel').childElementCount).toBe(
-        1 + filledVirtualGym.gymZones.length
+        filledVirtualGym.gymZones.length
       );
     });
 
