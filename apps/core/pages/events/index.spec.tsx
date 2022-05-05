@@ -139,6 +139,7 @@ const renderPage = () =>
 
 describe('Events page', () => {
   const swrSpy = jest.spyOn(swr, 'default');
+  const hasAccess = () => true;
 
   const mockSwr = () => {
     swrSpy.mockClear().mockImplementation((key) => {
@@ -179,6 +180,7 @@ describe('Events page', () => {
         token: { parsed: {} },
         user: { gym: { id: 1 } },
         todayEvents: [],
+        helpers: { hasAccess },
         API: { fetcher, poster }
       });
       (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -231,6 +233,7 @@ describe('Events page', () => {
       (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
         token: { parsed: undefined },
         todayEvents: [],
+        helpers: { hasAccess },
         API: { fetcher }
       });
       swrSpy.mockImplementation(() => ({} as any));
@@ -240,6 +243,22 @@ describe('Events page', () => {
       });
 
       expect(fetcher).not.toHaveBeenCalled();
+    });
+
+    it('should not show the button if user does not have permissions', async () => {
+      (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
+        token: { parsed: {} },
+        todayEvents: [],
+        helpers: { hasAccess: () => false },
+        API: { fetcher }
+      });
+      swrSpy.mockImplementation(() => ({} as any));
+
+      await act(async () => {
+        renderPage();
+      });
+
+      expect(screen.queryByTitle('add-event-types')).not.toBeInTheDocument();
     });
 
     it('should call onError if fetching event types fails', async () => {
@@ -353,6 +372,7 @@ describe('Events page', () => {
         token: { parsed: {} },
         user: { gym: { id: 1 } },
         todayEvents: [],
+        helpers: { hasAccess },
         API: { fetcher, poster }
       });
       (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -405,6 +425,7 @@ describe('Events page', () => {
       (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
         token: { parsed: undefined },
         todayEvents: [],
+        helpers: { hasAccess },
         API: { fetcher }
       });
       swrSpy.mockImplementation(() => ({} as any));
@@ -433,6 +454,24 @@ describe('Events page', () => {
 
       expect(onError).toHaveBeenCalledTimes(1);
       expect(onError).toHaveBeenCalledWith('Error thrown');
+    });
+
+    it('should not show the button if user does not have permissions', async () => {
+      (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
+        token: { parsed: {} },
+        todayEvents: [],
+        helpers: { hasAccess: () => false },
+        API: { fetcher }
+      });
+      swrSpy.mockImplementation(() => ({} as any));
+
+      await act(async () => {
+        renderPage();
+      });
+
+      expect(
+        screen.queryByTitle('add-event-templates')
+      ).not.toBeInTheDocument();
     });
 
     it('should post a new event template', async () => {
