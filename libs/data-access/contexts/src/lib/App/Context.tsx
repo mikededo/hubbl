@@ -26,6 +26,7 @@ import { useToastContext } from '../Toast';
 import {
   AppContextValue,
   GymUpdatableFields,
+  HasAccessType,
   LogInType,
   LogOutType,
   SignUpType,
@@ -259,6 +260,19 @@ const useAppContextValue = ({
     }
   }, [fetcher, onError]);
 
+  /* Context helpers */
+  const hasAccess: HasAccessType = (to) => {
+    switch (parsedToken?.user) {
+      case 'owner':
+        return true;
+      case 'worker':
+        // User will for sure be defined
+        return (user as WorkerDTO<Gym>)[to];
+      default:
+        return false;
+    }
+  };
+
   /**
    * Once the context has been loaded, fetch today's events.
    * Today's events are kept in the application context in order to
@@ -297,6 +311,7 @@ const useAppContextValue = ({
     token: { value: token, parsed: parsedToken },
     user,
     todayEvents,
+    helpers: { hasAccess },
     API: {
       loading,
       signup,

@@ -888,4 +888,98 @@ describe('<AppProvider />', () => {
       });
     });
   });
+
+  describe('helpers', () => {
+    const Component = () => {
+      const {
+        helpers: { hasAccess }
+      } = useAppContext();
+
+      return (
+        <div>
+          {hasAccess('createCalendarAppointments') ? 'Access' : 'No access'}
+        </div>
+      );
+    };
+
+    it('should have access as an owner', async () => {
+      jest.spyOn(jwt, 'decode').mockReturnValue({ user: 'owner' });
+      jest.spyOn(TokenApi, 'validate').mockResolvedValue({
+        token: 'Token',
+        user: { id: 1 }
+      });
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+
+      expect(screen.getByText('Access')).toBeInTheDocument();
+    });
+
+    it('should not have access as a client', async () => {
+      jest.spyOn(jwt, 'decode').mockReturnValue({ user: 'client' });
+      jest.spyOn(TokenApi, 'validate').mockResolvedValue({
+        token: 'Token',
+        user: { id: 1 }
+      });
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+
+      expect(screen.getByText('No access')).toBeInTheDocument();
+    });
+
+    it('should have access as a worker if such has access', async () => {
+      jest.spyOn(jwt, 'decode').mockReturnValue({ user: 'worker' });
+      jest.spyOn(TokenApi, 'validate').mockResolvedValue({
+        token: 'Token',
+        user: { id: 1, createCalendarAppointments: true }
+      });
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+
+      expect(screen.getByText('Access')).toBeInTheDocument();
+    });
+
+    it('should not have access as a worker if such does not have access', async () => {
+      jest.spyOn(jwt, 'decode').mockReturnValue({ user: 'worker' });
+      jest.spyOn(TokenApi, 'validate').mockResolvedValue({
+        token: 'Token',
+        user: { id: 1, createCalendarAppointments: false }
+      });
+
+      await act(async () => {
+        render(
+          <ToastContext>
+            <AppProvider>
+              <Component />
+            </AppProvider>
+          </ToastContext>
+        );
+      });
+
+      expect(screen.getByText('No access')).toBeInTheDocument();
+    });
+  });
 });
