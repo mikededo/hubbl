@@ -26,6 +26,7 @@ const VirtualGyms = () => {
   const {
     token,
     user,
+    helpers: { hasAccess },
     API: { fetcher, poster }
   } = useAppContext();
   const { data, mutate } = useSWR<VirtualGymDTO[]>(
@@ -121,26 +122,36 @@ const VirtualGyms = () => {
       {data && (
         <VirtualGymList
           virtualGyms={data}
-          onAddGymZone={handleOnOpenGymZoneDialog}
-          onAddVirtualGym={handleOnOpenVirtualGymDialog}
+          onAddGymZone={
+            hasAccess('createGymZones') ? handleOnOpenGymZoneDialog : undefined
+          }
+          onAddVirtualGym={
+            token?.parsed.user === 'owner'
+              ? handleOnOpenVirtualGymDialog
+              : undefined
+          }
         />
       )}
 
-      <GymZoneDialog
-        open={!!gymZoneDialog}
-        title="Create gym zone"
-        // Use '' so that the form does not throw a warning
-        defaultValues={{ virtualGym: gymZoneDialog ?? '' }}
-        onClose={handleOnCloseGymZoneDialog}
-        onSubmit={handleOnSubmitGymZoneDialog}
-      />
+      {hasAccess('createGymZones') && (
+        <GymZoneDialog
+          open={!!gymZoneDialog}
+          title="Create gym zone"
+          // Use '' so that the form does not throw a warning
+          defaultValues={{ virtualGym: gymZoneDialog ?? '' }}
+          onClose={handleOnCloseGymZoneDialog}
+          onSubmit={handleOnSubmitGymZoneDialog}
+        />
+      )}
 
-      <VirtualGymDialog
-        open={virtualGymDialog}
-        title="Create virtual gym"
-        onClose={handleOnCloseVirtualGymDialog}
-        onSubmit={handleOnSubmitVirtualGymDialog}
-      />
+      {token?.parsed?.user === 'owner' && (
+        <VirtualGymDialog
+          open={virtualGymDialog}
+          title="Create virtual gym"
+          onClose={handleOnCloseVirtualGymDialog}
+          onSubmit={handleOnSubmitVirtualGymDialog}
+        />
+      )}
     </>
   );
 };
