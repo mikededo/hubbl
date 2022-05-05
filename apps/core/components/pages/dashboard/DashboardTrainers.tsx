@@ -17,6 +17,7 @@ const DashboardTrainers = () => {
   const {
     token,
     user,
+    helpers: { hasAccess },
     API: { fetcher, poster }
   } = useAppContext();
   const { onError, onSuccess } = useToastContext();
@@ -59,7 +60,12 @@ const DashboardTrainers = () => {
   return (
     <>
       {data ? (
-        <TrainersGrid items={data.trainers} onAddTrainer={handleOnAddClick} />
+        <TrainersGrid
+          items={data.trainers}
+          onAddTrainer={
+            hasAccess('createTrainers') ? handleOnAddClick : undefined
+          }
+        />
       ) : null}
 
       <TrainerDialog

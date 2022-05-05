@@ -132,15 +132,18 @@ const fillGymZone = async () => {
   });
 };
 
-describe('<DasboardGymZones/>', () => {
+describe('<DashboardGymZones />', () => {
   // Constants have to be used so useEffect is not infinitely triggered
   const emptyResponse = {};
   const defaultResponse = { data: [response[0]] };
+
+  const hasAccess = () => true;
 
   const fetcher = jest.fn();
   const poster = jest.fn();
 
   const onSuccess = jest.fn();
+
   const onError = jest.fn();
 
   beforeEach(() => {
@@ -152,6 +155,7 @@ describe('<DasboardGymZones/>', () => {
         value: 'token'
       },
       user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
+      helpers: { hasAccess },
       API: { fetcher, poster }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({ onSuccess, onError });
@@ -161,6 +165,7 @@ describe('<DasboardGymZones/>', () => {
     (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
       token: {},
       user: {},
+      helpers: { hasAccess: () => true },
       API: {}
     } as any);
     jest.spyOn(swr, 'default').mockImplementation((cb) => {
@@ -195,6 +200,33 @@ describe('<DasboardGymZones/>', () => {
     });
     // Find placeholder
     expect(screen.getByTitle('add-gym-zone')).toBeInTheDocument();
+  });
+
+  it('should not show the button if user does not have permissions', async () => {
+    (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
+      token: {
+        parsed: { id: 1, email: 'some@email.com', user: 'worker' },
+        value: 'token'
+      },
+      user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
+      helpers: { hasAccess: () => false },
+      API: { fetcher, poster }
+    } as any);
+    jest.spyOn(swr, 'default').mockImplementation((cb, f, opt) => {
+      expect(f).toBe(fetcher);
+      if (cb) {
+        expect(cb).toBe(`/dashboards/1`);
+      }
+      expect(opt).toStrictEqual({ revalidateOnFocus: false });
+
+      return { data: { gymZones: response } } as never;
+    });
+
+    await act(async () => {
+      renderComponent();
+    });
+
+    expect(screen.queryByTitle('add-gym-zone')).not.toBeInTheDocument();
   });
 
   it('should create a new gym zone', async () => {

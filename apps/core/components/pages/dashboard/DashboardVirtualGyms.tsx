@@ -46,7 +46,10 @@ const DashboardVirtualGyms = () => {
       });
 
       // Mutate the state once the virtual gym has been created
-      await mutate({ ...data, virtualGyms: [created, ...data.virtualGyms] }, false);
+      await mutate(
+        { ...data, virtualGyms: [created, ...data.virtualGyms] },
+        false
+      );
 
       onSuccess('Virtual gym created!');
     } catch (e) {
@@ -59,7 +62,9 @@ const DashboardVirtualGyms = () => {
       {data && (
         <VirtualGymsGrid
           items={data.virtualGyms}
-          onAddVirtualGym={handleOnAddClick}
+          onAddVirtualGym={
+            token?.parsed.user === 'owner' ? handleOnAddClick : undefined
+          }
         />
       )}
 
