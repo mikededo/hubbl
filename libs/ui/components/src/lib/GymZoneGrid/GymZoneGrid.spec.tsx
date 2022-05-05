@@ -64,8 +64,6 @@ describe('<GymZoneGrid />', () => {
 
     // Header
     expect(screen.getByText('Gym zones')).toBeInTheDocument();
-    // Add gym zone button
-    expect(screen.getByTitle('add-gym-zone')).toBeInTheDocument();
   });
 
   describe('href', () => {
@@ -83,7 +81,7 @@ describe('<GymZoneGrid />', () => {
     it('should not render the gym zones as links', () => {
       render(<Component gymZones={gymZones as any} />);
 
-      gymZones.forEach(({ id, name }) => {
+      gymZones.forEach(({ name }) => {
         const element = screen.getByText(name.toUpperCase());
         expect(element.closest('a')).toBeNull();
       });

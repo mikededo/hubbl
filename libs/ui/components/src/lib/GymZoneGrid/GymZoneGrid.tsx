@@ -107,16 +107,18 @@ const GymZoneGrid = ({
       )
     )}
 
-    <AddItemPlaceholder
-      title={addButtonTitle}
-      height={25}
-      width={44}
-      onClick={onAddGymZone}
-    >
-      <Typography variant="placeholder">
-        Click me to create a gym zone!
-      </Typography>
-    </AddItemPlaceholder>
+    {onAddGymZone && (
+      <AddItemPlaceholder
+        title={addButtonTitle}
+        height={25}
+        width={44}
+        onClick={onAddGymZone}
+      >
+        <Typography variant="placeholder">
+          Click me to create a gym zone!
+        </Typography>
+      </AddItemPlaceholder>
+    )}
   </CarouselGrid>
 );
 
