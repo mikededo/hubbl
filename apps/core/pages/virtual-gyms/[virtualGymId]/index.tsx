@@ -41,6 +41,7 @@ const VirtualGym = () => {
     user,
     token,
     todayEvents,
+    helpers: { hasAccess },
     API: { fetcher, poster }
   } = useAppContext();
   const { data, error, mutate } = useSWR<VirtualGymDTO>(
@@ -138,25 +139,31 @@ const VirtualGym = () => {
         header="Class gym zones"
         href={`/virtual-gyms/${router.query.virtualGymId}/gym-zones`}
         gymZones={classGymZones}
-        onAddGymZone={handleOnAddGymZone(true)}
+        onAddGymZone={
+          hasAccess('createGymZones') ? handleOnAddGymZone(true) : undefined
+        }
       />
 
       <GymZoneGrid
         addButtonTitle="add-non-class-gym-zone"
         header="Non-class gym zones"
         gymZones={nonClassGymZones}
-        onAddGymZone={handleOnAddGymZone(false)}
+        onAddGymZone={
+          hasAccess('createGymZones') ? handleOnAddGymZone(false) : undefined
+        }
       />
 
       <TodayEventsList events={todayEvents} />
 
-      <GymZoneDialog
-        open={!!gymZoneDialog}
-        title="Create gym zone"
-        defaultValues={gymZoneDialog ?? {}}
-        onClose={handleOnCloseDialog}
-        onSubmit={handleOnSubmitGymZone}
-      />
+      {hasAccess('createGymZones') && (
+        <GymZoneDialog
+          open={!!gymZoneDialog}
+          title="Create gym zone"
+          defaultValues={gymZoneDialog ?? {}}
+          onClose={handleOnCloseDialog}
+          onSubmit={handleOnSubmitGymZone}
+        />
+      )}
     </>
   );
 };

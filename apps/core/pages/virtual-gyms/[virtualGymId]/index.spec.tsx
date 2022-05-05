@@ -8,9 +8,9 @@ import {
 } from '@hubbl/data-access/contexts';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import VirtualGym from './index';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -101,6 +101,7 @@ describe('Virtual gym page', () => {
       user: { gym: { id: 1 } },
       token: { parsed: {} },
       todayEvents: [],
+      helpers: { hasAccess: () => true },
       API: { fetcher, poster }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -207,6 +208,7 @@ describe('Virtual gym page', () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: undefined },
       todayEvents: [],
+      helpers: { hasAccess: () => false },
       API: { fetcher }
     });
     swrSpy.mockImplementation(() => ({} as any));
@@ -230,6 +232,25 @@ describe('Virtual gym page', () => {
     // Find add buttons
     expect(screen.getAllByTitle('add-class-gym-zone').length).toBe(1);
     expect(screen.getAllByTitle('add-non-class-gym-zone').length).toBe(1);
+  });
+
+  it('should not show the button if user does not have permissions', async () => {
+    (ctx.useAppContext as jest.Mock).mockReturnValue({
+      user: { gym: { id: 1 } },
+      token: { parsed: {} },
+      todayEvents: [],
+      helpers: { hasAccess: () => false },
+      API: { fetcher, poster }
+    } as any);
+
+    await act(async () => {
+      renderPage();
+    });
+
+    expect(screen.queryByTitle('add-class-gym-zone')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTitle('add-non-class-gym-zone')
+    ).not.toBeInTheDocument();
   });
 
   it('should call onError if fetcher returns an error', async () => {
