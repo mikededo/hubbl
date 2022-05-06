@@ -523,8 +523,12 @@ const GymZone = () => {
           onClose={handleOnCloseEventDialog}
           onSubmit={
             eventDialog.status === 'create'
-              ? handleOnSubmitEvent
-              : handleOnUpdateEvent
+              ? hasAccess('createEvents')
+                ? handleOnSubmitEvent
+                : undefined
+              : hasAccess('updateEvents')
+              ? handleOnUpdateEvent
+              : undefined
           }
         />
       )}
