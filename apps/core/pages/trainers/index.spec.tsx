@@ -64,6 +64,7 @@ describe('Trainers page', () => {
       token: { parsed: {} },
       user: { gym: { id: 1 } },
       todayEvents: [],
+      helpers: { hasAccess: () => true },
       API: { fetcher, poster, putter }
     });
     (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -87,6 +88,7 @@ describe('Trainers page', () => {
     (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
       token: { parsed: undefined },
       todayEvents: [],
+      helpers: { hasAccess: () => true },
       API: { fetcher }
     });
     swrSpy.mockImplementation(() => ({} as any));
@@ -110,6 +112,21 @@ describe('Trainers page', () => {
   });
 
   it('should render properly', async () => {
+    (ctx.useAppContext as jest.Mock).mockReturnValue({
+      token: { parsed: {} },
+      user: { gym: { id: 1 } },
+      todayEvents: [],
+      helpers: { hasAccess: () => false },
+      API: { fetcher }
+    });
+
+    await act(async () => {
+      render(<Trainers />);
+    });
+    expect(screen.queryByTitle('add-trainer')).not.toBeInTheDocument();
+  });
+
+  it('should not render the table add button if no permissions', async () => {
     await act(async () => {
       render(<Trainers />);
     });
