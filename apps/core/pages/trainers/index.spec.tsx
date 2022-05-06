@@ -112,21 +112,6 @@ describe('Trainers page', () => {
   });
 
   it('should render properly', async () => {
-    (ctx.useAppContext as jest.Mock).mockReturnValue({
-      token: { parsed: {} },
-      user: { gym: { id: 1 } },
-      todayEvents: [],
-      helpers: { hasAccess: () => false },
-      API: { fetcher }
-    });
-
-    await act(async () => {
-      render(<Trainers />);
-    });
-    expect(screen.queryByTitle('add-trainer')).not.toBeInTheDocument();
-  });
-
-  it('should not render the table add button if no permissions', async () => {
     await act(async () => {
       render(<Trainers />);
     });
@@ -139,6 +124,21 @@ describe('Trainers page', () => {
     expect(screen.getByLabelText('prev-page')).toBeInTheDocument();
     expect(screen.getByLabelText('next-page')).toBeInTheDocument();
   });
+
+    it('should not render the table add button if no permissions', async () => {
+      (ctx.useAppContext as jest.Mock).mockReturnValue({
+        token: { parsed: {} },
+        user: { gym: { id: 1 } },
+        todayEvents: [],
+        helpers: { hasAccess: () => false },
+        API: { fetcher }
+      });
+
+      await act(async () => {
+        render(<Trainers />);
+      });
+      expect(screen.queryByTitle('add-trainer')).not.toBeInTheDocument();
+    });
 
   it('it should iterate through the pages', async () => {
     await act(async () => {

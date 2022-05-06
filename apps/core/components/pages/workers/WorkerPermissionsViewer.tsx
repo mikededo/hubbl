@@ -69,7 +69,7 @@ const WorkerPermissionsViewer = ({
           <IconButton
             aria-label="edit-worker"
             size="small"
-            disabled={!worker}
+            disabled={!worker || !onEditClick}
             onClick={onEditClick}
           >
             <Edit />
@@ -78,7 +78,7 @@ const WorkerPermissionsViewer = ({
           <IconButton
             aria-label="unselect-worker"
             size="small"
-            disabled={!worker}
+            disabled={!worker || !onUnselectClick}
             onClick={onUnselectClick}
           >
             <Close />
@@ -92,7 +92,7 @@ const WorkerPermissionsViewer = ({
         <AnimatePresence>
           {worker && (
             <motion.div
-              style={{ position: 'absolute', top: '0', width:'100%' }}
+              style={{ position: 'absolute', top: '0', width: '100%' }}
               initial={{ left: '200%' }}
               animate={{ left: '0%' }}
               exit={{ left: '200%' }}

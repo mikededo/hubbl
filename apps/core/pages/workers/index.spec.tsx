@@ -92,7 +92,7 @@ describe('Workers page', () => {
     jest.resetAllMocks();
 
     (ctx.useAppContext as jest.Mock).mockReturnValue({
-      token: { parsed: {} },
+      token: { parsed: { user: 'owner' } },
       user: { gym: { id: 1, code: 'AABBCCDD' } },
       todayEvents: [],
       API: { fetcher, poster, putter }
@@ -146,6 +146,26 @@ describe('Workers page', () => {
 
     expect(onError).toHaveBeenCalledTimes(1);
     expect(onError).toHaveBeenCalledWith('Error thrown');
+  });
+
+  it('should not render the table add button if no permissions', async () => {
+    (ctx.useAppContext as jest.Mock).mockReturnValue({
+      token: { parsed: { user: 'worker' } },
+      user: { gym: { id: 1, code: 'AABBCCDD' } },
+      todayEvents: [],
+      API: { fetcher }
+    });
+
+    await act(async () => {
+      render(<Workers />);
+    });
+
+    // Workers list
+    workers.forEach((worker) => {
+      expect(screen.getByText(worker.firstName)).toBeInTheDocument();
+    });
+    // Pagination
+    expect(screen.queryByTitle('add-worker')).not.toBeInTheDocument();
   });
 
   it('should call onError if fetch fails', async () => {
@@ -367,6 +387,18 @@ describe('Workers page', () => {
       expect(mutateSpy).not.toHaveBeenCalled();
       expect(onError).toHaveBeenCalledTimes(1);
       expect(onError).toHaveBeenCalledWith('Error thrown');
+    });
+  });
+
+  it('should open and close the dialog', async () => {
+    await act(async () => {
+      render(<Workers />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTitle('add-worker'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTitle('close-dialog'));
     });
   });
 });

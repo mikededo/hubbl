@@ -166,7 +166,9 @@ const Workers = (): JSX.Element => {
         lastPage={!data?.length || 15 - data?.length !== 0}
         onNextPage={handleOnNextPage}
         onPrevPage={handleOnPrevPage}
-        onAddItem={handleOnOpenWorkerDialog}
+        onAddItem={
+          token.parsed?.user === 'owner' ? handleOnOpenWorkerDialog : undefined
+        }
       >
         {data?.map((worker) => (
           <Pages.Workers.TableRow
@@ -179,23 +181,27 @@ const Workers = (): JSX.Element => {
 
       <WorkerPermissionsViewer
         worker={selectedWorker}
-        onEditClick={handleOnWorkerEdit}
+        onEditClick={
+          token.parsed?.user === 'owner' ? handleOnWorkerEdit : undefined
+        }
         onUnselectClick={handleOnUnselectWorker}
       />
 
-      <WorkerDialog
-        title={`${
-          workerDialog.status === 'create' ? 'Create' : 'Edit'
-        } a worker`}
-        open={!!workerDialog.status}
-        defaultValues={workerDialog.worker ? workerDialog.worker : undefined}
-        onClose={handleOnCloseWorkerDialog}
-        onSubmit={
-          workerDialog.status === 'create'
-            ? handleOnSubmitWorker
-            : handleOnUpdateWorker
-        }
-      />
+      {token.parsed?.user === 'owner' && (
+        <WorkerDialog
+          title={`${
+            workerDialog.status === 'create' ? 'Create' : 'Edit'
+          } a worker`}
+          open={!!workerDialog.status}
+          defaultValues={workerDialog.worker ? workerDialog.worker : undefined}
+          onClose={handleOnCloseWorkerDialog}
+          onSubmit={
+            workerDialog.status === 'create'
+              ? handleOnSubmitWorker
+              : handleOnUpdateWorker
+          }
+        />
+      )}
     </>
   );
 };

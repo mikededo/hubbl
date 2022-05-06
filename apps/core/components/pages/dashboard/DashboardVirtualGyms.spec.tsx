@@ -167,6 +167,24 @@ describe('<DashboardVirtualGyms />', () => {
     });
   });
 
+  it('should hide the add virtual gym button if no permissions', async () => {
+    (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
+      token: { parsed: { user: 'worker' } },
+      user: {},
+      helpers: { hasAccess: () => true },
+      API: {}
+    } as any);
+    jest
+      .spyOn(swr, 'default')
+      .mockImplementation(() => ({ data: { virtualGyms: [] } } as never));
+
+    await act(async () => {
+      renderComponent();
+    });
+
+    expect(screen.queryByTitle('add-virtual-gym')).not.toBeInTheDocument();
+  });
+
   it('should render the list of gyms', async () => {
     jest.spyOn(swr, 'default').mockImplementation((cb, f, opt) => {
       expect(f).toBe(fetcher);

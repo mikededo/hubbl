@@ -63,7 +63,7 @@ const DashboardVirtualGyms = () => {
         <VirtualGymsGrid
           items={data.virtualGyms}
           onAddVirtualGym={
-            token?.parsed.user === 'owner' ? handleOnAddClick : undefined
+            token.parsed?.user === 'owner' ? handleOnAddClick : undefined
           }
         />
       )}
