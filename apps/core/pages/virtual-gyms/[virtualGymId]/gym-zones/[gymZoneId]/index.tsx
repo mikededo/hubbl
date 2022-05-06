@@ -188,11 +188,20 @@ const GymZone = () => {
     user,
     token,
     todayEvents,
+    helpers: { hasAccess },
     API: { fetcher, poster, putter, todayEvents: todayEventsApi }
   } = useAppContext();
 
   const virtualGymHref = `/virtual-gyms/${router.query.virtualGymId}`;
   const gymZoneHref = `${virtualGymHref}/gym-zones/${router.query.gymZoneId}`;
+
+  /**
+   * Create, update or delete permissions
+   */
+  const CUD =
+    hasAccess('createEvents') ||
+    hasAccess('updateEvents') ||
+    hasAccess('deleteEvents');
 
   // Dialog state
   const [eventDialog, setEventDialog] = useState<EventDialogState>(
@@ -200,7 +209,8 @@ const GymZone = () => {
   );
 
   const dialogData = useCalendarEventDialog({
-    virtualGym: +router.query.virtualGymId
+    virtualGym: +router.query.virtualGymId,
+    shouldRun: CUD
   });
 
   // Week state
@@ -475,8 +485,12 @@ const GymZone = () => {
               events={events.data ?? []}
               initialHour={hourRange.initial}
               finalHour={hourRange.final}
-              onEventClick={handleOnEventClick}
-              onSpotClick={handleOnSpotClick}
+              onEventClick={
+                hasAccess('updateEvents') ? handleOnEventClick : undefined
+              }
+              onSpotClick={
+                hasAccess('createEvents') ? handleOnSpotClick : undefined
+              }
             />
           </Stack>
         </CalendarContentCard>
@@ -484,34 +498,36 @@ const GymZone = () => {
 
       <TodayEventsList events={todayEvents} />
 
-      <CalendarEventDialog
-        title={`${
-          eventDialog.status === 'create' ? 'Create' : 'Edit'
-        } an event`}
-        dialogData={dialogData}
-        defaultValues={{
-          date: eventDialog?.date,
-          startTime: eventDialog?.startTime,
-          endTime: eventDialog?.endTime,
-          gymZone: router.query.gymZoneId as string,
-          capacity: eventDialog?.capacity,
-          covidPassport: eventDialog?.covidPassport,
-          description: eventDialog?.description,
-          difficulty: eventDialog?.difficulty,
-          maskRequired: eventDialog?.maskRequired,
-          name: eventDialog?.name,
-          template: eventDialog?.template,
-          trainer: eventDialog?.trainer,
-          type: eventDialog?.type
-        }}
-        open={!!eventDialog.status}
-        onClose={handleOnCloseEventDialog}
-        onSubmit={
-          eventDialog.status === 'create'
-            ? handleOnSubmitEvent
-            : handleOnUpdateEvent
-        }
-      />
+      {CUD && (
+        <CalendarEventDialog
+          title={`${
+            eventDialog.status === 'create' ? 'Create' : 'Edit'
+          } an event`}
+          dialogData={dialogData}
+          defaultValues={{
+            date: eventDialog?.date,
+            startTime: eventDialog?.startTime,
+            endTime: eventDialog?.endTime,
+            gymZone: router.query.gymZoneId as string,
+            capacity: eventDialog?.capacity,
+            covidPassport: eventDialog?.covidPassport,
+            description: eventDialog?.description,
+            difficulty: eventDialog?.difficulty,
+            maskRequired: eventDialog?.maskRequired,
+            name: eventDialog?.name,
+            template: eventDialog?.template,
+            trainer: eventDialog?.trainer,
+            type: eventDialog?.type
+          }}
+          open={!!eventDialog.status}
+          onClose={handleOnCloseEventDialog}
+          onSubmit={
+            eventDialog.status === 'create'
+              ? handleOnSubmitEvent
+              : handleOnUpdateEvent
+          }
+        />
+      )}
     </>
   );
 };

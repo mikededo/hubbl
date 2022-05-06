@@ -211,6 +211,7 @@ describe('Gym zone page', () => {
       user: { gym: { id: 1 } },
       token: { parsed: {} },
       todayEvents: [],
+      helpers: { hasAccess: () => true },
       API: { fetcher, poster, putter, todayEvents: eventsApi }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -326,6 +327,7 @@ describe('Gym zone page', () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: undefined },
       todayEvents: [],
+      helpers: { hasAccess: () => false },
       API: { fetcher }
     });
     swrSpy.mockImplementation(() => ({} as any));
