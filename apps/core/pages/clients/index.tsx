@@ -37,11 +37,20 @@ const Clients = (): JSX.Element => {
   const {
     token,
     user,
+    helpers: { hasAccess },
     API: { fetcher, poster, putter }
   } = useAppContext();
   const { onSuccess, onError } = useToastContext();
 
   const [page, setPage] = useState(0);
+
+  /**
+   * Create, update or delete permissions
+   */
+  const CUD =
+    hasAccess('createClients') ||
+    hasAccess('updateClients') ||
+    hasAccess('deleteClients');
 
   const [clientDialog, setClientDialog] = useState<ClientDialogState>(
     InitialClientDialogState
@@ -139,31 +148,43 @@ const Clients = (): JSX.Element => {
         lastPage={!data?.length || 15 - data?.length !== 0}
         onNextPage={handleOnNextPage}
         onPrevPage={handleOnPrevPage}
-        onAddItem={handleOnOpenClientDialog}
+        onAddItem={
+          hasAccess('createClients') ? handleOnOpenClientDialog : undefined
+        }
       >
         {data?.map((client) => (
           <Pages.Clients.TableRow
             key={client.id}
             client={client}
-            onClick={handleOnClientClick}
+            onClick={
+              hasAccess('updateClients') || hasAccess('deleteClients')
+                ? handleOnClientClick
+                : undefined
+            }
           />
         ))}
       </Table>
 
-      <ClientDialog
-        code={user?.gym.code}
-        title={`${
-          clientDialog.status === 'create' ? 'Create' : 'Edit'
-        } a client`}
-        open={!!clientDialog.status}
-        defaultValues={clientDialog.client ? clientDialog.client : undefined}
-        onClose={handleOnCloseClientDialog}
-        onSubmit={
-          clientDialog.status === 'create'
-            ? handleOnSumbitClientDialog
-            : handleOnUpdateClient
-        }
-      />
+      {CUD && (
+        <ClientDialog
+          code={user?.gym.code}
+          title={`${
+            clientDialog.status === 'create' ? 'Create' : 'Edit'
+          } a client`}
+          open={!!clientDialog.status}
+          defaultValues={clientDialog.client ? clientDialog.client : undefined}
+          onClose={handleOnCloseClientDialog}
+          onSubmit={
+            clientDialog.status === 'create'
+              ? hasAccess('createClients')
+                ? handleOnSumbitClientDialog
+                : undefined
+              : hasAccess('updateClients')
+              ? handleOnUpdateClient
+              : undefined
+          }
+        />
+      )}
     </>
   );
 };
