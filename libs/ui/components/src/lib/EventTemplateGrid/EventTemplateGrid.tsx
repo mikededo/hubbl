@@ -78,16 +78,18 @@ const EventTemplateGrid = ({
       />
     ))}
 
-    <AddItemPlaceholder
-      title="add-event-template"
-      height={15}
-      width={44}
-      onClick={onAddEventTemplate}
-    >
-      <Typography variant="placeholder">
-        Click me to create an event template!
-      </Typography>
-    </AddItemPlaceholder>
+    {onAddEventTemplate && (
+      <AddItemPlaceholder
+        title="add-event-template"
+        height={15}
+        width={44}
+        onClick={onAddEventTemplate}
+      >
+        <Typography variant="placeholder">
+          Click me to create an event template!
+        </Typography>
+      </AddItemPlaceholder>
+    )}
   </CarouselGrid>
 );
 

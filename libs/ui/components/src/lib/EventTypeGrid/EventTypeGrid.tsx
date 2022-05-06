@@ -78,16 +78,18 @@ const EventTypeGrid = ({
       />
     ))}
 
-    <AddItemPlaceholder
-      title="add-event-type"
-      height={10}
-      width={44}
-      onClick={onAddEventType}
-    >
-      <Typography variant="placeholder">
-        Click me to create an event type!
-      </Typography>
-    </AddItemPlaceholder>
+    {onAddEventType && (
+      <AddItemPlaceholder
+        title="add-event-type"
+        height={10}
+        width={44}
+        onClick={onAddEventType}
+      >
+        <Typography variant="placeholder">
+          Click me to create an event type!
+        </Typography>
+      </AddItemPlaceholder>
+    )}
   </CarouselGrid>
 );
 

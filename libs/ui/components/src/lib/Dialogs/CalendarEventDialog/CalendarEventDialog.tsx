@@ -147,13 +147,15 @@ const CalendarEventDialog = ({
 
           <Divider />
 
-          <DialogSection footer>
-            <Stack direction="row" justifyContent="flex-end" spacing={2}>
-              <Button title="submit" type="submit" startIcon={<Save />}>
-                Save
-              </Button>
-            </Stack>
-          </DialogSection>
+          {onSubmit && (
+            <DialogSection footer>
+              <Stack direction="row" justifyContent="flex-end" spacing={2}>
+                <Button title="submit" type="submit" startIcon={<Save />}>
+                  Save
+                </Button>
+              </Stack>
+            </DialogSection>
+          )}
         </FormProvider>
       </form>
     </Base>

@@ -64,6 +64,7 @@ describe('Trainers page', () => {
       token: { parsed: {} },
       user: { gym: { id: 1 } },
       todayEvents: [],
+      helpers: { hasAccess: () => true },
       API: { fetcher, poster, putter }
     });
     (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -87,6 +88,7 @@ describe('Trainers page', () => {
     (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
       token: { parsed: undefined },
       todayEvents: [],
+      helpers: { hasAccess: () => true },
       API: { fetcher }
     });
     swrSpy.mockImplementation(() => ({} as any));
@@ -121,6 +123,21 @@ describe('Trainers page', () => {
     // Pagination
     expect(screen.getByLabelText('prev-page')).toBeInTheDocument();
     expect(screen.getByLabelText('next-page')).toBeInTheDocument();
+  });
+
+  it('should not render the table add button if no permissions', async () => {
+    (ctx.useAppContext as jest.Mock).mockReturnValue({
+      token: { parsed: {} },
+      user: { gym: { id: 1 } },
+      todayEvents: [],
+      helpers: { hasAccess: () => false },
+      API: { fetcher }
+    });
+
+    await act(async () => {
+      render(<Trainers />);
+    });
+    expect(screen.queryByTitle('add-trainer')).not.toBeInTheDocument();
   });
 
   it('it should iterate through the pages', async () => {
@@ -259,6 +276,27 @@ describe('Trainers page', () => {
   });
 
   describe('put trainer', () => {
+    // This is a special case, when the user is allowed to delete trainers,
+    // but can't update them
+    it('should not be able to update without permissions', async () => {
+      (ctx.useAppContext as jest.Mock).mockReturnValue({
+        token: { parsed: {} },
+        user: { gym: { id: 1, code: 'AABBCCDD' } },
+        todayEvents: [],
+        helpers: { hasAccess: (key: string) => key === 'deleteTrainers' },
+        API: { fetcher, poster, putter }
+      });
+
+      await act(async () => {
+        render(<Trainers />);
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText(trainers[0].firstName));
+      });
+
+      expect(screen.queryByText('Save')).not.toBeInTheDocument();
+    });
+
     const fillTrainer = async () => {
       await act(async () => {
         fireEvent.click(screen.getByText(trainers[0].firstName));

@@ -75,8 +75,6 @@ describe('<EventTypeGrid />', () => {
 
     // Header
     expect(screen.getByText('Event types')).toBeInTheDocument();
-    // Add event type button
-    expect(screen.getByTitle('add-event-type')).toBeInTheDocument();
     // Events
     eventTypes.forEach(({ name }) => {
       expect(screen.getByText(name)).toBeInTheDocument();

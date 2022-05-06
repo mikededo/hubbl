@@ -7,15 +7,15 @@ import {
   useLoadingContext,
   useToastContext
 } from '@hubbl/data-access/contexts';
-import { EventTypeDTO, EventTemplateDTO } from '@hubbl/shared/models/dto';
+import { EventTemplateDTO, EventTypeDTO } from '@hubbl/shared/models/dto';
 import {
+  EventTemplateDialog,
+  EventTemplateFormFields,
+  EventTemplateGrid,
   EventTypeDialog,
   EventTypeFormFields,
   EventTypeGrid,
-  EventTemplateGrid,
   PageHeader,
-  EventTemplateDialog,
-  EventTemplateFormFields,
   TodayEventsList
 } from '@hubbl/ui/components';
 
@@ -28,6 +28,7 @@ const EventTypes = () => {
     token,
     user,
     todayEvents,
+    helpers: { hasAccess },
     API: { fetcher, poster }
   } = useAppContext();
 
@@ -131,29 +132,41 @@ const EventTypes = () => {
 
       <EventTypeGrid
         eventTypes={eventTypes.data ?? []}
-        onAddEventType={handleOnOpenDialog(setEventTypeDialog)}
+        onAddEventType={
+          hasAccess('createEventTypes')
+            ? handleOnOpenDialog(setEventTypeDialog)
+            : undefined
+        }
       />
 
       <EventTemplateGrid
         eventTemplates={eventTemplates.data ?? []}
-        onAddEventTemplate={handleOnOpenDialog(setEventTemplateDialog)}
+        onAddEventTemplate={
+          hasAccess('createEventTemplates')
+            ? handleOnOpenDialog(setEventTemplateDialog)
+            : undefined
+        }
       />
 
       <TodayEventsList events={todayEvents} />
 
-      <EventTypeDialog
-        open={eventTypeDialog}
-        title="Create an event type"
-        onClose={handleOnCloseDialog(setEventTypeDialog)}
-        onSubmit={handleOnSubmitEventType}
-      />
+      {hasAccess('createEventTypes') && (
+        <EventTypeDialog
+          open={eventTypeDialog}
+          title="Create an event type"
+          onClose={handleOnCloseDialog(setEventTypeDialog)}
+          onSubmit={handleOnSubmitEventType}
+        />
+      )}
 
-      <EventTemplateDialog
-        open={eventTemplateDialog}
-        title="Create an event template"
-        onClose={handleOnCloseDialog(setEventTemplateDialog)}
-        onSubmit={handleOnSubmitEventTemplate}
-      />
+      {hasAccess('createEventTemplates') && (
+        <EventTemplateDialog
+          open={eventTemplateDialog}
+          title="Create an event template"
+          onClose={handleOnCloseDialog(setEventTemplateDialog)}
+          onSubmit={handleOnSubmitEventTemplate}
+        />
+      )}
     </>
   );
 };

@@ -48,6 +48,7 @@ describe('<ClientDialog />', () => {
           'The password of the client will be the gym code, which is: AABBCCDD'
         )
       ).toBeInTheDocument();
+      expect(screen.queryByText('Save')).not.toBeInTheDocument();
     });
   });
 

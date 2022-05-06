@@ -142,9 +142,11 @@ const WorkerDialog = ({
                 </Button>
               )}
 
-              <Button type="submit" title="submit" startIcon={<Save />}>
-                Save
-              </Button>
+              {onSubmit && (
+                <Button type="submit" title="submit" startIcon={<Save />}>
+                  Save
+                </Button>
+              )}
             </Stack>
           </DialogSection>
         </FormProvider>

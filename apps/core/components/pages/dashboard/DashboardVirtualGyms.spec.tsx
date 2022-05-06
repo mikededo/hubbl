@@ -127,7 +127,7 @@ const fillVirtualGym = async () => {
   });
 };
 
-describe('<DasboardVirtualGyms/>', () => {
+describe('<DashboardVirtualGyms />', () => {
   const fetcher = jest.fn();
   const poster = jest.fn();
 
@@ -143,6 +143,7 @@ describe('<DasboardVirtualGyms/>', () => {
         value: 'token'
       },
       user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
+      helpers: { hasAccess: () => true },
       API: { fetcher, poster }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({ onSuccess, onError });
@@ -152,6 +153,7 @@ describe('<DasboardVirtualGyms/>', () => {
     (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
       token: {},
       user: {},
+      helpers: { hasAccess: () => true },
       API: {}
     } as any);
     jest.spyOn(swr, 'default').mockImplementation((cb) => {
@@ -163,6 +165,24 @@ describe('<DasboardVirtualGyms/>', () => {
     await act(async () => {
       renderComponent();
     });
+  });
+
+  it('should hide the add virtual gym button if no permissions', async () => {
+    (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
+      token: { parsed: { user: 'worker' } },
+      user: {},
+      helpers: { hasAccess: () => true },
+      API: {}
+    } as any);
+    jest
+      .spyOn(swr, 'default')
+      .mockImplementation(() => ({ data: { virtualGyms: [] } } as never));
+
+    await act(async () => {
+      renderComponent();
+    });
+
+    expect(screen.queryByTitle('add-virtual-gym')).not.toBeInTheDocument();
   });
 
   it('should render the list of gyms', async () => {
@@ -184,6 +204,25 @@ describe('<DasboardVirtualGyms/>', () => {
     });
     // Find placeholder
     expect(screen.getByTitle('add-virtual-gym')).toBeInTheDocument();
+  });
+
+  it('should not show the button if user does not have permissions', async () => {
+    jest.spyOn(swr, 'default').mockImplementation(() => ({} as never));
+    (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
+      token: {
+        parsed: { id: 1, email: 'some@email.com', user: 'worker' },
+        value: 'token'
+      },
+      user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
+      helpers: { hasAccess: () => false },
+      API: { fetcher, poster }
+    } as any);
+
+    await act(async () => {
+      renderComponent();
+    });
+
+    expect(screen.queryByTitle('add-virtual-gym')).not.toBeInTheDocument();
   });
 
   it('should create a new virtual gym', async () => {

@@ -211,6 +211,7 @@ describe('Gym zone page', () => {
       user: { gym: { id: 1 } },
       token: { parsed: {} },
       todayEvents: [],
+      helpers: { hasAccess: () => true },
       API: { fetcher, poster, putter, todayEvents: eventsApi }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -326,6 +327,7 @@ describe('Gym zone page', () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: undefined },
       todayEvents: [],
+      helpers: { hasAccess: () => false },
       API: { fetcher }
     });
     swrSpy.mockImplementation(() => ({} as any));
@@ -435,6 +437,27 @@ describe('Gym zone page', () => {
     expect(mutateSpy).toHaveBeenCalledTimes(0);
     expect(onErrorSpy).toHaveBeenCalledTimes(1);
     expect(onErrorSpy).toHaveBeenCalledWith('Error thrown');
+  });
+
+  // This is a special case, when the user is allowed to delete events,
+  // but can't update them
+  it('should not be able to update without permissions', async () => {
+    (ctx.useAppContext as jest.Mock).mockReturnValue({
+      user: { gym: { id: 1 } },
+      token: { parsed: {} },
+      todayEvents: [],
+      helpers: { hasAccess: (key: string) => key === 'deleteEvents' },
+      API: { fetcher, todayEvents: eventsApi }
+    } as any);
+
+    await act(async () => {
+      renderPage();
+    });
+    await act(async () => {
+      userEvent.click(screen.getByText('EventOne').parentElement.parentElement);
+    });
+
+    expect(screen.queryByText('Save')).not.toBeInTheDocument();
   });
 
   const updateEvent = async (eventName: string) => {

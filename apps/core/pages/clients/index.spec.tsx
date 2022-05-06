@@ -64,6 +64,7 @@ describe('Clients page', () => {
       token: { parsed: {} },
       user: { gym: { id: 1, code: 'AABBCCDD' } },
       todayEvents: [],
+      helpers: { hasAccess: () => true },
       API: { fetcher, poster, putter }
     });
     (ctx.useToastContext as jest.Mock).mockReturnValue({
@@ -92,10 +93,32 @@ describe('Clients page', () => {
     expect(container).toBeInTheDocument();
   });
 
+  it('should not render the table add button if no permissions', async () => {
+    (ctx.useAppContext as jest.Mock).mockReturnValue({
+      token: { parsed: { user: 'worker' } },
+      user: { gym: { id: 1, code: 'AABBCCDD' } },
+      todayEvents: [],
+      helpers: { hasAccess: () => false },
+      API: { fetcher }
+    });
+
+    await act(async () => {
+      render(<Clients />);
+    });
+
+    // Clients list
+    clients.forEach((client) => {
+      expect(screen.getByText(client.firstName)).toBeInTheDocument();
+    });
+    // Pagination
+    expect(screen.queryByTitle('add-worker')).not.toBeInTheDocument();
+  });
+
   it('should not call fetcher if token is null', async () => {
     (ctx.useAppContext as jest.Mock).mockClear().mockReturnValue({
       token: { parsed: undefined },
       todayEvents: [],
+      helpers: { hasAccess: () => false },
       API: { fetcher }
     });
     swrSpy.mockImplementation(() => ({} as any));
@@ -248,6 +271,27 @@ describe('Clients page', () => {
   });
 
   describe('put client', () => {
+    // This is a special case, when the user is allowed to delete clients,
+    // but can't update them
+    it('should not be able to update without permissions', async () => {
+      (ctx.useAppContext as jest.Mock).mockReturnValue({
+        token: { parsed: {} },
+        user: { gym: { id: 1, code: 'AABBCCDD' } },
+        todayEvents: [],
+        helpers: { hasAccess: (key: string) => key === 'deleteClients' },
+        API: { fetcher, poster, putter }
+      });
+
+      await act(async () => {
+        render(<Clients />);
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText(clients[0].firstName));
+      });
+
+      expect(screen.queryByText('Save')).not.toBeInTheDocument();
+    });
+
     const fillClient = async () => {
       await act(async () => {
         fireEvent.click(screen.getByText(clients[0].firstName));
@@ -303,15 +347,15 @@ describe('Clients page', () => {
     });
   });
 
-    it('should open and close the dialog', async () => {
-      await act(async () => {
-        render(<Clients />);
-      });
-      await act(async () => {
-        fireEvent.click(screen.getByTitle('add-client'));
-      });
-      await act(async () => {
-        fireEvent.click(screen.getByTitle('close-dialog'));
-      });
+  it('should open and close the dialog', async () => {
+    await act(async () => {
+      render(<Clients />);
     });
+    await act(async () => {
+      fireEvent.click(screen.getByTitle('add-client'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTitle('close-dialog'));
+    });
+  });
 });

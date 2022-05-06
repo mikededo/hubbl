@@ -136,18 +136,20 @@ const VirtualGymListItem = ({
               </CarouselItem>
             ))}
 
-            <CarouselItem iteration={iteration} width={46}>
-              <AddItemPlaceholder
-                title={`add-gym-zone-${virtualGym.id}`}
-                height={25}
-                width={44}
-                onClick={handleOnAddClick}
-              >
-                <PlaceholderText variant="placeholder">
-                  Click me to create a new gym zone!
-                </PlaceholderText>
-              </AddItemPlaceholder>
-            </CarouselItem>
+            {onAddGymZone && (
+              <CarouselItem iteration={iteration} width={46}>
+                <AddItemPlaceholder
+                  title={`add-gym-zone-${virtualGym.id}`}
+                  height={25}
+                  width={44}
+                  onClick={handleOnAddClick}
+                >
+                  <PlaceholderText variant="placeholder">
+                    Click me to create a new gym zone!
+                  </PlaceholderText>
+                </AddItemPlaceholder>
+              </CarouselItem>
+            )}
           </CarouselStack>
 
           <IconButton

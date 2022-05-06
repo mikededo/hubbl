@@ -16,6 +16,7 @@ const DashboardEventTemplates = () => {
   const {
     token,
     user,
+    helpers: { hasAccess },
     API: { fetcher, poster }
   } = useAppContext();
 
@@ -67,7 +68,9 @@ const DashboardEventTemplates = () => {
       {data ? (
         <EventTemplatesGrid
           items={data.templates}
-          onAddEventTemplate={handleOnAddClick}
+          onAddEventTemplate={
+            hasAccess('createEventTemplates') ? handleOnAddClick : undefined
+          }
         />
       ) : null}
 

@@ -37,7 +37,6 @@ describe('<DashboardTrainers />', () => {
           screen.getByText(`${firstName} ${lastName}`)
         ).toBeInTheDocument();
       });
-      expect(screen.getByTitle('add-trainer')).toBeInTheDocument();
     });
 
     it('should only render 5 items', () => {

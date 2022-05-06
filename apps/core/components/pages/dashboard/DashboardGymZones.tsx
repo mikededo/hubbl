@@ -15,6 +15,7 @@ const DashboardGymZones = () => {
   const {
     token,
     user,
+    helpers: { hasAccess },
     API: { fetcher, poster }
   } = useAppContext();
   const { onSuccess, onError } = useToastContext();
@@ -59,7 +60,10 @@ const DashboardGymZones = () => {
   return (
     <>
       {data && (
-        <GymZonesGrid items={data.gymZones} onAddGymZone={handleOnAddClick} />
+        <GymZonesGrid
+          items={data.gymZones}
+          onAddGymZone={hasAccess('createGymZones') ? handleOnAddClick : undefined}
+        />
       )}
 
       <GymZoneDialog

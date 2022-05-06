@@ -48,6 +48,7 @@ const Trainers = () => {
   const {
     token,
     user,
+    helpers: { hasAccess },
     API: { fetcher, poster, putter }
   } = useAppContext();
   const { onSuccess, onError } = useToastContext();
@@ -55,6 +56,14 @@ const Trainers = () => {
   const [trainerDialog, setTrainerDialog] = useState<TrainerDialogState>(
     InitialTrainerDialogState
   );
+
+  /**
+   * Create, update or delete permissions
+   */
+  const CUD =
+    hasAccess('createTrainers') ||
+    hasAccess('updateTrainers') ||
+    hasAccess('deleteTrainers');
 
   const [page, setPage] = useState(0);
 
@@ -84,9 +93,9 @@ const Trainers = () => {
     setTrainerDialog(InitialTrainerDialogState);
   };
 
-  const handleOnSumbitTrainer: SingleHandler<
-    ParsedTrainerFormFields
-  > = async (formData) => {
+  const handleOnSumbitTrainer: SingleHandler<ParsedTrainerFormFields> = async (
+    formData
+  ) => {
     setTrainerDialog(InitialTrainerDialogState);
 
     try {
@@ -155,34 +164,44 @@ const Trainers = () => {
         lastPage={!data?.length || 15 - data?.length !== 0}
         onNextPage={handleOnNextPage}
         onPrevPage={handleOnPrevPage}
-        onAddItem={handleOnOpenTrainerDialog}
+        onAddItem={
+          hasAccess('createTrainers') ? handleOnOpenTrainerDialog : undefined
+        }
       >
         {data?.map((trainer) => (
           <Pages.Trainers.TableRow
             key={trainer.id}
             trainer={trainer}
-            onClick={handleOnTrainerClick}
+            onClick={
+              hasAccess('updateTrainers') || hasAccess('deleteTrainers')
+                ? handleOnTrainerClick
+                : undefined
+            }
           />
         ))}
       </Table>
 
-      <TrainerDialog
-        title={`${
-          trainerDialog.status === 'create' ? 'Create' : 'Edit'
-        } a trainer`}
-        open={!!trainerDialog.status}
-        defaultValues={
-          trainerDialog.trainer
-            ? trainerToDefaultValues(trainerDialog.trainer)
-            : undefined
-        }
-        onClose={handleOnCloseTrainerDialog}
-        onSubmit={
-          trainerDialog.status === 'create'
-            ? handleOnSumbitTrainer
-            : handleOnUpdateTrainer
-        }
-      />
+      {CUD && (
+        <TrainerDialog
+          title={`${
+            trainerDialog.status === 'create' ? 'Create' : 'Edit'
+          } a trainer`}
+          open={!!trainerDialog.status}
+          defaultValues={
+            trainerDialog.trainer
+              ? trainerToDefaultValues(trainerDialog.trainer)
+              : undefined
+          }
+          onClose={handleOnCloseTrainerDialog}
+          onSubmit={
+            trainerDialog.status === 'create'
+              ? handleOnSumbitTrainer
+              : hasAccess('updateTrainers')
+              ? handleOnUpdateTrainer
+              : undefined
+          }
+        />
+      )}
     </>
   );
 };

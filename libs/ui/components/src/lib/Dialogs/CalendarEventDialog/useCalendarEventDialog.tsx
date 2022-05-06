@@ -14,6 +14,15 @@ type UseEventDialogProps = {
    * in order to fetch the gym zones
    */
   virtualGym: number;
+
+  /**
+   * Whether the hook should make the API calls or not. This is in case
+   * the user does not have permissions to create/edit/update events, so
+   * the hook is not run
+   *
+   * @default true
+   */
+  shouldRun?: boolean;
 };
 
 export type UseEventDialogResult = {
@@ -30,7 +39,10 @@ export const OnErrorResult: UseEventDialogResult = {
   trainers: undefined
 };
 
-export const useCalendarEventDialog = ({ virtualGym }: UseEventDialogProps) => {
+export const useCalendarEventDialog = ({
+  shouldRun = true,
+  virtualGym
+}: UseEventDialogProps) => {
   const {
     token,
     API: { fetcher }
@@ -39,22 +51,22 @@ export const useCalendarEventDialog = ({ virtualGym }: UseEventDialogProps) => {
 
   // Fetch the data
   const eventTypes = useSWR<EventTypeDTO[]>(
-    token?.parsed ? '/event-types' : null,
+    token?.parsed && shouldRun ? '/event-types' : null,
     fetcher,
     { revalidateOnFocus: false }
   );
   const eventTemplates = useSWR<EventTemplateDTO[]>(
-    token?.parsed ? '/event-templates' : null,
+    token?.parsed && shouldRun ? '/event-templates' : null,
     fetcher,
     { revalidateOnFocus: false }
   );
   const gymZones = useSWR<GymZoneDTO[]>(
-    token?.parsed ? `/virtual-gyms/${virtualGym}/gym-zones` : null,
+    token?.parsed && shouldRun ? `/virtual-gyms/${virtualGym}/gym-zones` : null,
     fetcher,
     { revalidateOnFocus: false }
   );
   const trainers = useSWR<TrainerDTO<number>[]>(
-    token?.parsed ? '/persons/trainers' : null,
+    token?.parsed && shouldRun ? '/persons/trainers' : null,
     fetcher,
     { revalidateOnFocus: false }
   );

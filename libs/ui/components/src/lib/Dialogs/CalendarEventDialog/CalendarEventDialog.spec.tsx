@@ -84,6 +84,7 @@ describe('<CalendarEventDialog />', () => {
 
       expect(screen.queryByRole('dialog')).toBeInTheDocument();
       expect(screen.getByText('Create an event')).toBeInTheDocument();
+      expect(screen.queryByText('Save')).not.toBeInTheDocument();
     });
   });
 

@@ -38,18 +38,20 @@ const DashboardEvents = ({
         </Grid>
       ))}
 
-      <Grid item>
-        <AddItemPlaceholder
-          title="add-event-template"
-          height={7}
-          width={44}
-          onClick={onAddEventTemplate}
-        >
-          <PlaceholderText variant="placeholder">
-            Click me to create a new event template!
-          </PlaceholderText>
-        </AddItemPlaceholder>
-      </Grid>
+      {onAddEventTemplate && (
+        <Grid item>
+          <AddItemPlaceholder
+            title="add-event-template"
+            height={7}
+            width={44}
+            onClick={onAddEventTemplate}
+          >
+            <PlaceholderText variant="placeholder">
+              Click me to create a new event template!
+            </PlaceholderText>
+          </AddItemPlaceholder>
+        </Grid>
+      )}
     </Stack>
   </Stack>
 );

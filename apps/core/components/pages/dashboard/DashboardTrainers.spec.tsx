@@ -113,6 +113,7 @@ describe('<DashboardTrainers />', () => {
         parsed: { id: 1, email: 'some@email.com', user: 'owner' },
         value: 'token'
       },
+      helpers: { hasAccess: () => true },
       user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
       API: { fetcher, poster }
     } as any);
@@ -128,7 +129,7 @@ describe('<DashboardTrainers />', () => {
     });
   });
 
-  it('should render the list of trainers', async () => {
+  it('should render properly', async () => {
     jest.spyOn(swr, 'default').mockImplementation(() => ({} as any));
 
     let container: any;
@@ -150,6 +151,24 @@ describe('<DashboardTrainers />', () => {
     });
     // Find placeholder
     expect(screen.getByTitle('add-trainer')).toBeInTheDocument();
+  });
+
+  it('should not show the button if user does not have permissions', async () => {
+    (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
+      token: {
+        parsed: { id: 1, email: 'some@email.com', user: 'worker' },
+        value: 'token'
+      },
+      user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
+      helpers: { hasAccess: () => false },
+      API: { fetcher, poster }
+    } as any);
+
+    await act(async () => {
+      renderComponent();
+    });
+
+    expect(screen.queryByTitle('add-trainer')).not.toBeInTheDocument();
   });
 
   it('should post a new trainer and call mutate', async () => {

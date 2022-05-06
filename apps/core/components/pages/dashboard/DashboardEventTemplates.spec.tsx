@@ -96,6 +96,8 @@ const renderComponent = () =>
   );
 
 describe('<DashboardEventTemplates />', () => {
+  const hasAccess = () => true;
+
   const fetcher = jest.fn();
   const poster = jest.fn();
 
@@ -112,6 +114,7 @@ describe('<DashboardEventTemplates />', () => {
         value: 'token'
       },
       user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
+      helpers: { hasAccess },
       API: { fetcher, poster }
     } as any);
 
@@ -179,6 +182,24 @@ describe('<DashboardEventTemplates />', () => {
     });
     // Find placeholder
     expect(screen.getByTitle('add-event-template')).toBeInTheDocument();
+  });
+
+  it('should not show the button if user does not have permissions', async () => {
+    (ctx.useAppContext as jest.Mock<AppContextValue>).mockReturnValue({
+      token: {
+        parsed: { id: 1, email: 'some@email.com', user: 'worker' },
+        value: 'token'
+      },
+      user: { firstName: 'Test', lastName: 'User', gym: { id: 1 } },
+      helpers: { hasAccess: () => false },
+      API: { fetcher, poster }
+    } as any);
+
+    await act(async () => {
+      renderComponent();
+    });
+
+    expect(screen.queryByTitle('add-event-template')).not.toBeInTheDocument();
   });
 
   it('should open and close the dialog', async () => {

@@ -51,8 +51,6 @@ describe('<EventTemplateGrid />', () => {
 
     // Header
     expect(screen.getByText('Event templates')).toBeInTheDocument();
-    // Add event template button
-    expect(screen.getByTitle('add-event-template')).toBeInTheDocument();
     // Events
     templates.forEach(({ name }) => {
       expect(screen.getByText(name)).toBeInTheDocument();

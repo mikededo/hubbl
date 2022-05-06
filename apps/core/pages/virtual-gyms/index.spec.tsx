@@ -126,7 +126,9 @@ const fillGymZoneFields = async () => {
 describe('Virtual gyms page', () => {
   const fetcher = jest.fn();
   const poster = jest.fn();
+
   const swrSpy = jest.spyOn(swr, 'default');
+
   const onError = jest.fn();
   const onSuccess = jest.fn();
 
@@ -134,8 +136,9 @@ describe('Virtual gyms page', () => {
     jest.resetAllMocks();
 
     (ctx.useAppContext as jest.Mock).mockReturnValue({
-      token: { parsed: {} },
+      token: { parsed: { user: 'owner' } },
       user: { gym: { id: 1 } },
+      helpers: { hasAccess: () => true },
       API: { fetcher, poster }
     } as any);
     (ctx.useToastContext as jest.Mock).mockReturnValue({ onError, onSuccess });
@@ -171,6 +174,7 @@ describe('Virtual gyms page', () => {
   it('should not call fetcher if token is null', async () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: undefined },
+      helpers: { hasAccess: () => false },
       API: { fetcher, poster }
     });
     swrSpy.mockImplementation(() => ({} as any));
@@ -180,6 +184,30 @@ describe('Virtual gyms page', () => {
     });
 
     expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it('should not show the button if user does not have permissions', async () => {
+    (ctx.useAppContext as jest.Mock).mockReturnValue({
+      token: { parsed: { user: 'worker' } },
+      user: { gym: { id: 1 } },
+      helpers: { hasAccess: () => false },
+      API: { fetcher, poster }
+    } as any);
+    (ctx.useToastContext as jest.Mock).mockReturnValue({ onError, onSuccess });
+    swrSpy.mockImplementation((key) => {
+      if (key === '/virtual-gyms') {
+        return response as any;
+      }
+
+      return {} as any;
+    });
+
+    await act(async () => {
+      renderPage();
+    });
+
+    expect(screen.queryByTitle(/add-gym-zone/)).not.toBeInTheDocument();
+    expect(screen.queryByTitle(/add-virtual-gym/)).not.toBeInTheDocument();
   });
 
   describe('Virtual gym', () => {

@@ -93,10 +93,30 @@ export type TodayEventsApiType = {
   revalidate: () => void;
 };
 
+/**
+ * Properties of the Worker that define their permissions
+ */
+export type HasAccessType = (
+  to: Exclude<keyof WorkerDTO<Gym>, 'toClass' | keyof PersonDTO<Gym>>
+) => boolean;
+
+/**
+ * Helper functions for the context
+ */
+export type ContextHelpers = {
+  /**
+   * Returns whether a user has acces to create, update or delete
+   * action. Clients have denied access to anything in the core app,
+   * whilst owners have complete access.
+   */
+  hasAccess: HasAccessType;
+};
+
 export type AppContextValue = {
   token: TokenType | null;
   user: UserType | null;
   todayEvents: EventDTO[];
+  helpers: ContextHelpers;
   API: {
     loading: boolean;
     signup: SignUpType;
