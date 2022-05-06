@@ -54,6 +54,7 @@ describe('<TrainerDialog />', () => {
 
       expect(screen.getByRole('dialog')).toBeInTheDocument();
       expect(screen.getByText('Create a trainer')).toBeInTheDocument();
+       expect(screen.queryByText('Save')).not.toBeInTheDocument();
     });
   });
 
