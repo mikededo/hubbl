@@ -176,9 +176,7 @@ const Clients = (): JSX.Element => {
           onClose={handleOnCloseClientDialog}
           onSubmit={
             clientDialog.status === 'create'
-              ? hasAccess('createClients')
-                ? handleOnSumbitClientDialog
-                : undefined
+              ? handleOnSumbitClientDialog
               : hasAccess('updateClients')
               ? handleOnUpdateClient
               : undefined

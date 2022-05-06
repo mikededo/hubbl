@@ -271,6 +271,27 @@ describe('Clients page', () => {
   });
 
   describe('put client', () => {
+    // This is a special case, when the user is allowed to delete clients,
+    // but can't update them
+    it('should not be able to update without permissions', async () => {
+      (ctx.useAppContext as jest.Mock).mockReturnValue({
+        token: { parsed: {} },
+        user: { gym: { id: 1, code: 'AABBCCDD' } },
+        todayEvents: [],
+        helpers: { hasAccess: (key: string) => key === 'deleteClients' },
+        API: { fetcher, poster, putter }
+      });
+
+      await act(async () => {
+        render(<Clients />);
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText(clients[0].firstName));
+      });
+
+      expect(screen.queryByText('Save')).not.toBeInTheDocument();
+    });
+
     const fillClient = async () => {
       await act(async () => {
         fireEvent.click(screen.getByText(clients[0].firstName));

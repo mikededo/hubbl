@@ -195,9 +195,7 @@ const Trainers = () => {
           onClose={handleOnCloseTrainerDialog}
           onSubmit={
             trainerDialog.status === 'create'
-              ? hasAccess('createTrainers')
-                ? handleOnSumbitTrainer
-                : undefined
+              ? handleOnSumbitTrainer
               : hasAccess('updateTrainers')
               ? handleOnUpdateTrainer
               : undefined
