@@ -49,6 +49,7 @@ describe('VirtualGym Controller', () => {
     findOneBy: jest.fn(),
     createQueryBuilder: jest.fn().mockReturnThis(),
     innerJoinAndMapMany: jest.fn().mockReturnThis(),
+    innerJoinAndMapOne: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
     getMany: jest.fn(),
     getOne: jest.fn()
@@ -184,9 +185,7 @@ describe('VirtualGym Controller', () => {
         expect(mockService.where).toHaveBeenCalledTimes(1);
         expect(mockService.where).toHaveBeenCalledWith(
           'virtualGym.gym = :gym',
-          {
-            gym: mockPerson.gym.id
-          }
+          { gym: mockPerson.gym.id }
         );
         expect(mockService.getMany).toHaveBeenCalledTimes(1);
         expect(fromClassSpy).toHaveBeenCalledTimes(2);
@@ -273,6 +272,12 @@ describe('VirtualGym Controller', () => {
           'virtualGym.gymZones',
           'virtualGym.gymZones',
           'gz'
+        );
+        expect(mockService.innerJoinAndMapMany).toHaveBeenCalledTimes(1);
+        expect(mockService.innerJoinAndMapOne).toHaveBeenCalledWith(
+          'gz.calendar',
+          'gz.calendar',
+          'c'
         );
         expect(mockService.where).toHaveBeenCalledTimes(1);
         expect(mockService.where).toHaveBeenCalledWith(
