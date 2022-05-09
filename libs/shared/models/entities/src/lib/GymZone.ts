@@ -78,6 +78,7 @@ export default class GymZone {
   @OneToOne(() => Calendar, {
     cascade: true,
     nullable: false,
+    eager: true,
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   })
