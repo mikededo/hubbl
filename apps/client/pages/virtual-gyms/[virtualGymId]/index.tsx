@@ -58,14 +58,12 @@ const VirtualGym = () => {
       />
 
       <GymZoneGrid
-        addButtonTitle="add-class-gym-zone"
         header="Class gym zones"
         href={`/virtual-gyms/${router.query.virtualGymId}/gym-zones`}
         gymZones={classGymZones}
       />
 
       <GymZoneGrid
-        addButtonTitle="add-non-class-gym-zone"
         header="Non-class gym zones"
         gymZones={nonClassGymZones}
       />

@@ -47,7 +47,7 @@ export type GymZoneGridProps = {
   /**
    * Title passed to the add button of the grid
    */
-  addButtonTitle: string;
+  addButtonTitle?: string;
 
   /**
    * Gym zones to render in the grid.
