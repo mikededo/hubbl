@@ -1,26 +1,20 @@
-import { GymZoneIntervals } from '@hubbl/shared/types';
 import { useEffect } from 'react';
+
 import { useFormContext } from 'react-hook-form';
 
-import { CalendarAppointmentFormFields } from '../../';
 import Input from '../../../Input';
+import { CalendarAppointmentFormFields } from '../../types';
 
-type CalendarAppointmentEndTimeProps = {
-  interval: GymZoneIntervals;
-};
-
-const CalendarAppointmentEndTime = ({
-  interval
-}: CalendarAppointmentEndTimeProps): JSX.Element => {
+const CalendarAppointmentEndTime = (): JSX.Element => {
   const { register, setValue, watch } =
     useFormContext<CalendarAppointmentFormFields>();
 
-  const value = watch('startTime');
-  console.log({ a: watch('endTime') });
+  const startTime = watch('startTime');
+  const interval = watch('interval');
 
   useEffect(() => {
-    if (value) {
-      const [hour, minutes] = value.split(':');
+    if (startTime) {
+      const [hour, minutes] = startTime.split(':');
       const hourInc = Math.floor(interval / 60);
       const minutesInc = (interval / 15) % 4;
 
@@ -31,7 +25,7 @@ const CalendarAppointmentEndTime = ({
         }`.padStart(2, '0')}`
       );
     }
-  }, [interval, value, setValue]);
+  }, [interval, startTime, setValue]);
 
   return (
     <Input
