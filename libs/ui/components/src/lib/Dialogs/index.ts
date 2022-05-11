@@ -22,6 +22,7 @@ import type {
 } from './types';
 import VirtualGymDialog from './VirtualGymDialog';
 import WorkerDialog from './WorkerDialog';
+import * as ConfirmationDialog from './ConfirmationDialog';
 
 export {
   CalendarAppointmentDialog,
@@ -33,7 +34,8 @@ export {
   TrainerDialog,
   useCalendarEventDialog,
   VirtualGymDialog,
-  WorkerDialog
+  WorkerDialog,
+  ConfirmationDialog
 };
 export type {
   CalendarAppointmentFormFields,
