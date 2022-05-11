@@ -16,7 +16,7 @@ const CalendarSpotArea = styled(CardActionArea)({
 type CalendarSpotProps = {
   /**
    * Whether the card action is disabled
-   * 
+   *
    * @default false
    */
   disabled?: boolean;
@@ -31,7 +31,11 @@ type CalendarSpotProps = {
 
 const CalendarSpot = ({ disabled = false, onClick }: CalendarSpotProps) => (
   <Li>
-    <CalendarSpotArea data-testid="calendar-spot" disabled={disabled} onClick={onClick} />
+    <CalendarSpotArea
+      data-testid="calendar-spot"
+      disabled={disabled}
+      onClick={onClick}
+    />
   </Li>
 );
 export default CalendarSpot;

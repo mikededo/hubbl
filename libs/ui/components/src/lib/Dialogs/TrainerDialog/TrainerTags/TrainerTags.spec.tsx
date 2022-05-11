@@ -77,9 +77,7 @@ describe('<TrainerTags />', () => {
     it('should disable the field', () => {
       render(<MockComponent />);
 
-      expect(
-        screen.getByPlaceholderText('Select trainer tags')
-      ).toBeDisabled();
+      expect(screen.getByPlaceholderText('Select trainer tags')).toBeDisabled();
     });
   });
 });

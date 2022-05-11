@@ -16,7 +16,11 @@ describe('<EventTemplateProperties />', () => {
     const { container } = render(<Component />);
 
     expect(container).toBeInTheDocument();
-    expect(screen.getByTitle('event-template-mask-required')).toBeInTheDocument();
-    expect(screen.getByTitle('event-template-covid-passport')).toBeInTheDocument();
+    expect(
+      screen.getByTitle('event-template-mask-required')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTitle('event-template-covid-passport')
+    ).toBeInTheDocument();
   });
 });

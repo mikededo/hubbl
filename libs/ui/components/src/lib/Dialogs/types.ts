@@ -224,7 +224,7 @@ export type CalendarAppointmentFormFields = {
 
   /**
    * Selected interval of the user. This value will not be
-   * passed to the callback as it is just to keep the internal 
+   * passed to the callback as it is just to keep the internal
    * state
    */
   interval: GymZoneIntervals;

@@ -8,7 +8,7 @@ describe('<DashboardTrainer />', () => {
     id: 10,
     firstName: 'Test',
     lastName: 'Trainer',
-    gender: Gender.OTHER,
+    gender: Gender.OTHER
   };
 
   it('should render properly', () => {
