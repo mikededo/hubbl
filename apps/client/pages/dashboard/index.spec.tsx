@@ -158,11 +158,11 @@ describe('Dashboard page', () => {
       API: { fetcher }
     } as any);
 
-    successfulRender();
+    await successfulRender();
   });
 
   it('should render properly, if gym is a gym object', async () => {
-    successfulRender();
+    await successfulRender();
   });
 
   it('should call onError if fetch fails', async () => {
