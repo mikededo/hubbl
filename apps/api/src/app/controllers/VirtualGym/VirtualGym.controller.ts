@@ -115,13 +115,9 @@ class IVirtualGymFetchSingleController extends BaseController {
           .innerJoinAndMapMany(
             'virtualGym.gymZones',
             'virtualGym.gymZones',
-            'gz',
+            'gz'
           )
-          .innerJoinAndMapOne(
-            'gz.calendar',
-            'gz.calendar',
-            'c',
-          )
+          .innerJoinAndMapOne('gz.calendar', 'gz.calendar', 'c')
           .getOne();
 
         return this.ok(res, VirtualGymDTO.fromClass(result));
