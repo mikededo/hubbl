@@ -24,8 +24,8 @@ The application is built using the `@nrwl/react:library` generator, and it is bu
 Once the repository has been cloned, install the dependencies of the project.
 
 ```sh
-# with npm 
-npm install 
+# with npm
+npm install
 ```
 
 ### Execution
