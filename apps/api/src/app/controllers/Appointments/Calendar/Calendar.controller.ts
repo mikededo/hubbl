@@ -151,7 +151,10 @@ class ICalendarApointmentFetchController extends BaseController {
   protected gymZoneService: GymZoneService = undefined;
 
   private isPastDate(date: CalendarDate): boolean {
-    return new Date(date.year, date.month - 1, date.day) < new Date();
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    return new Date(date.year, date.month - 1, date.day) < today;
   }
 
   protected async run(req: Request, res: Response): Promise<Response> {
