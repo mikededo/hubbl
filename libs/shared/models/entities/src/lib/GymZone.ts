@@ -101,7 +101,7 @@ export default class GymZone {
     ]
   })
   timeIntervals!: GymZoneIntervals[];
-
+  
   /**
    * `VirtualGym` to which the `GymZone` belongs
    */

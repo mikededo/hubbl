@@ -40,7 +40,7 @@ describe('<CalendarAppointment />', () => {
       expect(screen.getByText('Date')).toBeInTheDocument();
       expect(
         screen.getByText(
-          `${appointment.date.day}/${appointment.date.month}/${appointment.date.year}`
+          `${appointment.date.day}/0${appointment.date.month}/${appointment.date.year}`
         )
       ).toBeInTheDocument();
       expect(screen.getByText('Start time')).toBeInTheDocument();

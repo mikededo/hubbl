@@ -72,7 +72,7 @@ describe('<CalendarAppointmentDialog />', () => {
     swrSpy.mockReturnValue({ data: times } as any);
   });
 
-  it('should not all fethc if no token', async () => {
+  it('should not all fetch if no token', async () => {
     (ctx.useAppContext as jest.Mock).mockReturnValue({
       token: { parsed: undefined },
       API: { fetcher }

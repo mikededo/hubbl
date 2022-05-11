@@ -8,6 +8,17 @@ const ConfirmationDialogSection = styled(DialogSection)(({ theme }) => ({
   paddingBottom: theme.spacing(4)
 }));
 
+const parseDate = ({
+  year,
+  month,
+  day
+}: {
+  year: number;
+  month: number;
+  day: number;
+}): string =>
+  `${`${day}`.padStart(2, '0')}/${`${month}`.padStart(2, '0')}/${year}`;
+
 export type CalendarAppointmentProps = {
   /**
    * Appointment to display the information of
@@ -38,7 +49,9 @@ const CalendarAppointment = ({
 
           <Stack direction="column" width="100%" gap={1}>
             <Typography variant="h6">Date</Typography>
-            <Typography>{`${appointment?.date.day}/${appointment?.date.month}/${appointment?.date.year}`}</Typography>
+            <Typography>
+              {appointment && parseDate(appointment.date)}
+            </Typography>
           </Stack>
         </Stack>
 
