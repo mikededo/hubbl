@@ -101,6 +101,29 @@ describe('Dashboard page', () => {
     swrSpy.mockReturnValue(response as any);
   });
 
+  const successfulRender = async () => {
+    await act(async () => {
+      renderPage();
+    });
+
+    expect(screen.getByText('Virtual gyms'.toUpperCase())).toBeInTheDocument();
+    response.data.virtualGyms.forEach(({ name }) => {
+      expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
+    });
+    expect(screen.getByText('Gym zones'.toUpperCase())).toBeInTheDocument();
+    response.data.gymZones.forEach(({ name }) => {
+      expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
+    });
+    todayEvents.forEach(({ name }) => {
+      expect(screen.getByText(name)).toBeInTheDocument();
+    });
+    // Check api calls
+    expect(swrSpy).toHaveBeenCalledTimes(1);
+    expect(swrSpy).toHaveBeenCalledWith('/dashboards/1', fetcher, {
+      revalidateOnFocus: false
+    });
+  };
+
   it('should have the getLayout prop defined', () => {
     expect(Dashboard.getLayout).toBeDefined();
 
@@ -127,27 +150,19 @@ describe('Dashboard page', () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 
-  it('should render properly, with the list of virtual gyms', async () => {
-    await act(async () => {
-      renderPage();
-    });
+  it('should render properly, if gym is a number', async () => {
+    (ctx.useAppContext as jest.Mock).mockReturnValue({
+      token: { parsed: {} },
+      user: { gym: 1 },
+      todayEvents,
+      API: { fetcher }
+    } as any);
 
-    expect(screen.getByText('Virtual gyms'.toUpperCase())).toBeInTheDocument();
-    response.data.virtualGyms.forEach(({ name }) => {
-      expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
-    });
-    expect(screen.getByText('Gym zones'.toUpperCase())).toBeInTheDocument();
-    response.data.gymZones.forEach(({ name }) => {
-      expect(screen.getByText(name.toUpperCase())).toBeInTheDocument();
-    });
-    todayEvents.forEach(({ name }) => {
-      expect(screen.getByText(name)).toBeInTheDocument();
-    });
-    // Check api calls
-    expect(swrSpy).toHaveBeenCalledTimes(1);
-    expect(swrSpy).toHaveBeenCalledWith('/dashboards/1', fetcher, {
-      revalidateOnFocus: false
-    });
+    await successfulRender();
+  });
+
+  it('should render properly, if gym is a gym object', async () => {
+    await successfulRender();
   });
 
   it('should call onError if fetch fails', async () => {
