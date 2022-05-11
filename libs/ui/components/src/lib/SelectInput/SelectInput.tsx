@@ -55,7 +55,7 @@ type SelectInputProps<T extends FieldValues, J extends SelectItem[]> = {
 
   /**
    * Whether the select input is multiple or not
-   * 
+   *
    * @default false
    */
   multiple?: boolean;

@@ -431,8 +431,10 @@ describe('Appointments.Calendar controller', () => {
 
   describe('CalendarFetchController', () => {
     const mockReq = {
-      body: {
-        date: { year: 9999, month: 6, day: 29 },
+      query: {
+        year: 9999,
+        month: 6,
+        day: 29,
         interval: GymZoneIntervals.HOURTHIRTY
       },
       params: { id: 4 }
@@ -477,10 +479,12 @@ describe('Appointments.Calendar controller', () => {
         { available: '12:00:00' },
         { available: '13:00:00' }
       ];
+      const { interval, ...dateQuery } = mockReq.query;
+
       calendarAccessSpy.mockResolvedValue(undefined);
       mockAppointmentService.manager.query.mockResolvedValue(queryResult);
 
-      bodyValidation.mockResolvedValue(mockReq.body);
+      bodyValidation.mockResolvedValue({ date: dateQuery, interval });
       const okSpy = jest
         .spyOn(CalendarFetchController, 'ok')
         .mockImplementation();
@@ -500,17 +504,17 @@ describe('Appointments.Calendar controller', () => {
       });
       // Validate the body
       expect(bodyValidation).toHaveBeenCalledTimes(1);
-      expect(bodyValidation).toHaveBeenCalledWith(mockReq.body);
+      expect(bodyValidation).toHaveBeenCalledWith(mockReq.query);
       // Validate the query made to search for the intervals
       expect(mockAppointmentService.manager.query).toHaveBeenCalledTimes(1);
       expect(mockAppointmentService.manager.query).toHaveBeenCalledWith(
         queries.AVAILABLE_TIMES_APPOINTMENTS,
         [
-          mockReq.body.date.year,
-          mockReq.body.date.month,
-          mockReq.body.date.day,
+          mockReq.query.year,
+          mockReq.query.month,
+          mockReq.query.day,
           mockReq.params.id,
-          `${mockReq.body.interval} minutes`
+          `${mockReq.query.interval} minutes`
         ]
       );
       // Validate response sent
@@ -533,7 +537,7 @@ describe('Appointments.Calendar controller', () => {
       expect(bodyValidation).not.toHaveBeenCalled();
     });
 
-    it('should send clientError if body is not valid', async () => {
+    it('should send clientError if query is not valid', async () => {
       calendarAccessSpy.mockResolvedValue(undefined);
       bodyValidation.mockRejectedValue({});
       const clientErrorSpy = jest
@@ -553,11 +557,12 @@ describe('Appointments.Calendar controller', () => {
     it('should send clientError if accessing a past date', async () => {
       const pastDateReq = {
         ...mockReq,
-        body: { date: { ...mockReq.body.date, year: 2000 } }
+        query: { ...mockReq.query, year: 2000 }
       };
+      const { interval, ...dateQuery } = pastDateReq.query;
 
       calendarAccessSpy.mockResolvedValue(undefined);
-      bodyValidation.mockResolvedValue(pastDateReq.body);
+      bodyValidation.mockResolvedValue({ date: dateQuery, interval });
 
       const clientErrorSpy = jest
         .spyOn(CalendarFetchController, 'clientError')
@@ -577,8 +582,10 @@ describe('Appointments.Calendar controller', () => {
     });
 
     it('should send fail on query error', async () => {
+      const { interval, ...dateQuery } = mockReq.query;
+
       calendarAccessSpy.mockResolvedValue(undefined);
-      bodyValidation.mockResolvedValue(mockReq.body);
+      bodyValidation.mockResolvedValue({ date: dateQuery, interval });
       mockAppointmentService.manager.query.mockRejectedValue('error-thrown');
 
       setupServices();

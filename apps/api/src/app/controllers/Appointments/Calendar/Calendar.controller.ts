@@ -151,7 +151,10 @@ class ICalendarApointmentFetchController extends BaseController {
   protected gymZoneService: GymZoneService = undefined;
 
   private isPastDate(date: CalendarDate): boolean {
-    return new Date(date.year, date.month - 1, date.day) < new Date();
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    return new Date(date.year, date.month - 1, date.day) < today;
   }
 
   protected async run(req: Request, res: Response): Promise<Response> {
@@ -183,26 +186,26 @@ class ICalendarApointmentFetchController extends BaseController {
       return person;
     }
 
-    let validatedBody: FetchAppointmentInterval;
+    let validatedParams: FetchAppointmentInterval;
     try {
-      validatedBody = await FetchAppointmentInterval.validate(req.body);
+      validatedParams = await FetchAppointmentInterval.validate(req.query);
     } catch (e) {
       return this.clientError(res, e);
     }
 
     // Check if date is past
-    if (this.isPastDate(validatedBody.date)) {
+    if (this.isPastDate(validatedParams.date)) {
       return this.clientError(res, 'Can not search for past dates.');
     }
 
     try {
       const rawTimes: AvailableTimesAppointmentsResult =
         await this.service.manager.query(queries.AVAILABLE_TIMES_APPOINTMENTS, [
-          validatedBody.date.year,
-          validatedBody.date.month,
-          validatedBody.date.day,
+          validatedParams.date.year,
+          validatedParams.date.month,
+          validatedParams.date.day,
           calendarId,
-          `${validatedBody.interval} minutes`
+          `${validatedParams.interval} minutes`
         ]);
 
       return this.ok(

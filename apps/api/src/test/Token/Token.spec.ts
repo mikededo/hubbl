@@ -18,7 +18,7 @@ export const validate = async () => {
 
   const response = await supertest(app)
     .post('/tokens/validate')
-    .set('Cookie', `__hubbl-refresh__=${token}; HttpOnly`)
+    .set('Cookie', `__hubbl-refresh__=${token}; HttpOnly`);
 
   expect(response.statusCode).toBe(200);
   expect(response.body.token).toBeDefined();

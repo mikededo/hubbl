@@ -20,6 +20,15 @@ const createCalendarDate = (): CalendarDate => {
   return result;
 };
 
+const createAppointment = (interval: GymZoneIntervals) => {
+  const result = new FetchAppointmentInterval();
+
+  result.date = createCalendarDate();
+  result.interval = interval;
+
+  return result;
+};
+
 describe('FetchAppointmentInterval', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -30,7 +39,7 @@ describe('FetchAppointmentInterval', () => {
       const vorSpy = jest.spyOn(ClassValidator, 'validateOrReject');
       const body = {
         interval: GymZoneIntervals.HOURTHIRTY,
-        date: createCalendarDate()
+        ...createCalendarDate()
       };
 
       const calendarJsonSpy = jest
@@ -43,7 +52,7 @@ describe('FetchAppointmentInterval', () => {
 
       // Parse calendar
       expect(calendarJsonSpy).toHaveBeenCalledTimes(1);
-      expect(calendarJsonSpy).toHaveBeenCalledWith(body.date);
+      expect(calendarJsonSpy).toHaveBeenCalledWith({ ...createCalendarDate() });
       // Ensure class is validated
       expect(vorSpy).toHaveBeenCalledTimes(2);
       expect(vorSpy).toHaveBeenNthCalledWith(
@@ -51,9 +60,11 @@ describe('FetchAppointmentInterval', () => {
         { day: 29, month: 6, year: 2000 },
         { validationError: { target: false } }
       );
-      expect(vorSpy).toHaveBeenNthCalledWith(2, body, {
-        validationError: { target: false }
-      });
+      expect(vorSpy).toHaveBeenNthCalledWith(
+        2,
+        createAppointment(body.interval),
+        { validationError: { target: false } }
+      );
     });
 
     it('should not create a DTO if date json is not valid', async () => {

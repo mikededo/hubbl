@@ -4,7 +4,7 @@ import { Tooltip } from '@mui/material';
 export type MaskIconProps = {
   /**
    * Whether the icon is active
-   * 
+   *
    * @default false
    */
   active?: boolean;

@@ -13,7 +13,7 @@ module.exports = {
     './pages/**/*.tsx',
     './components/**/*.tsx',
     '!./pages/**/index*.ts',
-    '!./components/**/index*.ts',
+    '!./components/**/index*.ts'
   ],
   coverageReporters: ['text', 'html'],
   preset: '../../jest.preset.ts'

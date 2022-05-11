@@ -28,7 +28,6 @@ describe('<CalendarEventDate />', () => {
   it('should render properly', () => {
     render(<MockComponent />);
 
-    
     expect(screen.getByText('Date')).toBeInTheDocument();
     expect(screen.getByTitle('calendar-event-date')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('dd/mm/yyyy')).toBeInTheDocument();

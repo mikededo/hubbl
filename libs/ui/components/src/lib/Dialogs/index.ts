@@ -1,3 +1,4 @@
+import CalendarAppointmentDialog from './CalendarAppointmentDialog';
 import type { UseEventDialogResult } from './CalendarEventDialog';
 import CalendarEventDialog, {
   useCalendarEventDialog
@@ -8,6 +9,7 @@ import EventTypeDialog from './EventTypeDialog';
 import GymZoneDialog from './GymZoneDialog';
 import TrainerDialog from './TrainerDialog';
 import type {
+  CalendarAppointmentFormFields,
   CalendarEventFormFields,
   ClientFormFields,
   EventTemplateFormFields,
@@ -20,8 +22,10 @@ import type {
 } from './types';
 import VirtualGymDialog from './VirtualGymDialog';
 import WorkerDialog from './WorkerDialog';
+import * as ConfirmationDialog from './ConfirmationDialog';
 
 export {
+  CalendarAppointmentDialog,
   CalendarEventDialog,
   ClientDialog,
   EventTemplateDialog,
@@ -30,9 +34,11 @@ export {
   TrainerDialog,
   useCalendarEventDialog,
   VirtualGymDialog,
-  WorkerDialog
+  WorkerDialog,
+  ConfirmationDialog
 };
 export type {
+  CalendarAppointmentFormFields,
   CalendarEventFormFields,
   ClientFormFields,
   EventTemplateFormFields,

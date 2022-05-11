@@ -41,7 +41,6 @@ export default class CalendarDateDTO implements DTO<CalendarDate> {
    * Parses the json passed to the DTO and validates it
    *
    * @param json Body of the request
-   * @param variant Variant to validate for
    * @returns The parsed `CalendarDateDTO`
    */
   public static async fromJson(json: any): Promise<CalendarDateDTO> {

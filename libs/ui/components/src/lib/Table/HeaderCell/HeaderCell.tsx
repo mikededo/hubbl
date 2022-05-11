@@ -9,5 +9,4 @@ const HeaderCell = styled(TableCell)(({ theme }) => ({
   textTransform: 'uppercase'
 }));
 
-
 export default HeaderCell;
