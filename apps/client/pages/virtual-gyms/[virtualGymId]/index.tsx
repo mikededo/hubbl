@@ -78,16 +78,19 @@ const VirtualGym = () => {
 
     try {
       const { interval, date, ...times } = formData;
-      const appointment = await poster<CalendarAppointmentDTO>('/appointments/calendars', {
-        ...times,
-        client: user.id,
-        calendar,
-        date: {
-          year: date.getFullYear(),
-          month: date.getMonth() + 1,
-          day: date.getDate()
+      const appointment = await poster<CalendarAppointmentDTO>(
+        '/appointments/calendars',
+        {
+          ...times,
+          client: user.id,
+          calendar,
+          date: {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate()
+          }
         }
-      });
+      );
 
       setCreatedAppoinment(appointment);
     } catch (e) {
@@ -136,8 +139,8 @@ const VirtualGym = () => {
         onClose={handleOnCloseCreationDialog}
         onSubmit={handleOnCreateAppointment}
       />
-      
-      <ConfirmationDialog.CalendarAppointment 
+
+      <ConfirmationDialog.CalendarAppointment
         appointment={createdAppointment}
         open={!!createdAppointment}
         onClose={handleOnCloseConfirmationDialog}

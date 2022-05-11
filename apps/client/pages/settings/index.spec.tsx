@@ -93,7 +93,7 @@ describe('Settings page', () => {
 
   it('should render properly', async () => {
     await act(async () => {
-      renderPage()
+      renderPage();
     });
 
     expect(screen.getByText('Gym client')).toBeInTheDocument();
