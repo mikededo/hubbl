@@ -78,13 +78,6 @@ const CalendarAppointmentDialog = ({
 
   const [queryDate, setQueryDate] = useState<QueryDateState>(getInitialDate());
 
-  const { data } = useSWR<string[]>(
-    token?.parsed && props.open
-      ? fetchUrl(calendar, queryDate, GymZoneIntervals.HOUR)
-      : null,
-    fetcher
-  );
-
   const methods = useForm<CalendarAppointmentFormFields>({
     defaultValues: {
       ...defaultValues,
@@ -93,6 +86,15 @@ const CalendarAppointmentDialog = ({
     shouldUnregister: true,
     shouldFocusError: false
   });
+
+  const { data } = useSWR<string[]>(
+    token?.parsed && props.open && methods.watch('interval')
+      ? // May be called everytime interval changes
+        fetchUrl(calendar, queryDate, methods.watch('interval'))
+      : null,
+    fetcher,
+    { revalidateOnFocus: false }
+  );
 
   const date = methods.watch('date');
 
