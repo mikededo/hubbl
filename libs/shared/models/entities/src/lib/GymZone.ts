@@ -78,6 +78,7 @@ export default class GymZone {
   @OneToOne(() => Calendar, {
     cascade: true,
     nullable: false,
+    eager: true,
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   })
@@ -100,7 +101,7 @@ export default class GymZone {
     ]
   })
   timeIntervals!: GymZoneIntervals[];
-
+  
   /**
    * `VirtualGym` to which the `GymZone` belongs
    */

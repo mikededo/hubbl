@@ -15,10 +15,7 @@ const entries = [
   }
 ];
 
-type ClientSideNavOptions =
-  | 'dashboard'
-  | 'virtualGyms'
-  | 'settings';
+type ClientSideNavOptions = 'dashboard' | 'virtualGyms' | 'settings';
 
 export type ClientSideNavProps = {
   /**

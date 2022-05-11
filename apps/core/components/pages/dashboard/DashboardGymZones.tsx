@@ -62,7 +62,9 @@ const DashboardGymZones = () => {
       {data && (
         <GymZonesGrid
           items={data.gymZones}
-          onAddGymZone={hasAccess('createGymZones') ? handleOnAddClick : undefined}
+          onAddGymZone={
+            hasAccess('createGymZones') ? handleOnAddClick : undefined
+          }
         />
       )}
 

@@ -21,20 +21,25 @@ export default class FetchAppointmentInterval {
   /**
    * Validates the body of the request
    */
-  public static async validate(body: any): Promise<FetchAppointmentInterval> {
+  public static async validate(params: any): Promise<FetchAppointmentInterval> {
     const result = new FetchAppointmentInterval();
     const date = new CalendarDate();
 
-    date.year = body.date.year;
-    date.month = body.date.month;
-    date.day = body.date.day;
+    date.year = +params.year;
+    date.month = +params.month;
+    date.day = +params.day;
 
     result.date = date;
-    result.interval = body.interval;
+    result.interval = +params.interval;
 
-    await validateOrReject(await CalendarDateDTO.fromJson(body.date), {
-      validationError: { target: false }
-    }).catch((errors) => {
+    await validateOrReject(
+      await CalendarDateDTO.fromJson({
+        year: date.year,
+        month: date.month,
+        day: date.day
+      }),
+      { validationError: { target: false } }
+    ).catch((errors) => {
       throw validationParser(errors, 'date');
     });
 

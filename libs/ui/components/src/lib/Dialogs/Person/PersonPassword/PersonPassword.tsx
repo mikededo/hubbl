@@ -15,7 +15,7 @@ const PersonPassword = (): JSX.Element => {
   } = useFormContext<PersonFormFields>();
 
   const [visible, setVisible] = useState(false);
- 
+
   const handleOnToggleVisibility =
     (updater: React.Dispatch<React.SetStateAction<boolean>>) => () => {
       updater((prev) => !prev);

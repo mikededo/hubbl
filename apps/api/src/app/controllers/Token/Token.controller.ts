@@ -42,9 +42,9 @@ class ITokenValidateCookie extends BaseController {
       if (coreSite && token.user !== 'owner' && token.user !== 'worker') {
         return this.forbidden(res, 'Invalid refresh token.');
       }
-      
+
       if (clientSite && token.user !== 'client') {
-        return this.forbidden(res, 'Invalid refresh token.')
+        return this.forbidden(res, 'Invalid refresh token.');
       }
 
       try {

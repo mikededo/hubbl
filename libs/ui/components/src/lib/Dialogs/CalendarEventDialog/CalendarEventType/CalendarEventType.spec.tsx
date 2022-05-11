@@ -51,10 +51,18 @@ describe('<CalendarEventType />', () => {
     );
     fireEvent.mouseDown(screen.getByRole('button'));
 
-    expect(screen.getByRole('option', { name: 'EventTypeOne' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'EventTypeTwo' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'EventTypeThree' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'EventTypeFour' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'EventTypeOne' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'EventTypeTwo' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'EventTypeThree' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'EventTypeFour' })
+    ).toBeInTheDocument();
   });
 
   describe('defaultValues', () => {

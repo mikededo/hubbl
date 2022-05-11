@@ -15,7 +15,9 @@ describe('<CovidPassportIcon />', () => {
   it('should render being active', () => {
     render(<CovidPassportIcon active />);
 
-    expect(screen.getByLabelText('Covid passport required')).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Covid passport required')
+    ).toBeInTheDocument();
     expect(screen.getByTitle('passport-required')).toBeInTheDocument();
   });
 });

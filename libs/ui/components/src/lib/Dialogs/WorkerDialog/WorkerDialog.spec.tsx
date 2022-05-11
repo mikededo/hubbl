@@ -79,7 +79,7 @@ describe('<WorkerDialog />', () => {
           'The password of the worker will be the gym code, which is: AABBCCDD'
         )
       ).toBeInTheDocument();
-       expect(screen.queryByText('Save')).not.toBeInTheDocument();
+      expect(screen.queryByText('Save')).not.toBeInTheDocument();
     });
   });
 

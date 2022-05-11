@@ -24,8 +24,8 @@ The application is built using the `@nrwl/workspace:library` generator, and it i
 Once the repository has been cloned, install the dependencies of the project.
 
 ```sh
-# with npm 
-npm install 
+# with npm
+npm install
 ```
 
 ### Execution

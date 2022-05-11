@@ -7,8 +7,6 @@ import { CalendarEventFormFields } from '../types';
 import CalendarEventDialog from './CalendarEventDialog';
 import { UseEventDialogResult } from './useCalendarEventDialog';
 
-// Test me 1h 15m
-
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
   const app = jest.fn();

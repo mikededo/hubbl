@@ -6,7 +6,9 @@ describe('<MaskIcon />', () => {
   it('should render not being active', () => {
     render(<MaskIcon />);
 
-    expect(screen.getByLabelText('Facial mask not required')).toBeInTheDocument();
+    expect(
+      screen.getByLabelText('Facial mask not required')
+    ).toBeInTheDocument();
     expect(screen.getByTitle('mask-not-required')).toBeInTheDocument();
   });
 

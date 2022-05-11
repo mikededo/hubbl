@@ -1,5 +1,5 @@
 import { TrainerTagDTO } from '@hubbl/shared/models/dto';
-import { AppPalette, Gender } from '@hubbl/shared/types';
+import { AppPalette, Gender, GymZoneIntervals } from '@hubbl/shared/types';
 
 export type VirtualGymFormFields = {
   /**
@@ -204,6 +204,30 @@ export type CalendarEventFormFields = {
    * Difficulty of the `CalendarEvent`
    */
   difficulty: number | string;
+};
+
+export type CalendarAppointmentFormFields = {
+  /**
+   * Date of the `CalendarAppointment`
+   */
+  date: Date;
+
+  /**
+   * Start time of the `CalendarAppointment`
+   */
+  startTime: string;
+
+  /**
+   * End time of the `CalendarAppointment`
+   */
+  endTime: string;
+
+  /**
+   * Selected interval of the user. This value will not be
+   * passed to the callback as it is just to keep the internal
+   * state
+   */
+  interval: GymZoneIntervals;
 };
 
 export type PersonFormFields = {

@@ -51,10 +51,18 @@ describe('<CalendarEventGymZone />', () => {
     );
     fireEvent.mouseDown(screen.getByRole('button'));
 
-    expect(screen.getByRole('option', { name: 'GymZoneOne' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'GymZoneTwo' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'GymZoneThree' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'GymZoneFour' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'GymZoneOne' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'GymZoneTwo' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'GymZoneThree' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'GymZoneFour' })
+    ).toBeInTheDocument();
   });
 
   describe('defaultValues', () => {
@@ -77,9 +85,7 @@ describe('<CalendarEventGymZone />', () => {
     it('should disable the field', () => {
       render(<MockComponent />);
 
-      expect(
-        screen.getByPlaceholderText('Select a gym zone')
-      ).toBeDisabled();
+      expect(screen.getByPlaceholderText('Select a gym zone')).toBeDisabled();
     });
   });
 });

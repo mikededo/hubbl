@@ -50,9 +50,7 @@ describe('<VirtualGymListItem />', () => {
 
     it('should render a virtual gym with gym zones', () => {
       const { container } = render(
-        <VirtualGymListItem
-          virtualGym={filledVirtualGym as any}
-        />
+        <VirtualGymListItem virtualGym={filledVirtualGym as any} />
       );
 
       expect(container).toBeInTheDocument();

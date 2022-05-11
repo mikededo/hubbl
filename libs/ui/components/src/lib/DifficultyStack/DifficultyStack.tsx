@@ -11,7 +11,11 @@ export type DifficultyStackProps = {
 
 const DifficultyStack = ({ difficulty }: DifficultyStackProps): JSX.Element => (
   <Stack direction="row">
-    <Fire key="difficulty-one" titleAccess="difficulty-one-active" color="primary" />
+    <Fire
+      key="difficulty-one"
+      titleAccess="difficulty-one-active"
+      color="primary"
+    />
     <Fire
       key="difficulty-two"
       titleAccess={
