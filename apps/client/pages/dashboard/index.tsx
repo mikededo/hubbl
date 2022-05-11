@@ -21,8 +21,13 @@ const Dashboard = (): JSX.Element => {
     API: { fetcher }
   } = useAppContext();
   const { onError } = useToastContext();
+
   const { data, error } = useSWR<DashboardResponse>(
-    token?.parsed ? `/dashboards/${user?.gym.id}` : null,
+    token?.parsed
+      ? `/dashboards/${
+          typeof user?.gym === 'number' ? user?.gym : user?.gym.id
+        }`
+      : null,
     fetcher,
     { revalidateOnFocus: false }
   );
