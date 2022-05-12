@@ -201,8 +201,8 @@ describe('GymZone controller', () => {
         2,
         'gymZone.virtualGym',
         'virtualGym',
-        'virtualGym.id = :id',
-        { id: mockReq.params.vgId }
+        'virtualGym.id = :vgId',
+        { vgId: mockReq.params.vgId }
       );
       expect(mockGymZoneService.innerJoin).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.innerJoin).toHaveBeenCalledWith(
@@ -296,11 +296,6 @@ describe('GymZone controller', () => {
       expect(mockGymZoneService.createQueryBuilder).toHaveBeenCalledWith({
         alias: 'gymZone'
       });
-      expect(mockGymZoneService.where).toHaveBeenCalledTimes(1);
-      expect(mockGymZoneService.where).toHaveBeenCalledWith(
-        'gymZone.id = :id',
-        { id: mockReq.params.id }
-      );
       expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenCalledTimes(2);
       expect(mockGymZoneService.innerJoinAndSelect).toHaveBeenNthCalledWith(
         1,
@@ -311,15 +306,20 @@ describe('GymZone controller', () => {
         2,
         'gymZone.virtualGym',
         'virtualGym',
-        'virtualGym.id = :id',
-        { id: mockReq.params.vgId }
+        'virtualGym.id = :vgId',
+        { vgId: mockReq.params.vgId }
       );
       expect(mockGymZoneService.innerJoin).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.innerJoin).toHaveBeenCalledWith(
         'virtualGym.gym',
         'gym',
-        'gym.id = :id',
-        { id: mockPerson.gym.id }
+        'gym.id = :gId',
+        { gId: mockPerson.gym.id }
+      );
+      expect(mockGymZoneService.where).toHaveBeenCalledTimes(1);
+      expect(mockGymZoneService.where).toHaveBeenCalledWith(
+        'gymZone.id = :gzId',
+        { gzId: mockReq.params.id }
       );
       expect(mockGymZoneService.getOne).toHaveBeenCalledTimes(1);
       expect(mockGymZoneService.getOne).toHaveReturned();
