@@ -79,6 +79,7 @@ describe('Calendar controller', () => {
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
       innerJoinAndSelect: jest.fn().mockReturnThis(),
+      leftJoinAndSelect: jest.fn().mockReturnThis(),
       loadAllRelationIds: jest.fn().mockReturnThis(),
       loadRelationCountAndMap: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
@@ -212,7 +213,7 @@ describe('Calendar controller', () => {
         'e.eventType',
         'tt'
       );
-      expect(mockQueryBuilder.innerJoinAndSelect).toHaveBeenNthCalledWith(
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenNthCalledWith(
         4,
         'e.template',
         'tpl'

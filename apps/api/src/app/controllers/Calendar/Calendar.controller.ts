@@ -155,7 +155,7 @@ class ICalendarFetchEventsController extends CalendarFetchBase {
         .innerJoinAndSelect('e.trainer', 't')
         .innerJoinAndSelect('t.person', 'p')
         .innerJoinAndSelect('e.eventType', 'tt')
-        .innerJoinAndSelect('e.template', 'tpl')
+        .leftJoinAndSelect('e.template', 'tpl')
         .loadRelationCountAndMap(
           'e.appointmentCount',
           'e.appointments',
