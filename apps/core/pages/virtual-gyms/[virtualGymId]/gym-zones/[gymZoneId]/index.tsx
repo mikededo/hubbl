@@ -437,8 +437,6 @@ const GymZone = () => {
     onError(`${events.error}`);
   }
 
-  // FInish today's events testing #time 30m
-
   return (
     <>
       <PageHeader
