@@ -4,11 +4,11 @@ import CalendarDateDTO from './CalendarDate';
 import ClientDTO from './Client';
 import DashboardDTO from './Dashboard';
 import EventDTO from './Event';
-import EventDTO from './EventAppointment';
+import EventAppointmentDTO from './EventAppointment';
 import EventTemplateDTO from './EventTemplate';
 import EventTypeDTO from './EventType';
-import GymZoneDTO from './GymZone';
 import GymDTO from './Gym';
+import GymZoneDTO from './GymZone';
 import OwnerDTO from './Owner';
 import PersonDTO, { PersonDTOGroups } from './Person';
 import TrainerDTO from './Trainer';
@@ -24,10 +24,11 @@ export {
   DashboardDTO,
   DTO,
   DTOGroups,
-  EventDTO as EventAppointmentDTO,
+  EventAppointmentDTO,
   EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
+  GymDTO,
   GymZoneDTO,
   OwnerDTO,
   PersonDTO,
@@ -35,6 +36,5 @@ export {
   TrainerDTO,
   TrainerTagDTO,
   VirtualGymDTO,
-  WorkerDTO,
-  GymDTO
+  WorkerDTO
 };
