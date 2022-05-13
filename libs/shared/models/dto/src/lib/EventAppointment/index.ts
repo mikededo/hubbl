@@ -1,3 +1,3 @@
-import EventDTO from './EventAppointment';
+import EventAppointmentDTO from './EventAppointment';
 
-export default EventDTO;
+export default EventAppointmentDTO;

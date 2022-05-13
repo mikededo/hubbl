@@ -16,7 +16,7 @@ import {
 import DTO from '../Base';
 import { DTOGroups } from '../util';
 
-export default class EventDTO implements DTO<EventAppointment> {
+export default class EventAppointmentDTO implements DTO<EventAppointment> {
   @IsNumber(
     {},
     { message: numberError('id'), groups: [DTOGroups.ALL, DTOGroups.UPDATE] }
@@ -53,8 +53,8 @@ export default class EventDTO implements DTO<EventAppointment> {
   )
   event!: number;
 
-  private static propMapper(from: EventAppointment | any): EventDTO {
-    const result = new EventDTO();
+  private static propMapper(from: EventAppointment | any): EventAppointmentDTO {
+    const result = new EventAppointmentDTO();
 
     result.id = from.id;
     result.startTime = from.startTime;
@@ -76,8 +76,8 @@ export default class EventDTO implements DTO<EventAppointment> {
   public static async fromJson(
     json: any,
     variant: DTOGroups
-  ): Promise<EventDTO> {
-    const result = EventDTO.propMapper(json);
+  ): Promise<EventAppointmentDTO> {
+    const result = EventAppointmentDTO.propMapper(json);
 
     await validateOrReject(result, {
       validationError: { target: false },
@@ -95,8 +95,8 @@ export default class EventDTO implements DTO<EventAppointment> {
    * @param event The fetched event
    * @returns The parsed `EventDTO`
    */
-  public static fromClass(event: EventAppointment): EventDTO {
-    const result = EventDTO.propMapper(event);
+  public static fromClass(event: EventAppointment): EventAppointmentDTO {
+    const result = EventAppointmentDTO.propMapper(event);
 
     return result;
   }

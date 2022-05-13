@@ -156,7 +156,7 @@ const GymZone = (): JSX.Element => {
             return event;
           }
 
-          const clone = { ...event } as EventAppointmentDTO;
+          const clone = { ...event } as EventDTO;
           clone.appointmentCount++;
           return clone;
         })

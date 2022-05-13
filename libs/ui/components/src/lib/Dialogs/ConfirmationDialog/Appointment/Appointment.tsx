@@ -50,11 +50,13 @@ const CalendarAppointment = ({
             <Typography>{appointment?.id}</Typography>
           </Stack>
 
-          {appointment && appointment instanceof CalendarAppointmentDTO && (
+          {appointment && (appointment as CalendarAppointmentDTO)?.date && (
             <Stack direction="column" width="100%" gap={1}>
               <Typography variant="h6">Date</Typography>
 
-              <Typography>{parseDate(appointment.date)}</Typography>
+              <Typography>
+                {parseDate((appointment as CalendarAppointmentDTO).date)}
+              </Typography>
             </Stack>
           )}
         </Stack>
