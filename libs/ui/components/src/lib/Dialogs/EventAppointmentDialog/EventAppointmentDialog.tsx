@@ -1,17 +1,27 @@
 import { EventDTO, TrainerDTO } from '@hubbl/shared/models/dto';
+import { EmptyHandler } from '@hubbl/shared/types';
 import { Save } from '@mui/icons-material';
 import { Button, Divider, Stack, Typography } from '@mui/material';
-import DifficultyStack from '../../DifficultyStack';
 
+import DifficultyStack from '../../DifficultyStack';
 import Base, { BaseProps } from '../Base';
 import DialogSection from '../DialogSection';
 
 export type EventAppointmentDialogProps = {
+  /**
+   * Event to dislay the information of
+   */
   event?: EventDTO;
+
+  /**
+   * Callback to run when the create button has been pressed
+   */
+  onSubmit?: EmptyHandler;
 } & Omit<BaseProps, 'title'>;
 
 const EventAppointmentDialog = ({
   event,
+  onSubmit,
   ...props
 }: EventAppointmentDialogProps): JSX.Element => (
   <Base title={event?.name ?? ''} {...props}>
@@ -77,7 +87,7 @@ const EventAppointmentDialog = ({
 
     <DialogSection footer>
       <Stack direction="row" justifyContent="flex-end" gap={2}>
-        <Button type="submit" title="submit" startIcon={<Save />}>
+        <Button title="create" onClick={onSubmit} startIcon={<Save />}>
           Create
         </Button>
       </Stack>

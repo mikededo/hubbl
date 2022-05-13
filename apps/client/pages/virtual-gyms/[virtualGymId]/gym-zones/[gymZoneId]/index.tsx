@@ -1,11 +1,24 @@
-import { ReactElement, useCallback, useMemo, useState } from 'react';
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState
+} from 'react';
 
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-import { useAppContext } from '@hubbl/data-access/contexts';
-import { EventDTO, GymZoneDTO, VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { useAppContext, useToastContext } from '@hubbl/data-access/contexts';
 import {
+  EventAppointmentDTO,
+  EventDTO,
+  GymZoneDTO,
+  VirtualGymDTO
+} from '@hubbl/shared/models/dto';
+import {
+  ConfirmationState,
   EmptyHandler,
   Hour,
   HourRange,
@@ -13,6 +26,7 @@ import {
 } from '@hubbl/shared/types';
 import {
   Calendar,
+  ConfirmationDialog,
   ContentCard,
   EventAppointmentDialog,
   PageHeader,
@@ -36,17 +50,28 @@ const CalendarContentCard = styled(ContentCard)(({ theme }) => ({
 const GymZone = (): JSX.Element => {
   const router = useRouter();
 
+  const { onError } = useToastContext();
   const {
+    user,
     token,
     todayEvents,
-    API: { fetcher }
+    API: { fetcher, poster }
   } = useAppContext();
 
   const virtualGymHref = `/virtual-gyms/${router.query.virtualGymId}`;
   const gymZoneHref = `${virtualGymHref}/gym-zones/${router.query.gymZoneId}`;
 
   const [weekPage, setWeekPage] = useState(0);
-  const [selectedEvent, setSelectedEvent] = useState<EventDTO>();
+
+  const [selectedEvent, setSelectedEvent] = useState<
+    ConfirmationState<EventDTO>
+  >({
+    open: false,
+    value: null
+  });
+  const [appointConfirm, setAppointConfirm] = useState<
+    ConfirmationState<EventAppointmentDTO>
+  >({ open: false, value: null });
 
   const virtualGym = useSWR<VirtualGymDTO>(
     token.parsed && router.query.virtualGymId ? `${virtualGymHref}` : null,
@@ -60,15 +85,12 @@ const GymZone = (): JSX.Element => {
     { revalidateOnFocus: false }
   );
 
-  const events = useSWR<EventDTO[]>(
-    gymZone.data
-      ? `/calendars/${gymZone.data.calendar}/events?${getStartDateParam(
-          weekPage
-        )}`
-      : null,
-    fetcher,
-    { revalidateOnFocus: false }
-  );
+  const eventsUrl = `/calendars/${
+    gymZone.data?.calendar
+  }/events?${getStartDateParam(weekPage)}`;
+  const events = useSWR<EventDTO[]>(gymZone.data ? eventsUrl : null, fetcher, {
+    revalidateOnFocus: false
+  });
 
   const hourRange = useMemo<HourRange>(() => {
     if (!gymZone.data) {
@@ -107,11 +129,43 @@ const GymZone = (): JSX.Element => {
     };
 
   const handleOnClickEvent: SingleHandler<EventDTO> = (event) => {
-    setSelectedEvent(event);
+    setSelectedEvent({ open: true, value: event });
   };
 
-  const handleOnCloseCreateDialog: EmptyHandler = () => {
-    setSelectedEvent(null);
+  const handleOnCloseDialog: SingleHandler<
+    Dispatch<SetStateAction<ConfirmationState<unknown>>>,
+    EmptyHandler
+  > = (setter) => () => {
+    setter((prev) => ({ ...prev, open: false }));
+  };
+
+  const handleOnCreateAppointment: EmptyHandler = async () => {
+    const id = selectedEvent.value.id;
+    handleOnCloseDialog(setSelectedEvent)();
+
+    try {
+      const appointment = await poster<EventAppointmentDTO>(
+        '/appointments/events',
+        { client: user.id, event: id }
+      );
+
+      // Mutate the list of events
+      await events.mutate([
+        ...events.data.map((event) => {
+          if (event.id !== id) {
+            return event;
+          }
+
+          const clone = { ...event } as EventAppointmentDTO;
+          clone.appointmentCount++;
+          return clone;
+        })
+      ]);
+
+      setAppointConfirm({ open: true, value: appointment });
+    } catch (e) {
+      onError(e.response.data.message);
+    }
   };
 
   // Use else if so router is only called once
@@ -176,9 +230,16 @@ const GymZone = (): JSX.Element => {
       <TodayEventsList events={todayEvents} />
 
       <EventAppointmentDialog
-        open={!!selectedEvent}
-        event={selectedEvent}
-        onClose={handleOnCloseCreateDialog}
+        open={selectedEvent.open}
+        event={selectedEvent.value}
+        onClose={handleOnCloseDialog(setSelectedEvent)}
+        onSubmit={handleOnCreateAppointment}
+      />
+
+      <ConfirmationDialog.Appointment
+        open={appointConfirm.open}
+        appointment={appointConfirm.value}
+        onClose={handleOnCloseDialog(setAppointConfirm)}
       />
     </>
   );

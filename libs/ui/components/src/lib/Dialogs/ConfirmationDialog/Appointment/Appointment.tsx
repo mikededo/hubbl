@@ -1,4 +1,7 @@
-import { CalendarAppointmentDTO, EventAppointmentDTO } from '@hubbl/shared/models/dto';
+import {
+  CalendarAppointmentDTO,
+  EventAppointmentDTO
+} from '@hubbl/shared/models/dto';
 import { Stack, styled, Typography } from '@mui/material';
 
 import Base, { BaseProps } from '../../Base';
@@ -47,12 +50,13 @@ const CalendarAppointment = ({
             <Typography>{appointment?.id}</Typography>
           </Stack>
 
-          <Stack direction="column" width="100%" gap={1}>
-            <Typography variant="h6">Date</Typography>
-            <Typography>
-              {appointment && parseDate(appointment.date)}
-            </Typography>
-          </Stack>
+          {appointment?.date && (
+            <Stack direction="column" width="100%" gap={1}>
+              <Typography variant="h6">Date</Typography>
+
+              <Typography>{parseDate(appointment.date)}</Typography>
+            </Stack>
+          )}
         </Stack>
 
         <Stack direction="row" gap={2}>

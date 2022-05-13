@@ -46,3 +46,8 @@ export type Hour =
 export type EmptyHandler<T = void> = () => T;
 
 export type SingleHandler<J, T = void> = (args: J) => T;
+
+export type ConfirmationState<T> = {
+  open: boolean;
+  value: T | null;
+};
