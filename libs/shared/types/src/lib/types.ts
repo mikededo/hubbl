@@ -4,6 +4,18 @@ export type ParsedToken = {
   user: 'owner' | 'worker' | 'client';
 };
 
+export type HourRange = {
+  /**
+   * Initial hour of the range
+   */
+  initial: Hour;
+
+  /**
+   * Final hour of the range
+   */
+  final: Hour;
+};
+
 export type Hour =
   | 0
   | 1

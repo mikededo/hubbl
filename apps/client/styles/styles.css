@@ -6,6 +6,7 @@
 
 body {
   background-color: #f8f8f8;
+  font-family: 'Inter', sans-serif;
 }
 
 a,
@@ -13,7 +14,6 @@ a:hover,
 a:visited,
 a:active {
   text-decoration: none;
-  font-family: Inter, sans-serif;
 }
 
 /* Custom scrollbar */

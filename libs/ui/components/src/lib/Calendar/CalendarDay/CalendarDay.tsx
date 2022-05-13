@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
+
 import { EventDTO } from '@hubbl/shared/models/dto';
 import { EmptyHandler, Hour, SingleHandler } from '@hubbl/shared/types';
 import { Typography } from '@mui/material';
-import { useMemo } from 'react';
 
 import CalendarDayColumn from '../CalendarDayColumn';
 import CalendarEvent from '../CalendarEvent';
@@ -27,6 +28,13 @@ export type CalendarDayProps = {
    * @default fale
    */
   disabled?: boolean;
+
+  /**
+   * Specifically disable the spot
+   *
+   * @default fale
+   */
+  disabledSpot?: boolean;
 
   /**
    * Events of the given date
@@ -72,6 +80,7 @@ export type CalendarDayProps = {
 const CalendarDay = ({
   day,
   disabled,
+  disabledSpot,
   events = [],
   finalHour,
   initialHour,
@@ -92,8 +101,8 @@ const CalendarDay = ({
       onSpotClick?.(hour);
     };
 
-  const disabledSpot = (hour: number) =>
-    new Date().getHours() + 1 > hour && today;
+  const shouldDisableHour = (hour: number) =>
+    (new Date().getHours() + 1 > hour && today) || disabledSpot;
 
   return (
     <CalendarDayColumn title={day}>
@@ -109,7 +118,7 @@ const CalendarDay = ({
       {hourSpots.map((hour) => (
         <CalendarSpot
           key={hour}
-          disabled={disabled || disabledSpot(hour)}
+          disabled={disabled || shouldDisableHour(hour)}
           onClick={handleOnSpotClick(hour)}
         />
       ))}

@@ -20,7 +20,7 @@ describe('<CalendarAppointment />', () => {
           'Here you have the data of the appointment you have just created! ' +
             'Enjoy your workout!'
         )
-      );
+      ).toBeInTheDocument();
     });
   });
 

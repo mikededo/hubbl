@@ -10,7 +10,7 @@ import {
 import GymZoneRouter from './GymZone.routes';
 import middlewares from '../middlewares';
 
-const VirtualGymRouter: Router = Router();
+const VirtualGymRouter: Router = Router({ mergeParams: true });
 
 /**
  * @description Fetches the list of virtual gyms for the current
