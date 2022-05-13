@@ -4,7 +4,7 @@ import CalendarDateDTO from './CalendarDate';
 import ClientDTO from './Client';
 import DashboardDTO from './Dashboard';
 import EventDTO from './Event';
-import EventAppointmentDTO from './EventAppointment';
+import EventDTO from './EventAppointment';
 import EventTemplateDTO from './EventTemplate';
 import EventTypeDTO from './EventType';
 import GymZoneDTO from './GymZone';
@@ -24,7 +24,7 @@ export {
   DashboardDTO,
   DTO,
   DTOGroups,
-  EventAppointmentDTO,
+  EventDTO as EventAppointmentDTO,
   EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
@@ -35,5 +35,6 @@ export {
   TrainerDTO,
   TrainerTagDTO,
   VirtualGymDTO,
-  WorkerDTO, GymDTO
+  WorkerDTO,
+  GymDTO
 };

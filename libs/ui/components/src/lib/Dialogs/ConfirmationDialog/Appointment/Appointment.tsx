@@ -1,4 +1,4 @@
-import { CalendarAppointmentDTO } from '@hubbl/shared/models/dto';
+import { CalendarAppointmentDTO, EventAppointmentDTO } from '@hubbl/shared/models/dto';
 import { Stack, styled, Typography } from '@mui/material';
 
 import Base, { BaseProps } from '../../Base';
@@ -23,7 +23,7 @@ export type CalendarAppointmentProps = {
   /**
    * Appointment to display the information of
    */
-  appointment?: CalendarAppointmentDTO;
+  appointment?: CalendarAppointmentDTO | EventAppointmentDTO;
 } & Omit<BaseProps, 'title'>;
 
 const CalendarAppointment = ({
