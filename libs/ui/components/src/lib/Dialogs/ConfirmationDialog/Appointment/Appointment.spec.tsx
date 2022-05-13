@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import CalendarAppointment from './CalendarAppointment';
+import CalendarAppointment from './Appointment';
 
 describe('<CalendarAppointment />', () => {
   describe('open', () => {

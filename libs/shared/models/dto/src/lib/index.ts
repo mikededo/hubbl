@@ -7,8 +7,8 @@ import EventDTO from './Event';
 import EventAppointmentDTO from './EventAppointment';
 import EventTemplateDTO from './EventTemplate';
 import EventTypeDTO from './EventType';
-import GymZoneDTO from './GymZone';
 import GymDTO from './Gym';
+import GymZoneDTO from './GymZone';
 import OwnerDTO from './Owner';
 import PersonDTO, { PersonDTOGroups } from './Person';
 import TrainerDTO from './Trainer';
@@ -28,6 +28,7 @@ export {
   EventDTO,
   EventTemplateDTO,
   EventTypeDTO,
+  GymDTO,
   GymZoneDTO,
   OwnerDTO,
   PersonDTO,
@@ -35,5 +36,5 @@ export {
   TrainerDTO,
   TrainerTagDTO,
   VirtualGymDTO,
-  WorkerDTO, GymDTO
+  WorkerDTO
 };

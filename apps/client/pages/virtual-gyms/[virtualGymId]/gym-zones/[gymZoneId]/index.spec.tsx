@@ -5,7 +5,8 @@ import * as ctx from '@hubbl/data-access/contexts';
 import { AppProvider } from '@hubbl/data-access/contexts';
 import { AppPalette } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { act, render, screen, fireEvent } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import GymZone from './index';
 
@@ -32,10 +33,12 @@ jest.mock('@hubbl/data-access/api');
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
   const app = jest.fn();
+  const toast = jest.fn();
 
   return {
     ...actual,
-    useAppContext: app
+    useAppContext: app,
+    useToastContext: toast
   };
 });
 
@@ -148,7 +151,12 @@ const renderPage = () =>
   );
 
 describe('Gym zone page', () => {
+  const mutate = jest.fn();
+
   const fetcher = jest.fn();
+  const poster = jest.fn();
+
+  const onError = jest.fn();
 
   const swrSpy = jest.spyOn(swr, 'default');
 
@@ -157,11 +165,12 @@ describe('Gym zone page', () => {
     jest.useFakeTimers().setSystemTime(new Date('2022/04/04'));
 
     (ctx.useAppContext as jest.Mock).mockReturnValue({
-      user: { gym: { id: 1 } },
+      user: { id: 1, gym: { id: 1 } },
       token: { parsed: {} },
       todayEvents: [],
-      API: { fetcher }
+      API: { fetcher, poster }
     } as any);
+    (ctx.useToastContext as jest.Mock).mockReturnValue({ onError } as any);
     swrSpy.mockClear().mockImplementation((key) => {
       const prevStartDate = startDateParam(1);
       const currStartDate = startDateParam(0);
@@ -174,7 +183,7 @@ describe('Gym zone page', () => {
       } else if (key === `/calendars/1/events?startDate=${prevStartDate}`) {
         return prevWeekResponse as any;
       } else if (key === `/calendars/1/events?startDate=${currStartDate}`) {
-        return { ...currWeekResponse } as any;
+        return { ...currWeekResponse, mutate } as any;
       } else if (key === `/calendars/1/events?startDate=${nextStartDate}`) {
         return nextWeekResponse as any;
       }
@@ -296,6 +305,92 @@ describe('Gym zone page', () => {
 
     screen.getByTitle('calendar').childNodes.forEach((node) => {
       expect(node.childNodes.length).toBe(10);
+    });
+  });
+
+  describe('appointment', () => {
+    it('should create a new appointment', async () => {
+      const event = currWeekResponse.data[0];
+      poster.mockResolvedValue({
+        id: 15,
+        startTime: event.startTime,
+        endTime: event.endTime
+      });
+
+      await act(async () => {
+        renderPage();
+      });
+      await act(async () => {
+        userEvent.click(
+          screen.getByText(currWeekResponse.data[0].name).parentElement
+            .parentElement
+        );
+      });
+
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(screen.getByText('Create'));
+      });
+      await act(async () => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      // Should have called poster & mutate
+      expect(poster).toHaveBeenCalledTimes(1);
+      expect(poster).toHaveBeenCalledWith('/appointments/events', {
+        client: 1,
+        event: event.id
+      });
+      expect(mutate).toHaveBeenCalledTimes(1);
+      expect(mutate).toHaveBeenCalledWith(
+        currWeekResponse.data.map((event, i) => {
+          if (i) {
+            return event;
+          }
+
+          const clone = { ...event };
+          clone.appointmentCount++;
+          return clone;
+        })
+      );
+
+      // Close the dialog
+      await act(async () => {
+        fireEvent.click(screen.getByTitle('close-dialog'));
+      });
+      await act(async () => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    it('should call onError if posting appointment fails', async () => {
+      poster.mockRejectedValue({
+        response: { data: { message: 'Error thrown' } }
+      });
+
+      await act(async () => {
+        renderPage();
+      });
+      await act(async () => {
+        userEvent.click(
+          screen.getByText(currWeekResponse.data[0].name).parentElement
+            .parentElement
+        );
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByText('Create'));
+      });
+      await act(async () => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      expect(poster).toHaveBeenCalledTimes(1);
+
+      // Expect the confirmation dialog to show up
+      expect(onError).toHaveBeenCalledTimes(1);
+      expect(onError).toHaveBeenCalledWith('Error thrown');
     });
   });
 });
