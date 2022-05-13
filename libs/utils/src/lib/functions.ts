@@ -94,3 +94,18 @@ export const weekInitialDay: SingleHandler<number, Date> = (
 
   return initial;
 };
+
+/**
+ * Generates the `startDate` param for the events query
+ *
+ * @param iteration The amount of weeks to go forward (negative int) or
+ * backwards (positive int)
+ * @returns The `startDate` param
+ */
+export const getStartDateParam = (iteration: number): string => {
+  const initial = weekInitialDay(iteration);
+
+  return `startDate=${initial.getFullYear()}-${`${
+    initial.getMonth() + 1
+  }`.padStart(2, '0')}-${`${initial.getDate()}`.padStart(2, '0')}`;
+};

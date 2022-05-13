@@ -1,4 +1,5 @@
 import {
+  getStartDateParam,
   isTimeBefore,
   notForwardAny,
   notForwardOne,
@@ -144,6 +145,20 @@ describe('functions', () => {
           (initial.getTime() - new Date().getTime()) / (1000 * 3600 * 24)
         )
       ).toBe(7);
+    });
+  });
+
+  describe('getStartDateParam', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2022/06/29'));
+
+    it.each([
+      { iteration: 0, wanted: 'startDate=2022-06-27' },
+      { iteration: 1, wanted: 'startDate=2022-06-20' },
+      { iteration: 2, wanted: 'startDate=2022-06-13' },
+      { iteration: -1, wanted: 'startDate=2022-07-04' },
+      { iteration: -2, wanted: 'startDate=2022-07-11' }
+    ])('should get start date for %iteration', ({ iteration, wanted }) => {
+      expect(getStartDateParam(iteration)).toBe(wanted);
     });
   });
 });

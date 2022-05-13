@@ -4,6 +4,18 @@ export type ParsedToken = {
   user: 'owner' | 'worker' | 'client';
 };
 
+export type HourRange = {
+  /**
+   * Initial hour of the range
+   */
+  initial: Hour;
+
+  /**
+   * Final hour of the range
+   */
+  final: Hour;
+};
+
 export type Hour =
   | 0
   | 1
@@ -34,3 +46,8 @@ export type Hour =
 export type EmptyHandler<T = void> = () => T;
 
 export type SingleHandler<J, T = void> = (args: J) => T;
+
+export type ConfirmationState<T> = {
+  open: boolean;
+  value: T | null;
+};

@@ -130,6 +130,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 1 && currentWeek}
         disabled={pastWeek || (today.getDay() > 1 && currentWeek)}
+        disabledSpot={!onSpotClick}
         onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(1)}
       />
@@ -141,6 +142,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 2 && currentWeek}
         disabled={pastWeek || (today.getDay() > 2 && currentWeek)}
+        disabledSpot={!onSpotClick}
         onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(2)}
       />
@@ -152,6 +154,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 3 && currentWeek}
         disabled={pastWeek || (today.getDay() > 3 && currentWeek)}
+        disabledSpot={!onSpotClick}
         onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(3)}
       />
@@ -163,6 +166,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 4 && currentWeek}
         disabled={pastWeek || (today.getDay() > 4 && currentWeek)}
+        disabledSpot={!onSpotClick}
         onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(4)}
       />
@@ -174,6 +178,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 5 && currentWeek}
         disabled={pastWeek || (today.getDay() > 5 && currentWeek)}
+        disabledSpot={!onSpotClick}
         onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(5)}
       />
@@ -185,6 +190,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 6 && currentWeek}
         disabled={pastWeek || (today.getDay() === 0 && currentWeek)}
+        disabledSpot={!onSpotClick}
         onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(6)}
       />
@@ -196,6 +202,7 @@ const Calendar = ({
         initialHour={initialHour}
         today={today.getDay() === 0 && currentWeek}
         disabled={pastWeek}
+        disabledSpot={!onSpotClick}
         onEventClick={onEventClick}
         onSpotClick={handleOnSpotClick(0)}
       />

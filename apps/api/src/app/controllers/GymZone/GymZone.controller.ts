@@ -39,8 +39,8 @@ class IGymZoneFetchController extends BaseController {
           .innerJoinAndSelect(
             'gymZone.virtualGym',
             'virtualGym',
-            'virtualGym.id = :id',
-            { id: req.params.vgId }
+            'virtualGym.id = :vgId',
+            { vgId: req.params.vgId }
           )
           .innerJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
             id: (person.gym as Gym).id
@@ -90,13 +90,13 @@ class IGymZoneFetchSingleController extends BaseController {
           .innerJoinAndSelect(
             'gymZone.virtualGym',
             'virtualGym',
-            'virtualGym.id = :id',
-            { id: req.params.vgId }
+            'virtualGym.id = :vgId',
+            { vgId: req.params.vgId }
           )
-          .innerJoin('virtualGym.gym', 'gym', 'gym.id = :id', {
-            id: (person.gym as Gym).id
+          .innerJoin('virtualGym.gym', 'gym', 'gym.id = :gId', {
+            gId: (person.gym as Gym).id
           })
-          .where('gymZone.id = :id', { id: req.params.id })
+          .where('gymZone.id = :gzId', { gzId: req.params.id })
           .getOne();
 
         return this.ok(res, GymZoneDTO.fromClass(result));

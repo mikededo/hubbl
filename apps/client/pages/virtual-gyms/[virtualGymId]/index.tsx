@@ -140,7 +140,7 @@ const VirtualGym = () => {
         onSubmit={handleOnCreateAppointment}
       />
 
-      <ConfirmationDialog.CalendarAppointment
+      <ConfirmationDialog.Appointment
         appointment={createdAppointment}
         open={!!createdAppointment}
         onClose={handleOnCloseConfirmationDialog}

@@ -13,6 +13,7 @@ import {
   VirtualGymDTO
 } from '@hubbl/shared/models/dto';
 import { CalendarDate } from '@hubbl/shared/models/entities';
+import { getStartDateParam } from '@hubbl/utils';
 import { EmptyHandler, Hour, SingleHandler } from '@hubbl/shared/types';
 import {
   Calendar,
@@ -133,21 +134,6 @@ const CalendarContentCard = styled(ContentCard)(({ theme }) => ({
   paddingTop: theme.spacing(2),
   overflow: 'hidden'
 }));
-
-/**
- * Generates the `startDate` param for the events query
- *
- * @param iteration The amount of weeks to go forward (negative int) or
- * backwards (positive int)
- * @returns The `startDate` param
- */
-const getStartDateParam = (iteration: number): string => {
-  const initial = weekInitialDay(iteration);
-
-  return `startDate=${initial.getFullYear()}-${`${
-    initial.getMonth() + 1
-  }`.padStart(2, '0')}-${`${initial.getDate()}`.padStart(2, '0')}`;
-};
 
 const parseFormDataFields = (
   formData: CalendarEventFormFields
@@ -436,8 +422,6 @@ const GymZone = () => {
   if (events.error) {
     onError(`${events.error}`);
   }
-
-  // FInish today's events testing #time 30m
 
   return (
     <>

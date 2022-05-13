@@ -1,3 +1,3 @@
 import Appointment from './Appointment';
 
-export { Appointment };
+export default Appointment;

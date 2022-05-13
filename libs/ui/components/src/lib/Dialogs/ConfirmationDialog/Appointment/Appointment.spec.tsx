@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import CalendarAppointment from './CalendarAppointment';
+import CalendarAppointment from './Appointment';
 
 describe('<CalendarAppointment />', () => {
   describe('open', () => {
@@ -20,7 +20,7 @@ describe('<CalendarAppointment />', () => {
           'Here you have the data of the appointment you have just created! ' +
             'Enjoy your workout!'
         )
-      );
+      ).toBeInTheDocument();
     });
   });
 

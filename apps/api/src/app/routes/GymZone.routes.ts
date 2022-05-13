@@ -9,7 +9,7 @@ import {
 } from '../controllers';
 import middlewares from '../middlewares';
 
-const GymZoneRouter: Router = Router();
+const GymZoneRouter: Router = Router({ mergeParams: true });
 
 /**
  * @description Fetches the list of gym zones from the virtual
