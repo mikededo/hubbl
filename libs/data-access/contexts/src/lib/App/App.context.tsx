@@ -23,12 +23,12 @@ const AppProvider = ({ children }: AppContextProps): JSX.Element => {
 
   useEffect(() => {
     const handleOnStart = (url: string) => {
-      if (url !== router.pathname) {
+      if (url !== router.asPath) {
         onPushLoading();
       }
     };
     const handleOnStop = (url: string) => {
-      if (url === router.pathname) {
+      if (url === router.asPath) {
         onPopLoading();
       }
     };
