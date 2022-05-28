@@ -1,5 +1,4 @@
 {
-  "root": "libs/shared/models/body-validators",
   "sourceRoot": "libs/shared/models/body-validators/src",
   "projectType": "library",
   "targets": {

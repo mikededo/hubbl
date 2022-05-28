@@ -1,5 +1,4 @@
 {
-  "root": "apps/landing",
   "sourceRoot": "apps/landing",
   "projectType": "application",
   "targets": {

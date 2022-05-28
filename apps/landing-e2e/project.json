@@ -1,5 +1,4 @@
 {
-  "root": "apps/landing-e2e",
   "sourceRoot": "apps/landing-e2e/src",
   "projectType": "application",
   "targets": {

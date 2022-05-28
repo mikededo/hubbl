@@ -1,5 +1,4 @@
 {
-  "root": "libs/ui/components",
   "sourceRoot": "libs/ui/components/src",
   "projectType": "library",
   "tags": [],

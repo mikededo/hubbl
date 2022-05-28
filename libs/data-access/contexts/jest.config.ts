@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'data-access-contexts',
 
   transform: {
@@ -10,5 +10,5 @@ module.exports = {
   coverageDirectory: '../../../coverage/libs/data-access/contexts',
   collectCoverageFrom: ['src/**/*.ts', 'src/**/*.tsx', '!src/**/index.ts'],
   coverageReporters: ['text', 'html'],
-  preset: '../../../jest.preset.ts'
+  preset: '../../../jest.preset.js'
 };

@@ -1,5 +1,4 @@
 {
-  "root": "libs/data-access/contexts",
   "sourceRoot": "libs/data-access/contexts/src",
   "projectType": "library",
   "tags": [],

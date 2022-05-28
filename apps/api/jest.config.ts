@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'api',
 
   globals: {
@@ -14,5 +14,5 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/api',
   collectCoverageFrom: ['src/app/**/*.ts', '!src/**/index.ts'],
   coverageReporters: ['text', 'html'],
-  preset: '../../jest.preset.ts'
+  preset: '../../jest.preset.js'
 };

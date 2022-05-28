@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'utils',
 
   globals: {
@@ -14,5 +14,5 @@ module.exports = {
   coverageDirectory: '../../coverage/libs/utils',
   collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts'],
   coverageReporters: ['text', 'html'],
-  preset: '../../jest.preset.ts'
+  preset: '../../jest.preset.js'
 };

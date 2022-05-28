@@ -1,5 +1,4 @@
 {
-  "root": "libs/shared/models/entities",
   "sourceRoot": "libs/shared/models/entities/src",
   "projectType": "library",
   "targets": {
