@@ -1,90 +1,61 @@
-# Hubbl
+<p align="center">
+  <img width="200" src="static/Logo.svg" alt="Hubbl logo">
+</p>
 
-This project was generated using [Nx](https://nx.dev).
+<h1 align="center">Hubbl Landing</h1>
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+<div align="center">
 
-🔎 **Smart, Extensible Build Framework**
+**Welcome to the Hubbl monorepo 🗂️**
 
-## Adding capabilities to your workspace
+![GitHub](https://img.shields.io/github/license/hubbl-app/hubbl?color=%237CB9E8&style=for-the-badge)
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+</div>
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+# Introduction
 
-Below are our core plugins:
+The repository contains all the requirements in order to develop the Hubbl app. The entire codebase is written in TypeScript.
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+## Set-up
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+The set-up is pretty simple, simply create a similar `.env` as the one in the [`example`](example) folder. After, build the containers by running the following command:
 
-## Generate an application
+```sh
+docker-compose --profile dev up -d
+```
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+You can also build the test containers using the `test` profile instead of the `dev` profile. Nonetheless, the `dev` profile already builds the `test` containers. The `test` profile is mainly used in CI environments.
 
-> You can use any of the plugins above to generate applications as well.
+All relevant information about running any project can be found in the `README.md` of each project.
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+## Projects
 
-## Generate a library
+You can find all the projects inside the [`/apps`](./apps) folder:
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+- [`./apps/api`](apps/api)
+- [`./apps/client`](apps/client)
+- [`./apps/client-e2e`](apps/client-e2e)
+- [`./apps/core`](apps/core)
+- [`./apps/core-e2e`](apps/core-e2e)
+- [`./apps/landing`](apps/landing)
+- [`./apps/landing-e2e`](apps/landing-e2e)
 
-> You can also use any of the plugins above to generate libraries as well.
+## Libraries
 
-Libraries are shareable across libraries and applications. They can be imported from `@hubbl/mylib`.
+You can find all the libraries inside the [`/libs`](./libs) folder:
 
-## Development server
+- `data-access`
+  - [`data-access/api`](libs/data-access/api)
+  - [`data-access/contexts`](libs/data-access/contexts)
+- `shared`
+  - [`shared/models`](libs/shared/models)
+  - [`shared/types`](libs/shared/types)
+- `ui`
+  - [`ui/components`](libs/ui/components)
+- [`utils`](libs/utils)
 
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+## Tools
 
-## Code scaffolding
+You can find all the libraries inside the [`/tools`](./tools) folder:
 
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+- [`generators`](tools/generators)

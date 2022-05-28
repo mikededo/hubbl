@@ -28,6 +28,8 @@ Once the repository has been cloned, install the dependencies of the project.
 npm install
 ```
 
+> If it has already been run, there's no need to run it again
+
 ### Execution
 
 The repository already includes the `nx` package, which is the library that manages the monorepo. If the `nx` package is installed globally, to start the server app, in a `dev` environment, run:
@@ -46,15 +48,6 @@ If the package is not installed globally, run:
 # npm start is an alias to nx serve - see package.json
 npm start api
 ```
-
-Nonetheless, there's a specific container (`hubbl-api-dev`) which runs the application in a dev environment, rebuilding on any change (as it also uses the `nx serve` command).  
-In order to run the `hubbl-api-dev` can be run with:
-
-```sh
-docker-compose --profile test up -d
-```
-
-It will create the container, install the dependencies in the container and will run the api. The container runs on the `localhost:3333` url.
 
 ## Testing
 

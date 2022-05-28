@@ -20,7 +20,8 @@
       "executor": "@nrwl/next:server",
       "options": {
         "buildTarget": "landing:build",
-        "dev": true
+        "dev": true,
+        "hostname": "landing.hubbl.local"
       },
       "configurations": {
         "production": {
