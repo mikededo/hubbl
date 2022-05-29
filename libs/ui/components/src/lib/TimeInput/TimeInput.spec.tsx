@@ -22,7 +22,13 @@ const typeAndExpect = async (typed: string, expected: string) => {
   render(<Component />);
 
   await act(async () => {
-    userEvent.type(screen.getByPlaceholderText('12:34'), typed);
+    await userEvent.type(screen.getByPlaceholderText('12:34'), typed[0]);
+    await userEvent.type(screen.getByPlaceholderText('12:34'), typed[1]);
+    await userEvent.type(screen.getByPlaceholderText('12:34'), typed[2]);
+
+    if (typed.length > 3) {
+      await userEvent.type(screen.getByPlaceholderText('12:34'), typed[3]);
+    }
   });
 
   expect(screen.getByPlaceholderText('12:34')).toHaveValue(expected);

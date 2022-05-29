@@ -90,14 +90,14 @@ describe('<VirtualGymListItem />', () => {
       expect(next).not.toBeDisabled();
 
       await act(async () => {
-        userEvent.click(next);
+        await userEvent.click(next);
       });
 
       expect(prev).not.toBeDisabled();
       expect(next).toBeDisabled();
 
       await act(async () => {
-        userEvent.click(prev);
+        await userEvent.click(prev);
       });
 
       expect(prev).toBeDisabled();

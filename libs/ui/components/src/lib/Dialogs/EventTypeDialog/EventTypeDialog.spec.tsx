@@ -99,7 +99,7 @@ describe('<EventTypeDialog />', () => {
         );
       });
       await act(async () => {
-        userEvent.click(screen.getByTitle(AppPalette.PEARL));
+        await userEvent.click(screen.getByTitle(AppPalette.PEARL));
       });
       await act(async () => {
         fireEvent.submit(screen.getByText('Save'));

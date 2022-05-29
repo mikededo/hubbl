@@ -3,11 +3,10 @@ import * as swr from 'swr';
 import * as ctx from '@hubbl/data-access/contexts';
 import { AppProvider } from '@hubbl/data-access/contexts';
 import { GymZoneIntervals } from '@hubbl/shared/types';
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import { CalendarAppointmentFormFields } from '../types';
 import CalendarAppointmentDialog from './CalendarAppointmentDialog';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('@hubbl/data-access/contexts', () => {
   const actual = jest.requireActual('@hubbl/data-access/contexts');
@@ -173,7 +172,7 @@ describe('<CalendarAppointmentDialog />', () => {
         );
       });
       await act(async () => {
-        userEvent.click(screen.getByText('Create'));
+        fireEvent.click(screen.getByText('Create'));
       });
 
       expect(onSubmitSpy).toHaveBeenCalledTimes(1);

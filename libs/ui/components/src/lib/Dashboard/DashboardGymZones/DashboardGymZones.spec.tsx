@@ -73,13 +73,15 @@ describe('<DashboardGymZones />', () => {
   });
 
   describe('onAddClick', () => {
-    it('should call onAddGymZone if placeholder clicked', () => {
+    it('should call onAddGymZone if placeholder clicked', async () => {
       const onAddSpy = jest.fn();
 
       render(
         <DashboardGymZones items={items as any} onAddGymZone={onAddSpy} />
       );
-      userEvent.click(screen.getByText('Click me to create a new gym zone!'));
+      await userEvent.click(
+        screen.getByText('Click me to create a new gym zone!')
+      );
 
       expect(onAddSpy).toHaveBeenCalledTimes(1);
     });

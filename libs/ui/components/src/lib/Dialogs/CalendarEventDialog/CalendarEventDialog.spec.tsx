@@ -1,7 +1,6 @@
 import { AppProvider, ToastContext } from '@hubbl/data-access/contexts';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import { CalendarEventFormFields } from '../types';
 import CalendarEventDialog from './CalendarEventDialog';
@@ -197,7 +196,12 @@ describe('<CalendarEventDialog />', () => {
 
       await act(async () => {
         render(
-          <MockComponent dialogData={DialogData} onSubmit={onSubmitSpy} open />
+          <MockComponent
+            dialogData={DialogData}
+            defaultValues={{ startTime: '11:00', endTime: '12:00' }}
+            onSubmit={onSubmitSpy}
+            open
+          />
         );
       });
 
@@ -214,11 +218,9 @@ describe('<CalendarEventDialog />', () => {
         fireEvent.input(screen.getByPlaceholderText('200'), {
           target: { name: 'capacity', value: '25' }
         });
-        userEvent.type(screen.getByPlaceholderText('09:00'), '11:00');
-        userEvent.type(screen.getByPlaceholderText('10:00'), '12:00');
       });
       await act(async () => {
-        userEvent.click(screen.getByText('Save'));
+        fireEvent.click(screen.getByText('Save'));
       });
 
       expect(onSubmitSpy).toHaveBeenCalledTimes(1);
