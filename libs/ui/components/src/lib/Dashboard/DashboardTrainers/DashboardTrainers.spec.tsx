@@ -62,13 +62,13 @@ describe('<DashboardTrainers />', () => {
   });
 
   describe('onAddClick', () => {
-    it('should call onAddTrainer if placeholder clicked', () => {
+    it('should call onAddTrainer if placeholder clicked', async () => {
       const onAddSpy = jest.fn();
 
       render(
         <DashboardTrainers items={items as any} onAddTrainer={onAddSpy} />
       );
-      userEvent.click(screen.getByText('Click me to create a new trainer!'));
+      await userEvent.click(screen.getByText('Click me to create a new trainer!'));
 
       expect(onAddSpy).toHaveBeenCalledTimes(1);
     });

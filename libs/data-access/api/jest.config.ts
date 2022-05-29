@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'data-access-api',
 
   globals: {
@@ -13,5 +13,5 @@ module.exports = {
   coverageDirectory: '../../../coverage/libs/data-access/api',
   collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts'],
   coverageReporters: ['text', 'html'],
-  preset: '../../../jest.preset.ts'
+  preset: '../../../jest.preset.js'
 };

@@ -74,7 +74,7 @@ describe('<DashboardEventTemplates />', () => {
   });
 
   describe('onAddEventTemplate', () => {
-    it('should call onAddEvent if placeholder clicked', () => {
+    it('should call onAddEvent if placeholder clicked', async () => {
       const onAddSpy = jest.fn();
 
       render(
@@ -83,7 +83,7 @@ describe('<DashboardEventTemplates />', () => {
           onAddEventTemplate={onAddSpy}
         />
       );
-      userEvent.click(
+      await userEvent.click(
         screen.getByText('Click me to create a new event template!')
       );
 

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'core',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
@@ -16,5 +16,5 @@ module.exports = {
     '!./components/**/index*.ts'
   ],
   coverageReporters: ['text', 'html'],
-  preset: '../../jest.preset.ts'
+  preset: '../../jest.preset.js'
 };

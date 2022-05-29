@@ -124,11 +124,14 @@ const fillGymZone = async () => {
     fireEvent.input(screen.getByPlaceholderText('200'), {
       target: { name: 'capacity', value: '25' }
     });
-    userEvent.type(screen.getByPlaceholderText('09:00'), '10:00');
-    userEvent.type(screen.getByPlaceholderText('23:00'), '22:00');
+
+    await userEvent.type(screen.getByPlaceholderText('09:00'), '1000');
+    await userEvent.type(screen.getByPlaceholderText('23:00'), '2200');
+
+    // TODO: FIX ASYNC USER EVENT
   });
   await act(async () => {
-    userEvent.click(screen.getByText('Save'));
+    await userEvent.click(screen.getByText('Save'));
   });
 };
 

@@ -1,5 +1,4 @@
 {
-  "root": "libs/shared/models/dto",
   "sourceRoot": "libs/shared/models/dto/src",
   "projectType": "library",
   "targets": {

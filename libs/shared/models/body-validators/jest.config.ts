@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'shared-models-body-validators',
 
   globals: {
@@ -11,5 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/libs/shared/models/body-validators',
-  preset: '../../../../jest.preset.ts'
+  preset: '../../../../jest.preset.js'
 };

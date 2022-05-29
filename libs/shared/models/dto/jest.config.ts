@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'shared-models-dto',
 
   globals: {
@@ -13,5 +13,5 @@ module.exports = {
   coverageDirectory: '../../../../coverage/libs/shared/models/dto',
   collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts'],
   coverageReporters: ['text', 'html'],
-  preset: '../../../../jest.preset.ts'
+  preset: '../../../../jest.preset.js'
 };

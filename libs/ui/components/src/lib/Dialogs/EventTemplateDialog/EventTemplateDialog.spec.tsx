@@ -176,7 +176,7 @@ describe('<EventTemplateDialog />', () => {
         });
       });
       await act(async () => {
-        userEvent.click(screen.getByText('Save'));
+        await userEvent.click(screen.getByText('Save'));
       });
 
       expect(onSubmitSpy).toHaveBeenCalledTimes(1);

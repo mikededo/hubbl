@@ -1,5 +1,4 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 import DashboardVirtualGyms from './DashboardVirtualGyms';
 
@@ -71,7 +70,7 @@ describe('<DashboardVirtualGyms />', () => {
       render(
         <DashboardVirtualGyms items={items as any} onAddVirtualGym={onAddSpy} />
       );
-      userEvent.click(
+      fireEvent.click(
         screen.getByText('Click me to create a new virtual gym!')
       );
 

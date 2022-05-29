@@ -1,5 +1,4 @@
 {
-  "root": "libs/shared/models/helpers",
   "sourceRoot": "libs/shared/models/helpers/src",
   "projectType": "library",
   "targets": {

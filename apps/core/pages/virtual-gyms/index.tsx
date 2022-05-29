@@ -2,11 +2,7 @@ import { ReactElement, useState } from 'react';
 
 import useSWR from 'swr';
 
-import {
-  useAppContext,
-  useLoadingContext,
-  useToastContext
-} from '@hubbl/data-access/contexts';
+import { useAppContext, useToastContext } from '@hubbl/data-access/contexts';
 import { GymZoneDTO, VirtualGymDTO } from '@hubbl/shared/models/dto';
 import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
 import {
@@ -21,7 +17,6 @@ import {
 import { BaseLayout, GeneralPages } from '../../components';
 
 const VirtualGyms = () => {
-  const { onPopLoading, onPushLoading } = useLoadingContext();
   const { onError, onSuccess } = useToastContext();
   const {
     token,
@@ -52,7 +47,6 @@ const VirtualGyms = () => {
     formData
   ) => {
     setGymZoneDialog(null);
-    onPushLoading();
 
     try {
       const created = await poster<GymZoneDTO>(
@@ -77,8 +71,6 @@ const VirtualGyms = () => {
     } catch (e) {
       onError(`${e}`);
     }
-
-    onPopLoading();
   };
 
   // Virtual gym dialog
@@ -94,7 +86,6 @@ const VirtualGyms = () => {
     VirtualGymFormFields
   > = async (formData) => {
     setVirtualGymDialog(false);
-    onPushLoading();
 
     try {
       const created = await poster<VirtualGymDTO>('/virtual-gyms', {
@@ -108,8 +99,6 @@ const VirtualGyms = () => {
     } catch (e) {
       onError(`${e}`);
     }
-
-    onPopLoading();
   };
 
   return (
