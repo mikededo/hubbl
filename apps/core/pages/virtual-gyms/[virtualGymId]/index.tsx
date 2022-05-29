@@ -9,6 +9,7 @@ import {
   useToastContext
 } from '@hubbl/data-access/contexts';
 import { GymZoneDTO, VirtualGymDTO } from '@hubbl/shared/models/dto';
+import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
 import {
   GymZoneDialog,
   GymZoneFormFields,
@@ -18,7 +19,6 @@ import {
 } from '@hubbl/ui/components';
 
 import { BaseLayout, GeneralPages } from '../../../components';
-import { EmptyHandler, SingleHandler } from '@hubbl/shared/types';
 
 type GymZoneDialogState = {
   /**
@@ -86,7 +86,6 @@ const VirtualGym = () => {
     formData
   ) => {
     setGymZoneDialog(null);
-    onPushLoading();
 
     try {
       // The data should include the gym
@@ -105,8 +104,6 @@ const VirtualGym = () => {
     } catch (e) {
       onError(`${e}`);
     }
-
-    onPopLoading();
   };
 
   if (error) {

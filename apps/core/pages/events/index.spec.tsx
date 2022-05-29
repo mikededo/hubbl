@@ -208,7 +208,7 @@ describe('Events page', () => {
         );
       });
       await act(async () => {
-        userEvent.click(screen.getByTitle(AppPalette.GREEN));
+        await userEvent.click(screen.getByTitle(AppPalette.GREEN));
       });
       await act(async () => {
         fireEvent.submit(screen.getByText('Save'));

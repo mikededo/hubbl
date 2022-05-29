@@ -10,7 +10,6 @@ import {
 import { AppPalette } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import GymZone from './index';
 
@@ -178,13 +177,11 @@ const startDateParam = (week: number): string =>
 const renderPage = () =>
   render(
     <LoadingContext>
-      <ThemeProvider theme={createTheme()}>
-        <ToastContext>
-          <AppProvider>
-            <GymZone />
-          </AppProvider>
-        </ToastContext>
-      </ThemeProvider>
+      <ToastContext>
+        <AppProvider>
+          <GymZone />
+        </AppProvider>
+      </ToastContext>
     </LoadingContext>
   );
 
@@ -223,7 +220,7 @@ describe('Gym zone page', () => {
       onPopLoading: pop,
       onPushLoading: push
     });
-    swrSpy.mockClear().mockImplementation((key) => {
+    swrSpy.mockImplementation((key) => {
       const prevStartDate = startDateParam(1);
       const currStartDate = startDateParam(0);
       const nextStartDate = startDateParam(-1);
@@ -269,11 +266,9 @@ describe('Gym zone page', () => {
       fireEvent.input(screen.getByPlaceholderText('200'), {
         target: { name: 'capacity', value: '25' }
       });
-      userEvent.type(screen.getByPlaceholderText('09:00'), '11:00');
-      userEvent.type(screen.getByPlaceholderText('10:00'), '12:00');
     });
     await act(async () => {
-      userEvent.click(screen.getByText('Save'));
+      fireEvent.click(screen.getByText('Save'));
     });
   };
 
@@ -454,7 +449,9 @@ describe('Gym zone page', () => {
       renderPage();
     });
     await act(async () => {
-      userEvent.click(screen.getByText('EventOne').parentElement.parentElement);
+      fireEvent.click(
+        screen.getByText('EventOne').parentElement.parentElement
+      );
     });
 
     expect(screen.queryByText('Save')).not.toBeInTheDocument();
@@ -467,7 +464,9 @@ describe('Gym zone page', () => {
       renderPage();
     });
     await act(async () => {
-      userEvent.click(screen.getByText(eventName).parentElement.parentElement);
+      fireEvent.click(
+        screen.getByText(eventName).parentElement.parentElement
+      );
     });
 
     expect(screen.getByText('Edit an event')).toBeInTheDocument();
@@ -478,7 +477,7 @@ describe('Gym zone page', () => {
       });
     });
     await act(async () => {
-      userEvent.click(screen.getByText('Save'));
+      fireEvent.click(screen.getByText('Save'));
     });
 
     // Api calls

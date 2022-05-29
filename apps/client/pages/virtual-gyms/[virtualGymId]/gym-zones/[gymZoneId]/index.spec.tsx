@@ -2,11 +2,10 @@ import { useRouter } from 'next/router';
 import * as swr from 'swr';
 
 import * as ctx from '@hubbl/data-access/contexts';
-import { AppProvider } from '@hubbl/data-access/contexts';
+import { AppProvider, LoadingContext } from '@hubbl/data-access/contexts';
 import { AppPalette } from '@hubbl/shared/types';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import GymZone from './index';
 
@@ -145,9 +144,11 @@ const startDateParam = (week: number): string =>
 
 const renderPage = () =>
   render(
-    <AppProvider>
-      <GymZone />
-    </AppProvider>
+    <LoadingContext>
+      <AppProvider>
+        <GymZone />
+      </AppProvider>
+    </LoadingContext>
   );
 
 describe('Gym zone page', () => {
