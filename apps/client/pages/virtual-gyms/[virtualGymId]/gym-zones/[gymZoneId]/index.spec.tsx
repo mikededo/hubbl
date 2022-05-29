@@ -321,7 +321,7 @@ describe('Gym zone page', () => {
         renderPage();
       });
       await act(async () => {
-        userEvent.click(
+        fireEvent.click(
           screen.getByText(currWeekResponse.data[0].name).parentElement
             .parentElement
         );
@@ -374,13 +374,14 @@ describe('Gym zone page', () => {
         renderPage();
       });
       await act(async () => {
-        userEvent.click(
+        fireEvent.click(
           screen.getByText(currWeekResponse.data[0].name).parentElement
             .parentElement
         );
       });
+
       await act(async () => {
-        fireEvent.click(screen.getByText('Create'));
+        fireEvent.click(await screen.findByText('Create'));
       });
       await act(async () => {
         jest.advanceTimersByTime(1000);
