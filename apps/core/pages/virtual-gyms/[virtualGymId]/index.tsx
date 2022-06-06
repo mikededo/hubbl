@@ -126,7 +126,7 @@ const VirtualGym = () => {
           { href: '/virtual-gyms', label: 'Virtual gyms' },
           {
             href: `/virtual-gyms/${router.query.virtualGymId}`,
-            label: 'Virtual gym name'
+            label: data?.name
           }
         ]}
       />

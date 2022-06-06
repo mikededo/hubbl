@@ -36,6 +36,7 @@ const EventTypeGridItem = ({
   return (
     <ContentCardAction
       title={`event-type-${eventType.id}`}
+      disabled={!onClick}
       onClick={handleOnClick}
     >
       <EventTypeListItem eventType={eventType} />

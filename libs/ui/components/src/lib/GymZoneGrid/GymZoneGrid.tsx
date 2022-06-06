@@ -37,7 +37,11 @@ const GymZoneGridItem = ({
   };
 
   return (
-    <ContentCardAction title={`gym-zone-${gymZone.id}`} onClick={handleOnClick}>
+    <ContentCardAction
+      title={`gym-zone-${gymZone.id}`}
+      disabled={!onClick}
+      onClick={handleOnClick}
+    >
       <GymZoneListItem gymZone={gymZone} />
     </ContentCardAction>
   );

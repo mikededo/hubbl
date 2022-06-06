@@ -41,7 +41,7 @@ const DashboardVirtualGym = React.forwardRef<
 >(
   ({ virtualGym, href, onClick }, ref): JSX.Element => (
     <Anchor href={href} ref={ref} onClick={onClick}>
-      <ContentCardAction color="primary">
+      <ContentCardAction color="primary" disabled={!onClick}>
         <PaddedContentCard>
           <ContentStack justifyContent="space-between">
             <Stack gap={1}>
