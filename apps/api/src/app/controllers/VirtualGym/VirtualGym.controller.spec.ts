@@ -279,10 +279,16 @@ describe('VirtualGym Controller', () => {
           'gz.calendar',
           'c'
         );
-        expect(mockService.where).toHaveBeenCalledTimes(1);
-        expect(mockService.where).toHaveBeenCalledWith(
+        expect(mockService.where).toHaveBeenCalledTimes(2);
+        expect(mockService.where).toHaveBeenNthCalledWith(
+          1,
+          'virtualGym.id = :id',
+          { id: mockReq.params.id }
+        );
+        expect(mockService.where).toHaveBeenNthCalledWith(
+          2,
           'virtualGym.gym = :gym',
-          { id: mockReq.params.id, gym: mockPerson.gym.id }
+          { gym: mockPerson.gym.id }
         );
         expect(mockService.getOne).toHaveBeenCalledTimes(1);
         expect(fromClassSpy).toHaveBeenCalledTimes(1);

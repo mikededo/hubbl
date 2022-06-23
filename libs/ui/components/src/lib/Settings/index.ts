@@ -5,11 +5,5 @@ import SettingsUserPassword, {
   UserPasswordFields
 } from './SettingsUserPassword';
 
-export {
-  RequiredUserInfoFields,
-  SettingsCard,
-  SettingsLogout,
-  SettingsUserInfo,
-  SettingsUserPassword,
-  UserPasswordFields
-};
+export { SettingsCard, SettingsLogout, SettingsUserInfo, SettingsUserPassword };
+export type { RequiredUserInfoFields, UserPasswordFields };

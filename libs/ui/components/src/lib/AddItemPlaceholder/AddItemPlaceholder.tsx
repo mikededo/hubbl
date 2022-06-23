@@ -68,7 +68,13 @@ const AddItemPlaceholder = ({
   width,
   onClick
 }: AddItemPlaceholderProps): JSX.Element => (
-  <Wrapper title={title} height={height} width={width} onClick={onClick}>
+  <Wrapper
+    title={title}
+    height={height}
+    width={width}
+    disabled={!onClick}
+    onClick={onClick}
+  >
     {children}
   </Wrapper>
 );

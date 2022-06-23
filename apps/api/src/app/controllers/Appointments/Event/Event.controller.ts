@@ -151,7 +151,7 @@ class IEventAppointmentCreateController extends BaseEventAppointmentController {
     try {
       // Check capacity
       const appointmentCount = await this.service.count({
-        where: { event: id }
+        where: { event: { id } }
       });
       if (appointmentCount >= maybeEvent.capacity) {
         return this.forbidden(res, 'No places left for the seleted event.');

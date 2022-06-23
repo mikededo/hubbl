@@ -22,7 +22,7 @@ export {
   maxError,
   minError,
   numberError,
-  ParsedValidation,
   stringError,
   validationParser
 };
+export type { ParsedValidation };

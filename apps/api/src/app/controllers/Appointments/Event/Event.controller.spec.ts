@@ -212,7 +212,7 @@ describe('Appointments.Event controller', () => {
       });
       expect(mockAppointmentService.count).toHaveBeenCalledTimes(2);
       expect(mockAppointmentService.count).toHaveBeenNthCalledWith(1, {
-        where: { event: mockDto.event }
+        where: { event: { id: mockDto.event} }
       });
       expect(mockAppointmentService.count).toHaveBeenNthCalledWith(2, {
         where: {

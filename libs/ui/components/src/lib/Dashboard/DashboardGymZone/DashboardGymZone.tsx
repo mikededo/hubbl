@@ -32,7 +32,7 @@ const DashboardGymZone = React.forwardRef<
 >(
   ({ gymZone, href, onClick }, ref): JSX.Element => (
     <Anchor href={href} ref={ref} onClick={onClick}>
-      <ContentCardAction color="primary">
+      <ContentCardAction color="primary" disabled={!onClick}>
         <GymZoneListItem gymZone={gymZone} />
       </ContentCardAction>
     </Anchor>

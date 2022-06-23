@@ -108,10 +108,8 @@ class IVirtualGymFetchSingleController extends BaseController {
       try {
         const result = await this.service
           .createQueryBuilder({ alias: 'virtualGym' })
-          .where('virtualGym.gym = :gym', {
-            id: +req.params.id,
-            gym: (person.gym as Gym).id
-          })
+          .where('virtualGym.id = :id', { id: +req.params.id })
+          .andWhere('virtualGym.gym = :gym', { gym: (person.gym as Gym).id })
           .innerJoinAndMapMany(
             'virtualGym.gymZones',
             'virtualGym.gymZones',

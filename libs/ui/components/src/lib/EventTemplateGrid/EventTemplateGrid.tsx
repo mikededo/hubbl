@@ -36,6 +36,7 @@ const EventTemplateGridItem = ({
   return (
     <ContentCardAction
       title={`event-template-${eventTemplate.id}`}
+      disabled={!onClick}
       onClick={handleOnClick}
     >
       <EventTemplateListItem eventTemplate={eventTemplate} />

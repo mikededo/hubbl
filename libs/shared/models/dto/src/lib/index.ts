@@ -17,12 +17,12 @@ import { DTOGroups } from './util';
 import VirtualGymDTO from './VirtualGym';
 import WorkerDTO from './Worker';
 
+export type { DTO };
 export {
   CalendarAppointmentDTO,
   CalendarDateDTO,
   ClientDTO,
   DashboardDTO,
-  DTO,
   DTOGroups,
   EventAppointmentDTO,
   EventDTO,
