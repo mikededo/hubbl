@@ -51,6 +51,7 @@ describe('VirtualGym Controller', () => {
     innerJoinAndMapMany: jest.fn().mockReturnThis(),
     innerJoinAndMapOne: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
     getMany: jest.fn(),
     getOne: jest.fn()
   };
@@ -279,14 +280,12 @@ describe('VirtualGym Controller', () => {
           'gz.calendar',
           'c'
         );
-        expect(mockService.where).toHaveBeenCalledTimes(2);
-        expect(mockService.where).toHaveBeenNthCalledWith(
-          1,
-          'virtualGym.id = :id',
-          { id: mockReq.params.id }
-        );
-        expect(mockService.where).toHaveBeenNthCalledWith(
-          2,
+        expect(mockService.where).toHaveBeenCalledTimes(1);
+        expect(mockService.where).toHaveBeenCalledWith('virtualGym.id = :id', {
+          id: mockReq.params.id
+        });
+        expect(mockService.andWhere).toHaveBeenCalledTimes(1);
+        expect(mockService.andWhere).toHaveBeenCalledWith(
           'virtualGym.gym = :gym',
           { gym: mockPerson.gym.id }
         );
@@ -306,6 +305,7 @@ describe('VirtualGym Controller', () => {
 
       it('should call fail on service error', async () => {
         await onServiceFail(VirtualGymFetchSingleController, 'getOne');
+        expect(mockService.andWhere).toHaveBeenCalledTimes(1);
       });
     });
   });
